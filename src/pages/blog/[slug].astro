@@ -1,0 +1,279 @@
+---
+import { getCollection, getEntry, render } from 'astro:content'
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import Prose from '../../components/typography/Prose.astro'
+import { readingTime } from '../../lib/reading-time'
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog')
+  const idPosts = allPosts.filter((p) => p.data.locale === 'id' && !p.data.draft)
+
+  // Sort for prev/next navigation
+  const sorted = idPosts.sort(
+    (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+  )
+
+  return sorted.map((entry, i) => ({
+    params: { slug: entry.data.slug },
+    props: {
+      entry,
+      prevEntry: sorted[i + 1] ?? null,
+      nextEntry: sorted[i - 1] ?? null,
+    },
+  }))
+}
+
+const { entry, prevEntry, nextEntry } = Astro.props
+const { data } = entry
+const { Content, remarkPluginFrontmatter } = await render(entry)
+
+// Author
+const author = await getEntry('authors', data.author.id)
+
+// Reading time — use rendered body text approximation via description + title
+// (body text content not directly available without rendering to string; use word count from raw body via remarkPluginFrontmatter if available)
+const bodyText = (remarkPluginFrontmatter?.rawContent as string) ?? data.description
+const minutes = readingTime(bodyText)
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
+function entrySlug(entry: any): string {
+  return entry.data.slug ?? entry.id.replace(/\.(id|en)$/, '')
+}
+
+// JSON-LD Article
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.publishedAt.toISOString(),
+  ...(data.updatedAt ? { dateModified: data.updatedAt.toISOString() } : {}),
+  author: {
+    '@type': 'Person',
+    name: author?.data.name ?? 'Fajrian Aidil Pratama',
+    url: 'https://banuacoder.com/founder/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Banua Coder',
+    url: 'https://banuacoder.com',
+  },
+  inLanguage: 'id',
+  keywords: data.tags.join(', '),
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://banuacoder.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://banuacoder.com/blog/' },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: data.title,
+      item: `https://banuacoder.com/blog/${entrySlug(entry)}/`,
+    },
+  ],
+}
+
+const currentSlug = entrySlug(entry)
+---
+
+<BaseLayout title={`${data.title} — Blog · Banua Coder`} description={data.description}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(articleSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <!-- hreflang to EN version -->
+  <link rel="alternate" hreflang="en" href={`https://banuacoder.com/en/blog/${currentSlug}/`} slot="head" />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="post-title"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+    >
+      <!-- Cover image -->
+      <div class="relative w-full overflow-hidden bg-bnc-stone-100 dark:bg-bnc-stone-900" style="max-height: 480px;">
+        <Image
+          src={data.cover as ImageMetadata}
+          alt={data.title}
+          width={1280}
+          height={640}
+          class="w-full object-cover"
+          loading="eager"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-bnc-ink/50 to-transparent pointer-events-none" aria-hidden="true"></div>
+      </div>
+
+      <Container>
+        <div class="py-10 max-w-3xl">
+          <!-- Breadcrumb -->
+          <nav aria-label="Breadcrumb" class="mb-5">
+            <ol class="flex items-center gap-2 font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 flex-wrap">
+              <li><a href="/" class="hover:text-bnc-accent transition-colors">Beranda</a></li>
+              <li aria-hidden="true">/</li>
+              <li><a href="/blog/" class="hover:text-bnc-accent transition-colors">Blog</a></li>
+              <li aria-hidden="true">/</li>
+              <li class="text-bnc-stone-700 dark:text-bnc-stone-300 truncate max-w-[24ch]">{data.title}</li>
+            </ol>
+          </nav>
+
+          <!-- Eyebrow: first tag -->
+          {data.tags.length > 0 && (
+            <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase mb-3">
+              // {data.tags[0]}
+            </p>
+          )}
+
+          <!-- Title -->
+          <h1
+            id="post-title"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+            style="font-size: var(--fs-48)"
+          >
+            {data.title}
+          </h1>
+
+          <!-- Byline -->
+          <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+            <span>{formatDate(data.publishedAt)}</span>
+            <span aria-hidden="true">·</span>
+            <span>{author?.data.name ?? 'Fajrian Aidil Pratama'}</span>
+            <span aria-hidden="true">·</span>
+            <span>{minutes} menit baca</span>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Article body -->
+    <section aria-label="Isi artikel" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <Prose>
+          <Content />
+        </Prose>
+      </Container>
+    </section>
+
+    <!-- Tags -->
+    {data.tags.length > 0 && (
+      <section
+        aria-label="Tags"
+        class="border-t border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container>
+          <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-3">// Tags</p>
+          <div class="flex flex-wrap gap-2">
+            {data.tags.map((tag) => (
+              <span class="font-mono text-xs px-3 py-1 rounded-full border border-bnc-stone-200 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- Author bio -->
+    {author && (
+      <section
+        aria-label="Tentang penulis"
+        class="border-t border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container>
+          <div class="flex items-start gap-5 max-w-2xl">
+            <div
+              class="shrink-0 w-16 h-16 rounded-full overflow-hidden bg-bnc-stone-200 dark:bg-bnc-stone-800 flex items-center justify-center"
+              aria-hidden="true"
+            >
+              <Image
+                src={author.data.photo as ImageMetadata}
+                alt={author.data.name}
+                width={64}
+                height={64}
+                class="w-full h-full object-cover opacity-60"
+                loading="lazy"
+              />
+            </div>
+            <div class="flex flex-col gap-2">
+              <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest">// Penulis</p>
+              <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper" style="font-size: var(--fs-20)">
+                {author.data.name}
+              </p>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">{author.data.role}</p>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                {author.data.bio}
+              </p>
+              <a
+                href="/founder/"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1"
+              >
+                Baca lebih lanjut dari Fajrian →
+              </a>
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- Prev / Next -->
+    {(prevEntry || nextEntry) && (
+      <section
+        aria-label="Navigasi artikel"
+        class="border-t border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {prevEntry && (
+              <a
+                href={`/blog/${entrySlug(prevEntry)}/`}
+                class="group flex flex-col gap-2 p-5 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 hover:border-bnc-accent transition-colors"
+              >
+                <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest">← Sebelumnya</p>
+                <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-primary dark:group-hover:text-bnc-accent transition-colors leading-snug" style="font-size: var(--fs-17)">
+                  {prevEntry.data.title}
+                </p>
+              </a>
+            )}
+            {nextEntry && (
+              <a
+                href={`/blog/${entrySlug(nextEntry)}/`}
+                class:list={[
+                  'group flex flex-col gap-2 p-5 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 hover:border-bnc-accent transition-colors',
+                  !prevEntry ? 'sm:col-start-2' : '',
+                ]}
+              >
+                <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-right">Berikutnya →</p>
+                <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-primary dark:group-hover:text-bnc-accent transition-colors leading-snug text-right" style="font-size: var(--fs-17)">
+                  {nextEntry.data.title}
+                </p>
+              </a>
+            )}
+          </div>
+        </Container>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+</BaseLayout>

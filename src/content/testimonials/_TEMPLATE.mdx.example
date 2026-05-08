@@ -1,0 +1,15 @@
+---
+# Testimonial schema reference — copy this file, rename to <id>.mdx, fill in real values.
+# Remove this comment and the .example extension before use.
+
+quote: "Banua Coder membantu kami membangun sistem yang tidak hanya selesai dibuat, tapi benar-benar bisa digunakan dan dikembangkan. Prosesnya terstruktur dan komunikasinya jelas."
+author: "Nama Klien"
+role: "Jabatan"
+company: "Nama Perusahaan"
+# avatar: "./avatar.jpg"        # optional: relative path to avatar image
+# companyLogo: "./logo.png"     # optional: relative path to company logo
+# project: "nama-proyek.id"     # optional: reference to portfolio entry id
+featured: false                 # set true to show on home page
+order: 1                        # lower = shown first
+locale: id                      # "id" or "en"
+---

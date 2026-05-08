@@ -90,10 +90,19 @@ const authors = defineCollection({
 })
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/blog',
+    generateId: ({ entry, data }) => {
+      const locale = (data as Record<string, unknown>).locale ?? 'id'
+      const slug = (data as Record<string, unknown>).slug ?? entry.replace(/\.(id|en)\.(md|mdx)$/, '').replace(/\.(md|mdx)$/, '')
+      return `${slug}.${locale}`
+    },
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      slug: z.string(),
       description: z.string(),
       publishedAt: z.date(),
       updatedAt: z.date().optional(),

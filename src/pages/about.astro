@@ -1,14 +1,26 @@
 ---
 import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Nav from '../components/layout/Nav.astro'
 import Footer from '../components/layout/Footer.astro'
 import Container from '../components/layout/Container.astro'
 import SectionHeader from '../components/typography/SectionHeader.astro'
 import Card from '../components/atoms/Card.astro'
+import Testimonial from '../components/cards/Testimonial.astro'
 import CTA from '../components/sections/CTA.astro'
 import { team } from '../data/team'
 import iconImage from '../assets/brand/banuacoder-icon.png'
+
+let idTestimonials: Awaited<ReturnType<typeof getCollection<'testimonials'>>> = []
+try {
+  const allTestimonials = await getCollection('testimonials')
+  idTestimonials = allTestimonials
+    .filter((t) => t.data.locale === 'id')
+    .sort((a, b) => a.data.order - b.data.order)
+} catch {
+  // No testimonials yet
+}
 
 const founder = team.find((m) => m.highlight === 'founder')!
 const otherMembers = team.filter((m) => m.highlight !== 'founder')
@@ -280,6 +292,34 @@ const messagePillars = [
         </div>
       </Container>
     </section>
+
+    <!-- Testimonials (hidden when none exist) -->
+    {idTestimonials.length > 0 && (
+      <section
+        aria-labelledby="testimonials-heading"
+        class="border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow="TESTIMONI"
+            marker="[ ## ]"
+            title="Apa Kata Klien"
+            class="mb-12"
+          />
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {idTestimonials.map((t) => (
+              <Testimonial
+                quote={t.data.quote}
+                author={t.data.author}
+                role={t.data.role}
+                company={t.data.company}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
 
     <!-- CTA -->
     <CTA
