@@ -59,12 +59,20 @@ const { class: cls = '' } = Astro.props
   .prose-bnc :global(a) {
     color: var(--color-bnc-primary);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--duration-base);
+    background-image: linear-gradient(to right, var(--color-bnc-accent), var(--color-bnc-accent));
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 250ms ease;
   }
 
-  .prose-bnc :global(a:hover) {
-    border-bottom-color: var(--color-bnc-accent);
+  .prose-bnc :global(a:hover),
+  .prose-bnc :global(a:focus-visible) {
+    background-size: 100% 1.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose-bnc :global(a) { transition: none; }
   }
 
   .prose-bnc :global(code) {
