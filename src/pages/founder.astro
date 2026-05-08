@@ -11,6 +11,8 @@ import workImg1 from '../assets/founder/work-product/work-1.webp'
 import workImg2 from '../assets/founder/work-product/work-2.webp'
 import workImg3 from '../assets/founder/work-product/work-3.webp'
 import workImg4 from '../assets/founder/work-product/work-4.webp'
+import ambientImg from '../assets/stock/clean-workspace-notebook.jpg'
+{/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
 
 const credibilityBullets = [
   'Latar belakang di software engineering dan pengembangan produk digital',
@@ -26,6 +28,24 @@ const selectedExperience = [
   { company: 'Stockbit / Bibit', context: 'Mobile platform — komunitas investasi dan reksa dana' },
   { company: 'Ulearna Technology LTD', context: 'International product collaboration — aplikasi consumer-facing untuk market global' },
   { company: 'Sektor Publik', context: 'Sistem digital publik — aplikasi layanan dan pembayaran daerah' },
+]
+
+const engineeringPhilosophy = [
+  {
+    label: '// system over feature',
+    title: 'Sistem di atas fitur',
+    desc: 'Fitur yang banyak tidak selalu berarti produk yang baik. Banua Coder membangun dengan mempertimbangkan bagaimana sistem akan berkembang—bukan hanya bagaimana ia bekerja saat peluncuran. Ini berarti keputusan arsitektur yang sadar, bukan sekadar mengikuti permintaan satu per satu.',
+  },
+  {
+    label: '// product thinking',
+    title: 'Berpikir tentang produk, bukan hanya kode',
+    desc: 'Engineering yang baik tidak dimulai dari "bagaimana cara membuat ini" tetapi dari "apakah ini yang harus dibuat." Kami mendekati setiap proyek dengan pemahaman terhadap tujuan bisnis di baliknya—sehingga keputusan teknis diarahkan oleh outcomes, bukan preferensi teknis semata.',
+  },
+  {
+    label: '// craft and discipline',
+    title: 'Craft dan disiplin sebagai standar',
+    desc: 'Code review, testing, performance, dan aksesibilitas bukan pilihan tambahan—mereka adalah bagian dari cara kami bekerja secara default. Bukan karena sempurnisme, tetapi karena sistem yang tidak dibangun dengan disiplin ini akan menjadi beban teknis yang mahal di masa depan.',
+  },
 ]
 
 const personSchema = {
@@ -135,25 +155,44 @@ const personSchema = {
       </Container>
     </section>
 
-    <!-- Narrative -->
+    <!-- About Fajrian — expanded story -->
     <section aria-labelledby="narrative-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
-        <div class="max-w-3xl">
-          <h2
-            id="narrative-heading"
-            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
-            style="font-size: var(--fs-28)"
-          >
-            Tentang Fajrian
-          </h2>
-          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-            <p>
-              Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Ia adalah software engineer dengan pengalaman di mobile engineering, digital product development, serta platform dan sistem yang berorientasi pada performance. Latar belakang ini membentuk cara Banua Coder bekerja: lebih terstruktur dalam memetakan masalah, lebih kritis dalam merancang solusi, dan lebih disiplin dalam delivery.
-            </p>
-            <p>
-              Pengalaman Fajrian mencakup produk consumer untuk pasar internasional (Dubai/UAE via Ulearna Technology LTD), sistem publik dan pajak daerah, hingga platform engineering di GoTo Financial, Reku, dan Stockbit/Bibit. Banua Coder mendekati setiap proyek dengan kombinasi product thinking, engineering depth, dan pemahaman operasional bisnis lintas konteks—sehingga setiap solusi relevan, bukan sekadar teknis.
-            </p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+          <div class="lg:col-span-2">
+            <h2
+              id="narrative-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+              style="font-size: var(--fs-28)"
+            >
+              Tentang Fajrian
+            </h2>
+            <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Fajrian Aidil Pratama tumbuh di Sulawesi Tengah dan menghabiskan kariernya sebagai software engineer dengan spesialisasi di mobile engineering, platform, dan digital product development. Sejak awal, ia tertarik pada bagaimana sistem yang besar bekerja dari dalam—bukan sekadar membuat fitur yang diminta, tetapi memahami arsitektur, tradeoff, dan dampak jangka panjang dari setiap keputusan teknis.
+              </p>
+              <p>
+                Perjalanan karier Fajrian membawanya ke lingkungan product engineering yang jarang diakses oleh engineer dari daerah: GoTo Financial sebagai ekosistem fintech terbesar di Asia Tenggara, Reku dan Stockbit/Bibit sebagai platform investasi consumer yang melayani jutaan pengguna, hingga kolaborasi internasional bersama Ulearna Technology LTD untuk produk yang menyasar pasar global. Di sisi lain, ia juga mengerjakan sistem digital publik—aplikasi layanan pajak dan retribusi daerah yang membutuhkan tingkat kepercayaan dan kejelasan yang berbeda dari produk consumer biasa.
+              </p>
+              <p>
+                Banua Coder lahir dari keinginan untuk membawa standar engineering dan product thinking itu ke konteks lokal—bisnis dan organisasi di daerah yang membutuhkan partner teknologi yang benar-benar bisa diandalkan, bukan hanya vendor yang bisa ngoding. Fajrian mendirikan Banua Coder pada 2019 dengan satu keyakinan: kualitas solusi digital tidak seharusnya bergantung pada di mana bisnis itu berada.
+              </p>
+              <p>
+                Pendekatan Fajrian dalam memimpin Banua Coder adalah menggabungkan engineering depth dengan product thinking—dua hal yang seringkali dipisahkan di software house konvensional. Hasilnya adalah tim yang tidak hanya bisa membangun apa yang diminta, tetapi juga membantu klien berpikir lebih jernih tentang apa yang sebenarnya perlu dibangun.
+              </p>
+            </div>
           </div>
+          <aside>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={ambientImg}
+                alt="Clean workspace — craft and engineering focus"
+                width={400}
+                class="w-full object-cover"
+                style="max-height: 320px"
+              />
+            </div>
+          </aside>
         </div>
       </Container>
     </section>
@@ -172,6 +211,71 @@ const personSchema = {
           // Latar belakang terpilih
         </h2>
         <FounderExperienceStrip />
+      </Container>
+    </section>
+
+    <!-- Cross-context execution -->
+    <section aria-labelledby="cross-context-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // CROSS-CONTEXT EXECUTION
+          </p>
+          <h2
+            id="cross-context-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-28)"
+          >
+            Eksekusi lintas konteks
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Banyak engineer bagus hanya pernah bekerja dalam satu konteks: startup consumer, atau enterprise internal, atau agency. Ketika masalah yang dihadapi berbeda dari yang biasa mereka kerjakan, ada risiko nyata bahwa solusi yang dihasilkan tidak tepat—bukan karena kurang pintar, tetapi karena referensinya terbatas.
+            </p>
+            <p>
+              Fajrian membawa pengalaman di tiga konteks yang sangat berbeda: produk consumer yang digunakan jutaan orang dan menuntut performance, reliability, serta UX yang sangat baik; sistem publik yang membutuhkan kepercayaan data, auditability, dan kejelasan alur; dan engineering platform yang memprioritaskan maintainability dan developer experience. Setiap konteks mengajarkan sesuatu yang berbeda tentang tradeoff dan prioritas.
+            </p>
+            <p>
+              Hasilnya adalah pendekatan yang adaptif: kami tidak membawa template solusi yang sama untuk setiap klien. Kami membaca konteksnya—apakah ini produk F&B yang butuh membership system simpel dan cepat jalan, atau sistem workflow pemerintah daerah yang butuh struktur data yang jelas dan audit trail—dan menyesuaikan arsitektur serta pendekatan delivery-nya.
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Engineering philosophy -->
+    <section
+      aria-labelledby="philosophy-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // ENGINEERING PHILOSOPHY
+        </p>
+        <h2
+          id="philosophy-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-10"
+          style="font-size: var(--fs-28)"
+        >
+          Prinsip engineering kami
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {engineeringPhilosophy.map((principle) => (
+            <div class="flex flex-col gap-3">
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">{principle.label}</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-17)"
+              >
+                {principle.title}
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                {principle.desc}
+              </p>
+            </div>
+          ))}
+        </div>
       </Container>
     </section>
 
@@ -218,7 +322,11 @@ const personSchema = {
     </section>
 
     <!-- Selected experience + credibility bullets -->
-    <section aria-labelledby="selected-exp-heading" style="padding-block: var(--spacing-section-y)">
+    <section
+      aria-labelledby="selected-exp-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
       <Container>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <!-- Experience list -->
@@ -270,7 +378,6 @@ const personSchema = {
     <!-- Currently leading -->
     <section
       aria-labelledby="leading-heading"
-      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
       style="padding-block: var(--spacing-section-y-sm)"
     >
       <Container>
@@ -290,6 +397,40 @@ const personSchema = {
         >
           Kenali seluruh tim →
         </a>
+      </Container>
+    </section>
+
+    <!-- Connect section -->
+    <section
+      aria-labelledby="connect-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // CONNECT
+        </p>
+        <h2
+          id="connect-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2"
+          style="font-size: var(--fs-20)"
+        >
+          Ikuti atau terhubung
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm mb-6">
+          Fajrian aktif berbagi tentang engineering, product, dan pengalaman membangun software. Tersedia di platform berikut.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://linkedin.com/in/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            LinkedIn →
+          </a>
+          <a href="https://github.com/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            GitHub →
+          </a>
+          <a href="https://twitter.com/ryanaidilp_" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            X / Twitter →
+          </a>
+        </div>
       </Container>
     </section>
 

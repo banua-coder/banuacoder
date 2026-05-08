@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import Nav from '../../../components/layout/Nav.astro'
@@ -8,6 +9,10 @@ import SectionHeader from '../../../components/typography/SectionHeader.astro'
 import ServiceCard from '../../../components/cards/ServiceCard.astro'
 import Card from '../../../components/atoms/Card.astro'
 import CTA from '../../../components/sections/CTA.astro'
+import buildImg from '../../../assets/stock/workspace-code-monitor.jpg'
+import brandImg from '../../../assets/stock/designer-sketch-tools.jpg'
+{/* buildImg — unsplash: https://unsplash.com/photos/black-laptop-computer-1517694712202-14dd9538aa97 */}
+{/* brandImg — unsplash: https://unsplash.com/photos/person-holding-pencil-and-stick-note-beside-table-1541462608143-67571c6738dd */}
 
 const allServices = await getCollection('services')
 const enServices = allServices
@@ -26,22 +31,38 @@ const engagementModels = [
   {
     title: 'Project-Based',
     tagline: 'Fixed scope, clear timeline, defined price.',
-    description: 'Ideal for websites, apps, or systems with well-defined requirements.',
+    bullets: [
+      'Clearly defined deliverables and milestones',
+      'Ideal for websites, apps, or new systems',
+      'Works best when requirements are reasonably clear upfront',
+    ],
   },
   {
-    title: 'MVP Discovery Sprint',
-    tagline: 'Validate the idea before building fully.',
-    description: 'A short 1–2 week workshop to map the problem, solution, and MVP scope before development begins.',
+    title: 'Discovery Sprint',
+    tagline: 'Validate and define scope in 1–2 weeks.',
+    bullets: [
+      'Focused sessions to map problem and solution',
+      'Produces documented scope ready for build',
+      'Reduce risk before committing to full development',
+    ],
   },
   {
     title: 'Monthly Retainer',
     tagline: 'Engineering capacity available every month.',
-    description: 'Ideal for teams needing a regular developer or designer without hiring full-time.',
+    bullets: [
+      'Regular developer or designer without full-time hiring',
+      'Suited for product iteration or ongoing marketing work',
+      'Flexible to changing needs month to month',
+    ],
   },
   {
-    title: 'Managed Engagement',
-    tagline: 'We manage everything from discovery to support.',
-    description: 'End-to-end partnership—Banua Coder manages the full cycle from scoping and delivery through maintenance.',
+    title: 'Managed Services',
+    tagline: 'Long-term partnership from build to support.',
+    bullets: [
+      'End-to-end from scoping, delivery, to maintenance',
+      'Ideal for organizations without an internal technical team',
+      'One partner for all long-term digital needs',
+    ],
   },
 ]
 ---
@@ -92,18 +113,34 @@ const engagementModels = [
     <!-- SUPERCATEGORY 1: Build & Engineer -->
     <section id="build" aria-labelledby="build-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
-        <div class="mb-10">
+        <div class="mb-12">
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Build & Engineer</p>
           <h2
             id="build-heading"
-            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
             style="font-size: var(--fs-48)"
           >
             Build & Engineer
           </h2>
-          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
-            Websites, mobile apps, operational systems, and engineering support — all built with structures ready to grow.
-          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Behind every growing business is a digital system that actually works. A website that loads fast. An app that doesn't disappoint users when it matters. A dashboard that gives data visibility without requiring manual reports. These aren't luxuries — they're the operational foundation modern businesses need.
+              </p>
+              <p>
+                Banua Coder builds digital products and systems with genuine engineering discipline: structures built to evolve, code that can be maintained, and delivery that's clear step by step. Our founder brings experience from complex product engineering environments — large-scale fintech, international consumer platforms, and public systems — so those standards of thinking show up in every project we take on, regardless of its size.
+              </p>
+            </div>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={buildImg}
+                alt="Engineer at workstation — Banua Coder engineering approach"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Customer-facing -->
@@ -194,18 +231,34 @@ const engagementModels = [
       style="padding-block: var(--spacing-section-y)"
     >
       <Container>
-        <div class="mb-10">
+        <div class="mb-12">
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Brand & Grow</p>
           <h2
             id="grow-heading"
-            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
             style="font-size: var(--fs-48)"
           >
             Brand & Grow
           </h2>
-          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
-            Visual identity, content, and community — so your brand is not just built but recognized and grown.
-          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 order-2 lg:order-1">
+              <Image
+                src={brandImg}
+                alt="Designer working on brand identity — Banua Coder brand and grow"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+              />
+            </div>
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed order-1 lg:order-2" style="font-size: var(--fs-17)">
+              <p>
+                A great product without a strong brand rarely lasts. For F&B, beauty, and SME businesses, visual and digital presence is the primary entry point for new customers. A careless logo, an inconsistent Instagram feed, or no presence at all — these send the wrong signal before your product has a chance to speak for itself.
+              </p>
+              <p>
+                Banua Coder helps businesses build a strong visual identity and a social media presence that actually works. Not just active posting — but structured, consistent, and aligned with brand character. Our design team combines experience in brand identity, product design, and digital content to ensure every customer touchpoint builds trust.
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Design -->
@@ -265,11 +318,14 @@ const engagementModels = [
     <!-- Engagement Models -->
     <section aria-labelledby="engagement-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+          // ENGAGEMENT MODELS
+        </p>
         <SectionHeader
-          eyebrow="ENGAGEMENT"
+          eyebrow=""
           marker="[ ## ]"
-          title="Engagement Models"
-          description="We work with several engagement models depending on your needs and business stage."
+          title="How to work with us"
+          description="We adapt the engagement model to your needs and business stage — not one size for all."
           class="mb-12"
         />
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -282,9 +338,20 @@ const engagementModels = [
                 {model.title}
               </h3>
               <p class="font-mono text-xs text-bnc-accent">{model.tagline}</p>
-              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
-                {model.description}
-              </p>
+              <ul class="list-none m-0 p-0 flex flex-col gap-1.5 flex-1" role="list">
+                {model.bullets.map((bullet) => (
+                  <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="/en/contact/"
+                class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors mt-2 inline-flex items-center gap-1"
+              >
+                Discuss this engagement →
+              </a>
             </Card>
           ))}
         </div>

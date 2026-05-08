@@ -11,6 +11,10 @@ import Testimonial from '../../components/cards/Testimonial.astro'
 import CTA from '../../components/sections/CTA.astro'
 import { team } from '../../data/team'
 import iconImage from '../../assets/brand/banuacoder-icon.png'
+import narrativeImg from '../../assets/stock/clean-workspace-notebook.jpg'
+import processImg from '../../assets/stock/engineer-focused-laptop.jpg'
+{/* narrativeImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
+{/* processImg — unsplash: https://unsplash.com/photos/person-using-macbook-pro-1498050108023-c5249f4df085 by @cgower */}
 
 let enTestimonials: Awaited<ReturnType<typeof getCollection<'testimonials'>>> = []
 try {
@@ -45,6 +49,29 @@ const messagePillars = [
   {
     title: 'Founder-Led Trust',
     body: 'The founder has a strong track record in software engineering, mobile platforms, and product thinking — giving Banua Coder additional trust through the person behind it.',
+  },
+]
+
+const howWeWork = [
+  {
+    step: '01',
+    title: 'Discovery',
+    desc: 'Understanding business context, mapping problems, and identifying priorities. No assumptions — everything starts from an honest conversation.',
+  },
+  {
+    step: '02',
+    title: 'Solution Mapping',
+    desc: 'Defining scope, structuring the solution, and deciding what must be built now versus what can wait.',
+  },
+  {
+    step: '03',
+    title: 'Build',
+    desc: 'Structured, iterative engineering — clients are involved at every cycle, not just handed results at the end.',
+  },
+  {
+    step: '04',
+    title: 'Support',
+    desc: 'Long-term partnership, not just a hand-off. We stay available for maintenance, iteration, and product growth.',
   },
 ]
 ---
@@ -106,29 +133,43 @@ const messagePillars = [
             </h2>
             <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
               <p>
-                Banua Coder is a technology partner that helps businesses and organizations build digital solutions that are more relevant, more structured, and more ready to grow. We work on websites, mobile apps, dashboards, membership systems, and internal operational systems that make business processes more efficient.
+                Banua Coder was founded in 2019 from Central Sulawesi with one straightforward belief: technology should help businesses work better, not just look modern. From the start, we positioned ourselves not as a vendor that makes applications, but as a partner that helps clients map problems and build solutions genuinely relevant to their context.
               </p>
               <p>
-                Our clients include F&B, café, and retail brands wanting to present more professionally and build customer loyalty; beauty and skincare brands strengthening their digital presence; regional governments and public institutions needing citizen-facing apps or internal system modernization; and growing UMKMs and founders building their first digital product or operational system.
+                Our way of working is shaped by engineering — not just in the technical sense, but in how we think. A good engineer doesn't jump straight to code; they ask questions first, understand the existing system, identify the root cause, then design the right solution. That's the approach we bring to every project, from discovery through delivery.
               </p>
               <p>
-                We believe a good digital solution is not just about looking modern. A good solution must help businesses work more cleanly, make decisions faster, and create a better experience for both users and internal teams.
+                Our clients include F&B, café, and retail brands wanting to present more professionally and build customer loyalty; beauty and skincare brands strengthening their digital presence; regional governments and public institutions needing citizen-facing applications or internal system modernization; and growing SMEs and founders building their first digital product or operational system.
               </p>
               <p>
-                Our way of working is shaped by a combination of product thinking, engineering discipline, and experience across different solution contexts — from consumer-facing applications, business operational needs, to public systems and workflows that require a higher level of clarity. Founded in 2019, Banua Coder continues to grow while maintaining work standards oriented toward real outcomes for clients.
+                When we say "partner, not vendor," that's not a slogan. It shows in how we work: we think about the solution together, not just execute a given brief. We ask when something is unclear. We'll flag a better approach when we see one. And we stay available after the product launches.
+              </p>
+              <p>
+                Our roots in Central Sulawesi give us contextual understanding of regional business and organizational needs that many agencies from larger cities don't have. But the engineering and thinking standards we apply are no lower — and that's exactly what we protect.
               </p>
             </div>
           </div>
-          <div
-            class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
-            aria-hidden="true"
-          >
-            <p class="font-mono text-xs text-bnc-accent tracking-wider">// founded 2019</p>
-            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Based in Central Sulawesi, Indonesia</p>
-            <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
-            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Mobile · Web · Dashboard · Operational Systems</p>
-            <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
-            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Design · Social Media</p>
+          <div class="flex flex-col gap-6">
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={narrativeImg}
+                alt="Clean workspace with notebook — Banua Coder story"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 320px"
+              />
+            </div>
+            <div
+              class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+              aria-hidden="true"
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">// founded 2019</p>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Based in Central Sulawesi, Indonesia</p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Mobile · Web · Dashboard · Operational Systems</p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Design · Social Media</p>
+            </div>
           </div>
         </div>
       </Container>
@@ -167,8 +208,61 @@ const messagePillars = [
       </Container>
     </section>
 
+    <!-- How We Work -->
+    <section aria-labelledby="how-we-work-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div>
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+              // HOW WE WORK
+            </p>
+            <h2
+              id="how-we-work-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-8"
+              style="font-size: var(--fs-36)"
+            >
+              A clear process, from start to support
+            </h2>
+            <ol class="list-none m-0 p-0 flex flex-col gap-8" role="list">
+              {howWeWork.map((stage) => (
+                <li class="flex gap-5 items-start">
+                  <span
+                    class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2 border-bnc-accent text-bnc-accent font-mono text-xs font-bold"
+                    aria-hidden="true"
+                  >
+                    {stage.step}
+                  </span>
+                  <div>
+                    <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-17)">
+                      {stage.title}
+                    </p>
+                    <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                      {stage.desc}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 mt-8 lg:mt-16">
+            <Image
+              src={processImg}
+              alt="Engineer working — Banua Coder process"
+              width={600}
+              class="w-full object-cover"
+              style="max-height: 400px"
+            />
+          </div>
+        </div>
+      </Container>
+    </section>
+
     <!-- Team section -->
-    <section aria-labelledby="team-heading" style="padding-block: var(--spacing-section-y)">
+    <section
+      aria-labelledby="team-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
       <Container>
         <SectionHeader
           eyebrow="TEAM"
@@ -320,6 +414,38 @@ const messagePillars = [
         </Container>
       </section>
     )}
+
+    <!-- Why work with us -->
+    <section aria-labelledby="why-us-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // WHY BANUA CODER
+          </p>
+          <h2
+            id="why-us-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-36)"
+          >
+            What sets us apart
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Many agencies can build a website or application. What's harder to find is a partner that genuinely understands your business before touching a keyboard — one that asks questions, respectfully pushes back when something doesn't feel right, and makes sure the solution being built is relevant to the real problem, not just the brief that was written. That's what we try to be for every client.
+            </p>
+            <p>
+              Banua Coder's founder brings cross-context experience rarely found in local software houses: from large-scale fintech platforms, to consumer products for international markets, to regional public sector systems. That experience isn't something we display for show — it's what ensures the thinking standards we bring to your project have been tested in more complex environments. Our Central Sulawesi roots give us contextual closeness to regional business and organizational needs, while the broader engineering experience ensures work quality doesn't depend on geography.
+            </p>
+          </div>
+          <a
+            href="/en/contact/"
+            class="inline-flex items-center gap-2 mt-8 font-mono text-sm text-bnc-accent hover:underline underline-offset-4 transition-colors"
+          >
+            Start a conversation with us →
+          </a>
+        </div>
+      </Container>
+    </section>
 
     <!-- CTA -->
     <CTA

@@ -16,10 +16,46 @@ idealFor:
   - Tim yang tidak punya developer internal untuk maintenance rutin
   - Produk yang ingin terus berkembang secara bertahap tanpa rebuild total
   - Organisasi yang butuh SLA dukungan teknis yang jelas dan komunikasi yang transparan
+faq:
+  - q: Apakah Banua Coder bisa maintain sistem yang dibangun developer lain?
+    a: Ya. Kami mulai dengan technical audit untuk memahami sistem yang ada, kemudian menyusun rencana pemeliharaan yang sesuai.
+  - q: Bagaimana SLA dukungan teknis bekerja?
+    a: Kami menetapkan SLA berdasarkan prioritas tiket—dari critical bug yang harus ditangani dalam beberapa jam, hingga improvement biasa yang masuk ke antrian reguler.
+  - q: Apakah ada komitmen minimum untuk retainer maintenance?
+    a: Biasanya minimal 3 bulan untuk engagement yang stabil, tetapi kami bisa mendiskusikan model yang sesuai dengan kebutuhan spesifik Anda.
 order: 3
 locale: id
 ---
 
-Peluncuran bukan akhir dari perjalanan—justru awal dari fase yang lebih panjang. Sistem yang tidak di-maintain akan perlahan jadi beban: bug yang menumpuk, dependencies yang ketinggalan zaman, dan fitur yang tidak berkembang seiring kebutuhan bisnis.
+import { Image } from 'astro:assets'
+import stockImg from '../../../assets/stock/engineer-focused-laptop.jpg'
 
-Banua Coder menyediakan layanan maintenance dan enhancement yang terstruktur, sehingga sistem klien tetap stabil, relevan, dan siap untuk iterasi berikutnya. Kami bekerja dengan SLA yang jelas dan komunikasi yang transparan—bukan sekadar menunggu ada masalah baru.
+## Mengapa ini penting
+
+Peluncuran bukan akhir dari perjalanan—justru awal dari fase yang lebih panjang. Sistem yang tidak di-maintain akan perlahan jadi beban: bug yang menumpuk, dependencies yang ketinggalan zaman, fitur yang tidak berkembang seiring kebutuhan bisnis, dan pada akhirnya pengguna yang mulai kehilangan kepercayaan.
+
+Banyak bisnis menyadari ini terlambat—setelah sistem mulai bermasalah di depan pengguna, atau setelah developer yang awalnya membangunnya sudah tidak bisa dihubungi. Maintenance yang terstruktur mencegah masalah ini sebelum terjadi, dan memastikan sistem terus relevan seiring bisnis tumbuh.
+
+## Yang kami kerjakan
+
+Banua Coder menyediakan layanan maintenance dan enhancement yang terstruktur. Ini mencakup pemantauan proaktif terhadap kondisi sistem, penanganan bug dengan prioritas yang jelas, update dependencies dan security patches secara berkala, serta penambahan fitur incremental yang diarahkan oleh kebutuhan bisnis—bukan oleh keinginan teknis semata.
+
+Kami bekerja dengan SLA yang jelas: klien tahu dalam berapa lama setiap jenis permintaan akan ditangani, dan tidak ada "abu-abu" soal tanggung jawab. Komunikasi juga berlangsung transparan—laporan rutin tentang kondisi sistem, bukan diam sampai ada masalah besar.
+
+<Image
+  src={stockImg}
+  alt="Engineer at laptop — maintenance and system support"
+  width={900}
+  class="rounded-[var(--radius-md)] my-8 w-full object-cover"
+  style="max-height: 420px"
+/>
+
+## Cara kami bekerja
+
+Untuk sistem yang belum pernah kami bangun, kami mulai dengan technical audit: memahami arsitektur yang ada, mengidentifikasi risiko, dan menyusun rencana pemeliharaan yang realistis. Untuk sistem yang kami bangun sendiri, transisi ke mode maintenance berjalan lebih mulus karena kami sudah memahami konteks dan keputusan desain di baliknya.
+
+Setiap bulan, klien menerima laporan kondisi sistem—termasuk apa yang dikerjakan, apa yang dipantau, dan rekomendasi improvement untuk periode berikutnya.
+
+## Cocok untuk
+
+Maintenance dan enhancement paling tepat untuk bisnis yang sudah punya sistem live dan ingin memastikannya tetap berjalan baik, berkembang secara bertahap, dan ada partner teknis yang bisa diandalkan untuk menangani masalah sebelum menjadi krisis.

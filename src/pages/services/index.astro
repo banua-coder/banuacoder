@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
@@ -8,6 +9,10 @@ import SectionHeader from '../../components/typography/SectionHeader.astro'
 import ServiceCard from '../../components/cards/ServiceCard.astro'
 import Card from '../../components/atoms/Card.astro'
 import CTA from '../../components/sections/CTA.astro'
+import buildImg from '../../assets/stock/workspace-code-monitor.jpg'
+import brandImg from '../../assets/stock/designer-sketch-tools.jpg'
+{/* buildImg — unsplash: https://unsplash.com/photos/black-laptop-computer-1517694712202-14dd9538aa97 */}
+{/* brandImg — unsplash: https://unsplash.com/photos/person-holding-pencil-and-stick-note-beside-table-1541462608143-67571c6738dd */}
 
 const allServices = await getCollection('services')
 const idServices = allServices
@@ -26,22 +31,38 @@ const engagementModels = [
   {
     title: 'Project-Based',
     tagline: 'Scope tetap, timeline jelas, harga pasti.',
-    description: 'Cocok untuk website, aplikasi, atau sistem dengan requirement yang sudah didefinisikan dengan baik.',
+    bullets: [
+      'Deliverables dan milestone yang terdefinisi dengan jelas',
+      'Cocok untuk website, aplikasi, atau sistem baru',
+      'Ideal jika requirement sudah cukup jelas di awal',
+    ],
   },
   {
-    title: 'MVP Discovery Sprint',
-    tagline: 'Validasi ide sebelum membangun penuh.',
-    description: 'Workshop singkat 1–2 minggu untuk memetakan problem, solusi, dan scope MVP sebelum development dimulai.',
+    title: 'Discovery Sprint',
+    tagline: 'Validasi dan definisi scope dalam 1–2 minggu.',
+    bullets: [
+      'Sesi terfokus untuk memetakan problem dan solusi',
+      'Menghasilkan scope yang terdokumentasi dan siap build',
+      'Reduce risk sebelum komitmen ke development penuh',
+    ],
   },
   {
     title: 'Retainer Bulanan',
     tagline: 'Kapasitas engineering tersedia setiap bulan.',
-    description: 'Cocok untuk tim yang butuh developer atau designer reguler tanpa harus hire full-time.',
+    bullets: [
+      'Developer atau designer reguler tanpa hire full-time',
+      'Cocok untuk iterasi produk atau marketing rutin',
+      'Fleksibel untuk kebutuhan yang berubah dari bulan ke bulan',
+    ],
   },
   {
-    title: 'Managed Engagement',
-    tagline: 'Kami yang kelola dari discovery sampai support.',
-    description: 'End-to-end partnership—Banua Coder mengelola seluruh siklus mulai dari scoping, delivery, hingga maintenance.',
+    title: 'Managed Services',
+    tagline: 'Long-term partnership dari build sampai support.',
+    bullets: [
+      'End-to-end dari scoping, delivery, hingga maintenance',
+      'Cocok untuk organisasi tanpa tim teknis internal',
+      'Satu partner untuk semua kebutuhan digital jangka panjang',
+    ],
   },
 ]
 ---
@@ -92,18 +113,34 @@ const engagementModels = [
     <!-- SUPERCATEGORY 1: Build & Engineer -->
     <section id="build" aria-labelledby="build-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
-        <div class="mb-10">
+        <div class="mb-12">
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Build & Engineer</p>
           <h2
             id="build-heading"
-            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
             style="font-size: var(--fs-48)"
           >
             Build & Engineer
           </h2>
-          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
-            Website, aplikasi mobile, sistem operasional, dan dukungan engineering—semua dibangun dengan struktur yang siap tumbuh.
-          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Di balik setiap bisnis yang tumbuh ada sistem digital yang bekerja dengan benar. Website yang memuat cepat. Aplikasi yang tidak mengecewakan pengguna saat dipakai. Dashboard yang memberi visibilitas data tanpa perlu meminta laporan manual. Ini bukan fitur mewah—ini adalah fondasi operasional yang bisnis modern butuhkan.
+              </p>
+              <p>
+                Banua Coder membangun produk dan sistem digital dengan engineering discipline yang sesungguhnya: struktur yang siap dikembangkan, kode yang bisa di-maintain, dan delivery yang jelas tahap demi tahap. Founder kami membawa pengalaman dari lingkungan product engineering yang kompleks—fintech skala besar, platform consumer internasional, dan sistem publik—sehingga standar berpikir itu tercermin di setiap proyek yang kami kerjakan, terlepas dari ukurannya.
+              </p>
+            </div>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={buildImg}
+                alt="Engineer at workstation — Banua Coder engineering approach"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Customer-facing -->
@@ -194,18 +231,34 @@ const engagementModels = [
       style="padding-block: var(--spacing-section-y)"
     >
       <Container>
-        <div class="mb-10">
+        <div class="mb-12">
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Brand & Grow</p>
           <h2
             id="grow-heading"
-            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
             style="font-size: var(--fs-48)"
           >
             Brand & Grow
           </h2>
-          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
-            Identitas visual, konten, dan komunitas—supaya brand Anda tidak hanya dibangun, tetapi juga dikenal dan berkembang.
-          </p>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 order-2 lg:order-1">
+              <Image
+                src={brandImg}
+                alt="Designer working on brand identity — Banua Coder brand and grow"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+              />
+            </div>
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed order-1 lg:order-2" style="font-size: var(--fs-17)">
+              <p>
+                Produk yang baik tanpa brand yang kuat jarang bertahan lama. Untuk bisnis F&B, kecantikan, dan UMKM, kehadiran visual dan digital adalah pintu masuk utama bagi pelanggan baru. Logo yang asal-asalan, feed Instagram yang tidak konsisten, atau tidak ada presence sama sekali—semua ini memberi sinyal yang salah sebelum produk Anda sempat berbicara sendiri.
+              </p>
+              <p>
+                Banua Coder membantu bisnis membangun identitas visual yang kuat dan kehadiran media sosial yang benar-benar bekerja. Bukan sekadar aktif posting—tetapi terstruktur, konsisten, dan selaras dengan karakter brand. Tim desain kami menggabungkan pengalaman di brand identity, product design, dan konten digital untuk memastikan setiap touchpoint memperkuat kepercayaan pelanggan.
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Design -->
@@ -265,11 +318,14 @@ const engagementModels = [
     <!-- Engagement Models -->
     <section aria-labelledby="engagement-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+          // ENGAGEMENT MODELS
+        </p>
         <SectionHeader
-          eyebrow="ENGAGEMENT"
+          eyebrow=""
           marker="[ ## ]"
-          title="Model Keterlibatan"
-          description="Kami bekerja dengan beberapa model keterlibatan tergantung kebutuhan dan tahap bisnis Anda."
+          title="Cara bekerja sama dengan kami"
+          description="Kami menyesuaikan model keterlibatan dengan kebutuhan dan tahap bisnis Anda—bukan satu ukuran untuk semua."
           class="mb-12"
         />
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -282,9 +338,20 @@ const engagementModels = [
                 {model.title}
               </h3>
               <p class="font-mono text-xs text-bnc-accent">{model.tagline}</p>
-              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
-                {model.description}
-              </p>
+              <ul class="list-none m-0 p-0 flex flex-col gap-1.5 flex-1" role="list">
+                {model.bullets.map((bullet) => (
+                  <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="/contact/"
+                class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors mt-2 inline-flex items-center gap-1"
+              >
+                Diskusikan model ini →
+              </a>
             </Card>
           ))}
         </div>
