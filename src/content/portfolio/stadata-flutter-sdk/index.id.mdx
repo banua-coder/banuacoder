@@ -1,0 +1,80 @@
+---
+title: stadata Flutter SDK
+slug: stadata-flutter-sdk
+bucket: engineering
+client: Badan Pusat Statistik
+year: 2023
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Flutter SDK yang menyediakan akses idiomatis dan type-safe ke Web API BPS Statistics untuk
+  aplikasi Flutter dan Dart. SDK ini memungkinkan developer mengonsumsi data statistik resmi
+  Indonesia — dari data inflasi, ketenagakerjaan, hingga demografi — dengan API yang bersih
+  dan terdokumentasi tanpa perlu memahami detail endpoint HTTP BPS.
+problem: >
+  BPS Statistics Web API menyediakan akses ke data statistik resmi Indonesia yang sangat
+  berharga bagi berbagai aplikasi, dari riset akademik hingga aplikasi data publik. Namun
+  mengkonsumsi API ini secara langsung dari Flutter memerlukan boilerplate yang signifikan:
+  penanganan HTTP, parsing JSON, error handling, dan pemahaman mendalam tentang struktur
+  endpoint BPS. Developer yang ingin menggunakan data BPS membutuhkan abstraksi yang
+  lebih ergonomis.
+solution: >
+  Banua Coder membangun stadata Flutter SDK sebagai library Dart/Flutter yang membungkus
+  BPS Statistics Web API dengan interface yang idiomatic untuk ekosistem Flutter. SDK
+  menyediakan typed models untuk semua entitas data BPS, method yang mengekspresikan
+  intent secara jelas, error handling yang konsisten, dan dokumentasi lengkap. Developer
+  cukup menginisialisasi SDK dengan API key mereka dan langsung memanggil method seperti
+  `stadata.list.strategicIndicators()` atau `stadata.view.publication()` — tanpa perlu
+  memikirkan HTTP atau JSON parsing.
+impact:
+  - SDK tersedia di pub.dev untuk ekosistem Flutter/Dart Indonesia
+  - Developer dapat mengintegrasikan data statistik resmi BPS dalam hitungan menit
+  - Type-safe API mengurangi runtime errors dalam konsumsi data
+  - Kontribusi open-source yang memperkuat ekosistem Flutter Indonesia
+stack:
+  - Flutter
+  - Dart
+  - REST API
+  - pub.dev
+links:
+  github: https://github.com/ryanaidilp/stadata_flutter_sdk
+featured: false
+order: 115
+locale: id
+---
+
+## Konteks
+
+stadata Flutter SDK adalah library open-source yang memudahkan developer Flutter dan Dart
+untuk mengakses data statistik resmi Indonesia dari Badan Pusat Statistik. Data BPS mencakup
+ribuan indikator statistik — dari PDB, inflasi, ketenagakerjaan, kemiskinan, hingga data
+demografis per wilayah — yang semuanya tersedia melalui BPS Statistics Web API.
+
+Namun bagi developer yang ingin memanfaatkan data ini dalam aplikasi mereka, berurusan
+langsung dengan HTTP endpoint BPS memerlukan effort yang tidak kecil. stadata SDK hadir
+untuk menghilangkan friction itu dan membuat data statistik resmi Indonesia lebih mudah
+diakses oleh seluruh ekosistem Flutter.
+
+## Yang Kami Bangun
+
+SDK dirancang dengan pendekatan developer-first: setiap keputusan API mengutamakan
+kemudahan penggunaan dan prediktabilitas:
+
+- **Typed data models**: Seluruh entitas data BPS (domain, variabel, publikasi, indikator
+  strategis, dll.) direpresentasikan sebagai Dart class yang strongly typed, menghilangkan
+  kebutuhan parsing manual dan memungkinkan IDE autocomplete yang penuh.
+- **Expressive method API**: Method yang mengekspresikan intent secara eksplisit —
+  `stadata.list.domains()`, `stadata.view.staticTable()` — sehingga kode yang menggunakan
+  SDK mudah dibaca dan dipahami.
+- **Consistent error handling**: Error dari API maupun network ditangkap dan dikonversi
+  ke typed exceptions yang memudahkan developer menangani skenario gagal dengan tepat.
+- **Dokumentasi lengkap**: Setiap class dan method terdokumentasi dengan DartDoc,
+  disertai contoh penggunaan dan panduan quickstart.
+
+## Dampak
+
+stadata Flutter SDK dipublikasikan di pub.dev dan dapat digunakan oleh seluruh ekosistem
+Flutter Indonesia. Ini adalah contoh kontribusi open-source yang memiliki nilai nyata:
+membuat data statistik resmi pemerintah Indonesia lebih mudah diintegrasikan ke dalam
+produk-produk digital yang dibangun oleh developer Indonesia maupun internasional.
