@@ -25,7 +25,13 @@ export const clients: Client[] = [
     name: 'Pemerintah Provinsi Sulawesi Tengah',
     logo: 'pemprov-sulteng.svg',
     tier: 'featured',
-    context: 'Public information platform (PICO Sulteng)',
+    context: 'Public information platform (PICO Sulteng) and internal correspondence (Surat BMPR)',
+  },
+  {
+    name: 'Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah',
+    logo: 'dinas-bmpr-sulteng.svg',
+    tier: 'standard',
+    context: 'Mobile letter-disposition system (Surat BMPR)',
   },
   {
     name: 'Pemerintah Kabupaten Gowa',
