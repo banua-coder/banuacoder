@@ -1,0 +1,25 @@
+---
+/**
+ * LangSwitcher — toggles between current-locale URL and alt-locale URL.
+ * Reads Astro.currentLocale. Navigates to /en/... or strips /en prefix.
+ */
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+const currentPath = Astro.url.pathname
+
+// Compute target path
+const targetPath = isEn
+  ? currentPath.replace(/^\/en/, '') || '/'
+  : `/en${currentPath === '/' ? '' : currentPath}`
+
+const targetLabel = isEn ? 'ID' : 'EN'
+---
+
+<a
+  href={targetPath}
+  class="font-mono text-xs font-medium tracking-widest px-2.5 py-1.5 rounded-[var(--radius-sm)] border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-600 dark:text-bnc-stone-400 hover:border-bnc-primary hover:text-bnc-primary dark:hover:border-bnc-accent dark:hover:text-bnc-accent transition-colors"
+  aria-label={`Switch to ${targetLabel === 'EN' ? 'English' : 'Indonesian'}`}
+  hreflang={targetLabel.toLowerCase()}
+>
+  {targetLabel}
+</a>
