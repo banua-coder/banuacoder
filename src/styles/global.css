@@ -4,12 +4,17 @@
 @import "tailwindcss";
 
 @theme {
+  /* neutral foundation — dominates the page */
   --color-bnc-ink: #0A0E14;
   --color-bnc-paper: #F7F7F4;
-  --color-bnc-accent: #E8FF5A;
-  --color-bnc-accent-fg: #0A0E14;
 
-  /* warm stone scale */
+  /* brand colors — used as accent only, sourced from the official logo */
+  --color-bnc-primary: #12398C;
+  --color-bnc-primary-fg: #FFFFFF;
+  --color-bnc-accent: #1D9CD4;
+  --color-bnc-accent-fg: #FFFFFF;
+
+  /* warm stone scale (warm gray) */
   --color-bnc-stone-50: #FAFAF9;
   --color-bnc-stone-100: #F5F5F4;
   --color-bnc-stone-200: #E7E5E4;
