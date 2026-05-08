@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import MobileDrawer from '../../components/layout/MobileDrawer.astro'
+import Container from '../../components/layout/Container.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import Card from '../../components/atoms/Card.astro'
+import EstimatorWizard from '../../components/sections/EstimatorWizard.astro'
+
+// Load all EN-locale portfolio entries (fallback to ID if EN missing)
+const allPortfolio = await getCollection('portfolio')
+const enPortfolio = allPortfolio.filter((p) => p.data.locale === 'en')
+const idPortfolio = allPortfolio.filter((p) => p.data.locale === 'id')
+
+// Prefer EN, fallback to ID
+const slugsSeen = new Set<string>()
+const portfolioMap: Record<
+  string,
+  { title: string; client: string; year: number; bucket: string; summary: string }
+> = {}
+
+for (const entry of [...enPortfolio, ...idPortfolio]) {
+  const slug = entry.data.slug
+  if (slugsSeen.has(slug)) continue
+  slugsSeen.add(slug)
+  portfolioMap[slug] = {
+    title: entry.data.title,
+    client: entry.data.client,
+    year: entry.data.year,
+    bucket: entry.data.bucket,
+    summary: entry.data.summary,
+  }
+}
+
+const portfolioJson = JSON.stringify(portfolioMap)
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Project Cost Estimator — Banua Coder',
+  description:
+    'Get an initial cost range for your mobile app, web dashboard, website, or internal system in 7 steps.',
+  step: [
+    { '@type': 'HowToStep', name: 'Choose project type', text: 'Mobile App, Web Dashboard, Website, Internal System, or Hybrid.' },
+    { '@type': 'HowToStep', name: 'Choose scale', text: 'MVP, Standard, or Platform.' },
+    { '@type': 'HowToStep', name: 'Define users', text: 'Internal, public, or mixed.' },
+    { '@type': 'HowToStep', name: 'Select critical features', text: 'Auth, payments, realtime, push, and more.' },
+    { '@type': 'HowToStep', name: 'Choose design level', text: 'Template, custom UX/UI, or design system.' },
+    { '@type': 'HowToStep', name: 'Choose timeline', text: 'Standard or rush.' },
+    { '@type': 'HowToStep', name: 'Choose maintenance model', text: 'One-time or ongoing engagement.' },
+  ],
+}
+---
+
+<BaseLayout
+  title="Project Cost Estimate — Banua Coder"
+  description="Get an initial cost range for your digital project in 1 minute. Free, no commitment."
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Skip to main content
+  </a>
+
+  <Nav />
+  <MobileDrawer />
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-top: calc(var(--spacing-section-y) + 4rem); padding-bottom: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="ESTIMATE"
+          title="Project estimate"
+          description="Get an initial cost range in 1 minute. This estimate is not a final quotation — a discovery session will determine the actual scope and price."
+          class="mb-6"
+        />
+
+        <!-- Design/social route note -->
+        <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-500 italic">
+          Looking for an estimate on design or social media?{' '}
+          <a
+            href="/en/contact/"
+            class="text-bnc-accent underline-offset-4 hover:underline not-italic"
+          >
+            Talk to us →
+          </a>
+        </p>
+      </Container>
+    </section>
+
+    <!-- Wizard -->
+    <section style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <Card padding="lg" noHover class="max-w-3xl mx-auto">
+          <EstimatorWizard locale="en" portfolioJson={portfolioJson} />
+        </Card>
+      </Container>
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
