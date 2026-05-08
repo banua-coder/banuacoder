@@ -1,0 +1,305 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import ServiceCard from '../../components/cards/ServiceCard.astro'
+import Card from '../../components/atoms/Card.astro'
+import CTA from '../../components/sections/CTA.astro'
+
+const allServices = await getCollection('services')
+const idServices = allServices
+  .filter((s) => s.data.locale === 'id')
+  .sort((a, b) => a.data.order - b.data.order)
+
+const byCategory = {
+  'customer-facing': idServices.filter((s) => s.data.category === 'customer-facing'),
+  'internal-ops': idServices.filter((s) => s.data.category === 'internal-ops'),
+  'product-engineering': idServices.filter((s) => s.data.category === 'product-engineering'),
+  'design': idServices.filter((s) => s.data.category === 'design'),
+  'social-media': idServices.filter((s) => s.data.category === 'social-media'),
+}
+
+const engagementModels = [
+  {
+    title: 'Project-Based',
+    tagline: 'Scope tetap, timeline jelas, harga pasti.',
+    description: 'Cocok untuk website, aplikasi, atau sistem dengan requirement yang sudah didefinisikan dengan baik.',
+  },
+  {
+    title: 'MVP Discovery Sprint',
+    tagline: 'Validasi ide sebelum membangun penuh.',
+    description: 'Workshop singkat 1–2 minggu untuk memetakan problem, solusi, dan scope MVP sebelum development dimulai.',
+  },
+  {
+    title: 'Retainer Bulanan',
+    tagline: 'Kapasitas engineering tersedia setiap bulan.',
+    description: 'Cocok untuk tim yang butuh developer atau designer reguler tanpa harus hire full-time.',
+  },
+  {
+    title: 'Managed Engagement',
+    tagline: 'Kami yang kelola dari discovery sampai support.',
+    description: 'End-to-end partnership—Banua Coder mengelola seluruh siklus mulai dari scoping, delivery, hingga maintenance.',
+  },
+]
+---
+
+<BaseLayout
+  title="Layanan — Banua Coder"
+  description="Banua Coder membantu bisnis membangun website, aplikasi mobile, sistem operasional, desain brand, dan social media management."
+>
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="services-hero-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // LAYANAN
+        </p>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ ## ]</span>
+        </div>
+        <h1
+          id="services-hero-heading"
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+          style="font-size: var(--fs-64)"
+        >
+          Layanan
+        </h1>
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+          style="font-size: var(--fs-20); max-width: 60ch"
+        >
+          Dari produk digital customer-facing hingga sistem operasional internal, desain brand, dan social media—Banua Coder membantu bisnis membangun solusi yang relevan dan siap tumbuh.
+        </p>
+      </Container>
+    </section>
+
+    <!-- SUPERCATEGORY 1: Build & Engineer -->
+    <section id="build" aria-labelledby="build-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="mb-10">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Build & Engineer</p>
+          <h2
+            id="build-heading"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            style="font-size: var(--fs-48)"
+          >
+            Build & Engineer
+          </h2>
+          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
+            Website, aplikasi mobile, sistem operasional, dan dukungan engineering—semua dibangun dengan struktur yang siap tumbuh.
+          </p>
+        </div>
+
+        <!-- Customer-facing -->
+        {byCategory['customer-facing'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Customer-Facing Products
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Website, aplikasi mobile, portal, dan membership experience untuk bisnis yang ingin hadir lebih profesional secara digital.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['customer-facing'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Internal ops -->
+        {byCategory['internal-ops'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Internal Operational Systems
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Dashboard, admin panel, approval workflow, dan sistem internal yang merapikan operasional bisnis.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['internal-ops'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Product engineering -->
+        {byCategory['product-engineering'].length > 0 && (
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Product Engineering & Support
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Discovery, MVP, modernisasi, dan dukungan engineering jangka panjang untuk produk digital yang siap berkembang.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['product-engineering'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    </section>
+
+    <!-- SUPERCATEGORY 2: Brand & Grow -->
+    <section
+      id="grow"
+      aria-labelledby="grow-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <div class="mb-10">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Brand & Grow</p>
+          <h2
+            id="grow-heading"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-3"
+            style="font-size: var(--fs-48)"
+          >
+            Brand & Grow
+          </h2>
+          <p class="text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17); max-width: 60ch">
+            Identitas visual, konten, dan komunitas—supaya brand Anda tidak hanya dibangun, tetapi juga dikenal dan berkembang.
+          </p>
+        </div>
+
+        <!-- Design -->
+        {byCategory['design'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Design
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              UI/UX design, logo, brand identity, dan materi marketing—semuanya dengan pendekatan visual yang konsisten dan purposeful.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['design'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Social media -->
+        {byCategory['social-media'].length > 0 && (
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Social Media
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Strategi, konten, dan community management untuk membangun audiens yang relevan dan terukur.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['social-media'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    </section>
+
+    <!-- Engagement Models -->
+    <section aria-labelledby="engagement-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <SectionHeader
+          eyebrow="ENGAGEMENT"
+          marker="[ ## ]"
+          title="Model Keterlibatan"
+          description="Kami bekerja dengan beberapa model keterlibatan tergantung kebutuhan dan tahap bisnis Anda."
+          class="mb-12"
+        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {engagementModels.map((model) => (
+            <Card padding="lg" class="flex flex-col gap-3">
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-20)"
+              >
+                {model.title}
+              </h3>
+              <p class="font-mono text-xs text-bnc-accent">{model.tagline}</p>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                {model.description}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </section>
+
+    <!-- CTA -->
+    <CTA
+      headline="Siap mendiskusikan kebutuhan Anda?"
+      sub="Mari petakan solusi yang paling realistis untuk bisnis Anda saat ini."
+      primaryCta="Jadwalkan Diskusi"
+      primaryHref="/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>
