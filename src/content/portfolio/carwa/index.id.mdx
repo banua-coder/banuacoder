@@ -5,8 +5,8 @@ bucket: consumer
 client: Ulearna Technology LTD
 year: 2024
 status: maintained
-cover: ./cover.svg
-thumbnail: ./thumbnail.svg
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
 summary: >
   Aplikasi lelang mobil digital untuk pasar UAE yang membantu pengguna membeli dan menawar
   mobil bekas secara real-time. Dikembangkan untuk Ulearna Technology LTD (Dubai, UAE),
@@ -41,6 +41,12 @@ order: 20
 locale: id
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+
 ## Konteks
 
 Carwa adalah platform lelang mobil digital yang dikembangkan oleh Ulearna Technology LTD,
@@ -64,6 +70,13 @@ Aplikasi mobile Carwa dibangun menggunakan Flutter dengan pendekatan fitur-per-d
   kemenangan atau kekalahan lelang.
 - **Galeri unit**: Tampilan foto kondisi kendaraan yang bisa di-zoom untuk membantu
   keputusan pembelian.
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Tampilan listing lelang Carwa dengan kartu kendaraan" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Detail unit dan tampilan sesi lelang Carwa" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Alur penawaran Carwa dengan countdown timer" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Listing unit lelang Carwa dengan filter pencarian" class="rounded-lg w-full" />
+</div>
 
 ## Dampak
 

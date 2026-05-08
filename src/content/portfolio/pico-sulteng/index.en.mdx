@@ -5,8 +5,8 @@ bucket: public-sector
 client: Pemerintah Provinsi Sulawesi Tengah
 year: 2021
 status: archived
-cover: ./cover.svg
-thumbnail: ./thumbnail.svg
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
 summary: >
   A COVID-19 information platform for Central Sulawesi Province covering a mobile app,
   web portal, and REST API. Built during the pandemic to help residents and government
@@ -40,6 +40,15 @@ order: 60
 locale: en
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+import shot5 from './screenshots/screenshot-5.webp'
+import shot6 from './screenshots/screenshot-6.webp'
+import shot7 from './screenshots/screenshot-7.webp'
+
 ## Context
 
 PICO Sulteng (Platform Informasi COVID-19 Sulawesi Tengah) was built in 2021 when the
@@ -68,6 +77,16 @@ PICO Sulteng consists of three components:
 **3. Web Portal**
 - Web version accessible from a browser without downloading an app
 - Shares the same data as the mobile app via the API
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="PICO Sulteng COVID-19 statistics dashboard" class="rounded-lg w-full" />
+  <Image src={shot2} alt="PICO Sulteng district/city case view" class="rounded-lg w-full" />
+  <Image src={shot3} alt="PICO Sulteng health protocol guidelines" class="rounded-lg w-full" />
+  <Image src={shot4} alt="PICO Sulteng regional case distribution map" class="rounded-lg w-full" />
+  <Image src={shot5} alt="PICO Sulteng healthcare facility directory" class="rounded-lg w-full" />
+  <Image src={shot6} alt="PICO Sulteng statistics with data charts" class="rounded-lg w-full" />
+  <Image src={shot7} alt="PICO Sulteng updated app interface (2024)" class="rounded-lg w-full" />
+</div>
 
 ## Impact
 

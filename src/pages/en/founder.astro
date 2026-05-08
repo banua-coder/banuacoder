@@ -7,6 +7,10 @@ import Container from '../../components/layout/Container.astro'
 import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
 import CTA from '../../components/sections/CTA.astro'
 import iconImage from '../../assets/brand/banuacoder-icon.png'
+import workImg1 from '../../assets/founder/work-product/work-1.webp'
+import workImg2 from '../../assets/founder/work-product/work-2.webp'
+import workImg3 from '../../assets/founder/work-product/work-3.webp'
+import workImg4 from '../../assets/founder/work-product/work-4.webp'
 
 const credibilityBullets = [
   'Background in software engineering and digital product development',
@@ -168,6 +172,48 @@ const personSchema = {
           // Selected background
         </h2>
         <FounderExperienceStrip />
+      </Container>
+    </section>
+
+    <!-- Selected work product (redacted) -->
+    <section
+      aria-labelledby="work-product-heading"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // SELECTED WORK PRODUCT
+        </p>
+        <h2
+          id="work-product-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-3"
+          style="font-size: var(--fs-28)"
+        >
+          Field experience, redacted
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-8 max-w-2xl" style="font-size: var(--fs-17)">
+          Snapshots of technical work from prior engagements. Product and brand details redacted to respect confidentiality.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          {[
+            { src: workImg1, alt: "Mobile financial app — light mode portfolio screen" },
+            { src: workImg2, alt: "Mobile financial app — dark mode screen" },
+            { src: workImg3, alt: "Mobile app — complex feature flow with dark theme" },
+            { src: workImg4, alt: "Mobile app — side-by-side dark mode comparison" },
+          ].map(({ src, alt }) => (
+            <div class="border border-dashed border-bnc-stone-400 dark:border-bnc-stone-600 rounded-[var(--radius-sm)] overflow-hidden shrink-0">
+              <Image
+                src={src}
+                alt={alt}
+                width={160}
+                class="block opacity-85 grayscale-[20%]"
+              />
+            </div>
+          ))}
+        </div>
+        <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600 mt-4">
+          Not shown: product or specific client names
+        </p>
       </Container>
     </section>
 
