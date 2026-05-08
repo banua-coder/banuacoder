@@ -4,20 +4,77 @@ import '../styles/global.css'
 interface Props {
   title: string
   description?: string
+  ogImage?: string
 }
 
-const { title, description = 'Banua Coder — Technology partner for websites, apps, and operational systems.' } = Astro.props
+const {
+  title,
+  description = 'Banua Coder — Technology partner for websites, apps, and operational systems.',
+  ogImage = '/og-default.png',
+} = Astro.props
+
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+
+// Build alternate hreflang URLs
+const currentPath = Astro.url.pathname
+const idPath = isEn ? currentPath.replace(/^\/en/, '') || '/' : currentPath
+const enPath = isEn ? currentPath : `/en${currentPath === '/' ? '' : currentPath}`
+const idUrl = new URL(idPath, Astro.site).href
+const enUrl = new URL(enPath, Astro.site).href
 ---
 
 <!doctype html>
-<html lang={Astro.currentLocale ?? 'id'}>
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme color — deep blue works on light and dark OS chrome -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F7F4" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0A0E14" />
+
+    <!-- hreflang alternate links -->
+    <link rel="alternate" hreflang="id" href={idUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={idUrl} />
+
+    <!-- OpenGraph basics -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />
+
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- Page-specific head content (meta, structured data, etc.) -->
+    <slot name="head" />
+
+    <!-- FOUC prevention: read localStorage.theme before first paint -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else if (stored === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <slot />

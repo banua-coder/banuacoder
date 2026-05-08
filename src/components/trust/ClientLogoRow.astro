@@ -1,0 +1,53 @@
+---
+/**
+ * ClientLogoRow — grayscale row, color-on-hover.
+ * Imports from src/data/clients.ts.
+ * Uses named-text fallback (mono uppercase company name in a thin border box)
+ * when SVG logo files are missing.
+ */
+import { clients } from '../../data/clients'
+
+interface Props {
+  class?: string
+}
+
+const { class: cls = '' } = Astro.props
+---
+
+<ul
+  class:list={[
+    'list-none m-0 p-0',
+    'flex flex-wrap items-center gap-6',
+    cls,
+  ]}
+  role="list"
+  aria-label="Clients and partners"
+>
+  {clients.map((client) => (
+    <li>
+      {client.url ? (
+        <a
+          href={client.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="client-logo-item block px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]"
+          aria-label={client.name}
+        >
+          <!-- Text fallback — replace inner span with <img> when SVG is available -->
+          <span class="font-mono text-xs font-medium uppercase tracking-widest text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
+            {client.name}
+          </span>
+        </a>
+      ) : (
+        <div
+          class="client-logo-item block px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]"
+          aria-label={client.name}
+        >
+          <span class="font-mono text-xs font-medium uppercase tracking-widest text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
+            {client.name}
+          </span>
+        </div>
+      )}
+    </li>
+  ))}
+</ul>

@@ -1,0 +1,103 @@
+---
+/**
+ * BucketFilter — segmented control: All / Consumer / Public Sector / Operational.
+ * Filters elements with data-bucket attribute via classList show/hide.
+ * Updates URL hash for shareable filtered views.
+ */
+interface Props {
+  /** Label text for locale */
+  labels?: {
+    all: string
+    consumer: string
+    public: string
+    operational: string
+  }
+  /** Extra CSS classes */
+  class?: string
+}
+
+const {
+  labels = {
+    all: 'All',
+    consumer: 'Consumer',
+    public: 'Public Sector',
+    operational: 'Operational',
+  },
+  class: cls = '',
+} = Astro.props
+
+const filters = [
+  { id: 'all', label: labels.all },
+  { id: 'consumer', label: labels.consumer },
+  { id: 'public-sector', label: labels.public },
+  { id: 'operational', label: labels.operational },
+]
+---
+
+<div
+  role="group"
+  aria-label="Filter by category"
+  class:list={['flex flex-wrap gap-2', cls]}
+  id="bucket-filter"
+>
+  {filters.map((f) => (
+    <button
+      type="button"
+      data-filter={f.id}
+      class:list={[
+        'bucket-filter-btn',
+        'font-mono text-xs px-4 py-2 rounded-[var(--radius-sm)]',
+        'border transition-all duration-[var(--duration-base)]',
+        'border-bnc-stone-300 dark:border-bnc-stone-700',
+        'text-bnc-stone-600 dark:text-bnc-stone-400',
+        'hover:border-bnc-primary hover:text-bnc-primary',
+        'dark:hover:border-bnc-accent dark:hover:text-bnc-accent',
+        f.id === 'all' ? 'is-active !border-bnc-primary !text-bnc-primary dark:!border-bnc-accent dark:!text-bnc-accent' : '',
+      ]}
+      aria-pressed={f.id === 'all' ? 'true' : 'false'}
+    >
+      {f.id === 'all' ? '' : '// '}{f.label}
+    </button>
+  ))}
+</div>
+
+<script>
+  const filterGroup = document.getElementById('bucket-filter');
+  if (!filterGroup) throw new Error('BucketFilter: #bucket-filter not found');
+
+  const buttons = filterGroup.querySelectorAll<HTMLButtonElement>('.bucket-filter-btn');
+
+  function applyFilter(filterId: string) {
+    // Update buttons
+    buttons.forEach((btn) => {
+      const active = btn.dataset.filter === filterId;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      if (active) {
+        btn.classList.add('!border-bnc-primary', '!text-bnc-primary');
+      } else {
+        btn.classList.remove('!border-bnc-primary', '!text-bnc-primary');
+      }
+    });
+
+    // Filter [data-bucket] elements
+    const items = document.querySelectorAll<HTMLElement>('[data-bucket]');
+    items.forEach((item) => {
+      const bucket = item.dataset.bucket ?? '';
+      const visible = filterId === 'all' || bucket === filterId;
+      item.style.display = visible ? '' : 'none';
+    });
+
+    // Update URL hash
+    const hash = filterId === 'all' ? '' : `#${filterId}`;
+    history.replaceState(null, '', window.location.pathname + hash);
+  }
+
+  // Init from hash
+  const initialHash = window.location.hash.replace('#', '') || 'all';
+  applyFilter(initialHash);
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter ?? 'all'));
+  });
+</script>

@@ -1,0 +1,110 @@
+---
+/**
+ * Footer — 3-col on desktop, stacked on mobile.
+ * Col 1: icon mark + tagline + copyright.
+ * Col 2: site map links.
+ * Col 3: social links.
+ */
+import Logo from '../brand/Logo.astro'
+
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+const prefix = isEn ? '/en' : ''
+const year = new Date().getFullYear()
+
+const siteLinks = isEn
+  ? [
+      { href: `${prefix}/services/`, label: 'Services' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'About' },
+      { href: `${prefix}/founder/`, label: 'Founder' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Contact' },
+    ]
+  : [
+      { href: `${prefix}/services/`, label: 'Layanan' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'Tentang' },
+      { href: `${prefix}/founder/`, label: 'Founder' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Kontak' },
+    ]
+
+const socials = [
+  { href: 'https://linkedin.com/company/banuacoder', label: 'LinkedIn', icon: 'li' },
+  { href: 'https://github.com/banuacoder', label: 'GitHub', icon: 'gh' },
+  { href: 'https://instagram.com/banuacoder', label: 'Instagram', icon: 'ig' },
+  { href: 'https://medium.com/@banuacoder', label: 'Medium', icon: 'md' },
+  { href: 'https://youtube.com/@banuacoder', label: 'YouTube', icon: 'yt' },
+]
+---
+
+<footer
+  class="border-t border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-ink mt-auto"
+  aria-label="Site footer"
+>
+  <div
+    class="mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"
+    style="max-width: var(--container-max)"
+  >
+    <!-- Mono micro-label -->
+    <p class="font-mono text-xs text-bnc-stone-400 tracking-widest uppercase mb-10">
+      // banua coder
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
+      <!-- Col 1: Brand -->
+      <div class="flex flex-col gap-4">
+        <Logo variant="icon" width={40} />
+        <p class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed max-w-[22ch]">
+          {isEn
+            ? 'Engineering-led technology partner for businesses and organizations.'
+            : 'Partner teknologi berbasis engineering untuk bisnis dan organisasi.'}
+        </p>
+        <p class="text-xs font-mono text-bnc-stone-400">
+          &copy; {year} Banua Coder
+        </p>
+      </div>
+
+      <!-- Col 2: Site map -->
+      <nav aria-label="Footer site map">
+        <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
+          {isEn ? '// Site' : '// Situs'}
+        </p>
+        <ul class="list-none m-0 p-0 flex flex-col gap-2" role="list">
+          {siteLinks.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <!-- Col 3: Socials -->
+      <div>
+        <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
+          // Social
+        </p>
+        <ul class="list-none m-0 p-0 flex flex-col gap-2" role="list">
+          {socials.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

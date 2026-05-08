@@ -1,0 +1,205 @@
+---
+/**
+ * DeviceFrame — wraps content in a CSS-drawn phone, tablet, or desktop chrome.
+ * Variants: phone, tablet, desktop.
+ * Modifier: blurred — applies blur + grayscale to slot content (for NDA case studies).
+ * Pure CSS chrome — no images.
+ */
+interface Props {
+  variant?: 'phone' | 'tablet' | 'desktop'
+  /** Apply blur + grayscale to slot content (NDA redaction) */
+  blurred?: boolean
+  class?: string
+}
+
+const { variant = 'phone', blurred = false, class: cls = '' } = Astro.props
+---
+
+{variant === 'phone' && (
+  <div
+    class:list={['device-frame device-phone', cls]}
+    role="img"
+    aria-label="Phone device frame"
+  >
+    <!-- Notch -->
+    <div class="device-notch" aria-hidden="true"></div>
+    <!-- Screen -->
+    <div class:list={['device-screen', blurred && 'device-blurred']}>
+      <slot />
+    </div>
+    <!-- Home indicator -->
+    <div class="device-home" aria-hidden="true"></div>
+  </div>
+)}
+
+{variant === 'tablet' && (
+  <div
+    class:list={['device-frame device-tablet', cls]}
+    role="img"
+    aria-label="Tablet device frame"
+  >
+    <!-- Camera -->
+    <div class="device-camera" aria-hidden="true"></div>
+    <!-- Screen -->
+    <div class:list={['device-screen', blurred && 'device-blurred']}>
+      <slot />
+    </div>
+    <!-- Home button -->
+    <div class="device-home-btn" aria-hidden="true"></div>
+  </div>
+)}
+
+{variant === 'desktop' && (
+  <div
+    class:list={['device-frame device-desktop', cls]}
+    role="img"
+    aria-label="Desktop device frame"
+  >
+    <!-- Browser chrome bar -->
+    <div class="device-chrome" aria-hidden="true">
+      <span class="device-dot device-dot-red"></span>
+      <span class="device-dot device-dot-yellow"></span>
+      <span class="device-dot device-dot-green"></span>
+      <span class="device-address-bar"></span>
+    </div>
+    <!-- Screen -->
+    <div class:list={['device-screen', blurred && 'device-blurred']}>
+      <slot />
+    </div>
+  </div>
+)}
+
+<style>
+  /* ---- Shared ---- */
+  .device-frame {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    background: var(--color-bnc-stone-800);
+    box-shadow: var(--shadow-elevated), inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  .device-screen {
+    flex: 1;
+    overflow: hidden;
+    background: var(--color-bnc-stone-100);
+    border-radius: calc(var(--radius-lg) - 4px);
+  }
+
+  .device-blurred .device-screen,
+  .device-screen.device-blurred {
+    filter: blur(8px) grayscale(1);
+  }
+
+  /* ---- Phone ---- */
+  .device-phone {
+    width: 240px;
+    padding: 14px 10px;
+    gap: 0;
+    border-radius: 36px;
+    align-items: center;
+  }
+
+  .device-phone .device-screen {
+    width: 100%;
+    min-height: 420px;
+    border-radius: 24px;
+  }
+
+  .device-notch {
+    width: 80px;
+    height: 20px;
+    background: var(--color-bnc-stone-700);
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+
+  .device-home {
+    width: 80px;
+    height: 4px;
+    background: var(--color-bnc-stone-600);
+    border-radius: 2px;
+    margin-top: 10px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Tablet ---- */
+  .device-tablet {
+    width: 340px;
+    padding: 20px 14px;
+    border-radius: 28px;
+    align-items: center;
+    gap: 0;
+    flex-direction: row;
+  }
+
+  .device-camera {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-bnc-stone-600);
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .device-tablet .device-screen {
+    flex: 1;
+    min-height: 240px;
+    border-radius: 8px;
+  }
+
+  .device-home-btn {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-bnc-stone-600);
+    border: 1px solid var(--color-bnc-stone-500);
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Desktop ---- */
+  .device-desktop {
+    width: 100%;
+    max-width: 600px;
+    border-radius: var(--radius-md);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .device-chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--color-bnc-stone-700);
+    flex-shrink: 0;
+  }
+
+  .device-dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .device-dot-red { background: #ff5f57; }
+  .device-dot-yellow { background: #febc2e; }
+  .device-dot-green { background: #28c840; }
+
+  .device-address-bar {
+    flex: 1;
+    height: 16px;
+    background: var(--color-bnc-stone-600);
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+
+  .device-desktop .device-screen {
+    width: 100%;
+    min-height: 320px;
+    border-radius: 0;
+  }
+</style>

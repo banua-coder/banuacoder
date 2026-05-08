@@ -1,0 +1,98 @@
+---
+/**
+ * Hero — full-width hero section with asymmetric type layout.
+ * Includes dot-grid backdrop, eyebrow, title, subtitle, dual CTAs, and optional media slot.
+ */
+import DotGridBackdrop from './DotGridBackdrop.astro'
+import Button from '../atoms/Button.astro'
+import MonoLabel from '../typography/MonoLabel.astro'
+
+interface Props {
+  /** Mono eyebrow label */
+  eyebrow?: string
+  /** Main headline */
+  title: string
+  /** Supporting subtitle */
+  subtitle?: string
+  /** Primary CTA text */
+  primaryCta?: string
+  /** Primary CTA href */
+  primaryHref?: string
+  /** Secondary CTA text */
+  secondaryCta?: string
+  /** Secondary CTA href */
+  secondaryHref?: string
+  class?: string
+}
+
+const {
+  eyebrow,
+  title,
+  subtitle,
+  primaryCta,
+  primaryHref = '#',
+  secondaryCta,
+  secondaryHref = '#',
+  class: cls = '',
+} = Astro.props
+---
+
+<section
+  class:list={['relative overflow-hidden', cls]}
+  style="padding-block: var(--spacing-section-y)"
+  aria-label="Hero"
+>
+  <DotGridBackdrop />
+
+  <!-- Cyan hairline accent divider -->
+  <div
+    class="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-bnc-accent to-transparent opacity-60"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    class="relative z-10 mx-auto px-4 sm:px-6 lg:px-8"
+    style="max-width: var(--container-max)"
+  >
+    <div class="max-w-3xl">
+      {eyebrow && <MonoLabel class="mb-4 block">{eyebrow}</MonoLabel>}
+
+      <h1
+        class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-[1.1] mb-6"
+        style="font-size: var(--fs-84)"
+      >
+        {title}
+      </h1>
+
+      {subtitle && (
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-10"
+          style="font-size: var(--fs-20); max-width: 56ch"
+        >
+          {subtitle}
+        </p>
+      )}
+
+      <!-- CTAs -->
+      {(primaryCta || secondaryCta) && (
+        <div class="flex flex-wrap gap-4 items-center">
+          {primaryCta && (
+            <Button href={primaryHref} size="lg" variant="primary">
+              {primaryCta}
+            </Button>
+          )}
+          {secondaryCta && (
+            <Button href={secondaryHref} size="lg" variant="ghost">
+              {secondaryCta} →
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+
+    <!-- Optional media slot (device frames, mockups, etc.) -->
+    <div class="mt-16 lg:mt-20">
+      <slot name="media" />
+    </div>
+  </div>
+</section>

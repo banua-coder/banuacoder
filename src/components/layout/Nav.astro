@@ -1,0 +1,115 @@
+---
+/**
+ * Nav — sticky top navigation.
+ * Left: horizontal logo (switches to icon-only on mobile).
+ * Right: nav links, language switcher, theme toggle, mobile drawer trigger.
+ * Translucent paper bg with blur on scroll.
+ */
+import Logo from '../brand/Logo.astro'
+import LangSwitcher from '../interactive/LangSwitcher.astro'
+import ThemeToggle from '../interactive/ThemeToggle.astro'
+
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+const prefix = isEn ? '/en' : ''
+
+const navLinks = isEn
+  ? [
+      { href: `${prefix}/services/`, label: 'Services' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'About' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Contact' },
+    ]
+  : [
+      { href: `${prefix}/services/`, label: 'Layanan' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'Tentang' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Kontak' },
+    ]
+---
+
+<header
+  id="site-nav"
+  class="fixed top-0 left-0 right-0 z-50 transition-all"
+  style="background: transparent"
+>
+  <nav
+    aria-label="Site navigation"
+    class="mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16"
+    style="max-width: var(--container-max)"
+  >
+    <!-- Logo -->
+    <a href={isEn ? '/en/' : '/'} class="flex items-center gap-2 shrink-0" aria-label="Banua Coder home">
+      <span class="hidden sm:block">
+        <Logo variant="horizontal" width={160} />
+      </span>
+      <span class="sm:hidden">
+        <Logo variant="icon" width={36} />
+      </span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0" role="list">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="relative text-sm font-medium text-bnc-ink dark:text-bnc-paper transition-colors hover:text-bnc-primary dark:hover:text-bnc-accent group"
+          >
+            {link.label}
+            <span
+              class="absolute -bottom-0.5 left-0 h-px w-0 bg-bnc-accent transition-all duration-[var(--duration-base)] group-hover:w-full"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Right cluster: lang switcher + theme toggle + mobile hamburger -->
+    <div class="flex items-center gap-2">
+      <LangSwitcher />
+      <ThemeToggle />
+
+      <!-- Mobile hamburger -->
+      <button
+        id="nav-hamburger"
+        type="button"
+        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-md transition-colors hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+      >
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Nav scroll blur effect -->
+<script>
+  const nav = document.getElementById('site-nav');
+  if (nav) {
+    const update = () => {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+      if (window.scrollY > 8) {
+        nav.style.background = isDark
+          ? 'color-mix(in srgb, #0A0E14 85%, transparent)'
+          : 'color-mix(in srgb, #F7F7F4 85%, transparent)';
+        nav.style.backdropFilter = 'blur(12px)';
+        nav.style.borderBottom = '1px solid var(--color-bnc-stone-200)';
+      } else {
+        nav.style.background = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = 'none';
+      }
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>

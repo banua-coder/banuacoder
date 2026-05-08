@@ -15,6 +15,11 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
     fallback: { en: 'id' },
   },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/dev/'),
+    }),
+  ],
   vite: { plugins: [/** @type {any} */ (tailwindcss())] },
 })

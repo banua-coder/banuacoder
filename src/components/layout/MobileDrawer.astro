@@ -1,0 +1,155 @@
+---
+/**
+ * MobileDrawer — slide-in panel from right.
+ * Triggered by hamburger in Nav. Closes on Esc, backdrop click, or link click.
+ * Traps focus while open. ARIA dialog role.
+ */
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+const prefix = isEn ? '/en' : ''
+
+const navLinks = isEn
+  ? [
+      { href: `${prefix}/services/`, label: 'Services' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'About' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Contact' },
+    ]
+  : [
+      { href: `${prefix}/services/`, label: 'Layanan' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'Tentang' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/contact/`, label: 'Kontak' },
+    ]
+---
+
+<!-- Backdrop -->
+<div
+  id="drawer-backdrop"
+  class="fixed inset-0 z-[60] bg-bnc-ink/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-[var(--duration-base)]"
+  aria-hidden="true"
+></div>
+
+<!-- Drawer panel -->
+<div
+  id="mobile-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Navigation menu"
+  class="fixed top-0 right-0 bottom-0 z-[70] w-72 flex flex-col bg-bnc-paper dark:bg-bnc-ink shadow-[var(--shadow-elevated)] translate-x-full transition-transform duration-[var(--duration-base)] ease-in-out"
+  tabindex="-1"
+>
+  <!-- Drawer header -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+    <span class="font-mono text-xs text-bnc-stone-500 tracking-widest uppercase">
+      // menu
+    </span>
+    <button
+      id="drawer-close"
+      type="button"
+      class="flex items-center justify-center w-8 h-8 rounded-md text-bnc-ink dark:text-bnc-paper hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800 transition-colors"
+      aria-label="Close navigation menu"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Nav links -->
+  <nav aria-label="Mobile navigation" class="flex-1 overflow-y-auto px-6 py-6">
+    <ul class="list-none m-0 p-0 flex flex-col gap-1" role="list">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="drawer-link flex items-center py-3 text-lg font-medium text-bnc-ink dark:text-bnc-paper border-b border-bnc-stone-200 dark:border-bnc-stone-800 transition-colors hover:text-bnc-primary dark:hover:text-bnc-accent"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <!-- Drawer footer -->
+  <div class="px-6 py-4 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
+    <p class="font-mono text-xs text-bnc-stone-400 tracking-wider">
+      // banua coder
+    </p>
+  </div>
+</div>
+
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const drawer = document.getElementById('mobile-drawer');
+  const backdrop = document.getElementById('drawer-backdrop');
+  const closeBtn = document.getElementById('drawer-close');
+
+  if (!hamburger || !drawer || !backdrop) throw new Error('Drawer elements missing');
+
+  function getFocusableElements() {
+    return Array.from(
+      drawer!.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    );
+  }
+
+  function openDrawer() {
+    drawer!.classList.remove('translate-x-full');
+    backdrop!.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop!.classList.add('opacity-100');
+    hamburger!.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    // Focus first focusable element
+    const first = getFocusableElements()[0];
+    if (first) setTimeout(() => first.focus(), 50);
+  }
+
+  function closeDrawer() {
+    drawer!.classList.add('translate-x-full');
+    backdrop!.classList.add('opacity-0', 'pointer-events-none');
+    backdrop!.classList.remove('opacity-100');
+    hamburger!.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    hamburger!.focus();
+  }
+
+  hamburger.addEventListener('click', openDrawer);
+  closeBtn?.addEventListener('click', closeDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+
+  // Close on Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && hamburger!.getAttribute('aria-expanded') === 'true') {
+      closeDrawer();
+    }
+  });
+
+  // Close on drawer link click
+  drawer.querySelectorAll('.drawer-link').forEach((link) => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  // Focus trap
+  drawer.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = getFocusableElements();
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+</script>
