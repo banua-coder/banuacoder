@@ -5,8 +5,8 @@ bucket: public-sector
 client: Pemerintah Provinsi Sulawesi Tengah
 year: 2021
 status: archived
-cover: ./cover.svg
-thumbnail: ./thumbnail.svg
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
 summary: >
   Platform informasi COVID-19 untuk Provinsi Sulawesi Tengah yang mencakup aplikasi mobile,
   web, dan REST API. Dibangun pada masa pandemi untuk membantu masyarakat dan pemerintah
@@ -39,6 +39,15 @@ order: 60
 locale: id
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+import shot5 from './screenshots/screenshot-5.webp'
+import shot6 from './screenshots/screenshot-6.webp'
+import shot7 from './screenshots/screenshot-7.webp'
+
 ## Konteks
 
 PICO Sulteng (Platform Informasi COVID-19 Sulawesi Tengah) dibangun pada 2021 saat pandemi
@@ -68,6 +77,16 @@ PICO Sulteng terdiri dari tiga komponen:
 **3. Web Portal**
 - Versi web yang bisa diakses dari browser tanpa mengunduh aplikasi
 - Berbagi data yang sama dengan mobile app melalui API
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Dashboard statistik COVID-19 PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Tampilan kasus per kabupaten/kota PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Panduan protokol kesehatan PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Peta sebaran kasus regional PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Direktori fasilitas kesehatan PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot6} alt="Statistik dengan grafik data PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot7} alt="Tampilan aplikasi PICO Sulteng terbaru (2024)" class="rounded-lg w-full" />
+</div>
 
 ## Dampak
 
