@@ -430,13 +430,21 @@ const orgSchema = {
 
     <!-- ⑩ Final CTA -->
     {cta && (
-      <CTA
-        headline={cta.headline}
-        sub={cta.sub}
-        primaryCta={cta.primaryCta}
-        primaryHref={cta.primaryHref}
-        inverted={true}
-      />
+      <div>
+        <p class="text-center font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 py-4">
+          Tidak yakin biayanya?{' '}
+          <a href="/estimate/" class="text-bnc-accent hover:underline underline-offset-4">
+            Coba kalkulator estimasi →
+          </a>
+        </p>
+        <CTA
+          headline={cta.headline}
+          sub={cta.sub}
+          primaryCta={cta.primaryCta}
+          primaryHref={cta.primaryHref}
+          inverted={true}
+        />
+      </div>
     )}
   </main>
 
