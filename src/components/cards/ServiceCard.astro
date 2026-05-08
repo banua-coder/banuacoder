@@ -4,6 +4,17 @@
  * Hover: cyan underline reveal on title.
  */
 import Card from '../atoms/Card.astro'
+import {
+  AppWindow,
+  LayoutDashboard,
+  PenTool,
+  Wrench,
+  Rocket,
+  Code2,
+  Megaphone,
+  Palette,
+  ArrowRight,
+} from 'lucide-astro'
 
 interface Props {
   title: string
@@ -17,11 +28,23 @@ interface Props {
 const {
   title,
   tagline,
-  icon = '→',
+  icon,
   deliverables = [],
   href = '#',
   class: cls = '',
 } = Astro.props
+
+const iconMap: Record<string, typeof AppWindow> = {
+  'app-window': AppWindow,
+  'layout-dashboard': LayoutDashboard,
+  'pen-tool': PenTool,
+  'wrench': Wrench,
+  'rocket': Rocket,
+  'code-2': Code2,
+  'megaphone': Megaphone,
+  'palette': Palette,
+}
+const IconComponent = icon ? iconMap[icon] ?? ArrowRight : ArrowRight
 
 // Show max 3 bullets
 const bullets = deliverables.slice(0, 3)
@@ -30,10 +53,10 @@ const bullets = deliverables.slice(0, 3)
 <Card class:list={['group flex flex-col gap-4 h-full', cls]}>
   <!-- Icon -->
   <div
-    class="w-10 h-10 flex items-center justify-center rounded-[var(--radius-sm)] bg-bnc-stone-100 dark:bg-bnc-stone-800 text-bnc-primary text-lg font-mono"
+    class="w-10 h-10 flex items-center justify-center rounded-[var(--radius-sm)] bg-bnc-stone-100 dark:bg-bnc-stone-800 text-bnc-primary"
     aria-hidden="true"
   >
-    {icon}
+    <IconComponent size={20} strokeWidth={1.75} />
   </div>
 
   <!-- Title with hover underline -->

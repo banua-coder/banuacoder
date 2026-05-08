@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import { ClientRouter } from 'astro:transitions'
 
 interface Props {
   title: string
@@ -57,6 +58,9 @@ const enUrl = new URL(enPath, Astro.site).href
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
+    <!-- View transitions — Astro built-in fade-slide between routes -->
+    <ClientRouter fallback="animate" />
+
     <!-- Page-specific head content (meta, structured data, etc.) -->
     <slot name="head" />
 
@@ -79,4 +83,20 @@ const enUrl = new URL(enPath, Astro.site).href
   <body>
     <slot />
   </body>
+
+  <script>
+    import { initAnimations } from '../lib/animations'
+
+    let cleanup: (() => void) | null = null
+
+    function boot() {
+      cleanup?.()
+      cleanup = initAnimations()
+    }
+
+    boot()
+
+    // Re-init after Astro view transitions swap
+    document.addEventListener('astro:after-swap', boot)
+  </script>
 </html>

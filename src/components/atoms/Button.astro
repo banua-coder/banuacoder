@@ -76,6 +76,7 @@ const baseClass = [
     class={baseClass}
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
+    data-magnetic={variant === 'primary' ? '' : undefined}
   >
     <slot />
   </a>
@@ -84,6 +85,7 @@ const baseClass = [
     type={type}
     class={baseClass}
     disabled={disabled}
+    data-magnetic={variant === 'primary' ? '' : undefined}
   >
     <slot />
   </button>

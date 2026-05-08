@@ -1,21 +1,21 @@
 ---
 /**
- * DotGridBackdrop — CSS radial-gradient dot grid with optional JS parallax.
- * Respects prefers-reduced-motion by disabling parallax.
+ * DotGridBackdrop — CSS radial-gradient dot grid.
+ * GSAP ScrollTrigger parallax is wired via [data-dot-grid] in animations.ts.
+ * Respects prefers-reduced-motion: parallax disabled automatically via gsap.matchMedia.
  */
 interface Props {
   /** Extra CSS classes on the wrapper */
   class?: string
-  /** Disable parallax (always off for reduced-motion regardless) */
-  noParallax?: boolean
 }
 
-const { class: cls = '', noParallax = false } = Astro.props
+const { class: cls = '' } = Astro.props
 ---
 
 <div
   id="dot-grid-backdrop"
   class:list={['dot-grid-backdrop', cls]}
+  data-dot-grid
   aria-hidden="true"
 ></div>
 
@@ -43,26 +43,3 @@ const { class: cls = '', noParallax = false } = Astro.props
   }
 </style>
 
-{!noParallax && (
-  <script>
-    (function () {
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduced) return;
-
-      const el = document.getElementById('dot-grid-backdrop');
-      if (!el) return;
-
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          requestAnimationFrame(() => {
-            const y = window.scrollY * 0.15;
-            el.style.transform = `translate3d(0, ${y}px, 0)`;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }, { passive: true });
-    })();
-  </script>
-)}

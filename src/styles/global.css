@@ -67,6 +67,28 @@
   --fs-84: clamp(3.5rem, 2.5rem + 5vw, 5.25rem);
 }
 
+/* ── Smooth scroll (respects reduced-motion) ── */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+
+/* ── Link underline reveal (cyan accent) ── */
+.bnc-link-underline {
+  background-image: linear-gradient(to right, var(--color-bnc-accent), var(--color-bnc-accent));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 250ms ease;
+}
+.bnc-link-underline:hover,
+.bnc-link-underline:focus-visible {
+  background-size: 100% 1.5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bnc-link-underline { transition: none; }
+}
+
 @layer base {
   html {
     font-family: var(--font-body);
