@@ -1,5 +1,5 @@
 ---
-title: Ayana Web
+title: Ayana
 slug: ayana
 bucket: consumer
 client: Ayana
@@ -8,32 +8,40 @@ status: live
 cover: ./cover.svg
 thumbnail: ./thumbnail.svg
 summary: >
-  Platform web consumer-facing yang dirancang untuk memberikan pengalaman pengguna yang
-  mulus dan modern. Ayana Web menunjukkan kemampuan Banua Coder dalam membangun antarmuka
-  web berkualitas tinggi yang dapat diakses oleh pengguna umum dengan ekspektasi desain
-  dan performa yang setara dengan produk-produk terkemuka.
+  Aplikasi web consumer-facing untuk pemantauan kehamilan dan tumbuh kembang anak
+  yang dibangun untuk orang tua di Indonesia. Selaras dengan standar Kementerian
+  Kesehatan RI dan Ikatan Dokter Anak Indonesia (IDAI), Ayana membantu orang tua
+  mengikuti perkembangan janin, kebutuhan gizi ibu, milestone bayi, dan kesehatan
+  anak — dalam satu platform digital yang terasa hangat dan mudah digunakan.
 problem: >
-  Membangun platform web consumer-facing membutuhkan keseimbangan yang tepat antara
-  estetika visual yang menarik, performa loading yang cepat, dan pengalaman pengguna yang
-  intuitif di berbagai perangkat dan ukuran layar. Klien membutuhkan platform web yang
-  dapat bersaing secara visual dan fungsional dengan standar consumer web modern —
-  responsif di mobile, cepat di desktop, dan konsisten di semua browser utama.
+  Informasi kehamilan dan tumbuh kembang anak yang tepercaya untuk orang tua
+  Indonesia masih tersebar di banyak sumber, dengan kualitas dan keakuratan yang
+  bervariasi. Orang tua butuh satu platform yang menggabungkan pemantauan
+  perkembangan janin, edukasi gizi, dan pelacakan milestone anak dalam alur yang
+  terstruktur — dengan landasan medis yang kredibel (Kemenkes RI dan IDAI), bukan
+  sekadar kompilasi konten umum. Tantangan teknis dan produk: membangun aplikasi
+  web yang ramah data medis, responsif lintas perangkat, dan terasa intim seperti
+  pendamping orang tua di setiap fase—bukan dashboard klinis yang dingin.
 solution: >
-  Banua Coder mengembangkan Ayana Web sebagai platform web modern dengan pendekatan
-  mobile-first dan perhatian penuh pada detail desain. Implementasi mencakup arsitektur
-  frontend yang modular, optimasi performa untuk Core Web Vitals yang baik, antarmuka
-  yang responsif untuk semua ukuran layar, serta integrasi dengan backend API untuk
-  konten dan fitur dinamis.
+  Banua Coder membangun Ayana sebagai aplikasi web modern dengan stack Laravel 12
+  + Vue 3 + Inertia.js + TypeScript + Tailwind CSS v4. Implementasi mencakup
+  modul pemantauan kehamilan per minggu, kalkulator dan rekomendasi gizi ibu,
+  pelacakan milestone bayi yang selaras dengan kurva Kemenkes RI, perpustakaan
+  konten kesehatan anak yang divalidasi standar IDAI, sistem pengingat untuk
+  kontrol rutin dan vaksinasi, serta antarmuka yang dirancang untuk dipakai
+  keluarga muda dengan tone hangat dan tidak medis-formal.
 impact:
-  - Platform web live dan dapat diakses pengguna umum
-  - Pengalaman pengguna yang konsisten di desktop dan perangkat mobile
-  - Performa web yang dioptimalkan untuk retensi pengguna
-  - Referensi Banua Coder dalam pengembangan consumer web platform
+  - Live dan diakses oleh orang tua di Indonesia sebagai pendamping kehamilan dan tumbuh kembang anak
+  - Pemantauan yang selaras dengan standar Kemenkes RI dan IDAI sebagai landasan medis
+  - Stack modern (Laravel 12 + Vue 3 + Inertia + TypeScript) untuk pengalaman SPA-like di web
+  - Brand identity yang membedakan dari aplikasi kesehatan klinis pada umumnya — hangat, intim, dan mendukung
 stack:
-  - Vue.js
+  - Laravel 12
+  - Vue 3
   - TypeScript
-  - Tailwind CSS
-  - REST API
+  - Inertia.js
+  - Tailwind CSS v4
+  - PHP 8.2+
 featured: false
 order: 35
 locale: id
@@ -41,31 +49,47 @@ locale: id
 
 ## Konteks
 
-Ayana Web adalah platform web consumer-facing yang dikembangkan untuk memberikan pengalaman
-digital yang modern dan mudah digunakan. Di era di mana standar kualitas web consumer terus
-meningkat, sebuah platform tidak hanya perlu bekerja dengan benar — ia perlu terasa cepat,
-intuitif, dan menarik secara visual dari detik pertama pengguna mengaksesnya.
+Ayana adalah aplikasi pendamping kehamilan dan tumbuh kembang anak yang dirancang
+untuk orang tua di Indonesia. Visinya — *"Setiap Detak, Setiap Tumbuh – Selalu
+dekat dengan Ayana"* — menggambarkan apa yang membuat produk ini berbeda dari
+aplikasi kesehatan biasa: bukan sekadar alat tracking, tetapi pendamping yang
+hadir di setiap fase, dari minggu pertama kehamilan hingga milestone tumbuh
+kembang anak.
 
-Proyek ini memberikan Banua Coder kesempatan untuk menunjukkan keahlian dalam pengembangan
-web modern, mulai dari arsitektur frontend hingga optimasi performa dan pengalaman pengguna
-lintas perangkat.
+Yang membuat domain ini menantang: aplikasi parenting/kesehatan yang baik harus
+menyeimbangkan landasan medis yang kredibel dengan tone yang tetap hangat dan
+mudah didekati. Ayana menyandarkan pemantauannya pada standar Kementerian
+Kesehatan RI dan Ikatan Dokter Anak Indonesia (IDAI) — tetapi menyajikannya
+dalam bahasa dan visual yang terasa seperti percakapan dengan teman, bukan
+laporan klinis.
 
 ## Yang Kami Bangun
 
-Platform web Ayana dibangun dengan pendekatan component-driven yang memastikan konsistensi
-visual dan kemudahan pemeliharaan:
+Banua Coder mengembangkan Ayana sebagai aplikasi web modern dengan kombinasi
+Laravel 12 sebagai backend, Vue 3 sebagai frontend, Inertia.js sebagai jembatan
+SPA-like, TypeScript untuk type safety, dan Tailwind CSS v4 untuk sistem desain
+yang konsisten. Modul-modul utama meliputi:
 
-- **Desain responsif**: Antarmuka yang beradaptasi mulus dari tampilan desktop hingga
-  smartphone, memastikan pengalaman yang optimal di setiap ukuran layar.
-- **Performa teroptimasi**: Strategi lazy loading, code splitting, dan optimasi aset
-  untuk memastikan waktu loading yang cepat dan Core Web Vitals yang baik.
-- **Navigasi yang intuitif**: Alur pengguna yang dirancang untuk meminimalkan friction
-  dan memaksimalkan kemudahan penggunaan bagi semua segmen pengguna.
-- **Integrasi konten dinamis**: Koneksi ke backend API untuk konten yang selalu terbaru
-  dan fitur interaktif yang responsif.
+- **Pemantauan kehamilan per minggu**: Update perkembangan janin, gejala umum,
+  dan rekomendasi tindakan, dipetakan ke usia kehamilan ibu.
+- **Gizi dan nutrisi ibu**: Panduan kebutuhan gizi sesuai trimester, dengan
+  rekomendasi makanan yang sesuai konteks Indonesia.
+- **Milestone tumbuh kembang anak**: Pelacakan tinggi, berat, dan milestone
+  perkembangan dengan kurva referensi Kemenkes RI.
+- **Konten kesehatan anak**: Perpustakaan informasi kesehatan yang divalidasi
+  terhadap pedoman IDAI, dengan navigasi yang ramah orang tua awam.
+- **Pengingat rutin**: Notifikasi untuk jadwal kontrol kehamilan, vaksinasi
+  anak, dan pemeriksaan tumbuh kembang.
+- **Brand identity yang hangat**: Palet pink/coral lembut, tipografi Inter, dan
+  micro-interaction yang menjaga tone aplikasi tetap mendukung — bukan klinis.
 
 ## Dampak
 
-Ayana Web berhasil diluncurkan sebagai platform yang dapat diakses pengguna umum.
-Proyek ini memperkuat portofolio Banua Coder di segmen consumer web — melengkapi
-kapabilitas mobile yang sudah mapan dengan keahlian pengembangan platform web modern.
+Ayana hadir sebagai aplikasi yang memenuhi gap di pasar Indonesia: aplikasi
+kehamilan dan parenting berbahasa Indonesia, dengan landasan medis yang kredibel,
+tetapi disampaikan dalam tone yang tidak menakutkan untuk orang tua muda.
+
+Bagi Banua Coder, proyek ini menambah portofolio di domain consumer healthtech
+dengan kompleksitas konten medis yang nyata — bersanding dengan Detexi dan
+Caretaker.id — dan menjadi salah satu referensi terbaik dalam menggabungkan
+domain depth dengan craft produk yang hangat.

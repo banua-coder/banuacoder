@@ -171,5 +171,26 @@ export function initAnimations(): () => void {
     })
   }
 
-  return () => mm.revert()
+  // ── Nav scroll-elevated state ────────────────────────────────────────────
+  // Outside matchMedia: this isn't a motion preference — even reduced-motion
+  // users want the nav to remain readable when content scrolls under it.
+  // Toggles a `is-scrolled` class on [data-nav-scroll] when scrollY > 8.
+  const navEl = document.querySelector<HTMLElement>('[data-nav-scroll]')
+  let lastNavScrolled: boolean | null = null
+  const updateNav = () => {
+    const scrolled = window.scrollY > 8
+    if (scrolled !== lastNavScrolled) {
+      navEl?.classList.toggle('is-scrolled', scrolled)
+      lastNavScrolled = scrolled
+    }
+  }
+  if (navEl) {
+    updateNav()
+    window.addEventListener('scroll', updateNav, { passive: true })
+  }
+
+  return () => {
+    mm.revert()
+    if (navEl) window.removeEventListener('scroll', updateNav)
+  }
 }

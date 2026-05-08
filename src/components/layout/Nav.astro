@@ -34,8 +34,8 @@ const navLinks = isEn
 
 <header
   id="site-nav"
-  class="fixed top-0 left-0 right-0 z-50 transition-all"
-  style="background: transparent"
+  class="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-200 bg-bnc-paper/80 dark:bg-bnc-ink/80 backdrop-blur-md border-b border-transparent"
+  data-nav-scroll
 >
   <nav
     aria-label="Site navigation"
@@ -92,26 +92,16 @@ const navLinks = isEn
   </nav>
 </header>
 
-<!-- Nav scroll blur effect -->
-<script>
-  const nav = document.getElementById('site-nav');
-  if (nav) {
-    const update = () => {
-      const html = document.documentElement;
-      const isDark = html.classList.contains('dark');
-      if (window.scrollY > 8) {
-        nav.style.background = isDark
-          ? 'color-mix(in srgb, #0A0E14 85%, transparent)'
-          : 'color-mix(in srgb, #F7F7F4 85%, transparent)';
-        nav.style.backdropFilter = 'blur(12px)';
-        nav.style.borderBottom = '1px solid var(--color-bnc-stone-200)';
-      } else {
-        nav.style.background = 'transparent';
-        nav.style.backdropFilter = 'none';
-        nav.style.borderBottom = 'none';
-      }
-    };
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+<!-- Nav scroll-elevated state is wired in src/lib/animations.ts via [data-nav-scroll]
+     so it survives Astro view transitions (re-init on astro:after-swap). -->
+<style>
+  /* When scrolled past the top: stronger opacity + visible hairline border */
+  [data-nav-scroll].is-scrolled {
+    background-color: color-mix(in srgb, var(--color-bnc-paper) 92%, transparent);
+    border-bottom-color: var(--color-bnc-stone-200);
   }
-</script>
+  :global(html.dark) [data-nav-scroll].is-scrolled {
+    background-color: color-mix(in srgb, var(--color-bnc-ink) 92%, transparent);
+    border-bottom-color: var(--color-bnc-stone-800);
+  }
+</style>
