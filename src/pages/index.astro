@@ -15,6 +15,9 @@ import FounderExperienceStrip from '../components/founder/FounderExperienceStrip
 import CTA from '../components/sections/CTA.astro'
 import DeviceFrame from '../components/interactive/DeviceFrame.astro'
 import Testimonial from '../components/cards/Testimonial.astro'
+import { Image } from 'astro:assets'
+import heroPico from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import heroCarwa from '../content/portfolio/carwa/screenshots/screenshot-1.webp'
 
 // Load featured portfolio entries for ID locale
 const allPortfolioEntries = await getCollection('portfolio')
@@ -88,47 +91,37 @@ const orgSchema = {
         secondaryCta={hero.secondaryCta}
         secondaryHref={hero.secondaryHref}
       >
-        <div slot="media" class="hero-collage" aria-label="Pratinjau produk digital" role="img">
-          <!-- Phone 1 (center, tallest) -->
-          <div class="collage-device collage-center">
-            <DeviceFrame variant="phone">
-              <div class="mock-screen mock-screen-blue" aria-hidden="true">
-                <div class="mock-bar mock-bar-sm"></div>
-                <div class="mock-card mock-card-accent"></div>
-                <div class="mock-list">
-                  <div class="mock-item"></div>
-                  <div class="mock-item"></div>
-                  <div class="mock-item mock-item-short"></div>
-                </div>
-              </div>
-            </DeviceFrame>
+        <div slot="media" class="hero-stage" aria-label="Pratinjau produk digital" role="img">
+          <!-- Soft brand glow behind shots -->
+          <div class="hero-glow" aria-hidden="true"></div>
+
+          <!-- Secondary screenshot (already framed, smaller, angled, back) -->
+          <div class="hero-shot hero-shot-back">
+            <Image
+              src={heroCarwa}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              class="hero-shot-img"
+            />
           </div>
-          <!-- Phone 2 (left, angled) -->
-          <div class="collage-device collage-left">
-            <DeviceFrame variant="phone">
-              <div class="mock-screen mock-screen-stone" aria-hidden="true">
-                <div class="mock-bar mock-bar-sm"></div>
-                <div class="mock-chart"></div>
-                <div class="mock-list">
-                  <div class="mock-item"></div>
-                  <div class="mock-item mock-item-short"></div>
-                </div>
-              </div>
-            </DeviceFrame>
+
+          <!-- Main screenshot (already framed, front, larger) -->
+          <div class="hero-shot hero-shot-main">
+            <Image
+              src={heroPico}
+              alt="Pratinjau aplikasi PICO Sulteng"
+              widths={[280, 560]}
+              sizes="280px"
+              class="hero-shot-img"
+            />
           </div>
-          <!-- Tablet (right, angled) -->
-          <div class="collage-device collage-right">
-            <DeviceFrame variant="tablet">
-              <div class="mock-screen mock-screen-stone" aria-hidden="true">
-                <div class="mock-bar mock-bar-sm"></div>
-                <div class="mock-grid">
-                  <div class="mock-tile mock-tile-accent"></div>
-                  <div class="mock-tile"></div>
-                  <div class="mock-tile"></div>
-                  <div class="mock-tile mock-tile-accent"></div>
-                </div>
-              </div>
-            </DeviceFrame>
+
+          <!-- Floating engineering chip -->
+          <div class="hero-chip" aria-hidden="true">
+            <span class="hero-chip-dot"></span>
+            <span class="hero-chip-label">// engineering-led</span>
           </div>
         </div>
       </Hero>
@@ -544,55 +537,120 @@ const orgSchema = {
 </BaseLayout>
 
 <style>
-  /* Hero device collage */
-  .hero-collage {
+  /* ── Hero stage: single focal device + secondary back device + glow + chip ── */
+  .hero-stage {
     position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 0.75rem;
-    min-height: 420px;
-    padding: 1rem 0 0;
+    width: 100%;
+    height: 480px;
+    max-width: 440px;
+    margin-inline: auto;
   }
 
-  .collage-device {
-    transition: transform 0.4s ease;
-    flex-shrink: 0;
+  /* Soft cyan + primary brand glow behind devices */
+  .hero-glow {
+    position: absolute;
+    inset: -40px;
+    background:
+      radial-gradient(60% 50% at 65% 50%, rgba(29, 156, 212, 0.18), transparent 70%),
+      radial-gradient(50% 60% at 35% 60%, rgba(18, 57, 140, 0.15), transparent 70%);
+    filter: blur(20px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  :global(html.dark) .hero-glow {
+    background:
+      radial-gradient(60% 50% at 65% 50%, rgba(29, 156, 212, 0.28), transparent 70%),
+      radial-gradient(50% 60% at 35% 60%, rgba(29, 156, 212, 0.18), transparent 70%);
   }
 
-  .collage-center {
-    position: relative;
-    z-index: 2;
-    transform: translateY(0);
+  /* Screenshots already include device frame in the image — render bare with depth */
+  .hero-shot {
+    position: absolute;
+  }
+  .hero-shot :global(.hero-shot-img) {
+    display: block;
+    height: auto;
+    border-radius: 28px;
   }
 
-  .collage-left {
-    position: relative;
+  /* Main shot — front-right, slightly tilted, real screenshot, big shadow */
+  .hero-shot-main {
+    right: 8%;
+    top: 0;
+    z-index: 3;
+    transform: rotate(-2deg);
+    filter: drop-shadow(0 30px 50px rgba(10, 14, 20, 0.22));
+  }
+  .hero-shot-main :global(.hero-shot-img) {
+    width: 280px;
+  }
+
+  /* Back shot — left, smaller, more tilt, pushed down */
+  .hero-shot-back {
+    left: 0;
+    top: 60px;
     z-index: 1;
-    transform: rotate(-7deg) translate(0.5rem, 1.5rem);
-    opacity: 0.85;
+    transform: rotate(-9deg);
+    transform-origin: top left;
+    opacity: 0.9;
+    filter: drop-shadow(0 20px 30px rgba(10, 14, 20, 0.18));
+  }
+  .hero-shot-back :global(.hero-shot-img) {
+    width: 200px;
   }
 
-  .collage-right {
-    position: relative;
-    z-index: 1;
-    transform: rotate(5deg) translate(-0.5rem, 1.25rem);
-    opacity: 0.85;
+  /* Floating engineering chip — bottom-left of device main, like Linear's micro-decorations */
+  .hero-chip {
+    position: absolute;
+    z-index: 4;
+    bottom: 32px;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--color-bnc-paper);
+    border: 1px solid var(--color-bnc-stone-200);
+    box-shadow: var(--shadow-elevated, 0 6px 20px rgba(10, 14, 20, 0.08));
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-bnc-stone-700);
+    transform: rotate(-3deg);
+  }
+  :global(html.dark) .hero-chip {
+    background: var(--color-bnc-stone-900);
+    border-color: var(--color-bnc-stone-700);
+    color: var(--color-bnc-stone-300);
+  }
+  .hero-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-bnc-accent);
+    box-shadow: 0 0 0 3px rgba(29, 156, 212, 0.18);
   }
 
+  /* Tablet stage stacking: keep both devices, slightly tighter */
   @media (max-width: 1023px) {
-    /* Below the lg breakpoint the collage is below text — show all 3 in a wider stage */
-    .hero-collage {
-      min-height: 360px;
+    .hero-stage {
+      height: 440px;
+      max-width: 480px;
     }
   }
 
+  /* Mobile: show only main screenshot, centered */
   @media (max-width: 640px) {
-    .hero-collage {
-      min-height: 280px;
+    .hero-stage {
+      height: 380px;
+      max-width: 320px;
     }
-    .collage-left,
-    .collage-right {
+    .hero-shot-main {
+      right: 50%;
+      transform: translateX(50%) rotate(0);
+    }
+    .hero-shot-back,
+    .hero-chip {
       display: none;
     }
   }
