@@ -1,0 +1,41 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono";
+@import "tailwindcss";
+
+@theme {
+  --color-bnc-ink: #0A0E14;
+  --color-bnc-paper: #F7F7F4;
+  --color-bnc-accent: #E8FF5A;
+  --color-bnc-accent-fg: #0A0E14;
+
+  /* warm stone scale */
+  --color-bnc-stone-50: #FAFAF9;
+  --color-bnc-stone-100: #F5F5F4;
+  --color-bnc-stone-200: #E7E5E4;
+  --color-bnc-stone-300: #D6D3D1;
+  --color-bnc-stone-400: #A8A29E;
+  --color-bnc-stone-500: #78716C;
+  --color-bnc-stone-600: #57534E;
+  --color-bnc-stone-700: #44403C;
+  --color-bnc-stone-800: #292524;
+  --color-bnc-stone-900: #1C1917;
+
+  /* fonts */
+  --font-display: 'Geist Variable', system-ui, sans-serif;
+  --font-body: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    color: var(--color-bnc-ink);
+    background: var(--color-bnc-paper);
+  }
+
+  html.dark {
+    color: var(--color-bnc-paper);
+    background: var(--color-bnc-ink);
+  }
+}
