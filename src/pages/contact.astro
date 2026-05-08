@@ -95,32 +95,14 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
                 </a>
               </div>
 
-              <!-- Email CTA -->
-              <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 mb-5">
-                <div>
-                  <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
-                    Email
-                  </p>
-                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm">
-                    {contact.email}
-                  </p>
-                </div>
-                <a
-                  href={emailUrl}
-                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius-sm)] bg-transparent border border-bnc-ink dark:border-bnc-stone-400 text-bnc-ink dark:text-bnc-paper font-medium text-sm hover:bg-bnc-ink hover:text-bnc-paper dark:hover:bg-bnc-paper dark:hover:text-bnc-ink transition-colors self-start"
-                >
-                  Kirim email →
-                </a>
-              </div>
-
-              <!-- Discovery call CTA -->
+              <!-- Discovery call CTA (secondary) -->
               <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
                 <div>
                   <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
                     Discovery Call
                   </p>
                   <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
-                    Jadwalkan sesi 30 menit untuk mendiskusikan kebutuhan Anda secara lebih terstruktur.
+                    Ingin jadwal yang lebih terstruktur? Pilih slot 30 menit langsung di kalender kami.
                   </p>
                 </div>
                 <a
@@ -129,8 +111,11 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
                   rel="noopener noreferrer"
                   class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
                 >
-                  Jadwalkan via WhatsApp →
+                  Jadwalkan discovery call →
                 </a>
+                <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600">
+                  atau email: <a href={emailUrl} class="hover:text-bnc-accent transition-colors">{contact.email}</a>
+                </p>
               </div>
             </div>
           </div>
