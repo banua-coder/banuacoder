@@ -1,37 +1,37 @@
 ---
 import { getCollection } from 'astro:content'
-import BaseLayout from '../layouts/BaseLayout.astro'
-import Nav from '../components/layout/Nav.astro'
-import Footer from '../components/layout/Footer.astro'
-import Container from '../components/layout/Container.astro'
-import Hero from '../components/sections/Hero.astro'
-import TrustStrip from '../components/sections/TrustStrip.astro'
-import SectionHeader from '../components/typography/SectionHeader.astro'
-import ServiceCard from '../components/cards/ServiceCard.astro'
-import ProcessStep from '../components/sections/ProcessStep.astro'
-import CaseStudyCard from '../components/cards/CaseStudyCard.astro'
-import FounderCard from '../components/founder/FounderCard.astro'
-import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
-import CTA from '../components/sections/CTA.astro'
-import DeviceFrame from '../components/interactive/DeviceFrame.astro'
-import Testimonial from '../components/cards/Testimonial.astro'
-import iconImg from '../assets/brand/banuacoder-icon.png'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import Hero from '../../components/sections/Hero.astro'
+import TrustStrip from '../../components/sections/TrustStrip.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import ServiceCard from '../../components/cards/ServiceCard.astro'
+import ProcessStep from '../../components/sections/ProcessStep.astro'
+import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
+import FounderCard from '../../components/founder/FounderCard.astro'
+import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
+import CTA from '../../components/sections/CTA.astro'
+import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
+import Testimonial from '../../components/cards/Testimonial.astro'
+import iconImg from '../../assets/brand/banuacoder-icon.png'
 
-// Load home ID copy
+// Load home EN copy
 const allPages = await getCollection('pages')
-// Astro glob loader slugifies filenames: home.id.mdx -> 'homeid', home.en.mdx -> 'homeen'
+// Astro glob loader slugifies filenames: home.en.mdx -> 'homeen'
 const homePage = allPages.find(
-  (p) => p.id === 'homeid' || p.id === 'home.id' || (p.data.locale === 'id' && p.id.startsWith('home')),
+  (p) => p.id === 'homeen' || p.id === 'home.en' || (p.data.locale === 'en' && p.id.startsWith('home')),
 )
-if (!homePage) throw new Error('home ID page entry not found in pages collection')
+if (!homePage) throw new Error('home EN page entry not found in pages collection')
 
 const { hero, trustClaims, about, services, why, process, portfolio, founder, cta } =
   homePage.data
 
-// Load featured testimonials for this locale
+// Featured testimonial (English locale)
 const allTestimonials = await getCollection('testimonials')
 const featuredTestimonial = allTestimonials.find(
-  (t) => t.data.featured && t.data.locale === 'id',
+  (t) => t.data.featured && t.data.locale === 'en',
 )
 
 // JSON-LD Organization schema
@@ -48,10 +48,10 @@ const orgSchema = {
   ],
   foundingDate: '2019',
   description:
-    'Partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan.',
+    'Technology partner helping businesses and organizations build practical digital systems, customer-facing products, and internal operational tools.',
   address: {
     '@type': 'PostalAddress',
-    addressRegion: 'Sulawesi Tengah',
+    addressRegion: 'Central Sulawesi',
     addressCountry: 'ID',
   },
 }
@@ -65,7 +65,7 @@ const orgSchema = {
     href="#main-content"
     class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
   >
-    Lewati ke konten utama
+    Skip to main content
   </a>
 
   <Nav />
@@ -82,7 +82,7 @@ const orgSchema = {
         secondaryCta={hero.secondaryCta}
         secondaryHref={hero.secondaryHref}
       >
-        <div slot="media" class="hero-collage" aria-label="Pratinjau produk digital" role="img">
+        <div slot="media" class="hero-collage" aria-label="Digital product previews" role="img">
           <!-- Phone 1 (center, tallest) -->
           <div class="collage-device collage-center">
             <DeviceFrame variant="phone">
@@ -149,29 +149,29 @@ const orgSchema = {
                 class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
                 style="font-size: var(--fs-36)"
               >
-                Tentang Banua Coder
+                About Banua Coder
               </h2>
               <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-6" style="font-size: var(--fs-17)">
                 {about.body}
               </p>
               <a
-                href="/about/"
+                href="/en/about/"
                 class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
               >
-                Selengkapnya tentang kami →
+                More about us →
               </a>
             </div>
             <div
               class="hidden md:flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
               aria-hidden="true"
             >
-              <p class="font-mono text-xs text-bnc-accent tracking-wider">// didirikan 2019</p>
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">// founded 2019</p>
               <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
-                Berbasis di Sulawesi Tengah
+                Based in Central Sulawesi, Indonesia
               </p>
               <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-2"></div>
               <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
-                Mobile · Web · Dashboard · Sistem Operasional
+                Mobile · Web · Dashboard · Operational Systems
               </p>
             </div>
           </div>
@@ -286,7 +286,7 @@ const orgSchema = {
               description={portfolio.description}
             />
             <a
-              href="/portfolio/"
+              href="/en/portfolio/"
               class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors shrink-0 self-end mb-1 inline-flex items-center gap-1.5"
             >
               {portfolio.viewAllLabel} →
@@ -298,33 +298,33 @@ const orgSchema = {
               client="Ulearna Technology LTD"
               year={2025}
               bucket="consumer"
-              summary="Platform sosial/media consumer-facing yang dipublikasikan untuk pasar internasional, dengan 50 ribu+ unduhan di Google Play."
-              impactStat="50.000+ unduhan · Google Play"
+              summary="Consumer social/media platform published for the international market, with 50,000+ downloads on Google Play."
+              impactStat="50,000+ downloads · Google Play"
               coverSrc={iconImg}
               coverAlt="Reab app"
-              href="/portfolio/reab/"
+              href="/en/portfolio/reab/"
             />
             <CaseStudyCard
               title="Patonro"
-              client="Pemerintah Daerah"
+              client="Regional Government"
               year={2025}
               bucket="public-sector"
-              summary="Aplikasi layanan informasi dan pembayaran pajak/retribusi daerah yang memudahkan masyarakat mengakses tagihan dan riwayat pembayaran."
-              impactStat="Sistem publik · Pembayaran pajak daerah"
+              summary="Regional tax and levy information and payment app that makes it easy for residents to access bills, payment history, and due-date notifications."
+              impactStat="Public system · Regional tax payments"
               coverSrc={iconImg}
               coverAlt="Patonro app"
-              href="/portfolio/patonro/"
+              href="/en/portfolio/patonro/"
             />
             <CaseStudyCard
               title="Caretaker.id"
               client="Caretaker"
               year={2024}
               bucket="consumer"
-              summary="Aplikasi layanan kesehatan yang membantu pengguna mengakses layanan medis, konsultasi jarak jauh, dan fitur layanan lainnya."
+              summary="Healthcare app that helps users access medical services, remote consultations, health articles, and related features in one platform."
               impactStat="Consumer health platform"
               coverSrc={iconImg}
               coverAlt="Caretaker.id app"
-              href="/portfolio/caretaker/"
+              href="/en/portfolio/caretaker/"
             />
           </div>
         </Container>
@@ -361,7 +361,7 @@ const orgSchema = {
             headline={founder.headline}
             narrative={founder.narrative}
             variant="compact"
-            href="/founder/"
+            href="/en/founder/"
             socials={{
               linkedin: 'https://linkedin.com/in/fajrianaidilpratama',
               github: 'https://github.com/fajrianaidilpratama',
@@ -369,13 +369,13 @@ const orgSchema = {
           />
           <div class="mt-8 pt-8 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
             <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 mb-4 tracking-widest uppercase">
-              // Latar belakang terpilih
+              // Selected background
             </p>
             <FounderExperienceStrip />
           </div>
           <div class="mt-6">
             <a
-              href="/founder/"
+              href="/en/founder/"
               class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
             >
               {founder.readMoreLabel} →
@@ -388,7 +388,7 @@ const orgSchema = {
     <!-- ⑨ Featured testimonial (hidden when none exist) -->
     {featuredTestimonial && (
       <section
-        aria-label="Testimoni"
+        aria-label="Testimonial"
         class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y-sm)"
       >
