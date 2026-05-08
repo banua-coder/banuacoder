@@ -1,0 +1,74 @@
+---
+title: FormGear Builder
+slug: form-gear-builder
+bucket: engineering
+client: Badan Pusat Statistik
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  A web-based visual form builder that enables BPS survey designers to create and edit
+  form templates visually through a drag-and-drop interface. Output is a JSON schema directly
+  consumed by FormGear Engine to render on field officers' mobile devices.
+problem: >
+  Creating and modifying BPS survey form templates directly via JSON schema is slow and
+  error-prone, even for technical users. Survey design teams needed a tool that would allow
+  them to build forms visually — without manually writing or editing JSON — while still
+  producing valid output schemas compatible with FormGear Engine.
+solution: >
+  Banua Coder built FormGear Builder as a web application with a drag-and-drop interface
+  for form template design. The platform lets users add, rearrange, and configure form elements
+  (from 30+ control types) visually. Every change on the canvas is converted in real time to a
+  valid JSON schema conforming to FormGear's specification. A preview feature lets survey
+  designers see the final form appearance before it is published to field officers.
+impact:
+  - Form template creation time reduced significantly compared to manual JSON editing
+  - Non-technical survey designers can create and modify forms independently
+  - Exported schemas are guaranteed compatible with FormGear Engine
+  - Critical component in BPS's end-to-end FormGear ecosystem
+stack:
+  - Vue.js
+  - TypeScript
+  - Drag-and-drop
+  - JSON Schema
+links:
+  github: https://github.com/IPDS-59/form-gear-builder
+featured: false
+order: 110
+locale: en
+---
+
+## Context
+
+FormGear Builder is a visual interface built to complement BPS's FormGear ecosystem. If
+FormGear Engine (and its Flutter SDK) is the engine that renders and processes forms in the
+field, Builder is the design studio that allows BPS teams to create those forms without
+touching JSON directly.
+
+Builder and Engine together form a complete loop: design a form visually in the web app →
+export schema → form runs on field officers' mobile devices. Banua Coder was involved at
+both ends of that loop.
+
+## What We Built
+
+FormGear Builder was built as a single-page application focused on usability for survey designers:
+
+- **Drag-and-drop canvas**: A visual workspace where users can add form elements from a left-side
+  palette, reorder them, and arrange the layout intuitively.
+- **Property panel**: A contextual configuration panel that appears when an element is selected,
+  enabling configuration of labels, input types, validation rules, conditional display logic,
+  and other properties.
+- **Real-time schema generation**: Every canvas change automatically updates the JSON schema
+  in the background, ensuring output stays in sync with the visual representation at all times.
+- **Preview mode**: A preview rendering that shows the form exactly as field officers will see
+  it on their mobile devices.
+- **Schema validation**: Automatic validation ensures exported schemas are always valid and
+  compatible with FormGear Engine.
+
+## Impact
+
+FormGear Builder successfully transformed BPS survey template creation from a technical task
+requiring JSON Schema knowledge into a visual activity manageable by survey design teams.
+This is evidence that good developer tooling isn't just for engineers — it's for anyone who
+needs to create something complex.
