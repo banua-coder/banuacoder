@@ -45,12 +45,16 @@ const bucketLabel = {
   consumer: 'Consumer',
   'public-sector': 'Public Sector',
   operational: 'Operational',
+  engineering: 'Engineering',
 }[data.bucket]
 
-const bucketVariant = `bucket-${data.bucket === 'public-sector' ? 'public' : data.bucket}` as
-  | 'bucket-consumer'
-  | 'bucket-public'
-  | 'bucket-operational'
+const bucketVariantMap: Record<string, 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-engineering'> = {
+  consumer: 'bucket-consumer',
+  'public-sector': 'bucket-public',
+  operational: 'bucket-operational',
+  engineering: 'bucket-engineering',
+}
+const bucketVariant = bucketVariantMap[data.bucket] ?? 'bucket-consumer'
 
 const statusLabel = {
   live: 'Live',
