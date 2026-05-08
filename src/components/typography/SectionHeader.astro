@@ -1,0 +1,64 @@
+---
+/**
+ * SectionHeader — section title block with optional eyebrow, marker, and description.
+ * Engineering-led editorial vibe with bracketed numerals and mono micro-labels.
+ */
+interface Props {
+  /** Mono micro-label, e.g. "SERVICES" (// prepended automatically) */
+  eyebrow?: string
+  /** Bracketed numeral marker, e.g. "[ 03 ]" */
+  marker?: string
+  /** Main display headline */
+  title: string
+  /** Optional supporting description */
+  description?: string
+  /** Text alignment */
+  align?: 'left' | 'center'
+  /** Extra CSS classes on the wrapper */
+  class?: string
+}
+
+const {
+  eyebrow,
+  marker,
+  title,
+  description,
+  align = 'left',
+  class: cls = '',
+} = Astro.props
+
+const alignClass = align === 'center' ? 'text-center items-center' : 'text-left items-start'
+---
+
+<div class:list={['flex flex-col gap-3', alignClass, cls]}>
+  {(eyebrow || marker) && (
+    <div class="flex items-center gap-3 flex-wrap">
+      {eyebrow && (
+        <span class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+          // {eyebrow}
+        </span>
+      )}
+      {marker && (
+        <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">
+          {marker}
+        </span>
+      )}
+    </div>
+  )}
+
+  <h2
+    class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight"
+    style="font-size: var(--fs-48)"
+  >
+    {title}
+  </h2>
+
+  {description && (
+    <p
+      class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+      style={`font-size: var(--fs-20); max-width: var(--prose-max)`}
+    >
+      {description}
+    </p>
+  )}
+</div>
