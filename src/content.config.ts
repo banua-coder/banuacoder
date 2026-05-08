@@ -51,7 +51,7 @@ const services = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
-    category: z.enum(['customer-facing', 'internal-ops', 'product-engineering']),
+    category: z.enum(['customer-facing', 'internal-ops', 'product-engineering', 'design', 'social-media']),
     tagline: z.string(),
     icon: z.string(),
     deliverables: z.array(z.string()),
