@@ -1,0 +1,261 @@
+---
+import { Image } from 'astro:assets'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import Container from '../components/layout/Container.astro'
+import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
+import CTA from '../components/sections/CTA.astro'
+import iconImage from '../assets/brand/banuacoder-icon.png'
+
+const credibilityBullets = [
+  'Latar belakang di software engineering dan pengembangan produk digital',
+  'Fokus kuat pada mobile engineering, platform, dan performance',
+  'Pengalaman pada sistem bisnis, workflow publik, dan produk digital lintas konteks',
+  'Pendekatan praktis yang menghubungkan kebutuhan bisnis dengan eksekusi teknis',
+  'Aktif dalam knowledge sharing dan komunitas engineering',
+]
+
+const selectedExperience = [
+  { company: 'GoTo Financial', context: 'Mobile platform engineering — ekosistem fintech skala besar' },
+  { company: 'Reku', context: 'Mobile engineering — aplikasi crypto dan investasi digital' },
+  { company: 'Stockbit / Bibit', context: 'Mobile platform — komunitas investasi dan reksa dana' },
+  { company: 'Ulearna Technology LTD', context: 'International product collaboration — aplikasi consumer-facing untuk market global' },
+  { company: 'Sektor Publik', context: 'Sistem digital publik — aplikasi layanan dan pembayaran daerah' },
+]
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Fajrian Aidil Pratama',
+  jobTitle: 'Founder & Director',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Banua Coder',
+    url: 'https://banuacoder.com',
+  },
+  url: 'https://banuacoder.com/founder/',
+  sameAs: [
+    'https://linkedin.com/in/ryanaidilp',
+    'https://twitter.com/ryanaidilp_',
+  ],
+  description: 'Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development.',
+  knowsAbout: ['Mobile Engineering', 'Flutter', 'Platform Engineering', 'Product Development', 'Digital Systems'],
+}
+---
+
+<BaseLayout
+  title="Fajrian Aidil Pratama — Founder, Banua Coder"
+  description="Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development."
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="founder-hero-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // FOUNDER
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          <!-- Text -->
+          <div>
+            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-2">
+              Founder & Director, Banua Coder
+            </p>
+            <h1
+              id="founder-hero-heading"
+              class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-4"
+              style="font-size: var(--fs-64)"
+            >
+              Fajrian Aidil Pratama
+            </h1>
+            <p
+              class="font-semibold text-bnc-stone-700 dark:text-bnc-stone-300 mb-6"
+              style="font-size: var(--fs-20)"
+            >
+              Dipimpin oleh engineer dengan exposure pada product, platform, dan sistem operasional
+            </p>
+            <div class="flex gap-4 flex-wrap">
+              <a
+                href="https://linkedin.com/in/ryanaidilp"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                LinkedIn →
+              </a>
+              <a
+                href="https://twitter.com/ryanaidilp_"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                X / Twitter →
+              </a>
+            </div>
+          </div>
+          <!-- Photo placeholder -->
+          <div
+            class="flex items-center justify-center rounded-[var(--radius-md)] bg-bnc-stone-100 dark:bg-bnc-stone-800 aspect-[3/4] max-w-xs"
+            aria-label="Foto Fajrian Aidil Pratama — akan diganti dengan foto profesional"
+          >
+            <div class="flex flex-col items-center gap-3">
+              <Image
+                src={iconImage}
+                alt=""
+                width={60}
+                height={60}
+                class="opacity-15"
+                aria-hidden="true"
+              />
+              <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-center px-4">
+                // foto founder
+              </span>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Narrative -->
+    <section aria-labelledby="narrative-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <h2
+            id="narrative-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-28)"
+          >
+            Tentang Fajrian
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Ia adalah software engineer dengan pengalaman di mobile engineering, digital product development, serta platform dan sistem yang berorientasi pada performance. Latar belakang ini membentuk cara Banua Coder bekerja: lebih terstruktur dalam memetakan masalah, lebih kritis dalam merancang solusi, dan lebih disiplin dalam delivery.
+            </p>
+            <p>
+              Dengan exposure pada berbagai konteks—mulai dari sektor publik, bisnis operasional, hingga produk digital untuk pasar yang lebih luas—Fajrian membawa cara berpikir yang menggabungkan engineering depth, product thinking, dan implementasi yang praktis.
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Experience strip -->
+    <section
+      aria-labelledby="experience-strip-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <h2
+          id="experience-strip-heading"
+          class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-6"
+        >
+          // Latar belakang terpilih
+        </h2>
+        <FounderExperienceStrip />
+      </Container>
+    </section>
+
+    <!-- Selected experience + credibility bullets -->
+    <section aria-labelledby="selected-exp-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Experience list -->
+          <div>
+            <h2
+              id="selected-exp-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+              style="font-size: var(--fs-28)"
+            >
+              Pengalaman Terpilih
+            </h2>
+            <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-6 text-sm">
+              Mencakup pengalaman dan exposure pada lingkungan seperti GoTo Financial, Reku, Stockbit/Bibit, sistem digital sektor publik, serta kolaborasi produk internasional.
+            </p>
+            <ul class="list-none m-0 p-0 flex flex-col gap-4" role="list">
+              {selectedExperience.map((exp) => (
+                <li class="flex gap-4 items-start">
+                  <span class="w-8 h-px bg-bnc-accent mt-3 shrink-0" aria-hidden="true"></span>
+                  <div>
+                    <p class="font-semibold text-bnc-ink dark:text-bnc-paper text-sm">{exp.company}</p>
+                    <p class="text-bnc-stone-500 dark:text-bnc-stone-400 text-xs mt-0.5">{exp.context}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Credibility bullets -->
+          <div>
+            <h2
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+              style="font-size: var(--fs-28)"
+            >
+              Sorotan Kredibilitas
+            </h2>
+            <ul class="list-none m-0 p-0 flex flex-col gap-3" role="list">
+              {credibilityBullets.map((bullet) => (
+                <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17)">
+                  <span class="text-bnc-accent mt-1 shrink-0" aria-hidden="true">→</span>
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Currently leading -->
+    <section
+      aria-labelledby="leading-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <h2
+          id="leading-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+          style="font-size: var(--fs-28)"
+        >
+          Saat Ini Memimpin
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-4" style="font-size: var(--fs-17); max-width: 60ch">
+          Fajrian memimpin Banua Coder bersama tim yang solid—mencakup engineering, design, dan delivery. Setiap project yang Anda percayakan kepada Banua Coder mendapat perhatian langsung dari Fajrian pada tahap discovery dan arsitektur solusi.
+        </p>
+        <a
+          href="/about/"
+          class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+        >
+          Kenali seluruh tim →
+        </a>
+      </Container>
+    </section>
+
+    <!-- CTA -->
+    <CTA
+      headline="Jadwalkan percakapan"
+      sub="Diskusikan langsung kebutuhan Anda dengan Fajrian dan tim Banua Coder."
+      primaryCta="Mulai Diskusi"
+      primaryHref="/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>
