@@ -1,0 +1,248 @@
+---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Nav from '../../../components/layout/Nav.astro'
+import Footer from '../../../components/layout/Footer.astro'
+import Container from '../../../components/layout/Container.astro'
+import ServiceCard from '../../../components/cards/ServiceCard.astro'
+import CTA from '../../../components/sections/CTA.astro'
+
+export async function getStaticPaths() {
+  const allServices = await getCollection('services')
+  return allServices
+    .filter((s) => s.data.locale === 'en')
+    .map((svc) => ({
+      params: { slug: svc.data.slug },
+      props: { entry: svc },
+    }))
+}
+
+const { entry } = Astro.props
+const { Content } = await render(entry)
+const { title, tagline, category, deliverables, idealFor, faq } = entry.data
+
+const supercategoryMap: Record<string, { label: string; href: string }> = {
+  'customer-facing': { label: 'Build & Engineer', href: '/en/services/#build' },
+  'internal-ops': { label: 'Build & Engineer', href: '/en/services/#build' },
+  'product-engineering': { label: 'Build & Engineer', href: '/en/services/#build' },
+  'design': { label: 'Brand & Grow', href: '/en/services/#grow' },
+  'social-media': { label: 'Brand & Grow', href: '/en/services/#grow' },
+}
+const categoryLabelMap: Record<string, string> = {
+  'customer-facing': 'Customer-Facing Products',
+  'internal-ops': 'Internal Operational Systems',
+  'product-engineering': 'Product Engineering',
+  'design': 'Design',
+  'social-media': 'Social Media',
+}
+const supercat = supercategoryMap[category]
+const categoryLabel = categoryLabelMap[category]
+
+const allServices = await getCollection('services')
+const related = allServices
+  .filter(
+    (s) =>
+      s.data.locale === 'en' &&
+      s.data.category === category &&
+      s.data.slug !== entry.data.slug,
+  )
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3)
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: title,
+  description: tagline,
+  provider: {
+    '@type': 'Organization',
+    name: 'Banua Coder',
+    url: 'https://banuacoder.com',
+  },
+  url: `https://banuacoder.com/en/services/${entry.data.slug}/`,
+}
+---
+
+<BaseLayout title={`${title} — Banua Coder`} description={tagline}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(serviceSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Skip to main content
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero with breadcrumb -->
+    <section
+      aria-labelledby="service-title"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="mb-6">
+          <ol class="flex flex-wrap items-center gap-1.5 list-none m-0 p-0 font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+            <li>
+              <a href="/en/services/" class="hover:text-bnc-accent transition-colors">Services</a>
+            </li>
+            <li aria-hidden="true">›</li>
+            <li>
+              <a href={supercat.href} class="hover:text-bnc-accent transition-colors">{supercat.label}</a>
+            </li>
+            <li aria-hidden="true">›</li>
+            <li aria-current="page" class="text-bnc-ink dark:text-bnc-paper">{title}</li>
+          </ol>
+        </nav>
+
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-3">{categoryLabel}</p>
+        <h1
+          id="service-title"
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+          style="font-size: var(--fs-64)"
+        >
+          {title}
+        </h1>
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+          style="font-size: var(--fs-20); max-width: 60ch"
+        >
+          {tagline}
+        </p>
+      </Container>
+    </section>
+
+    <!-- Body + sidebar layout -->
+    <section style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <!-- Main body -->
+          <div class="lg:col-span-2">
+            <div class="prose prose-stone dark:prose-invert max-w-none" style="font-size: var(--fs-17)">
+              <Content />
+            </div>
+
+            <!-- FAQ -->
+            {faq && faq.length > 0 && (
+              <div class="mt-12">
+                <h2
+                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+                  style="font-size: var(--fs-28)"
+                >
+                  Frequently Asked Questions
+                </h2>
+                <dl class="flex flex-col gap-6">
+                  {faq.map((item) => (
+                    <div>
+                      <dt class="font-semibold text-bnc-ink dark:text-bnc-paper mb-2" style="font-size: var(--fs-17)">
+                        {item.q}
+                      </dt>
+                      <dd class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+                        {item.a}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+          </div>
+
+          <!-- Sidebar -->
+          <aside class="flex flex-col gap-8">
+            <!-- Deliverables -->
+            <div class="p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900">
+              <h2
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+                style="font-size: var(--fs-20)"
+              >
+                What We Deliver
+              </h2>
+              <ul class="list-none m-0 p-0 flex flex-col gap-2.5" role="list">
+                {deliverables.map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Ideal for -->
+            <div class="p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <h2
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+                style="font-size: var(--fs-20)"
+              >
+                Ideal For
+              </h2>
+              <ul class="list-none m-0 p-0 flex flex-col gap-2.5" role="list">
+                {idealFor.map((item) => (
+                  <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Contact nudge -->
+            <div class="p-6 rounded-[var(--radius-md)] bg-bnc-primary text-white">
+              <p class="font-semibold mb-2" style="font-size: var(--fs-17)">Interested in this service?</p>
+              <p class="text-blue-200 text-sm mb-4">Let us discuss your specific needs.</p>
+              <a
+                href="/en/contact/"
+                class="inline-flex items-center gap-1.5 font-mono text-xs text-white border border-white/40 rounded-[var(--radius-sm)] px-4 py-2 hover:bg-white hover:text-bnc-primary transition-colors"
+              >
+                Contact Us →
+              </a>
+            </div>
+          </aside>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Related services -->
+    {related.length > 0 && (
+      <section
+        aria-labelledby="related-heading"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-t border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container>
+          <h2
+            id="related-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-8"
+            style="font-size: var(--fs-28)"
+          >
+            Related Services
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {related.map((svc) => (
+              <ServiceCard
+                title={svc.data.title}
+                tagline={svc.data.tagline}
+                icon={svc.data.icon}
+                deliverables={svc.data.deliverables}
+                href={`/en/services/${svc.data.slug}/`}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- CTA -->
+    <CTA
+      headline="Ready to get started?"
+      sub="Schedule a discussion and we will map the best solution for your needs."
+      primaryCta="Schedule a Discussion"
+      primaryHref="/en/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>
