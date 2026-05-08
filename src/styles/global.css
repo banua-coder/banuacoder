@@ -3,6 +3,9 @@
 @import "@fontsource/jetbrains-mono";
 @import "tailwindcss";
 
+/* Use class-based dark mode so JS-toggled html.dark controls Tailwind dark: variants */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* neutral foundation — dominates the page */
   --color-bnc-ink: #0A0E14;
