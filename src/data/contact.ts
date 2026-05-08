@@ -1,5 +1,5 @@
 export const contact = {
-  whatsappNumber: '6281200000000', // founder to replace
+  whatsappNumber: '6287784808269',
   whatsappMessages: {
     id: 'Halo Banua Coder, saya tertarik untuk konsultasi mengenai',
     en: "Hi Banua Coder, I'd like to discuss a project —",
