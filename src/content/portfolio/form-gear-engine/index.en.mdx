@@ -1,0 +1,81 @@
+---
+title: FormGear Engine Flutter SDK
+slug: form-gear-engine
+bucket: engineering
+client: Badan Pusat Statistik
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  A Flutter SDK for FormGear — BPS's dynamic form engine that renders JSON schema-based
+  forms on mobile devices. Banua Coder built the Flutter SDK and delivered v2.0 with
+  significant performance improvements and iOS WebKit compatibility fixes — enabling
+  census and survey data collection to run smoothly on both Android and iOS.
+problem: >
+  FormGear is a framework engine developed by BPS for creating and processing complex data
+  collection forms, supporting 30+ input types, nested forms, complex validation, GPS, and
+  photo capture. Bringing all these capabilities to Flutter mobile was non-trivial: high-performance
+  rendering for large forms, WebView behavior differences between Android and iOS, and stability
+  on field devices with limited specs were the core technical challenges to overcome.
+solution: >
+  Banua Coder built the Flutter SDK for FormGear Engine, bridging FormGear (TypeScript/web-based)
+  with native Flutter applications. The SDK integrates an optimized WebView host with bidirectional
+  message bridge communication between the Dart layer and FormGear's JavaScript runtime. The v2.0
+  work specifically included rendering optimizations for forms with many fields, comprehensive iOS
+  WebKit compatibility fixes (viewport, input focus, scroll behavior), and overall stability
+  improvements across diverse field device conditions.
+impact:
+  - SDK is used in BPS's national-scale survey and census data collection applications
+  - v2.0 delivered significant rendering performance improvements for complex forms
+  - iOS WebKit compatibility resolved in v2.0 enabled deployment to Apple devices
+  - Forms with 30+ input types run stably on both Android and iOS devices
+stack:
+  - Flutter
+  - Dart
+  - WebView
+  - iOS WebKit
+  - JavaScript
+  - TypeScript
+links:
+  github: https://github.com/IPDS-59/form_gear_flutter_sdk
+featured: true
+order: 105
+locale: en
+---
+
+## Context
+
+FormGear is a dynamic form engine framework developed by Badan Pusat Statistik to support
+field survey and census data collection. The engine can render complex JSON schema-based forms —
+with over 30 input control types, nested validation logic, GPS, photo capture, and automatic
+calculations — making it BPS's primary tool for digitizing national statistical data collection.
+
+Banua Coder was entrusted with building its Flutter SDK: the layer that enables all of
+FormGear's capabilities to run smoothly inside native Flutter applications on the Android
+and iOS devices used by field officers across Indonesia.
+
+## What We Built
+
+Our Flutter SDK bridges FormGear's web-based runtime with the Flutter ecosystem:
+
+- **Optimized WebView host**: A Flutter shell that manages WebView lifecycle efficiently,
+  ensuring the FormGear engine loads quickly and runs stably even on devices with limited RAM.
+- **Bidirectional message bridge**: Reliable communication between the Dart layer and FormGear's
+  JavaScript runtime, allowing form events, validation, and submission to work seamlessly across
+  both environments without race conditions.
+- **iOS WebKit fixes (v2.0)**: A comprehensive set of fixes for iOS WebKit-specific issues:
+  viewport not responding correctly to keyboard appearance, inconsistent scroll behavior, and
+  focus management on text inputs — all resolved without breaking Android compatibility.
+- **Rendering performance improvements (v2.0)**: Faster startup time and improved rendering
+  for large forms through component lazy loading, smarter prefetch strategies, and more
+  efficient memory management.
+
+## Impact
+
+The FormGear Engine Flutter SDK v2.0 now runs in the data collection applications used by
+BPS field officers in national-scale surveys and census activities. The iOS WebKit fixes in
+v2.0 specifically expanded deployment reach to Apple devices — significant given that a
+portion of BPS field officers use iPhones. This project is pure engineering work demanding
+deep knowledge of WebView internals, iOS vs Android platform differences, and performance
+optimization for real-world field conditions.

@@ -1,0 +1,87 @@
+---
+title: FormGear Engine Flutter SDK
+slug: form-gear-engine
+bucket: engineering
+client: Badan Pusat Statistik
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Flutter SDK untuk FormGear — engine formulir dinamis BPS yang merender form berbasis
+  JSON schema di perangkat mobile. Banua Coder membangun Flutter SDK-nya dan mengerjakan
+  v2.0 dengan peningkatan performa signifikan serta perbaikan kompatibilitas iOS WebKit —
+  memungkinkan pengumpulan data sensus dan survei berjalan mulus di Android dan iOS.
+problem: >
+  FormGear adalah framework engine yang dikembangkan BPS untuk pembuatan dan pemrosesan
+  formulir data collection yang kompleks, mendukung lebih dari 30 jenis input, nested
+  forms, validasi kompleks, GPS, dan foto. Namun menghadirkan semua kapabilitas ini
+  ke platform mobile Flutter bukan pekerjaan mudah: rendering performa tinggi untuk
+  formulir besar, WebView yang berperilaku berbeda antara Android dan iOS, serta
+  stabilitas pada perangkat lapangan yang memiliki spesifikasi terbatas menjadi
+  tantangan teknis utama yang harus diatasi.
+solution: >
+  Banua Coder membangun Flutter SDK untuk FormGear Engine yang menjembatani FormGear
+  (berbasis TypeScript/web) dengan aplikasi Flutter native. SDK mengintegrasikan WebView
+  host yang dioptimalkan dengan komunikasi message bridge dua arah antara Dart dan
+  JavaScript runtime FormGear. Pekerjaan v2.0 secara khusus mencakup optimasi rendering
+  untuk formulir dengan banyak field, perbaikan komprehensif untuk masalah kompatibilitas
+  iOS WebKit (viewport, input focus, scroll behavior), serta peningkatan stabilitas
+  secara keseluruhan pada kondisi perangkat lapangan yang beragam.
+impact:
+  - SDK digunakan di aplikasi pengumpulan data survei dan sensus BPS skala nasional
+  - v2.0 menghadirkan peningkatan performa rendering yang signifikan untuk form kompleks
+  - Kompatibilitas iOS WebKit yang diselesaikan di v2.0 membuka deployment ke perangkat Apple
+  - Formulir dengan 30+ jenis input berjalan stabil di perangkat Android dan iOS
+stack:
+  - Flutter
+  - Dart
+  - WebView
+  - iOS WebKit
+  - JavaScript
+  - TypeScript
+links:
+  github: https://github.com/IPDS-59/form_gear_flutter_sdk
+featured: true
+order: 105
+locale: id
+---
+
+## Konteks
+
+FormGear adalah framework engine form dinamis yang dikembangkan Badan Pusat Statistik untuk
+mendukung pengumpulan data survei dan sensus di lapangan. Engine ini mampu merender formulir
+berbasis JSON schema yang kompleks — dengan lebih dari 30 jenis kontrol input, logika validasi
+bersarang, GPS, foto, dan kalkulasi otomatis — menjadikannya alat utama BPS untuk digitalisasi
+pengumpulan data statistik nasional.
+
+Banua Coder dipercaya untuk membangun Flutter SDK-nya: lapisan yang memungkinkan semua
+kapabilitas FormGear berjalan mulus di dalam aplikasi Flutter native pada perangkat Android
+dan iOS yang digunakan petugas lapangan di seluruh Indonesia.
+
+## Yang Kami Bangun
+
+Flutter SDK kami menjembatani runtime FormGear berbasis web dengan ekosistem Flutter:
+
+- **Optimized WebView host**: Shell Flutter yang mengelola lifecycle WebView dengan
+  efisien, memastikan FormGear engine dimuat dengan cepat dan berjalan stabil bahkan
+  di perangkat dengan RAM terbatas.
+- **Message bridge dua arah**: Komunikasi yang handal antara Dart layer dan JavaScript
+  runtime FormGear, memungkinkan form events, validasi, dan submission berjalan seamlessly
+  di kedua dunia tanpa race condition.
+- **Perbaikan iOS WebKit (v2.0)**: Serangkaian perbaikan komprehensif untuk masalah
+  yang spesifik pada iOS WebKit: viewport yang tidak merespons keyboard dengan benar,
+  scroll behavior yang tidak konsisten, dan focus management pada input text — semua
+  diselesaikan dengan pendekatan yang tidak merusak kompatibilitas Android.
+- **Optimasi performa rendering (v2.0)**: Peningkatan startup time dan rendering
+  form besar melalui lazy loading komponen, strategi prefetch yang lebih cerdas,
+  dan pengelolaan memory yang lebih efisien.
+
+## Dampak
+
+FormGear Engine Flutter SDK v2.0 kini berjalan di aplikasi pengumpulan data yang digunakan
+petugas lapangan BPS dalam survei dan kegiatan sensus skala nasional. Perbaikan iOS WebKit
+di v2.0 secara khusus memperluas jangkauan deployment ke perangkat Apple — signifikan
+mengingat sebagian petugas lapangan BPS menggunakan iPhone. Proyek ini adalah pekerjaan
+engineering murni yang menuntut pemahaman mendalam tentang WebView internals, platform
+mobile perbedaan iOS vs Android, dan optimasi performa untuk kondisi lapangan nyata.
