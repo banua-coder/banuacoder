@@ -1,6 +1,7 @@
 ---
 /**
  * TrustStrip — single-row strip of 4 mono micro-claims.
+ * Numbers within claims animate from 0 → target on first viewport entry.
  * Separated by hairline rules.
  */
 interface Claim {
@@ -13,9 +14,32 @@ interface Props {
 }
 
 const { claims, class: cls = '' } = Astro.props
+
+/**
+ * Parse a claim label to find numeric segments.
+ * Returns parts split as [{text, isNumber, value}]
+ */
+function parseClaim(label: string) {
+  const parts: Array<{ text: string; isNumber: boolean; value?: number }> = []
+  const regex = /(\d+)/g
+  let last = 0
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(label)) !== null) {
+    if (match.index > last) {
+      parts.push({ text: label.slice(last, match.index), isNumber: false })
+    }
+    parts.push({ text: match[0], isNumber: true, value: parseInt(match[0], 10) })
+    last = match.index + match[0].length
+  }
+  if (last < label.length) {
+    parts.push({ text: label.slice(last), isNumber: false })
+  }
+  return parts
+}
 ---
 
 <section
+  id="trust-strip"
   class:list={[
     'border-y border-bnc-stone-200 dark:border-bnc-stone-800',
     'py-5',
@@ -31,19 +55,73 @@ const { claims, class: cls = '' } = Astro.props
       class="list-none m-0 p-0 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-0"
       role="list"
     >
-      {claims.map((claim, i) => (
-        <li class="flex items-center gap-4">
-          <span class="font-mono text-xs tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400 uppercase whitespace-nowrap">
-            // {claim.label}
-          </span>
-          {i < claims.length - 1 && (
-            <span
-              class="hidden md:block w-px h-4 bg-bnc-stone-300 dark:bg-bnc-stone-700"
-              aria-hidden="true"
-            ></span>
-          )}
-        </li>
-      ))}
+      {claims.map((claim, i) => {
+        const parts = parseClaim(claim.label)
+        return (
+          <li class="flex items-center gap-4">
+            <span class="font-mono text-xs tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400 uppercase whitespace-nowrap">
+              // {parts.map((part) =>
+                part.isNumber ? (
+                  <span data-count-to={part.value}>{part.text}</span>
+                ) : (
+                  <span>{part.text}</span>
+                )
+              )}
+            </span>
+            {i < claims.length - 1 && (
+              <span
+                class="hidden md:block w-px h-4 bg-bnc-stone-300 dark:bg-bnc-stone-700"
+                aria-hidden="true"
+              ></span>
+            )}
+          </li>
+        )
+      })}
     </ul>
   </div>
 </section>
+
+<script>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const strip = document.getElementById('trust-strip')
+    if (!strip) return
+
+    const counters = strip.querySelectorAll<HTMLElement>('[data-count-to]')
+    if (!counters.length) return
+
+    function easeOut(t: number): number {
+      return 1 - Math.pow(1 - t, 3)
+    }
+
+    function animateCounter(el: HTMLElement, target: number, duration: number) {
+      const start = performance.now()
+      function tick(now: number) {
+        const elapsed = now - start
+        const progress = Math.min(elapsed / duration, 1)
+        el.textContent = String(Math.round(easeOut(progress) * target))
+        if (progress < 1) requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            counters.forEach((el) => {
+              const target = parseInt(el.dataset.countTo ?? '0', 10)
+              const duration = target >= 1000 ? 1000 : 1200
+              animateCounter(el, target, duration)
+            })
+            observer.disconnect()
+          }
+        })
+      },
+      { threshold: 0.5 },
+    )
+
+    observer.observe(strip)
+  })()
+</script>
