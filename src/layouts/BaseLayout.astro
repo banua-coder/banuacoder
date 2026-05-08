@@ -44,6 +44,13 @@ const enUrl = new URL(enPath, Astro.site).href
     <link rel="alternate" hreflang="en" href={enUrl} />
     <link rel="alternate" hreflang="x-default" href={idUrl} />
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href={Astro.url.href.split('?')[0].split('#')[0]} />
+
+    <!-- OG locale -->
+    <meta property="og:locale" content={isEn ? 'en_US' : 'id_ID'} />
+    <meta property="og:locale:alternate" content={isEn ? 'id_ID' : 'en_US'} />
+
     <!-- OpenGraph basics -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

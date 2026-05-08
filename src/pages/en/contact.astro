@@ -11,7 +11,7 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
 ---
 
 <BaseLayout
-  title="Contact — Banua Coder"
+  title="Contact Banua Coder — Software House, Palu, Central Sulawesi"
   description="Got an idea, a system need, or a business process you want to streamline? Let's discuss what you need with Banua Coder."
 >
   <a
@@ -35,7 +35,7 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
           // CONTACT
         </p>
         <div class="flex items-center gap-3 mb-5">
-          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ ## ]</span>
+          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ 01 ]</span>
         </div>
         <h1
           id="contact-heading"
@@ -95,32 +95,14 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
                 </a>
               </div>
 
-              <!-- Email CTA -->
-              <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 mb-5">
-                <div>
-                  <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
-                    Email
-                  </p>
-                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm">
-                    {contact.email}
-                  </p>
-                </div>
-                <a
-                  href={emailUrl}
-                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius-sm)] bg-transparent border border-bnc-ink dark:border-bnc-stone-400 text-bnc-ink dark:text-bnc-paper font-medium text-sm hover:bg-bnc-ink hover:text-bnc-paper dark:hover:bg-bnc-paper dark:hover:text-bnc-ink transition-colors self-start"
-                >
-                  Send an email →
-                </a>
-              </div>
-
-              <!-- Discovery call CTA -->
+              <!-- Discovery call CTA (secondary) -->
               <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
                 <div>
                   <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
                     Discovery Call
                   </p>
                   <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
-                    Schedule a 30-minute session to discuss your needs in a more structured way.
+                    Prefer a structured slot? Pick a 30-minute window directly in our calendar.
                   </p>
                 </div>
                 <a
@@ -129,8 +111,11 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
                   rel="noopener noreferrer"
                   class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
                 >
-                  Schedule via WhatsApp →
+                  Book a discovery call →
                 </a>
+                <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600">
+                  or email: <a href={emailUrl} class="hover:text-bnc-accent transition-colors">{contact.email}</a>
+                </p>
               </div>
             </div>
           </div>

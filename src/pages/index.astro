@@ -7,6 +7,7 @@ import Footer from '../components/layout/Footer.astro'
 import Container from '../components/layout/Container.astro'
 import Hero from '../components/sections/Hero.astro'
 import TrustStrip from '../components/sections/TrustStrip.astro'
+import ClientLogoRow from '../components/trust/ClientLogoRow.astro'
 import SectionHeader from '../components/typography/SectionHeader.astro'
 import ProcessStep from '../components/sections/ProcessStep.astro'
 import CaseStudyCard from '../components/cards/CaseStudyCard.astro'
@@ -129,6 +130,19 @@ const orgSchema = {
 
     <!-- ② Trust strip -->
     {trustClaims && <TrustStrip claims={trustClaims} />}
+
+    <!-- ②b Client logo row -->
+    <section
+      aria-label="Dipercaya oleh"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800 py-6"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
+          // DIPERCAYA OLEH
+        </p>
+        <ClientLogoRow />
+      </Container>
+    </section>
 
     <!-- ③ About snippet -->
     {about && (
