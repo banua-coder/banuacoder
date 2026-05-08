@@ -85,18 +85,18 @@ const enUrl = new URL(enPath, Astro.site).href
   </body>
 
   <script>
-    import { initScrollReveal } from '../lib/scroll-reveal'
-    import { initMagnetic } from '../lib/magnetic'
+    import { initAnimations } from '../lib/animations'
 
-    function init() {
-      initScrollReveal()
-      initMagnetic()
+    let cleanup: (() => void) | null = null
+
+    function boot() {
+      cleanup?.()
+      cleanup = initAnimations()
     }
 
-    // Initial page load
-    init()
+    boot()
 
     // Re-init after Astro view transitions swap
-    document.addEventListener('astro:after-swap', init)
+    document.addEventListener('astro:after-swap', boot)
   </script>
 </html>
