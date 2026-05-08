@@ -919,7 +919,12 @@ function setState(newState: WizardState, pushHash = true): void {
 
 // ─── Event wiring ─────────────────────────────────────────────────────────
 document.querySelectorAll<HTMLElement>('.wizard-option').forEach((opt) => {
-  opt.addEventListener('click', () => {
+  opt.addEventListener('click', (e) => {
+    // For <label>-based options that wrap a hidden <input>, the browser
+    // fires a synthetic click on the input which bubbles back up to the
+    // label and would re-trigger this handler — toggling the value twice.
+    // Suppressing the default click avoids the double-fire.
+    e.preventDefault()
     setState(handleOptionSelect(opt, state))
   })
 
