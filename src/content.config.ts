@@ -3,7 +3,18 @@ import { glob } from 'astro/loaders'
 import { z } from 'astro/zod'
 
 const portfolio = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/portfolio' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/portfolio',
+    // Use `{slug}.{locale}` as the content collection ID so bilingual entries
+    // (e.g. reab/index.id.mdx and reab/index.en.mdx) are stored as distinct
+    // entries instead of colliding on the frontmatter `slug` field.
+    generateId: ({ entry, data }) => {
+      const locale = (data as Record<string, unknown>).locale ?? 'id'
+      const slug = (data as Record<string, unknown>).slug ?? entry
+      return `${slug}.${locale}`
+    },
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),

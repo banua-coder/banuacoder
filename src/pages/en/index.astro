@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import type { ImageMetadata } from 'astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
 import Footer from '../../components/layout/Footer.astro'
@@ -15,7 +16,12 @@ import FounderExperienceStrip from '../../components/founder/FounderExperienceSt
 import CTA from '../../components/sections/CTA.astro'
 import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
 import Testimonial from '../../components/cards/Testimonial.astro'
-import iconImg from '../../assets/brand/banuacoder-icon.png'
+
+// Load featured portfolio entries for EN locale
+const allPortfolioEntries = await getCollection('portfolio')
+const featuredProjects = allPortfolioEntries
+  .filter((p) => p.data.locale === 'en' && p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
 
 // Load home EN copy
 const allPages = await getCollection('pages')
@@ -293,39 +299,19 @@ const orgSchema = {
             </a>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <CaseStudyCard
-              title="Reab"
-              client="Ulearna Technology LTD"
-              year={2025}
-              bucket="consumer"
-              summary="Consumer social/media platform published for the international market, with 50,000+ downloads on Google Play."
-              impactStat="50,000+ downloads · Google Play"
-              coverSrc={iconImg}
-              coverAlt="Reab app"
-              href="/en/portfolio/reab/"
-            />
-            <CaseStudyCard
-              title="Patonro"
-              client="Regional Government"
-              year={2025}
-              bucket="public-sector"
-              summary="Regional tax and levy information and payment app that makes it easy for residents to access bills, payment history, and due-date notifications."
-              impactStat="Public system · Regional tax payments"
-              coverSrc={iconImg}
-              coverAlt="Patonro app"
-              href="/en/portfolio/patonro/"
-            />
-            <CaseStudyCard
-              title="Caretaker.id"
-              client="Caretaker"
-              year={2024}
-              bucket="consumer"
-              summary="Healthcare app that helps users access medical services, remote consultations, health articles, and related features in one platform."
-              impactStat="Consumer health platform"
-              coverSrc={iconImg}
-              coverAlt="Caretaker.id app"
-              href="/en/portfolio/caretaker/"
-            />
+            {featuredProjects.map((project) => (
+              <CaseStudyCard
+                title={project.data.title}
+                client={project.data.client}
+                year={project.data.year}
+                bucket={project.data.bucket}
+                summary={project.data.summary}
+                impactStat={project.data.impact[0]}
+                coverSrc={project.data.thumbnail as ImageMetadata}
+                coverAlt={`${project.data.title} preview`}
+                href={`/en/portfolio/${project.data.slug}/`}
+              />
+            ))}
           </div>
         </Container>
       </section>

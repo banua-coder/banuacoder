@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
+import BucketFilter from '../../components/interactive/BucketFilter.astro'
+
+// Load all ID portfolio entries, sorted by order
+const allPortfolio = await getCollection('portfolio')
+const projects = allPortfolio
+  .filter((p) => p.data.locale === 'id')
+  .sort((a, b) => a.data.order - b.data.order)
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://banuacoder.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Portfolio', item: 'https://banuacoder.com/portfolio/' },
+  ],
+}
+---
+
+<BaseLayout
+  title="Portfolio — Banua Coder"
+  description="Portofolio Banua Coder: aplikasi consumer-facing, sistem publik, dan solusi operasional digital yang telah kami bangun dan kembangkan."
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Page header -->
+    <section
+      aria-labelledby="portfolio-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="PORTFOLIO"
+          marker="[ ## ]"
+          title="Selected Work"
+          description="Aplikasi consumer-facing, platform informasi publik, dan sistem operasional digital yang kami bangun bersama klien dari berbagai konteks."
+          class="mb-10"
+        />
+        <BucketFilter
+          labels={{
+            all: 'Semua',
+            consumer: 'Consumer',
+            public: 'Sektor Publik',
+            operational: 'Operasional',
+          }}
+        />
+      </Container>
+    </section>
+
+    <!-- Project grid -->
+    <section
+      aria-label="Daftar proyek"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        {projects.length === 0 ? (
+          <p class="font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400">
+            // Belum ada proyek yang tersedia.
+          </p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolio-grid">
+            {projects.map((project) => (
+              <CaseStudyCard
+                title={project.data.title}
+                client={project.data.client}
+                year={project.data.year}
+                bucket={project.data.bucket}
+                summary={project.data.summary}
+                impactStat={project.data.impact[0]}
+                coverSrc={project.data.thumbnail as ImageMetadata}
+                coverAlt={`${project.data.title} preview`}
+                href={`/portfolio/${project.data.slug}/`}
+              />
+            ))}
+          </div>
+        )}
+
+        <!-- Empty-state after filter (shown via JS when all items hidden) -->
+        <p
+          id="portfolio-empty"
+          class="font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400 hidden mt-8"
+          aria-live="polite"
+        >
+          // Tidak ada proyek di kategori ini.
+        </p>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Show empty-state message when all visible items are hidden by BucketFilter
+  const grid = document.getElementById('portfolio-grid')
+  const empty = document.getElementById('portfolio-empty')
+  if (grid && empty) {
+    const observer = new MutationObserver(() => {
+      const anyVisible = Array.from(grid.querySelectorAll<HTMLElement>('[data-bucket]')).some(
+        (el) => el.style.display !== 'none',
+      )
+      empty.classList.toggle('hidden', anyVisible)
+    })
+    observer.observe(grid, { attributes: true, subtree: true, attributeFilter: ['style'] })
+  }
+</script>
