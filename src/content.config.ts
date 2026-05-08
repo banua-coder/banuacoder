@@ -19,7 +19,7 @@ const portfolio = defineCollection({
     z.object({
       title: z.string(),
       slug: z.string(),
-      bucket: z.enum(['consumer', 'public-sector', 'operational']),
+      bucket: z.enum(['consumer', 'public-sector', 'operational', 'engineering']),
       client: z.string(),
       clientUrl: z.string().url().optional(),
       year: z.number().int(),

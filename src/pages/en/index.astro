@@ -21,6 +21,7 @@ const allPortfolioEntries = await getCollection('portfolio')
 const featuredProjects = allPortfolioEntries
   .filter((p) => p.data.locale === 'en' && p.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3)
 
 // Load home EN copy
 const allPages = await getCollection('pages')
