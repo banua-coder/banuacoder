@@ -1,0 +1,76 @@
+---
+title: BPS SSO Flutter SDK
+slug: bps-sso-sdk
+bucket: engineering
+client: Badan Pusat Statistik
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Flutter SDK untuk autentikasi SSO (Single Sign-On) di ekosistem aplikasi internal BPS.
+  Library ini mengimplementasikan OAuth2/OIDC dengan Chrome Custom Tabs dan kepatuhan
+  keamanan enterprise — digunakan lintas aplikasi BPS sehingga konsistensi autentikasi
+  terjaga di seluruh ekosistem.
+problem: >
+  Ekosistem aplikasi internal BPS terdiri dari beberapa aplikasi Flutter yang semuanya
+  membutuhkan mekanisme autentikasi yang konsisten, aman, dan mudah diintegrasikan.
+  Tanpa abstraksi yang tepat, setiap tim aplikasi harus mengimplementasikan ulang
+  logika SSO secara terpisah — mengakibatkan inkonsistensi, risiko keamanan, dan
+  pemborosan effort engineering. BPS membutuhkan SDK terpusat yang bisa di-reuse
+  di seluruh aplikasi dalam ekosistem mereka.
+solution: >
+  Banua Coder membangun BPS SSO Flutter SDK sebagai library Dart/Flutter yang
+  mengenkapsulasi seluruh logika autentikasi SSO. SDK mengimplementasikan standar
+  OAuth2/OIDC dengan Chrome Custom Tabs untuk pengalaman login yang aman dan native,
+  dilengkapi dengan token management otomatis, refresh token handling, dan kepatuhan
+  terhadap standar keamanan enterprise BPS. API SDK dirancang agar mudah diintegrasikan
+  oleh tim aplikasi lain dengan konfigurasi minimal.
+impact:
+  - SDK digunakan di seluruh ekosistem aplikasi Flutter internal BPS
+  - Konsistensi implementasi SSO terjamin di semua aplikasi yang menggunakan library
+  - Pengurangan signifikan effort integrasi autentikasi untuk setiap tim aplikasi baru
+  - Dipublikasikan di pub.dev untuk kemudahan konsumsi oleh tim BPS
+stack:
+  - Flutter
+  - Dart
+  - OAuth2 / OIDC
+  - Chrome Custom Tabs
+  - pub.dev
+links:
+  github: https://github.com/IPDS-59/bps_sso_flutter_sdk
+featured: false
+order: 100
+locale: id
+---
+
+## Konteks
+
+BPS SSO Flutter SDK adalah library yang dibangun untuk menyederhanakan dan menstandarisasi
+autentikasi Single Sign-On di ekosistem aplikasi Flutter internal Badan Pusat Statistik.
+Ketika sebuah organisasi memiliki beberapa aplikasi mobile yang semuanya perlu terintegrasi
+dengan sistem autentikasi terpusat, membangun SDK yang tepat — bukan hanya solusi satu kali
+pakai — adalah keputusan engineering yang paling efisien secara jangka panjang.
+
+Proyek ini mencerminkan pendekatan Banua Coder yang melampaui pengembangan aplikasi biasa:
+mengidentifikasi kebutuhan infrastruktur yang berulang dan mengatasinya dengan library yang
+dapat di-reuse, teruji, dan dipelihara.
+
+## Yang Kami Bangun
+
+SDK dirancang dengan fokus pada keamanan, kemudahan integrasi, dan standar enterprise:
+
+- **OAuth2/OIDC standar industri**: Implementasi protokol autentikasi yang sesuai standar
+  internasional, kompatibel dengan identity provider yang digunakan BPS.
+- **Chrome Custom Tabs**: Pengalaman login yang aman menggunakan browser engine bawaan
+  perangkat, menghindari risiko phishing yang ada pada WebView kustom.
+- **Token management otomatis**: Pengelolaan access token dan refresh token secara
+  transparan sehingga tim aplikasi tidak perlu menangani lifecycle token secara manual.
+- **API yang ergonomis**: Interface SDK yang sederhana dan terdokumentasi dengan baik
+  untuk memudahkan integrasi oleh tim engineering BPS.
+
+## Dampak
+
+BPS SSO Flutter SDK kini menjadi library autentikasi standar di ekosistem aplikasi Flutter
+BPS. Dengan SDK ini, setiap aplikasi baru dalam ekosistem BPS dapat mengimplementasikan
+SSO dalam hitungan jam, bukan hari — sambil memastikan konsistensi keamanan di seluruh ekosistem.
