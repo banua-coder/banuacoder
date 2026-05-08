@@ -109,6 +109,97 @@ const pages = defineCollection({
     title: z.string(),
     description: z.string(),
     locale: z.enum(['id', 'en']),
+    // Optional home page copy fields (present only on home.*.mdx)
+    hero: z
+      .object({
+        eyebrow: z.string(),
+        headline: z.string(),
+        subheadline: z.string(),
+        primaryCta: z.string(),
+        primaryHref: z.string(),
+        secondaryCta: z.string(),
+        secondaryHref: z.string(),
+        supportingLine: z.string().optional(),
+      })
+      .optional(),
+    trustClaims: z.array(z.object({ label: z.string() })).optional(),
+    about: z
+      .object({
+        eyebrow: z.string(),
+        body: z.string(),
+      })
+      .optional(),
+    services: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        title: z.string(),
+        description: z.string(),
+        items: z.array(
+          z.object({
+            title: z.string(),
+            tagline: z.string(),
+            icon: z.string(),
+            deliverables: z.array(z.string()),
+            href: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    why: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        title: z.string(),
+        items: z.array(
+          z.object({
+            title: z.string(),
+            body: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    process: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        title: z.string(),
+        description: z.string(),
+        steps: z.array(
+          z.object({
+            title: z.string(),
+            body: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    portfolio: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        title: z.string(),
+        description: z.string(),
+        viewAllLabel: z.string(),
+      })
+      .optional(),
+    founder: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        sectionTitle: z.string(),
+        headline: z.string(),
+        narrative: z.string(),
+        readMoreLabel: z.string(),
+      })
+      .optional(),
+    cta: z
+      .object({
+        headline: z.string(),
+        sub: z.string(),
+        primaryCta: z.string(),
+        primaryHref: z.string(),
+      })
+      .optional(),
   }),
 })
 
