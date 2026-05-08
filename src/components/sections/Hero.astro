@@ -54,45 +54,48 @@ const {
     class="relative z-10 mx-auto px-4 sm:px-6 lg:px-8"
     style="max-width: var(--container-max)"
   >
-    <div class="max-w-3xl">
-      {eyebrow && <MonoLabel class="mb-4 block">{eyebrow}</MonoLabel>}
+    <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 items-center">
+      <!-- Text column: left on lg+, full width below -->
+      <div class="lg:col-span-7">
+        {eyebrow && <MonoLabel class="mb-4 block">{eyebrow}</MonoLabel>}
 
-      <h1
-        class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-[1.1] mb-6"
-        style="font-size: var(--fs-84)"
-      >
-        {title}
-      </h1>
-
-      {subtitle && (
-        <p
-          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-10"
-          style="font-size: var(--fs-20); max-width: 56ch"
+        <h1
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-[1.1] mb-6 text-balance"
+          style="font-size: var(--fs-64)"
         >
-          {subtitle}
-        </p>
-      )}
+          {title}
+        </h1>
 
-      <!-- CTAs -->
-      {(primaryCta || secondaryCta) && (
-        <div class="flex flex-wrap gap-4 items-center">
-          {primaryCta && (
-            <Button href={primaryHref} size="lg" variant="primary">
-              {primaryCta}
-            </Button>
-          )}
-          {secondaryCta && (
-            <Button href={secondaryHref} size="lg" variant="ghost">
-              {secondaryCta} →
-            </Button>
-          )}
-        </div>
-      )}
-    </div>
+        {subtitle && (
+          <p
+            class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-10"
+            style="font-size: var(--fs-20); max-width: 52ch"
+          >
+            {subtitle}
+          </p>
+        )}
 
-    <!-- Optional media slot (device frames, mockups, etc.) -->
-    <div class="mt-16 lg:mt-20">
-      <slot name="media" />
+        <!-- CTAs -->
+        {(primaryCta || secondaryCta) && (
+          <div class="flex flex-wrap gap-4 items-center">
+            {primaryCta && (
+              <Button href={primaryHref} size="lg" variant="primary">
+                {primaryCta}
+              </Button>
+            )}
+            {secondaryCta && (
+              <Button href={secondaryHref} size="lg" variant="ghost">
+                {secondaryCta} →
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <!-- Media column: right on lg+, below on smaller -->
+      <div class="lg:col-span-5 mt-12 lg:mt-0">
+        <slot name="media" />
+      </div>
     </div>
   </div>
 </section>

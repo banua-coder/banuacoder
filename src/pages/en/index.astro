@@ -550,13 +550,14 @@ const orgSchema = {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    gap: 1rem;
-    min-height: 480px;
-    padding: 2rem 1rem 0;
+    gap: 0.75rem;
+    min-height: 420px;
+    padding: 1rem 0 0;
   }
 
   .collage-device {
     transition: transform 0.4s ease;
+    flex-shrink: 0;
   }
 
   .collage-center {
@@ -568,15 +569,21 @@ const orgSchema = {
   .collage-left {
     position: relative;
     z-index: 1;
-    transform: rotate(-6deg) translateY(2rem);
+    transform: rotate(-7deg) translate(0.5rem, 1.5rem);
     opacity: 0.85;
   }
 
   .collage-right {
     position: relative;
     z-index: 1;
-    transform: rotate(4deg) translateY(1.5rem);
+    transform: rotate(5deg) translate(-0.5rem, 1.25rem);
     opacity: 0.85;
+  }
+
+  @media (max-width: 1023px) {
+    .hero-collage {
+      min-height: 360px;
+    }
   }
 
   @media (max-width: 640px) {
