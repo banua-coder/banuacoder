@@ -1,0 +1,466 @@
+---
+/**
+ * DEV ONLY — Component Library Review Page
+ * Not included in sitemap. Contains noindex, nofollow robots meta.
+ * View at /dev/components/ to review all component variants.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+// Layout
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import MobileDrawer from '../../components/layout/MobileDrawer.astro'
+import Container from '../../components/layout/Container.astro'
+
+// Typography
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import Prose from '../../components/typography/Prose.astro'
+import MonoLabel from '../../components/typography/MonoLabel.astro'
+
+// Atoms
+import Button from '../../components/atoms/Button.astro'
+import Card from '../../components/atoms/Card.astro'
+import Tag from '../../components/atoms/Tag.astro'
+
+// Brand
+import Logo from '../../components/brand/Logo.astro'
+
+// Sections
+import Hero from '../../components/sections/Hero.astro'
+import TrustStrip from '../../components/sections/TrustStrip.astro'
+import CTA from '../../components/sections/CTA.astro'
+import ProcessStep from '../../components/sections/ProcessStep.astro'
+
+// Cards
+import ServiceCard from '../../components/cards/ServiceCard.astro'
+import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
+import Testimonial from '../../components/cards/Testimonial.astro'
+
+// Founder
+import FounderCard from '../../components/founder/FounderCard.astro'
+import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
+
+// Trust
+import ClientLogoRow from '../../components/trust/ClientLogoRow.astro'
+
+// Interactive
+import ThemeToggle from '../../components/interactive/ThemeToggle.astro'
+import LangSwitcher from '../../components/interactive/LangSwitcher.astro'
+import BucketFilter from '../../components/interactive/BucketFilter.astro'
+import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
+---
+
+<BaseLayout title="Component Library — Banua Coder DEV">
+  <slot name="head" slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+  </slot>
+
+  <Nav />
+  <MobileDrawer />
+
+  <main id="main-content" style="padding-top: 4rem">
+
+    <!-- ===== DEV HEADER ===== -->
+    <section class="bg-bnc-primary text-white py-8">
+      <Container>
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p class="font-mono text-xs tracking-widest text-blue-200 mb-1">// DEV ONLY</p>
+            <h1 class="font-display font-bold text-3xl">Banua Coder — Component Library</h1>
+            <p class="text-blue-200 text-sm mt-1">All components rendered with realistic example props</p>
+          </div>
+          <div class="flex gap-3 items-center">
+            <ThemeToggle />
+            <LangSwitcher />
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== BRAND ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Brand" marker="[ 01 ]" title="Logo" class="mb-8" />
+        <div class="flex flex-wrap gap-8 items-end">
+          <div class="flex flex-col gap-2">
+            <MonoLabel>horizontal</MonoLabel>
+            <Logo variant="horizontal" width={200} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <MonoLabel>icon (png)</MonoLabel>
+            <Logo variant="icon" width={48} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <MonoLabel>icon (inline svg)</MonoLabel>
+            <Logo variant="icon" width={48} inline />
+          </div>
+          <div class="flex flex-col gap-2">
+            <MonoLabel>vertical</MonoLabel>
+            <Logo variant="vertical" width={120} />
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== TYPOGRAPHY ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Typography" marker="[ 02 ]" title="Type Scale + Components" class="mb-8" />
+
+        <div class="grid md:grid-cols-2 gap-10">
+          <!-- MonoLabel variants -->
+          <div class="flex flex-col gap-3">
+            <MonoLabel>MonoLabel default</MonoLabel>
+            <MonoLabel prefix=">">MonoLabel with &gt; prefix</MonoLabel>
+            <MonoLabel prefix="">MonoLabel no prefix</MonoLabel>
+          </div>
+
+          <!-- Type scale -->
+          <div class="flex flex-col gap-2">
+            {[12, 14, 17, 20, 28, 36, 48, 64].map((size) => (
+              <p style={`font-size: var(--fs-${size})`} class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight">
+                fs-{size} — Engineering-led
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <!-- SectionHeader variants -->
+        <div class="mt-10 flex flex-col gap-10">
+          <SectionHeader
+            eyebrow="Services"
+            marker="[ 03 ]"
+            title="Customer-Facing Products"
+            description="We help businesses build websites, mobile apps, portals, and membership experiences that support growth and professionalism."
+          />
+          <SectionHeader
+            eyebrow="Portfolio"
+            marker="[ 07 ]"
+            title="Selected Work"
+            align="center"
+          />
+        </div>
+
+        <!-- Prose -->
+        <div class="mt-10">
+          <MonoLabel class="mb-4 block">Prose component</MonoLabel>
+          <Prose>
+            <h2>Engineering-led delivery</h2>
+            <p>Banua Coder is a technology partner that helps businesses and organizations build digital systems that are practical, scalable, and ready to grow. We combine <strong>product thinking</strong>, engineering discipline, and a practical implementation approach.</p>
+            <blockquote>Technology should help businesses work smarter — not just look modern.</blockquote>
+            <ul>
+              <li>Mobile engineering, platform, and performance</li>
+              <li>Experience across business, public sector, and international products</li>
+              <li><code>structured delivery</code> from discovery to support</li>
+            </ul>
+            <p>Learn more at <a href="#">banuacoder.com</a>.</p>
+          </Prose>
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== ATOMS ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Atoms" marker="[ 03 ]" title="Buttons, Cards, Tags" class="mb-8" />
+
+        <!-- Buttons -->
+        <div class="mb-8">
+          <MonoLabel class="mb-4 block">Button variants</MonoLabel>
+          <div class="flex flex-wrap gap-3 items-center">
+            <Button variant="primary">Primary Button</Button>
+            <Button variant="primary" size="lg">Primary Large</Button>
+            <Button variant="secondary">Secondary Button</Button>
+            <Button variant="secondary" size="lg">Secondary Large</Button>
+            <Button variant="ghost">Ghost Button</Button>
+            <Button variant="primary" href="#" external>Link (primary)</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="mb-8">
+          <MonoLabel class="mb-4 block">Tag variants</MonoLabel>
+          <div class="flex flex-wrap gap-2">
+            <Tag>Default</Tag>
+            <Tag variant="bucket-consumer">Consumer</Tag>
+            <Tag variant="bucket-public">Public Sector</Tag>
+            <Tag variant="bucket-operational">Operational</Tag>
+          </div>
+        </div>
+
+        <!-- Cards -->
+        <div>
+          <MonoLabel class="mb-4 block">Card base</MonoLabel>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <Card padding="sm"><p class="text-sm">Card sm padding</p></Card>
+            <Card padding="md"><p class="text-sm">Card md padding (default)</p></Card>
+            <Card padding="lg"><p class="text-sm">Card lg padding</p></Card>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== HERO ===== -->
+    <section class="border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <MonoLabel class="my-6 block">Hero section</MonoLabel>
+      </Container>
+      <Hero
+        eyebrow="Technology Partner"
+        title="Build digital systems that actually help your business grow"
+        subtitle="Banua Coder helps businesses and organizations build websites, apps, dashboards, and operational systems that are more structured, efficient, and ready to grow."
+        primaryCta="Schedule a Discussion"
+        primaryHref="#"
+        secondaryCta="View Portfolio"
+        secondaryHref="#"
+      >
+        <div slot="media" class="flex gap-4 flex-wrap">
+          <DeviceFrame variant="phone">
+            <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-4 text-center">
+              Mobile App Preview
+            </div>
+          </DeviceFrame>
+          <DeviceFrame variant="desktop">
+            <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-4 text-center">
+              Dashboard Preview
+            </div>
+          </DeviceFrame>
+        </div>
+      </Hero>
+    </section>
+
+    <!-- ===== TRUST STRIP ===== -->
+    <TrustStrip
+      claims={[
+        { label: 'Engineering-led delivery' },
+        { label: 'Cross-context experience' },
+        { label: 'Mobile, web, dashboard, ops' },
+        { label: 'Structured execution' },
+      ]}
+    />
+
+    <!-- ===== SECTIONS ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Sections" marker="[ 04 ]" title="Process Steps" class="mb-8" />
+        <div class="max-w-xl">
+          <ProcessStep step={1} title="Discovery" body="Understanding your business context, pain points, and priorities." />
+          <ProcessStep step={2} title="Solution Mapping" body="Defining scope, solution structure, and realistic implementation phases." />
+          <ProcessStep step={3} title="Design & Validation" body="Aligning flows and main requirements before full implementation." last />
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== SERVICE CARDS ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Cards" marker="[ 05 ]" title="Service Cards" class="mb-8" />
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ServiceCard
+            title="Customer-Facing Products"
+            tagline="Websites, mobile apps, portals, and membership experiences that help your business appear more professional and grow closer to customers."
+            icon="→"
+            deliverables={['Company profile websites', 'Mobile apps Android/iOS', 'Customer portals']}
+            href="#"
+          />
+          <ServiceCard
+            title="Internal Operational Systems"
+            tagline="Streamline business processes through dashboards, admin panels, approval workflows, and internal tools that reduce manual work."
+            icon="⚙"
+            deliverables={['Attendance systems', 'Reporting dashboards', 'Approval workflows']}
+            href="#"
+          />
+          <ServiceCard
+            title="Digital Product & Engineering"
+            tagline="From discovery, MVP development, modernization, to maintenance — we help you build solutions that are ready to grow."
+            icon="◈"
+            deliverables={['Product discovery', 'MVP development', 'System modernization']}
+            href="#"
+          />
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== CASE STUDY CARDS ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Cards" marker="[ 06 ]" title="Case Study Cards + BucketFilter" class="mb-6" />
+
+        <BucketFilter
+          labels={{ all: 'All', consumer: 'Consumer', public: 'Public Sector', operational: 'Operational' }}
+          class="mb-8"
+        />
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <CaseStudyCard
+            title="Reab — Social Media Platform"
+            client="Ulearna Technology LTD"
+            year={2024}
+            bucket="consumer"
+            summary="Consumer social/media platform with 50,000+ downloads on Google Play. Built for international market, mobile-first experience."
+            impactStat="50K+ downloads on Google Play"
+            href="#"
+          />
+          <CaseStudyCard
+            title="Patonro — Tax Payment App"
+            client="Regional Government"
+            year={2025}
+            bucket="public-sector"
+            summary="Local tax and levy information and payment application that makes it easier for citizens to access bills, payment history, and notifications."
+            impactStat="Serves regional government users"
+            href="#"
+          />
+          <CaseStudyCard
+            title="Custom Operational System"
+            client="Business Client"
+            year={2024}
+            bucket="operational"
+            summary="Internal operational system with attendance tracking, approval workflows, and reporting dashboard that reduced manual processes significantly."
+            impactStat="60% reduction in manual reporting"
+            href="#"
+          />
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== TESTIMONIAL ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Cards" marker="[ 07 ]" title="Testimonial" class="mb-8" />
+        <div class="max-w-xl">
+          <Testimonial
+            quote="Banua Coder helped us map and build a system that really fit our operations. The approach was structured and the delivery was disciplined — exactly what we needed."
+            author="Client Name"
+            role="Operations Director"
+            company="Company Name"
+          />
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== FOUNDER ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Founder" marker="[ 08 ]" title="Founder Card Variants" class="mb-8" />
+
+        <div class="flex flex-col gap-12">
+          <div>
+            <MonoLabel class="mb-4 block">Compact variant (home strip)</MonoLabel>
+            <FounderCard
+              name="Fajrian Aidil Pratama"
+              role="Founder & Director, Banua Coder"
+              headline="Led by engineering experience across product, platform, and operational systems"
+              narrative="Software engineer with experience in mobile engineering, digital product development, and platform and performance-focused systems. This background shapes how Banua Coder works: more structured in mapping problems, more critical in designing solutions, and more disciplined in delivery."
+              socials={{ linkedin: '#', github: '#', medium: '#' }}
+              variant="compact"
+            />
+          </div>
+
+          <div>
+            <MonoLabel class="mb-4 block">Full variant (/founder page)</MonoLabel>
+            <FounderCard
+              name="Fajrian Aidil Pratama"
+              role="Founder & Director, Banua Coder"
+              headline="Led by engineering experience across product, platform, and operational systems"
+              narrative="Software engineer with experience in mobile engineering, digital product development, and platform and performance-focused systems. Through experience across contexts — from the public sector, digital products, to business operational needs — Fajrian brings a combination of engineering depth, product thinking, and practical implementation understanding."
+              credibilityBullets={[
+                'Background in software engineering and digital product development',
+                'Strong focus on mobile engineering, platform, and performance',
+                'Experience across business systems, public workflows, and international-facing products',
+                'Practical approach that connects business needs with technical execution',
+                'Active in technical knowledge sharing and engineering community',
+              ]}
+              selectedExperience="Background includes work and exposure across: GoTo Financial, Reku, Stockbit/Bibit, public-sector digital systems, and international product collaboration."
+              socials={{ linkedin: '#', github: '#', medium: '#' }}
+              variant="full"
+            />
+          </div>
+        </div>
+
+        <!-- Experience Strip -->
+        <div class="mt-12">
+          <MonoLabel class="mb-4 block">Founder Experience Strip</MonoLabel>
+          <FounderExperienceStrip />
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== CLIENT LOGO ROW ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Trust" marker="[ 09 ]" title="Client Logo Row" class="mb-8" />
+        <ClientLogoRow />
+      </Container>
+    </section>
+
+    <!-- ===== DEVICE FRAMES ===== -->
+    <section class="py-12 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <SectionHeader eyebrow="Interactive" marker="[ 10 ]" title="Device Frames" class="mb-8" />
+        <div class="flex flex-wrap gap-8 items-start">
+          <div class="flex flex-col gap-2">
+            <MonoLabel>phone</MonoLabel>
+            <DeviceFrame variant="phone">
+              <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-6 text-center bg-gradient-to-b from-bnc-stone-50 to-bnc-stone-100 dark:from-bnc-stone-900 dark:to-bnc-stone-800">
+                Phone content
+              </div>
+            </DeviceFrame>
+          </div>
+          <div class="flex flex-col gap-2">
+            <MonoLabel>phone blurred (NDA)</MonoLabel>
+            <DeviceFrame variant="phone" blurred>
+              <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-6 text-center bg-gradient-to-b from-bnc-stone-50 to-bnc-stone-100 dark:from-bnc-stone-900 dark:to-bnc-stone-800">
+                Confidential content
+              </div>
+            </DeviceFrame>
+          </div>
+          <div class="flex flex-col gap-2">
+            <MonoLabel>tablet</MonoLabel>
+            <DeviceFrame variant="tablet">
+              <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-4 text-center">
+                Tablet content
+              </div>
+            </DeviceFrame>
+          </div>
+          <div class="flex flex-col gap-2 w-full max-w-xl">
+            <MonoLabel>desktop</MonoLabel>
+            <DeviceFrame variant="desktop">
+              <div class="w-full h-full flex items-center justify-center text-xs font-mono text-bnc-stone-500 p-6 text-center bg-bnc-stone-50 dark:bg-bnc-stone-900" style="min-height: 200px">
+                Desktop content
+              </div>
+            </DeviceFrame>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- ===== CTA SECTION ===== -->
+    <section class="border-b border-bnc-stone-200 dark:border-bnc-stone-800">
+      <Container>
+        <MonoLabel class="my-6 block">CTA — default</MonoLabel>
+      </Container>
+      <CTA
+        headline="Have an idea, system need, or business process to streamline?"
+        sub="Let's discuss your needs, and we'll help map out the most realistic solution for where you are right now."
+        primaryCta="Discuss Your Needs"
+        primaryHref="#"
+        secondaryCta="View Portfolio"
+        secondaryHref="#"
+      />
+      <Container>
+        <MonoLabel class="my-6 block">CTA — inverted</MonoLabel>
+      </Container>
+      <CTA
+        headline="Ready to build something that works?"
+        sub="Partner with an engineering-led team that understands your business context."
+        primaryCta="Schedule a Discovery Call"
+        primaryHref="#"
+        inverted
+      />
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>
