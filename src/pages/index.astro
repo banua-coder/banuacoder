@@ -136,6 +136,7 @@ const orgSchema = {
         aria-labelledby="about-heading"
         class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y-sm)"
+        data-reveal
       >
         <Container>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
@@ -183,6 +184,7 @@ const orgSchema = {
       <section
         aria-labelledby="services-heading"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <SectionHeader
@@ -192,7 +194,7 @@ const orgSchema = {
             description={services.description}
             class="mb-12"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-stagger>
             <!-- Build & Engineer -->
             <a
               href="/services/#build"
@@ -253,6 +255,7 @@ const orgSchema = {
         aria-labelledby="why-heading"
         class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <SectionHeader
@@ -261,7 +264,7 @@ const orgSchema = {
             title={why.title}
             class="mb-12"
           />
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" data-reveal-stagger>
             {why.items.map((item) => (
               <div class="flex flex-col gap-3">
                 <div class="w-8 h-px bg-bnc-accent" aria-hidden="true"></div>
@@ -286,6 +289,7 @@ const orgSchema = {
       <section
         aria-labelledby="process-heading"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <SectionHeader
@@ -314,6 +318,7 @@ const orgSchema = {
       <section
         aria-labelledby="ideal-clients-heading"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <div class="mb-10">
@@ -333,7 +338,7 @@ const orgSchema = {
               </h2>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal-stagger>
             {idealClients.items.map((item, i) => (
               <div class:list={[
                 'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
@@ -364,6 +369,7 @@ const orgSchema = {
         aria-labelledby="public-sector-heading"
         class="border-y border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y-sm); border-left: 3px solid var(--color-bnc-accent)"
+        data-reveal
       >
         <Container>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -406,6 +412,7 @@ const orgSchema = {
         aria-labelledby="portfolio-heading"
         class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <div class="flex items-end justify-between gap-4 flex-wrap mb-12">
@@ -422,7 +429,7 @@ const orgSchema = {
               {portfolio.viewAllLabel} →
             </a>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal-stagger>
             {featuredProjects.map((project) => (
               <CaseStudyCard
                 title={project.data.title}
@@ -446,6 +453,7 @@ const orgSchema = {
       <section
         aria-labelledby="founder-heading"
         style="padding-block: var(--spacing-section-y)"
+        data-reveal
       >
         <Container>
           <div class="mb-8">
@@ -515,7 +523,7 @@ const orgSchema = {
 
     <!-- ⑩ Final CTA -->
     {cta && (
-      <div>
+      <div data-reveal>
         <p class="text-center font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 py-4">
           Tidak yakin biayanya?{' '}
           <a href="/estimate/" class="text-bnc-accent hover:underline underline-offset-4">
