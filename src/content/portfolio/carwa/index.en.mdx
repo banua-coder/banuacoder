@@ -5,8 +5,8 @@ bucket: consumer
 client: Ulearna Technology LTD
 year: 2024
 status: maintained
-cover: ./cover.svg
-thumbnail: ./thumbnail.svg
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
 summary: >
   A digital car auction app for the UAE market that lets users buy and bid on used vehicles
   in real-time. Built for Ulearna Technology LTD (Dubai, UAE), Carwa demonstrates Banua Coder's
@@ -42,6 +42,12 @@ order: 20
 locale: en
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+
 ## Context
 
 Carwa is a digital car auction platform developed by Ulearna Technology LTD, a Dubai-based
@@ -64,6 +70,13 @@ The Carwa mobile application was built with Flutter using a feature-per-domain a
 - **Bidding flow**: A clear flow from bid amount confirmation through to win/loss
   notifications.
 - **Unit gallery**: Zoomable vehicle condition photos to support purchase decisions.
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Carwa auction listing view with vehicle cards" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Carwa vehicle detail and auction session screen" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Carwa bidding flow and countdown timer" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Carwa auction unit listing with filters" class="rounded-lg w-full" />
+</div>
 
 ## Impact
 
