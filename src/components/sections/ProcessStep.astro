@@ -1,0 +1,57 @@
+---
+/**
+ * ProcessStep — vertical timeline step.
+ * Numbered marker [01], title, body, and hairline connector to next step.
+ */
+interface Props {
+  /** Step number, e.g. 1 */
+  step: number
+  title: string
+  body?: string
+  /** Is this the last step? (no connector line) */
+  last?: boolean
+  class?: string
+}
+
+const { step, title, body, last = false, class: cls = '' } = Astro.props
+
+const marker = `[ ${String(step).padStart(2, '0')} ]`
+---
+
+<div class:list={['relative flex gap-6', !last && 'pb-10', cls]}>
+  <!-- Connector line -->
+  {!last && (
+    <div
+      class="absolute left-[1.6rem] top-8 bottom-0 w-px bg-bnc-stone-200 dark:bg-bnc-stone-800"
+      aria-hidden="true"
+    ></div>
+  )}
+
+  <!-- Step dot -->
+  <div
+    class="relative z-10 flex items-center justify-center w-[3.2rem] h-[3.2rem] shrink-0 rounded-full border-2 border-bnc-accent bg-bnc-paper dark:bg-bnc-ink"
+    aria-hidden="true"
+  >
+    <span class="font-mono text-xs text-bnc-accent tabular-nums">{String(step).padStart(2, '0')}</span>
+  </div>
+
+  <!-- Content -->
+  <div class="pt-2.5 pb-2">
+    <p class="font-mono text-xs text-bnc-accent mb-2 tracking-wider" aria-hidden="true">
+      {marker}
+    </p>
+    <h3
+      class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2"
+      style="font-size: var(--fs-20)"
+    >
+      {title}
+    </h3>
+    {body && (
+      <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+        {body}
+      </p>
+    )}
+    <!-- Optional slot for extra content -->
+    <slot />
+  </div>
+</div>

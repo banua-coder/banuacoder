@@ -1,0 +1,68 @@
+---
+/**
+ * DotGridBackdrop — CSS radial-gradient dot grid with optional JS parallax.
+ * Respects prefers-reduced-motion by disabling parallax.
+ */
+interface Props {
+  /** Extra CSS classes on the wrapper */
+  class?: string
+  /** Disable parallax (always off for reduced-motion regardless) */
+  noParallax?: boolean
+}
+
+const { class: cls = '', noParallax = false } = Astro.props
+---
+
+<div
+  id="dot-grid-backdrop"
+  class:list={['dot-grid-backdrop', cls]}
+  aria-hidden="true"
+></div>
+
+<style>
+  .dot-grid-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(circle, var(--color-bnc-stone-300) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    will-change: transform;
+  }
+
+  html.dark .dot-grid-backdrop {
+    background-image: radial-gradient(circle, var(--color-bnc-stone-700) 1px, transparent 1px);
+    opacity: 0.35;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-grid-backdrop {
+      will-change: auto;
+    }
+  }
+</style>
+
+{!noParallax && (
+  <script>
+    (function () {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+
+      const el = document.getElementById('dot-grid-backdrop');
+      if (!el) return;
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const y = window.scrollY * 0.15;
+            el.style.transform = `translate3d(0, ${y}px, 0)`;
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+  </script>
+)}

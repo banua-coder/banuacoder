@@ -1,0 +1,49 @@
+---
+/**
+ * TrustStrip — single-row strip of 4 mono micro-claims.
+ * Separated by hairline rules.
+ */
+interface Claim {
+  label: string
+}
+
+interface Props {
+  claims: Claim[]
+  class?: string
+}
+
+const { claims, class: cls = '' } = Astro.props
+---
+
+<section
+  class:list={[
+    'border-y border-bnc-stone-200 dark:border-bnc-stone-800',
+    'py-5',
+    cls,
+  ]}
+  aria-label="Trust indicators"
+>
+  <div
+    class="mx-auto px-4 sm:px-6 lg:px-8"
+    style="max-width: var(--container-max)"
+  >
+    <ul
+      class="list-none m-0 p-0 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-0"
+      role="list"
+    >
+      {claims.map((claim, i) => (
+        <li class="flex items-center gap-4">
+          <span class="font-mono text-xs tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400 uppercase whitespace-nowrap">
+            // {claim.label}
+          </span>
+          {i < claims.length - 1 && (
+            <span
+              class="hidden md:block w-px h-4 bg-bnc-stone-300 dark:bg-bnc-stone-700"
+              aria-hidden="true"
+            ></span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
