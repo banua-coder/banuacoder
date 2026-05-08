@@ -1,13 +1,554 @@
 ---
+import { getCollection } from 'astro:content'
 import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import Container from '../components/layout/Container.astro'
+import Hero from '../components/sections/Hero.astro'
+import TrustStrip from '../components/sections/TrustStrip.astro'
+import SectionHeader from '../components/typography/SectionHeader.astro'
+import ServiceCard from '../components/cards/ServiceCard.astro'
+import ProcessStep from '../components/sections/ProcessStep.astro'
+import CaseStudyCard from '../components/cards/CaseStudyCard.astro'
+import FounderCard from '../components/founder/FounderCard.astro'
+import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
+import CTA from '../components/sections/CTA.astro'
+import DeviceFrame from '../components/interactive/DeviceFrame.astro'
+import Testimonial from '../components/cards/Testimonial.astro'
+import iconImg from '../assets/brand/banuacoder-icon.png'
+
+// Load home ID copy
+const allPages = await getCollection('pages')
+// Astro glob loader slugifies filenames: home.id.mdx -> 'homeid', home.en.mdx -> 'homeen'
+const homePage = allPages.find(
+  (p) => p.id === 'homeid' || p.id === 'home.id' || (p.data.locale === 'id' && p.id.startsWith('home')),
+)
+if (!homePage) throw new Error('home ID page entry not found in pages collection')
+
+const { hero, trustClaims, about, services, why, process, portfolio, founder, cta } =
+  homePage.data
+
+// Load featured testimonials for this locale
+const allTestimonials = await getCollection('testimonials')
+const featuredTestimonial = allTestimonials.find(
+  (t) => t.data.featured && t.data.locale === 'id',
+)
+
+// JSON-LD Organization schema
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Banua Coder',
+  url: 'https://banuacoder.com',
+  logo: 'https://banuacoder.com/favicon.svg',
+  sameAs: [
+    'https://linkedin.com/company/banuacoder',
+    'https://github.com/banuacoder',
+    'https://instagram.com/banuacoder',
+  ],
+  foundingDate: '2019',
+  description:
+    'Partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan.',
+  address: {
+    '@type': 'PostalAddress',
+    addressRegion: 'Sulawesi Tengah',
+    addressCountry: 'ID',
+  },
+}
 ---
 
-<BaseLayout title="Banua Coder — Partner Teknologi Digital">
-  <main>
-    <h1 class="font-display text-bnc-ink">Banua Coder</h1>
-    <p class="text-bnc-stone-600">
-      Partner teknologi untuk website, aplikasi, dan sistem operasional digital.
-      Bahasa Indonesia (default)
-    </p>
+<BaseLayout title={homePage.data.title} description={homePage.data.description}>
+  <!-- JSON-LD Organization -->
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(orgSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- ① Hero -->
+    {hero && (
+      <Hero
+        eyebrow={hero.eyebrow}
+        title={hero.headline}
+        subtitle={hero.subheadline}
+        primaryCta={hero.primaryCta}
+        primaryHref={hero.primaryHref}
+        secondaryCta={hero.secondaryCta}
+        secondaryHref={hero.secondaryHref}
+      >
+        <div slot="media" class="hero-collage" aria-label="Pratinjau produk digital" role="img">
+          <!-- Phone 1 (center, tallest) -->
+          <div class="collage-device collage-center">
+            <DeviceFrame variant="phone">
+              <div class="mock-screen mock-screen-blue" aria-hidden="true">
+                <div class="mock-bar mock-bar-sm"></div>
+                <div class="mock-card mock-card-accent"></div>
+                <div class="mock-list">
+                  <div class="mock-item"></div>
+                  <div class="mock-item"></div>
+                  <div class="mock-item mock-item-short"></div>
+                </div>
+              </div>
+            </DeviceFrame>
+          </div>
+          <!-- Phone 2 (left, angled) -->
+          <div class="collage-device collage-left">
+            <DeviceFrame variant="phone">
+              <div class="mock-screen mock-screen-stone" aria-hidden="true">
+                <div class="mock-bar mock-bar-sm"></div>
+                <div class="mock-chart"></div>
+                <div class="mock-list">
+                  <div class="mock-item"></div>
+                  <div class="mock-item mock-item-short"></div>
+                </div>
+              </div>
+            </DeviceFrame>
+          </div>
+          <!-- Tablet (right, angled) -->
+          <div class="collage-device collage-right">
+            <DeviceFrame variant="tablet">
+              <div class="mock-screen mock-screen-stone" aria-hidden="true">
+                <div class="mock-bar mock-bar-sm"></div>
+                <div class="mock-grid">
+                  <div class="mock-tile mock-tile-accent"></div>
+                  <div class="mock-tile"></div>
+                  <div class="mock-tile"></div>
+                  <div class="mock-tile mock-tile-accent"></div>
+                </div>
+              </div>
+            </DeviceFrame>
+          </div>
+        </div>
+      </Hero>
+    )}
+
+    <!-- ② Trust strip -->
+    {trustClaims && <TrustStrip claims={trustClaims} />}
+
+    <!-- ③ About snippet -->
+    {about && (
+      <section
+        aria-labelledby="about-heading"
+        class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+                // {about.eyebrow}
+              </p>
+              <h2
+                id="about-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+                style="font-size: var(--fs-36)"
+              >
+                Tentang Banua Coder
+              </h2>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-6" style="font-size: var(--fs-17)">
+                {about.body}
+              </p>
+              <a
+                href="/about/"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+              >
+                Selengkapnya tentang kami →
+              </a>
+            </div>
+            <div
+              class="hidden md:flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+              aria-hidden="true"
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">// didirikan 2019</p>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+                Berbasis di Sulawesi Tengah
+              </p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-2"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+                Mobile · Web · Dashboard · Sistem Operasional
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ④ Services preview -->
+    {services && (
+      <section
+        aria-labelledby="services-heading"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow={services.eyebrow}
+            marker={services.marker}
+            title={services.title}
+            description={services.description}
+            class="mb-12"
+          />
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {services.items.map((svc) => (
+              <ServiceCard
+                title={svc.title}
+                tagline={svc.tagline}
+                icon={svc.icon}
+                deliverables={svc.deliverables}
+                href={svc.href}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑤ Why Banua Coder -->
+    {why && (
+      <section
+        aria-labelledby="why-heading"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow={why.eyebrow}
+            marker={why.marker}
+            title={why.title}
+            class="mb-12"
+          />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {why.items.map((item) => (
+              <div class="flex flex-col gap-3">
+                <div class="w-8 h-px bg-bnc-accent" aria-hidden="true"></div>
+                <h3
+                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
+                  style="font-size: var(--fs-20)"
+                >
+                  {item.title}
+                </h3>
+                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑥ Process -->
+    {process && (
+      <section
+        aria-labelledby="process-heading"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow={process.eyebrow}
+            marker={process.marker}
+            title={process.title}
+            description={process.description}
+            class="mb-14"
+          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+            {process.steps.map((step, i) => (
+              <ProcessStep
+                step={i + 1}
+                title={step.title}
+                body={step.body}
+                last={i === process.steps.length - 1 || i === process.steps.length - 2}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑦ Portfolio highlight -->
+    {portfolio && (
+      <section
+        aria-labelledby="portfolio-heading"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <div class="flex items-end justify-between gap-4 flex-wrap mb-12">
+            <SectionHeader
+              eyebrow={portfolio.eyebrow}
+              marker={portfolio.marker}
+              title={portfolio.title}
+              description={portfolio.description}
+            />
+            <a
+              href="/portfolio/"
+              class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors shrink-0 self-end mb-1 inline-flex items-center gap-1.5"
+            >
+              {portfolio.viewAllLabel} →
+            </a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <CaseStudyCard
+              title="Reab"
+              client="Ulearna Technology LTD"
+              year={2025}
+              bucket="consumer"
+              summary="Platform sosial/media consumer-facing yang dipublikasikan untuk pasar internasional, dengan 50 ribu+ unduhan di Google Play."
+              impactStat="50.000+ unduhan · Google Play"
+              coverSrc={iconImg}
+              coverAlt="Reab app"
+              href="/portfolio/reab/"
+            />
+            <CaseStudyCard
+              title="Patonro"
+              client="Pemerintah Daerah"
+              year={2025}
+              bucket="public-sector"
+              summary="Aplikasi layanan informasi dan pembayaran pajak/retribusi daerah yang memudahkan masyarakat mengakses tagihan dan riwayat pembayaran."
+              impactStat="Sistem publik · Pembayaran pajak daerah"
+              coverSrc={iconImg}
+              coverAlt="Patonro app"
+              href="/portfolio/patonro/"
+            />
+            <CaseStudyCard
+              title="Caretaker.id"
+              client="Caretaker"
+              year={2024}
+              bucket="consumer"
+              summary="Aplikasi layanan kesehatan yang membantu pengguna mengakses layanan medis, konsultasi jarak jauh, dan fitur layanan lainnya."
+              impactStat="Consumer health platform"
+              coverSrc={iconImg}
+              coverAlt="Caretaker.id app"
+              href="/portfolio/caretaker/"
+            />
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑧ Founder strip -->
+    {founder && (
+      <section
+        aria-labelledby="founder-heading"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <div class="mb-8">
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+              // {founder.eyebrow}
+            </p>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">
+                {founder.marker}
+              </span>
+              <h2
+                id="founder-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-36)"
+              >
+                {founder.sectionTitle}
+              </h2>
+            </div>
+          </div>
+          <FounderCard
+            name="Fajrian Aidil Pratama"
+            role="Founder & Director"
+            headline={founder.headline}
+            narrative={founder.narrative}
+            variant="compact"
+            href="/founder/"
+            socials={{
+              linkedin: 'https://linkedin.com/in/fajrianaidilpratama',
+              github: 'https://github.com/fajrianaidilpratama',
+            }}
+          />
+          <div class="mt-8 pt-8 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
+            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 mb-4 tracking-widest uppercase">
+              // Latar belakang terpilih
+            </p>
+            <FounderExperienceStrip />
+          </div>
+          <div class="mt-6">
+            <a
+              href="/founder/"
+              class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+            >
+              {founder.readMoreLabel} →
+            </a>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑨ Featured testimonial (hidden when none exist) -->
+    {featuredTestimonial && (
+      <section
+        aria-label="Testimoni"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+      >
+        <Container class="max-w-3xl">
+          <Testimonial
+            quote={featuredTestimonial.data.quote}
+            author={featuredTestimonial.data.author}
+            role={featuredTestimonial.data.role}
+            company={featuredTestimonial.data.company}
+          />
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑩ Final CTA -->
+    {cta && (
+      <CTA
+        headline={cta.headline}
+        sub={cta.sub}
+        primaryCta={cta.primaryCta}
+        primaryHref={cta.primaryHref}
+        inverted={true}
+      />
+    )}
   </main>
+
+  <Footer />
 </BaseLayout>
+
+<style>
+  /* Hero device collage */
+  .hero-collage {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 480px;
+    padding: 2rem 1rem 0;
+  }
+
+  .collage-device {
+    transition: transform 0.4s ease;
+  }
+
+  .collage-center {
+    position: relative;
+    z-index: 2;
+    transform: translateY(0);
+  }
+
+  .collage-left {
+    position: relative;
+    z-index: 1;
+    transform: rotate(-6deg) translateY(2rem);
+    opacity: 0.85;
+  }
+
+  .collage-right {
+    position: relative;
+    z-index: 1;
+    transform: rotate(4deg) translateY(1.5rem);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 640px) {
+    .hero-collage {
+      min-height: 280px;
+    }
+    .collage-left,
+    .collage-right {
+      display: none;
+    }
+  }
+
+  /* Mock screen contents */
+  .mock-screen {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+  }
+
+  .mock-screen-blue {
+    background: linear-gradient(160deg, #12398C 0%, #1a4db0 100%);
+  }
+
+  .mock-screen-stone {
+    background: var(--color-bnc-stone-100);
+  }
+
+  .mock-bar {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    height: 8px;
+  }
+
+  .mock-bar-sm { width: 60%; }
+
+  .mock-card-accent {
+    background: var(--color-bnc-accent);
+    border-radius: 8px;
+    height: 64px;
+    opacity: 0.8;
+  }
+
+  .mock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .mock-item {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    height: 10px;
+  }
+
+  .mock-screen-stone .mock-item {
+    background: var(--color-bnc-stone-300);
+  }
+
+  .mock-item-short { width: 60%; }
+
+  .mock-chart {
+    background: var(--color-bnc-stone-200);
+    border-radius: 6px;
+    height: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mock-chart::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(180deg, transparent, var(--color-bnc-accent));
+    opacity: 0.3;
+  }
+
+  .mock-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .mock-tile {
+    background: var(--color-bnc-stone-200);
+    border-radius: 6px;
+    height: 40px;
+  }
+
+  .mock-tile-accent {
+    background: var(--color-bnc-accent);
+    opacity: 0.4;
+  }
+</style>
