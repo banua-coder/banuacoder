@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\HeaderFooterSetting;
@@ -21,7 +22,7 @@ class HeaderFooterSettingController extends Controller
         } else {
             $lang = Language::where('code', $request->language)->firstOrFail();
             $data['lang_id'] = $lang->id;
-            $data['setting'] = HeaderFooterSetting::findOrFail($lang->id);
+            $data['setting'] = HeaderFooterSetting::where('language_id', $lang->id)->firstOrFail();
         }
 
         return view('settings.headerfooter.headerfooter-edit', $data, compact('langs'));
@@ -36,15 +37,11 @@ class HeaderFooterSettingController extends Controller
     public function update(Request $request, HeaderFooterSetting $setting, $langid)
     {
         $setting = HeaderFooterSetting::where('language_id', $langid)->firstOrFail();
-        
+
         $input = $request->all();
 
         $setting->update($input);
 
-        return back()->with('setting_success','Settings updated successfully!');
+        return back()->with('setting_success', 'Settings updated successfully!');
     }
-
-
 }
-
-

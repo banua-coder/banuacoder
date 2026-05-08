@@ -17,3 +17,13 @@ yarn-error.log
 .dolt/
 *.db
 .beads-credential-key
+
+# Internal planning docs — not committed
+docs/
+
+# OS / editor cruft
+.DS_Store
+**/.DS_Store
+
+# CodeGraph local index
+.codegraph/

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
@@ -20,7 +21,7 @@ class SettingController extends Controller
         } else {
             $lang = Language::where('code', $request->language)->firstOrFail();
             $data['lang_id'] = $lang->id;
-            $data['setting'] = Setting::findOrFail($lang->id);
+            $data['setting'] = Setting::where('language_id', $lang->id)->firstOrFail();
         }
 
 
@@ -37,32 +38,31 @@ class SettingController extends Controller
     {
 
         $setting = Setting::where('language_id', $langid)->firstOrFail();
-        
+
         $input = $request->all();
 
-        $this->validate($request, [
+        $this->validate(
+            $request,
+            [
 
-            'photo_id' => 'mimes:jpg,jpeg,png,webp,gif,svg']
+                'photo_id' => 'mimes:jpg,jpeg,png,webp,gif,svg'
+            ]
 
         );
 
         if ($file = $request->file('photo_id')) {
-            
+
             $name = time() . $file->getClientOriginalName();
 
             $file->move('images/media/', $name);
 
-            $photo = Photo::create(['file'=>$name]);
+            $photo = Photo::create(['file' => $name]);
 
             $input['photo_id'] = $photo->id;
         }
 
         $setting->update($input);
 
-        return back()->with('setting_success','Settings updated successfully!');
+        return back()->with('setting_success', 'Settings updated successfully!');
     }
-
-
-
-
 }

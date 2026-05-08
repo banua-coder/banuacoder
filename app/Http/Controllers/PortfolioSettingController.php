@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\PortfolioSetting;
@@ -21,7 +22,7 @@ class PortfolioSettingController extends Controller
         } else {
             $lang = Language::where('code', $request->language)->firstOrFail();
             $data['lang_id'] = $lang->id;
-            $data['setting'] = PortfolioSetting::findOrFail($lang->id);
+            $data['setting'] = PortfolioSetting::where('language_id', $lang->id)->first();
         }
         return view('settings.portfolio.portfolio-edit', $data, compact('langs'));
     }
@@ -35,14 +36,11 @@ class PortfolioSettingController extends Controller
     public function update(Request $request, PortfolioSetting $setting, $langid)
     {
         $setting = PortfolioSetting::where('language_id', $langid)->firstOrFail();
-        
+
         $input = $request->all();
 
         $setting->update($input);
 
-        return back()->with('setting_success','Settings updated successfully!');
+        return back()->with('setting_success', 'Settings updated successfully!');
     }
-
-
-
 }

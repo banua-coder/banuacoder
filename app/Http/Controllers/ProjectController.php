@@ -1,19 +1,20 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Http\Requests\ProjectRequest; 
-use App\Http\Requests\ProjectEditRequest; 
-use App\Models\Photo;
-use App\Models\Setting;
-use App\Models\Menu;
-use App\Models\HeaderFooterSetting; 
-use DB;
 use View;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Menu;
+use App\Models\Photo;
+use App\Http\Requests;
+use App\Models\Project;
+use App\Models\Setting;
 use App\Models\Language;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\HeaderFooterSetting;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProjectRequest;
+use App\Http\Requests\ProjectEditRequest;
 
 class ProjectController extends Controller
 {
@@ -33,7 +34,6 @@ class ProjectController extends Controller
         $data['lang_id'] = $lang_id;
 
         return view('project.project-index', $data, compact('langs'));
-
     }
 
     public function create(Request $request)
@@ -42,7 +42,7 @@ class ProjectController extends Controller
         $lang = Language::where('code', $request->language)->first();
         $lang_id = $lang->id;
 
-        $categories = DB::select('select * from project_categories where language_id='.$lang_id);
+        $categories = DB::select('select * from project_categories where language_id=' . $lang_id);
         return view('project.project-create', compact('categories', 'langs', 'lang_id'));
     }
 
@@ -60,19 +60,19 @@ class ProjectController extends Controller
         $user = Auth::user();
 
         if ($file = $request->file('photo_id')) {
-            
+
             $name = time() . $file->getClientOriginalName();
 
             $file->move('images/media/', $name);
 
-            $photo = Photo::create(['file'=>$name]);
+            $photo = Photo::create(['file' => $name]);
 
             $input['photo_id'] = $photo->id;
         }
 
         $user->projects()->create($input);
 
-        return back()->with('project_success','Project created successfully!');
+        return back()->with('project_success', 'Project created successfully!');
     }
 
 
@@ -83,7 +83,7 @@ class ProjectController extends Controller
         $lang = Language::where('code', $request->language)->first();
         $lang_id = $lang->id;
 
-        $categories = DB::select('select * from project_categories where language_id='.$lang_id);
+        $categories = DB::select('select * from project_categories where language_id=' . $lang_id);
         return view('project.project-edit', compact('project', 'categories'));
     }
     /**
@@ -95,17 +95,17 @@ class ProjectController extends Controller
      */
     public function update(ProjectEditRequest $request, Project $project)
     {
-        
+
         $input = $request->all();
-        
+
 
         if ($file = $request->file('photo_id')) {
-            
+
             $name = time() . $file->getClientOriginalName();
 
             $file->move('images/media/', $name);
 
-            $photo = Photo::create(['file'=>$name]);
+            $photo = Photo::create(['file' => $name]);
 
             $input['photo_id'] = $photo->id;
         }
@@ -113,18 +113,19 @@ class ProjectController extends Controller
 
         $project->update($input);
 
-        return back()->with('project_success','Project updated successfully!');
+        return back()->with('project_success', 'Project updated successfully!');
     }
 
-    public function delete_project(Request $request, Project $project) {
+    public function delete_project(Request $request, Project $project)
+    {
 
 
-        if(isset($request->delete_all) && !empty($request->checkbox_array)) {
+        if (isset($request->delete_all) && !empty($request->checkbox_array)) {
             $projects = Project::findOrFail($request->checkbox_array);
             foreach ($projects as $project) {
                 $project->delete();
             }
-            return back()->with('projects_success','Project/s deleted successfully!');
+            return back()->with('projects_success', 'Project/s deleted successfully!');
         } else {
             return back();
         }
@@ -140,7 +141,7 @@ class ProjectController extends Controller
 
     // Show a project by slug
     public function show_slug($slug = 'home')
-    {   
+    {
 
         if (session()->has('lang')) {
             $currentLang = Language::where('code', session()->get('lang'))->first();
@@ -151,21 +152,18 @@ class ProjectController extends Controller
         $lang_id = $currentLang->id;
         $langs = Language::all();
 
-        $data['headerfooter'] = HeaderFooterSetting::find($lang_id);
-        $data['setting'] = Setting::find($lang_id);
+        $data['headerfooter'] = HeaderFooterSetting::where('language_id', $lang_id)->first();
+        $data['setting'] = Setting::where('language_id', $lang_id)->first();
         $data['menus'] = Menu::where('language_id', $lang_id)->get();
 
 
         $project = Project::whereSlug($slug)->where('language_id', $lang_id)->first();
 
-        if(!empty($project)) {
+        if (!empty($project)) {
             return View::make('project', $data, compact('langs'))->with('project', $project);
             //return $project;
         } else {
             abort(404);
         }
-        
     }
-
-
 }
