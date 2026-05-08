@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://banuacoder.com/sitemap-index.xml
