@@ -31,7 +31,7 @@ const homePage = allPages.find(
 )
 if (!homePage) throw new Error('home ID page entry not found in pages collection')
 
-const { hero, trustClaims, about, services, why, process, portfolio, founder, cta } =
+const { hero, trustClaims, about, services, why, process, portfolio, founder, cta, idealClients, publicSector } =
   homePage.data
 
 // Load featured testimonials for this locale
@@ -311,6 +311,97 @@ const orgSchema = {
                 last={i === process.steps.length - 1 || i === process.steps.length - 2}
               />
             ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑥b Ideal client fit -->
+    {idealClients && (
+      <section
+        aria-labelledby="ideal-clients-heading"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <div class="mb-10">
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+              // {idealClients.eyebrow}
+            </p>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">
+                {idealClients.marker}
+              </span>
+              <h2
+                id="ideal-clients-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-36)"
+              >
+                {idealClients.title}
+              </h2>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {idealClients.items.map((item, i) => (
+              <div class:list={[
+                'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
+                'border-bnc-stone-200 dark:border-bnc-stone-800',
+                'bg-bnc-stone-50 dark:bg-bnc-stone-900',
+                i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
+              ]}>
+                <span class="font-mono text-xs text-bnc-accent tracking-widest">// {item.icon}</span>
+                <h3
+                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
+                  style="font-size: var(--fs-20)"
+                >
+                  {item.title}
+                </h3>
+                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑥c Public-sector capability module -->
+    {publicSector && (
+      <section
+        aria-labelledby="public-sector-heading"
+        class="border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm); border-left: 3px solid var(--color-bnc-accent)"
+      >
+        <Container>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div>
+              <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">
+                // {publicSector.eyebrow}
+              </p>
+              <h2
+                id="public-sector-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug mb-5"
+                style="font-size: var(--fs-28)"
+              >
+                {publicSector.title}
+              </h2>
+            </div>
+            <div>
+              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list">
+                {publicSector.bullets.map((bullet) => (
+                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={publicSector.ctaHref}
+                class="font-mono text-xs text-bnc-accent hover:underline underline-offset-4 inline-flex items-center gap-1.5"
+              >
+                {publicSector.ctaLabel} →
+              </a>
+            </div>
           </div>
         </Container>
       </section>

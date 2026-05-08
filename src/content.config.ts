@@ -228,6 +228,29 @@ const pages = defineCollection({
         primaryHref: z.string(),
       })
       .optional(),
+    idealClients: z
+      .object({
+        eyebrow: z.string(),
+        marker: z.string(),
+        title: z.string(),
+        items: z.array(
+          z.object({
+            icon: z.string(),
+            title: z.string(),
+            body: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    publicSector: z
+      .object({
+        eyebrow: z.string(),
+        title: z.string(),
+        bullets: z.array(z.string()),
+        ctaLabel: z.string(),
+        ctaHref: z.string(),
+      })
+      .optional(),
   }),
 })
 
