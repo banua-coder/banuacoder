@@ -47,11 +47,19 @@ const portfolio = defineCollection({
 })
 
 const services = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/services',
+    generateId: ({ entry, data }) => {
+      const locale = (data as Record<string, unknown>).locale ?? 'id'
+      const slug = (data as Record<string, unknown>).slug ?? entry
+      return `${slug}.${locale}`
+    },
+  }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
-    category: z.enum(['customer-facing', 'internal-ops', 'product-engineering']),
+    category: z.enum(['customer-facing', 'internal-ops', 'product-engineering', 'design', 'social-media']),
     tagline: z.string(),
     icon: z.string(),
     deliverables: z.array(z.string()),

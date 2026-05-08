@@ -8,7 +8,6 @@ import Container from '../../components/layout/Container.astro'
 import Hero from '../../components/sections/Hero.astro'
 import TrustStrip from '../../components/sections/TrustStrip.astro'
 import SectionHeader from '../../components/typography/SectionHeader.astro'
-import ServiceCard from '../../components/cards/ServiceCard.astro'
 import ProcessStep from '../../components/sections/ProcessStep.astro'
 import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
 import FounderCard from '../../components/founder/FounderCard.astro'
@@ -199,16 +198,56 @@ const orgSchema = {
             description={services.description}
             class="mb-12"
           />
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {services.items.map((svc) => (
-              <ServiceCard
-                title={svc.title}
-                tagline={svc.tagline}
-                icon={svc.icon}
-                deliverables={svc.deliverables}
-                href={svc.href}
-              />
-            ))}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Build & Engineer -->
+            <a
+              href="/en/services/#build"
+              class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Build & Engineer</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-accent transition-colors"
+                style="font-size: var(--fs-28)"
+              >
+                Digital Products & Systems
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                Websites, mobile apps, dashboards, and operational systems built with real engineering depth and genuine business understanding.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {['Customer-Facing', 'Internal Ops', 'Product Engineering'].map((tag) => (
+                  <span class="font-mono text-xs px-2.5 py-1 rounded-full border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span class="font-mono text-xs text-bnc-accent group-hover:underline">View services →</span>
+            </a>
+
+            <!-- Brand & Grow -->
+            <a
+              href="/en/services/#grow"
+              class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Brand & Grow</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-accent transition-colors"
+                style="font-size: var(--fs-28)"
+              >
+                Design & Growth
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                Visual identity, UI/UX, and social media management to build a consistent brand and strong digital presence.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {['Design', 'Social Media'].map((tag) => (
+                  <span class="font-mono text-xs px-2.5 py-1 rounded-full border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span class="font-mono text-xs text-bnc-accent group-hover:underline">View services →</span>
+            </a>
           </div>
         </Container>
       </section>
