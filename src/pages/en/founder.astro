@@ -11,6 +11,8 @@ import workImg1 from '../../assets/founder/work-product/work-1.webp'
 import workImg2 from '../../assets/founder/work-product/work-2.webp'
 import workImg3 from '../../assets/founder/work-product/work-3.webp'
 import workImg4 from '../../assets/founder/work-product/work-4.webp'
+import ambientImg from '../../assets/stock/clean-workspace-notebook.jpg'
+{/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
 
 const credibilityBullets = [
   'Background in software engineering and digital product development',
@@ -26,6 +28,24 @@ const selectedExperience = [
   { company: 'Stockbit / Bibit', context: 'Mobile platform — investment community and mutual fund application' },
   { company: 'Ulearna Technology LTD', context: 'International product collaboration — consumer-facing application for global market' },
   { company: 'Public Sector', context: 'Public digital systems — regional service and payment applications' },
+]
+
+const engineeringPhilosophy = [
+  {
+    label: '// system over feature',
+    title: 'System over feature',
+    desc: 'More features don\'t always mean a better product. Banua Coder builds with an eye on how the system will evolve — not just how it works at launch. This means conscious architectural decisions, not just responding to requests one by one.',
+  },
+  {
+    label: '// product thinking',
+    title: 'Product thinking, not just code',
+    desc: 'Good engineering doesn\'t start from "how do I build this" but from "is this what should be built." We approach every project with an understanding of the business goals behind it — so technical decisions are directed by outcomes, not technical preference alone.',
+  },
+  {
+    label: '// craft and discipline',
+    title: 'Craft and discipline as defaults',
+    desc: 'Code reviews, testing, performance, and accessibility aren\'t optional add-ons — they\'re part of how we work by default. Not from perfectionism, but because systems not built with this discipline will become expensive technical debt in the future.',
+  },
 ]
 
 const personSchema = {
@@ -135,25 +155,44 @@ const personSchema = {
       </Container>
     </section>
 
-    <!-- Narrative -->
+    <!-- About Fajrian — expanded story -->
     <section aria-labelledby="narrative-heading" style="padding-block: var(--spacing-section-y)">
       <Container>
-        <div class="max-w-3xl">
-          <h2
-            id="narrative-heading"
-            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
-            style="font-size: var(--fs-28)"
-          >
-            About Fajrian
-          </h2>
-          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-            <p>
-              Fajrian Aidil Pratama is the Founder & Director of Banua Coder. He is a software engineer with experience in mobile engineering, digital product development, and performance-oriented platform and systems. This background shapes how Banua Coder works: more structured in mapping problems, more critical in designing solutions, and more disciplined in delivery.
-            </p>
-            <p>
-              Fajrian's experience spans consumer products for the international market (Dubai/UAE via Ulearna Technology LTD), public-sector and regional tax systems, and platform engineering at GoTo Financial, Reku, and Stockbit/Bibit. Banua Coder approaches every project with a combination of product thinking, engineering depth, and cross-context business operational understanding — so every solution is relevant, not just technically sound.
-            </p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+          <div class="lg:col-span-2">
+            <h2
+              id="narrative-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+              style="font-size: var(--fs-28)"
+            >
+              About Fajrian
+            </h2>
+            <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Fajrian Aidil Pratama grew up in Central Sulawesi and built his career as a software engineer specializing in mobile engineering, platform systems, and digital product development. From early on, he was drawn to how large systems work from the inside — not just building requested features, but understanding architecture, tradeoffs, and the long-term implications of every technical decision.
+              </p>
+              <p>
+                His career took him into product engineering environments rarely reached by engineers from regional Indonesia: GoTo Financial as Southeast Asia's largest fintech ecosystem, Reku and Stockbit/Bibit as consumer investment platforms serving millions of users, and international collaboration with Ulearna Technology LTD on products targeting a global market. He also worked on public-sector digital systems — regional tax and retribution service applications that demand a different kind of rigor around data trust and workflow clarity than typical consumer apps.
+              </p>
+              <p>
+                Banua Coder was founded in 2019 from a desire to bring those engineering and product-thinking standards to a local context — businesses and organizations in regional Indonesia that need a technology partner they can genuinely rely on, not just a vendor that codes. Fajrian founded Banua Coder on one conviction: the quality of digital solutions should not depend on where a business is located.
+              </p>
+              <p>
+                His approach to leading Banua Coder is to combine engineering depth with product thinking — two things that are often separated in conventional software houses. The result is a team that doesn't just build what's asked, but helps clients think more clearly about what actually needs to be built.
+              </p>
+            </div>
           </div>
+          <aside>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={ambientImg}
+                alt="Clean workspace — craft and engineering focus"
+                width={400}
+                class="w-full object-cover"
+                style="max-height: 320px"
+              />
+            </div>
+          </aside>
         </div>
       </Container>
     </section>
@@ -172,6 +211,71 @@ const personSchema = {
           // Selected background
         </h2>
         <FounderExperienceStrip />
+      </Container>
+    </section>
+
+    <!-- Cross-context execution -->
+    <section aria-labelledby="cross-context-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // CROSS-CONTEXT EXECUTION
+          </p>
+          <h2
+            id="cross-context-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-28)"
+          >
+            Cross-context execution
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Many skilled engineers have only ever worked in one context: consumer startup, or enterprise internal systems, or an agency. When the problem in front of them is different from what they've usually handled, there's a real risk the solution won't fit — not from lack of ability, but from limited reference points.
+            </p>
+            <p>
+              Fajrian brings experience across three very different contexts: consumer products used by millions of people that demand high performance, reliability, and strong UX; public systems that require data trust, auditability, and clear workflows; and platform engineering that prioritizes maintainability and developer experience. Each context teaches something different about tradeoffs and priorities.
+            </p>
+            <p>
+              The result is an adaptive approach: we don't bring the same solution template to every client. We read the context — whether this is an F&B brand that needs a simple membership system up and running fast, or a regional government workflow system that needs clean data structures and an audit trail — and adjust the architecture and delivery approach accordingly.
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Engineering philosophy -->
+    <section
+      aria-labelledby="philosophy-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // ENGINEERING PHILOSOPHY
+        </p>
+        <h2
+          id="philosophy-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-10"
+          style="font-size: var(--fs-28)"
+        >
+          Our engineering principles
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {engineeringPhilosophy.map((principle) => (
+            <div class="flex flex-col gap-3">
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">{principle.label}</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-17)"
+              >
+                {principle.title}
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                {principle.desc}
+              </p>
+            </div>
+          ))}
+        </div>
       </Container>
     </section>
 
@@ -218,7 +322,11 @@ const personSchema = {
     </section>
 
     <!-- Selected experience + credibility bullets -->
-    <section aria-labelledby="selected-exp-heading" style="padding-block: var(--spacing-section-y)">
+    <section
+      aria-labelledby="selected-exp-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
       <Container>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <!-- Experience list -->
@@ -270,7 +378,6 @@ const personSchema = {
     <!-- Currently leading -->
     <section
       aria-labelledby="leading-heading"
-      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
       style="padding-block: var(--spacing-section-y-sm)"
     >
       <Container>
@@ -290,6 +397,40 @@ const personSchema = {
         >
           Meet the full team →
         </a>
+      </Container>
+    </section>
+
+    <!-- Connect section -->
+    <section
+      aria-labelledby="connect-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // CONNECT
+        </p>
+        <h2
+          id="connect-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2"
+          style="font-size: var(--fs-20)"
+        >
+          Follow or connect
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm mb-6">
+          Fajrian actively shares thoughts on engineering, product, and building software. Find him on these platforms.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://linkedin.com/in/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            LinkedIn →
+          </a>
+          <a href="https://github.com/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            GitHub →
+          </a>
+          <a href="https://twitter.com/ryanaidilp_" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            X / Twitter →
+          </a>
+        </div>
       </Container>
     </section>
 
