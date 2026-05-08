@@ -1,0 +1,59 @@
+---
+/**
+ * Logo — renders the Banua Coder brand mark in horizontal, icon, or vertical variant.
+ * Pass inline=true to embed the SVG icon directly (currentColor-controllable).
+ */
+import { Image } from 'astro:assets'
+import horizontalPng from '../../assets/brand/banuacoder-horizontal.png'
+import iconPng from '../../assets/brand/banuacoder-icon.png'
+import verticalPng from '../../assets/brand/banuacoder-vertical.png'
+
+interface Props {
+  /** Which logo asset to render */
+  variant?: 'horizontal' | 'icon' | 'vertical'
+  /** Pixel width override — defaults per variant */
+  width?: number
+  /** Alt text override */
+  alt?: string
+  /** Render the SVG icon inline (for color control via CSS) */
+  inline?: boolean
+  /** Extra CSS classes */
+  class?: string
+}
+
+const {
+  variant = 'horizontal',
+  width,
+  alt = 'Banua Coder',
+  inline = false,
+  class: cls = '',
+} = Astro.props
+
+const defaultWidths = { horizontal: 180, icon: 40, vertical: 120 }
+const resolvedWidth = width ?? defaultWidths[variant]
+
+const assets = { horizontal: horizontalPng, icon: iconPng, vertical: verticalPng }
+const src = assets[variant]
+---
+
+{inline && variant === 'icon' ? (
+  <span class:list={['inline-block', cls]} style={`width:${resolvedWidth}px`} aria-label={alt} role="img">
+    <!-- Inline SVG BC icon for currentColor usage -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" fill="none" style="display:block;width:100%;height:auto" aria-hidden="true">
+      <rect width="280" height="280" rx="56" fill="#12398C"/>
+      <path d="M96 85.5 L99.8 89.3 C92.0 95.3 87.1 104.7 87.1 115.3 C87.1 125.9 92.0 135.3 99.8 141.3 L96 145.1 C86.8 137.3 81.1 125.9 81.1 115.3 C81.1 104.7 86.8 93.3 96 85.5 Z" fill="#1D9CD4"/>
+      <path d="M103.5 141.0 L103.5 124.2 C103.5 120.7 101.2 117.7 97.9 116.3 C101.2 114.9 103.5 111.9 103.5 108.3 L103.5 91.5 L126.6 91.5 C134.3 91.5 140.5 97.7 140.5 105.4 C140.5 113.1 134.3 119.3 126.6 119.3 L126.6 124.7 C134.3 124.7 140.5 130.9 140.5 138.6 C140.5 146.3 134.3 152.4 126.6 152.4 L103.5 152.4 Z M109.1 147.1 L109.1 132.5 C109.1 129.0 107.7 125.8 105.2 123.6 C107.7 121.4 109.1 118.2 109.1 114.7 L109.1 100.1 L126.6 100.1 C129.5 100.1 131.9 102.5 131.9 105.4 C131.9 108.3 129.5 110.7 126.6 110.7 L126.6 116.1 C129.5 116.1 131.9 118.5 131.9 121.4 C131.9 124.3 129.5 126.7 126.6 126.7 L109.1 126.7 L109.1 147.1 Z" fill="white"/>
+      <path d="M193.5 139.0 L189.4 135.0 C186.0 138.3 181.9 140.0 177.3 140.0 C172.7 140.0 168.5 138.3 165.1 134.9 C161.7 131.5 160.0 127.3 160.0 122.7 C160.0 118.1 161.7 113.9 165.1 110.5 C168.5 107.2 172.7 105.5 177.3 105.5 C182.0 105.5 186.0 107.2 189.4 110.6 L193.5 106.5 C188.7 101.7 182.7 99.3 177.3 99.3 C170.6 99.3 164.8 101.7 160.0 106.5 C155.2 111.3 152.8 117.5 152.8 122.7 C152.8 128.4 155.2 134.1 160.0 138.9 C164.8 143.5 170.6 145.9 177.3 145.9 C182.9 145.9 188.7 143.7 193.5 139.0 Z" fill="#1D9CD4"/>
+    </svg>
+  </span>
+) : (
+  <Image
+    src={src}
+    alt={alt}
+    width={resolvedWidth}
+    height={Math.round(resolvedWidth * (src.height / src.width))}
+    class:list={[cls]}
+    loading="eager"
+    decoding="async"
+  />
+)}
