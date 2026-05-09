@@ -540,6 +540,70 @@ export function initAnimations(): () => void {
       })
     }
 
+    // ── Testimonial word-by-word reveal ──────────────────────────────────────
+    // Splits the quote text into individual word-spans (constructed via
+    // createElement, NOT innerHTML, so MDX-authored content stays
+    // untouched as plain text), then fades them in with a tight stagger
+    // as the quote scrolls into view.
+    const testimonialSection = document.querySelector<HTMLElement>('[data-tell-testimonial]')
+    const quoteEl = testimonialSection?.querySelector<HTMLElement>('blockquote p')
+    if (testimonialSection && quoteEl) {
+      const text = quoteEl.textContent ?? ''
+      quoteEl.textContent = ''
+      const fragment = document.createDocumentFragment()
+      for (const part of text.split(/(\s+)/)) {
+        if (/^\s+$/.test(part)) {
+          fragment.appendChild(document.createTextNode(part))
+        } else if (part.length > 0) {
+          const span = document.createElement('span')
+          span.className = 'tell-quote-word'
+          span.style.display = 'inline-block'
+          span.style.willChange = 'opacity,transform'
+          span.textContent = part
+          fragment.appendChild(span)
+        }
+      }
+      quoteEl.appendChild(fragment)
+      const words = Array.from(
+        quoteEl.querySelectorAll<HTMLElement>('.tell-quote-word'),
+      )
+      gsap.fromTo(
+        words,
+        { opacity: 0, y: 14 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.45,
+          stagger: 0.025,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: testimonialSection,
+            start: 'top 78%',
+            once: true,
+          },
+        },
+      )
+      const figcaption = testimonialSection.querySelector<HTMLElement>('figcaption')
+      if (figcaption) {
+        gsap.fromTo(
+          figcaption,
+          { opacity: 0, y: 10 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: words.length * 0.025 + 0.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: testimonialSection,
+              start: 'top 78%',
+              once: true,
+            },
+          },
+        )
+      }
+    }
+
     // ── Ideal-clients tile burst-in ──────────────────────────────────────────
     // Tiles cascade from a slight rotation + scale + y offset, one after the
     // next as the section enters viewport. Each tile gets a tiny lingering
