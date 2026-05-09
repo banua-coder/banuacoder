@@ -1,0 +1,215 @@
+---
+/**
+ * ClientLogoCycle — pinned scroll-driven client logo reveal (ZOG-style).
+ *
+ * Section is h-[300vh]; inner panel is sticky top-0 h-screen.
+ * A centered headline stays pinned while ~12 logo slots cycle through
+ * INDIVIDUAL scroll-triggered enter/exit windows (no batch sync).
+ *
+ * Each slot has its own scattered position around the viewport edges,
+ * its own scroll-progress window, and a unique randomized rotation seed.
+ * Multiple slots overlap in time so logos are continuously fading
+ * in and out as the user scrubs.
+ *
+ * GSAP timelines live in src/lib/animations.ts (`.client-cycle` selector,
+ * reads data-cell-* attrs on each `.client-cycle-cell`).
+ *
+ * Reduced-motion fallback: CSS overrides collapse to a static wrap-grid.
+ */
+
+import { clients } from '../../data/clients'
+
+const logoModules = import.meta.glob('/src/assets/clients/*.{svg,png}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const logoUrls: Record<string, string> = Object.fromEntries(
+  Object.entries(logoModules).map(([path, url]) => [path.split('/').pop() ?? '', url]),
+)
+
+interface Props {
+  /** Language variant for eyebrow / headline copy */
+  lang?: 'id' | 'en'
+}
+
+const { lang = 'id' } = Astro.props
+
+const eyebrow = lang === 'en' ? '// TRUSTED BY' : '// DIPERCAYA OLEH'
+const heading = lang === 'en' ? 'Our clients and partners' : 'Klien dan partner kami'
+const subhead =
+  lang === 'en'
+    ? 'From public sector to international consumer products.'
+    : 'Dari sektor publik hingga produk consumer internasional.'
+
+const byLogo = Object.fromEntries(clients.map((c) => [c.logo, c]))
+
+/**
+ * 13 slots scattered around the viewport edges. Center 25–75% × 28–68%
+ * is kept clear for the pinned headline.
+ *
+ * Each slot defines:
+ *   - logoFile : which client emblem to render
+ *   - fromX/Y  : percent coords where the logo APPEARS (small + blurred)
+ *   - toX/Y    : percent coords where the logo DRIFTS to as it fades away
+ *                (animations.ts tweens left/top from from→to across the cell's
+ *                full lifespan, matching ZOG's parallax-drift effect)
+ *   - enter    : scroll progress (0–1) when this cell starts fading IN
+ *   - exit     : scroll progress when it starts fading OUT (omit for slots
+ *                that should remain visible until the section ends)
+ *
+ * Stagger of ~0.06 with enter/exit windows of 0.22 keeps 5–6 logos visible
+ * mid-transition at any moment. Drifts are subtle (±5–12%) so logos move
+ * in a parallax direction during their lifespan rather than just blipping.
+ */
+type Slot = {
+  logoFile: string
+  fromX: number
+  fromY: number
+  toX: number
+  toY: number
+  enter: number
+  exit?: number
+}
+
+const slots: Slot[] = [
+  // Repeating pattern — 16 slots over 10 unique brands. Some clients
+  // (caretaker, bps, ulearna, pemprov-sulteng, klinikgo, detexi) appear
+  // twice for visual density. When more partner brands are added later,
+  // these duplicates can be swapped out for the new logos.
+  { logoFile: 'ulearna.png',            fromX: 45, fromY: 42, toX:  -8, toY:   2, enter: 0.00, exit: 0.26 },
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 55, fromY: 42, toX: 108, toY:   2, enter: 0.05, exit: 0.31 },
+  { logoFile: 'caretaker.png',          fromX: 45, fromY: 58, toX:  -8, toY: 102, enter: 0.10, exit: 0.36 },
+  { logoFile: 'bps.svg',                fromX: 55, fromY: 58, toX: 108, toY: 102, enter: 0.14, exit: 0.40 },
+  { logoFile: 'pemkab-gowa.png',        fromX: 50, fromY: 35, toX:  50, toY:  -8, enter: 0.18, exit: 0.44 },
+  { logoFile: 'detexi.png',             fromX: 50, fromY: 65, toX:  50, toY: 108, enter: 0.22, exit: 0.48 },
+  { logoFile: 'klinikgo.png',           fromX: 35, fromY: 50, toX: -10, toY:  50, enter: 0.26, exit: 0.52 },
+  { logoFile: 'pemkab-donggala.png',    fromX: 65, fromY: 50, toX: 110, toY:  50, enter: 0.30, exit: 0.56 },
+  { logoFile: 'brantas-inti-utama.png', fromX: 40, fromY: 38, toX:  -8, toY:  -2, enter: 0.34, exit: 0.60 },
+  { logoFile: 'pemprov-sulsel.svg',     fromX: 60, fromY: 62, toX: 108, toY: 102, enter: 0.38, exit: 0.64 },
+  { logoFile: 'caretaker.png',          fromX: 38, fromY: 60, toX:  -8, toY: 102, enter: 0.42, exit: 0.68 },
+  { logoFile: 'bps.svg',                fromX: 62, fromY: 40, toX: 108, toY:  -4, enter: 0.46, exit: 0.72 },
+  { logoFile: 'ulearna.png',            fromX: 36, fromY: 42, toX: -10, toY:  20, enter: 0.50, exit: 0.76 },
+  // Last 3: emerge dead-centre behind the headline and ALSO fade out
+  // through a viewport edge before the section unpins.
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 48, fromY: 48, toX:  -8, toY:  10, enter: 0.56, exit: 0.82 },
+  { logoFile: 'klinikgo.png',           fromX: 52, fromY: 52, toX: 108, toY: 105, enter: 0.62, exit: 0.85 },
+  { logoFile: 'detexi.png',             fromX: 50, fromY: 50, toX: 108, toY:  -6, enter: 0.68, exit: 0.88 },
+]
+---
+
+<section
+  class="client-cycle relative h-[300vh]"
+  aria-label={lang === 'en' ? 'Clients and partners' : 'Klien dan partner kami'}
+>
+  <div class="client-cycle-pin sticky top-0 h-screen flex items-center justify-center isolate overflow-hidden">
+    <!-- Centered headline + subhead — pinned while logos cycle -->
+    <div class="relative z-10 text-center px-4 pointer-events-none select-none">
+      <p class="font-mono text-xs uppercase tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400">
+        {eyebrow}
+      </p>
+      <h2
+        class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mt-3 leading-tight"
+        style="font-size: var(--fs-48)"
+      >
+        {heading}
+      </h2>
+      <p class="text-bnc-stone-600 dark:text-bnc-stone-400 max-w-xl mx-auto mt-4" style="font-size: var(--fs-17)">
+        {subhead}
+      </p>
+    </div>
+
+    <!-- Scattered absolute-positioned logo cells. Each one animates independently. -->
+    <div class="client-cycle-stage absolute inset-0 pointer-events-none" aria-hidden="true">
+      {slots.map((slot, idx) => {
+        const client = byLogo[slot.logoFile]
+        if (!client) return null
+        const logoUrl = logoUrls[slot.logoFile]
+        return (
+          <div
+            class="client-cycle-cell absolute"
+            style={`left: ${slot.fromX}%; top: ${slot.fromY}%; transform: translate(-50%, -50%);`}
+            data-cell-index={idx}
+            data-cell-from-x={slot.fromX}
+            data-cell-from-y={slot.fromY}
+            data-cell-to-x={slot.toX}
+            data-cell-to-y={slot.toY}
+            data-cell-enter={slot.enter}
+            data-cell-exit={slot.exit ?? ''}
+          >
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={client.name}
+                loading="lazy"
+                decoding="async"
+                class="client-cycle-logo h-16 sm:h-20 w-auto max-w-[180px] object-contain"
+                data-pemda={slot.logoFile.startsWith('pemprov-') || slot.logoFile.startsWith('pemkab-') ? '' : undefined}
+              />
+            ) : (
+              <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
+                {client.name}
+              </span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Two layers of blur stacked additively:
+       --cell-fade-blur     : timeline-driven entrance/exit dolly blur
+       --cell-overlap-blur  : position-driven extra blur while the logo's
+                              centre is inside the centred headline rect
+     Plus the existing entrance grayscale via --cell-fade-gray. */
+  .client-cycle-cell {
+    filter:
+      blur(calc(var(--cell-fade-blur, 0px) + var(--cell-overlap-blur, 0px)))
+      grayscale(var(--cell-fade-gray, 0));
+    transition: filter 0.18s ease;
+  }
+
+  /* Dark theme: brand/agency logos (Ulearna, Brantas, KlinikGo, BPS) render
+     as flat white silhouettes for a ZOG-style luminous treatment.
+     Pemda emblems (pemprov-* / pemkab-* coats of arms) keep their natural
+     red/yellow/multi-colour heraldry — silhouetting state symbols would
+     strip their identity. Light theme leaves all logos in natural colours.
+     `brightness(0)` collapses to pure black, then `invert(1)` flips to white. */
+  :global(html.dark) .client-cycle-logo:not([data-pemda]) {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Reduced-motion: collapse the 300vh scroll space and show all logos
+     statically as a centered wrap row beneath the headline. */
+  @media (prefers-reduced-motion: reduce) {
+    .client-cycle {
+      height: auto;
+    }
+    .client-cycle-pin {
+      position: static;
+      height: auto;
+      flex-direction: column;
+      gap: 2rem;
+      padding-block: var(--spacing-section-y-sm);
+    }
+    .client-cycle-stage {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 720px;
+    }
+    .client-cycle-cell {
+      position: static !important;
+      transform: none !important;
+      filter: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+</style>

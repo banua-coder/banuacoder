@@ -18,12 +18,13 @@ const { step, title, body, last = false, class: cls = '' } = Astro.props
 const marker = `[ ${String(step).padStart(2, '0')} ]`
 ---
 
-<div class:list={['relative flex gap-6', !last && 'pb-10', cls]}>
+<div class:list={['relative flex gap-6', !last && 'pb-10', cls]} data-process-step>
   <!-- Connector line -->
   {!last && (
     <div
       class="absolute left-[1.6rem] top-8 bottom-0 w-px bg-bnc-stone-200 dark:bg-bnc-stone-800"
       aria-hidden="true"
+      data-process-line
     ></div>
   )}
 
@@ -31,6 +32,7 @@ const marker = `[ ${String(step).padStart(2, '0')} ]`
   <div
     class="relative z-10 flex items-center justify-center w-[3.2rem] h-[3.2rem] shrink-0 rounded-full border-2 border-bnc-accent bg-bnc-paper dark:bg-bnc-ink"
     aria-hidden="true"
+    data-process-dot
   >
     <span class="font-mono text-xs text-bnc-accent tabular-nums">{String(step).padStart(2, '0')}</span>
   </div>

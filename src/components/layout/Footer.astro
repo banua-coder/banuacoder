@@ -106,5 +106,34 @@ const socials = [
         </ul>
       </div>
     </div>
+
+    <!-- PSE Komdigi registration badge -->
+    <div class="mt-10 pt-6 border-t border-bnc-stone-200 dark:border-bnc-stone-800 flex justify-center">
+      <a
+        href="https://pse.komdigi.go.id/pse"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-3 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 px-4 py-2.5 transition-colors hover:border-bnc-accent dark:hover:border-bnc-accent"
+        aria-label="Terdaftar di PSE Komdigi"
+      >
+        <img
+          src="/badges/komdigi.png"
+          alt="Komdigi"
+          width={32}
+          height={32}
+          loading="lazy"
+          decoding="async"
+          class="h-7 w-auto object-contain"
+        />
+        <span class="flex flex-col leading-tight">
+          <span class="font-mono text-[10px] tracking-widest uppercase text-bnc-stone-400">
+            {isEn ? 'Registered with' : 'Terdaftar di'}
+          </span>
+          <span class="font-mono text-xs text-bnc-stone-700 dark:text-bnc-stone-300">
+            PSE Komdigi · 015494.01/DJAI.PSE/09/2024
+          </span>
+        </span>
+      </a>
+    </div>
   </div>
 </footer>

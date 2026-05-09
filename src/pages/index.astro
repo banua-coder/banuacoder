@@ -8,18 +8,29 @@ import Footer from '../components/layout/Footer.astro'
 import Container from '../components/layout/Container.astro'
 import Hero from '../components/sections/Hero.astro'
 import TrustStrip from '../components/sections/TrustStrip.astro'
-import ClientLogoRow from '../components/trust/ClientLogoRow.astro'
+import ClientLogoCycle from '../components/sections/ClientLogoCycle.astro'
 import SectionHeader from '../components/typography/SectionHeader.astro'
 import ProcessStep from '../components/sections/ProcessStep.astro'
 import CaseStudyCard from '../components/cards/CaseStudyCard.astro'
 import FounderCard from '../components/founder/FounderCard.astro'
 import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
 import CTA from '../components/sections/CTA.astro'
+import WhyCarousel from '../components/sections/WhyCarousel.astro'
 import DeviceFrame from '../components/interactive/DeviceFrame.astro'
 import Testimonial from '../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
-import heroPico from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
-import heroCarwa from '../content/portfolio/carwa/screenshots/screenshot-1.webp'
+// HERO product carousel — each product has a paired (front, back) screenshot
+// so the two phones always reference the SAME product at any given tick.
+import heroPicoFront from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import heroPicoBack from '../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
+import heroSikerjaFront from '../content/portfolio/sikerja/screenshots/screenshot-home.webp'
+import heroSikerjaBack from '../content/portfolio/sikerja/screenshots/screenshot-2.webp'
+import heroSiapFront from '../content/portfolio/siap-donggala/screenshots/screenshot-1.webp'
+import heroSiapBack from '../content/portfolio/siap-donggala/screenshots/screenshot-3.webp'
+import heroDetexiFront from '../content/portfolio/detexi/screenshots/screenshot-4.webp'
+import heroDetexiBack from '../content/portfolio/detexi/screenshots/screenshot-5.webp'
+import heroCarwaFront from '../content/portfolio/carwa/screenshots/screenshot-clean-1.webp'
+import heroCarwaBack from '../content/portfolio/carwa/screenshots/screenshot-clean-2.webp'
 import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
 
 const idealClientIcons: Record<string, typeof Coffee> = {
@@ -165,38 +176,132 @@ const orgSchema = {
           <!-- Soft brand glow behind shots -->
           <div class="hero-glow" aria-hidden="true"></div>
 
-          <!-- Secondary screenshot (already framed, smaller, angled, back) -->
-          <div class="hero-shot hero-shot-back">
+          <!-- Secondary phone — companion shot of the SAME product currently
+               in front. Cycles in lockstep with the main stack so the two
+               phones always tell the story of one product, not two. -->
+          <div class="hero-shot hero-shot-back" data-hero-cycle-group="hero-products">
             <Image
-              src={heroCarwa}
+              src={heroPicoBack}
               alt=""
               widths={[200, 400]}
               sizes="200px"
               aria-hidden="true"
               loading="eager"
               decoding="async"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroSikerjaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
               class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroSiapBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexiBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
             />
           </div>
 
-          <!-- Main screenshot (already framed, front, larger) — LCP candidate -->
-          <div class="hero-shot hero-shot-main">
+          <!-- Main screenshot stack — 5 Banua Coder products. LCP image is
+               the first slide which uses fetchpriority high; others lazy. -->
+          <div
+            class="hero-shot hero-shot-main"
+            data-hero-cycle-group="hero-products"
+            data-hero-cycle-interval="4200"
+            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi,Carwa"
+          >
             <Image
-              src={heroPico}
+              src={heroPicoFront}
               alt="Pratinjau aplikasi PICO Sulteng"
               widths={[280, 560]}
               sizes="280px"
               loading="eager"
               decoding="async"
               fetchpriority="high"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroSikerjaFront}
+              alt="Pratinjau aplikasi Sikerja — beranda portal lowongan kerja Sulawesi Tengah"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
               class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroSiapFront}
+              alt="Pratinjau aplikasi Siap Donggala — sistem informasi kepegawaian"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexiFront}
+              alt="Pratinjau aplikasi Detexi — detail rujukan layanan medis"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaFront}
+              alt="Pratinjau aplikasi Carwa — lelang mobil digital Dubai"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
             />
           </div>
 
-          <!-- Floating engineering chip -->
-          <div class="hero-chip" aria-hidden="true">
+          <!-- Floating product label — updates as the main phone cycles -->
+          <div class="hero-chip" aria-hidden="true" data-hero-chip>
             <span class="hero-chip-dot"></span>
-            <span class="hero-chip-label">// engineering-led</span>
+            <span class="hero-chip-label" data-hero-chip-label>// PICO Sulteng</span>
           </div>
         </div>
       </Hero>
@@ -205,18 +310,8 @@ const orgSchema = {
     <!-- ② Trust strip -->
     {trustClaims && <TrustStrip claims={trustClaims} />}
 
-    <!-- ②b Client logo row -->
-    <section
-      aria-label="Dipercaya oleh"
-      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800 py-6"
-    >
-      <Container>
-        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
-          // DIPERCAYA OLEH
-        </p>
-        <ClientLogoRow />
-      </Container>
-    </section>
+    <!-- ②b Client logo cycle (pinned scroll-driven) -->
+    <ClientLogoCycle lang="id" />
 
     <!-- ③ About snippet -->
     {about && (
@@ -252,6 +347,7 @@ const orgSchema = {
             <div
               class="hidden md:flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
               aria-hidden="true"
+              data-tell-about-decor
             >
               <p class="font-mono text-xs text-bnc-accent tracking-wider">// didirikan 2019</p>
               <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
@@ -282,11 +378,12 @@ const orgSchema = {
             description={services.description}
             class="mb-12"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-stagger>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-tell-services>
             <!-- Build & Engineer -->
             <a
               href="/services/#build"
               class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
             >
               <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Build & Engineer</p>
               <h3
@@ -312,6 +409,7 @@ const orgSchema = {
             <a
               href="/services/#grow"
               class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
             >
               <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Brand & Grow</p>
               <h3
@@ -337,39 +435,15 @@ const orgSchema = {
       </section>
     )}
 
-    <!-- ⑤ Why Banua Coder -->
+    <!-- ⑤ Why Banua Coder (pinned scroll carousel) -->
     {why && (
-      <section
-        aria-labelledby="why-heading"
-        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
-        style="padding-block: var(--spacing-section-y)"
-        data-reveal
-      >
-        <Container>
-          <SectionHeader
-            eyebrow={why.eyebrow}
-            marker={why.marker}
-            title={why.title}
-            class="mb-12"
-          />
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" data-reveal-stagger>
-            {why.items.map((item) => (
-              <div class="flex flex-col gap-3">
-                <div class="w-8 h-px bg-bnc-accent" aria-hidden="true"></div>
-                <h3
-                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
-                  style="font-size: var(--fs-20)"
-                >
-                  {item.title}
-                </h3>
-                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-                  {item.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <WhyCarousel
+        eyebrow={why.eyebrow}
+        marker={why.marker}
+        title={why.title}
+        items={why.items}
+        lang="id"
+      />
     )}
 
     <!-- ⑥ Process -->
@@ -387,7 +461,7 @@ const orgSchema = {
             description={process.description}
             class="mb-14"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16" data-process-strip>
             {process.steps.map((step, i) => (
               <ProcessStep
                 step={i + 1}
@@ -426,16 +500,18 @@ const orgSchema = {
               </h2>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal-stagger>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-ideal-strip>
             {idealClients.items.map((item, i) => {
               const IconComponent = idealClientIcons[item.icon] ?? ArrowRight
               return (
-                <div class:list={[
-                  'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
-                  'border-bnc-stone-200 dark:border-bnc-stone-800',
-                  'bg-bnc-stone-50 dark:bg-bnc-stone-900',
-                  i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
-                ]}>
+                <div
+                  data-ideal-tile
+                  class:list={[
+                    'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
+                    'border-bnc-stone-200 dark:border-bnc-stone-800',
+                    'bg-bnc-stone-50 dark:bg-bnc-stone-900',
+                    i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
+                  ]}>
                   <span class="inline-flex items-center justify-center w-10 h-10 rounded-[var(--radius-sm)] bg-bnc-paper dark:bg-bnc-ink text-bnc-primary dark:text-bnc-accent" aria-hidden="true">
                     <IconComponent size={20} strokeWidth={1.75} />
                   </span>
@@ -479,9 +555,9 @@ const orgSchema = {
               </h2>
             </div>
             <div>
-              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list">
+              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list" data-tell-public-bullets>
                 {publicSector.bullets.map((bullet) => (
-                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed" data-tell-public-bullet>
                     <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
                     {bullet}
                   </li>
@@ -578,7 +654,7 @@ const orgSchema = {
               github: 'https://github.com/fajrianaidilpratama',
             }}
           />
-          <div class="mt-8 pt-8 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
+          <div class="mt-8 pt-8 border-t border-bnc-stone-200 dark:border-bnc-stone-800" data-tell-founder-experience>
             <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 mb-4 tracking-widest uppercase">
               // Latar belakang terpilih
             </p>
@@ -602,6 +678,7 @@ const orgSchema = {
         aria-label="Testimoni"
         class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
         style="padding-block: var(--spacing-section-y-sm)"
+        data-tell-testimonial
       >
         <Container class="max-w-3xl">
           <Testimonial
@@ -664,7 +741,9 @@ const orgSchema = {
       radial-gradient(50% 60% at 35% 60%, rgba(29, 156, 212, 0.18), transparent 70%);
   }
 
-  /* Screenshots already include device frame in the image — render bare with depth */
+  /* Screenshots already include device frame in the image — render bare with depth.
+     Each .hero-shot can hold multiple stacked .hero-shot-img siblings; only the
+     one with .is-active is fully opaque. Crossfades between them are CSS-driven. */
   .hero-shot {
     position: absolute;
   }
@@ -672,6 +751,20 @@ const orgSchema = {
     display: block;
     height: auto;
     border-radius: 28px;
+    transition: opacity 0.7s ease;
+  }
+  /* When a phone slot has multiple slides, stack them — only the first is in
+     normal flow (so the wrapper sizes to it), the rest are absolutely
+     positioned on top and faded out. */
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img) {
+    opacity: 0;
+  }
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img.is-active) {
+    opacity: 1;
+  }
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img:not(:first-child)) {
+    position: absolute;
+    inset: 0;
   }
 
   /* Main shot — front-right, slightly tilted, real screenshot, big shadow */
@@ -740,19 +833,32 @@ const orgSchema = {
     }
   }
 
-  /* Mobile: show only main screenshot, centered */
+  /* Mobile: keep BOTH phones, just tighter layout. Front phone shifts to
+     the right and shrinks; back phone shrinks more and tucks left so the
+     two devices still tell the dual-product story without overflowing
+     a narrow viewport. */
   @media (max-width: 640px) {
     .hero-stage {
-      height: 380px;
-      max-width: 320px;
+      height: 420px;
+      max-width: 360px;
     }
     .hero-shot-main {
-      right: 50%;
-      transform: translateX(50%) rotate(0);
+      right: 4%;
+      top: 12px;
     }
-    .hero-shot-back,
+    .hero-shot-main :global(.hero-shot-img) {
+      width: 220px;
+    }
+    .hero-shot-back {
+      left: -4%;
+      top: 60px;
+    }
+    .hero-shot-back :global(.hero-shot-img) {
+      width: 150px;
+    }
     .hero-chip {
-      display: none;
+      bottom: 16px;
+      left: 12px;
     }
   }
 

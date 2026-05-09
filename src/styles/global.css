@@ -68,8 +68,36 @@
 }
 
 /* ── Smooth scroll (respects reduced-motion) ── */
+/* Lenis handles smooth scroll when JS runs; this CSS fallback is for no-JS only */
 @media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+  html:not(.lenis) { scroll-behavior: smooth; }
+}
+
+/* ── Pinned scroll sections: reduced-motion hard overrides ── */
+/* Scoped CSS in each component handles structure; these globals ensure
+   GSAP-set inline styles (opacity, transform) are fully overridden. */
+@media (prefers-reduced-motion: reduce) {
+  .client-cycle { height: auto !important; }
+  .client-cycle-pin { position: static !important; height: auto !important; }
+  .client-cycle-batch {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  .client-cycle-cell {
+    filter: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .why-carousel { height: auto !important; }
+  .why-carousel-pin { position: static !important; height: auto !important; }
+  .why-tile {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
 }
 
 
@@ -90,6 +118,10 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: clip;
+  }
+
   html {
     font-family: var(--font-body);
     color: var(--color-bnc-ink);

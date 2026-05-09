@@ -8,10 +8,18 @@ import Container from '../components/layout/Container.astro'
 import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
 import CTA from '../components/sections/CTA.astro'
 import iconImage from '../assets/brand/banuacoder-icon.png'
-import workImg1 from '../assets/founder/work-product/work-1.webp'
-import workImg2 from '../assets/founder/work-product/work-2.webp'
-import workImg3 from '../assets/founder/work-product/work-3.webp'
-import workImg4 from '../assets/founder/work-product/work-4.webp'
+import rekuShot1 from '../assets/founder/work-product/work-1.webp'
+import rekuShot2 from '../assets/founder/work-product/work-3.webp'
+import rekuShot3 from '../assets/founder/work-product/work-5.webp'
+import rekuShot4 from '../assets/founder/work-product/work-6.webp'
+import sikerjaShot1 from '../content/portfolio/sikerja/screenshots/screenshot-2.webp'
+import sikerjaShot2 from '../content/portfolio/sikerja/screenshots/screenshot-3.webp'
+import detexiShot1 from '../content/portfolio/detexi/screenshots/screenshot-2.webp'
+import detexiShot2 from '../content/portfolio/detexi/screenshots/screenshot-4.webp'
+import carwaShot1 from '../content/portfolio/carwa/screenshots/screenshot-2.webp'
+import carwaShot2 from '../content/portfolio/carwa/screenshots/screenshot-3.webp'
+import picoShot1 from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import picoShot2 from '../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
 import ambientImg from '../assets/stock/clean-workspace-notebook.jpg'
 {/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
 
@@ -192,20 +200,20 @@ const founderBreadcrumbSchema = {
               class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
               style="font-size: var(--fs-28)"
             >
-              Tentang Fajrian
+              Tentang Ryan
             </h2>
             <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
               <p>
-                Fajrian Aidil Pratama tumbuh di Sulawesi Tengah dan menghabiskan kariernya sebagai software engineer dengan spesialisasi di mobile engineering, platform, dan digital product development. Sejak awal, ia tertarik pada bagaimana sistem yang besar bekerja dari dalam—bukan sekadar membuat fitur yang diminta, tetapi memahami arsitektur, tradeoff, dan dampak jangka panjang dari setiap keputusan teknis.
+                Ryan tumbuh di Sulawesi Tengah dan menghabiskan kariernya sebagai software engineer dengan spesialisasi di mobile engineering, platform, dan digital product development. Sejak awal, ia tertarik pada bagaimana sistem yang besar bekerja dari dalam—bukan sekadar membuat fitur yang diminta, tetapi memahami arsitektur, tradeoff, dan dampak jangka panjang dari setiap keputusan teknis.
               </p>
               <p>
-                Perjalanan karier Fajrian membawanya ke lingkungan product engineering yang jarang diakses oleh engineer dari daerah: GoTo Financial sebagai ekosistem fintech terbesar di Asia Tenggara, Reku dan Stockbit/Bibit sebagai platform investasi consumer yang melayani jutaan pengguna, hingga kolaborasi internasional bersama Ulearna Technology LTD untuk produk yang menyasar pasar global. Di sisi lain, ia juga mengerjakan sistem digital publik—aplikasi layanan pajak dan retribusi daerah yang membutuhkan tingkat kepercayaan dan kejelasan yang berbeda dari produk consumer biasa.
+                Perjalanan karier Ryan membawanya ke lingkungan product engineering yang jarang diakses oleh engineer dari daerah: GoTo Financial sebagai ekosistem fintech terbesar di Asia Tenggara, Reku dan Stockbit/Bibit sebagai platform investasi consumer yang melayani jutaan pengguna, hingga kolaborasi internasional bersama Ulearna Technology LTD untuk produk yang menyasar pasar global. Di sisi lain, ia juga mengerjakan sistem digital publik—aplikasi layanan pajak dan retribusi daerah yang membutuhkan tingkat kepercayaan dan kejelasan yang berbeda dari produk consumer biasa.
               </p>
               <p>
-                Banua Coder lahir dari keinginan untuk membawa standar engineering dan product thinking itu ke konteks lokal—bisnis dan organisasi di daerah yang membutuhkan partner teknologi yang benar-benar bisa diandalkan, bukan hanya vendor yang bisa ngoding. Fajrian mendirikan Banua Coder pada 2019 dengan satu keyakinan: kualitas solusi digital tidak seharusnya bergantung pada di mana bisnis itu berada.
+                Banua Coder lahir dari keinginan untuk membawa standar engineering dan product thinking itu ke konteks lokal—bisnis dan organisasi di daerah yang membutuhkan partner teknologi yang benar-benar bisa diandalkan, bukan hanya vendor yang bisa ngoding. Ryan mendirikan Banua Coder pada 2019 dengan satu keyakinan: kualitas solusi digital tidak seharusnya bergantung pada di mana bisnis itu berada.
               </p>
               <p>
-                Pendekatan Fajrian dalam memimpin Banua Coder adalah menggabungkan engineering depth dengan product thinking—dua hal yang seringkali dipisahkan di software house konvensional. Hasilnya adalah tim yang tidak hanya bisa membangun apa yang diminta, tetapi juga membantu klien berpikir lebih jernih tentang apa yang sebenarnya perlu dibangun.
+                Pendekatan Ryan dalam memimpin Banua Coder adalah menggabungkan engineering depth dengan product thinking—dua hal yang seringkali dipisahkan di software house konvensional. Hasilnya adalah tim yang tidak hanya bisa membangun apa yang diminta, tetapi juga membantu klien berpikir lebih jernih tentang apa yang sebenarnya perlu dibangun.
               </p>
             </div>
           </div>
@@ -262,7 +270,7 @@ const founderBreadcrumbSchema = {
               Banyak engineer bagus hanya pernah bekerja dalam satu konteks: startup consumer, atau enterprise internal, atau agency. Ketika masalah yang dihadapi berbeda dari yang biasa mereka kerjakan, ada risiko nyata bahwa solusi yang dihasilkan tidak tepat—bukan karena kurang pintar, tetapi karena referensinya terbatas.
             </p>
             <p>
-              Fajrian membawa pengalaman di tiga konteks yang sangat berbeda: produk consumer yang digunakan jutaan orang dan menuntut performance, reliability, serta UX yang sangat baik; sistem publik yang membutuhkan kepercayaan data, auditability, dan kejelasan alur; dan engineering platform yang memprioritaskan maintainability dan developer experience. Setiap konteks mengajarkan sesuatu yang berbeda tentang tradeoff dan prioritas.
+              Ryan membawa pengalaman di tiga konteks yang sangat berbeda: produk consumer yang digunakan jutaan orang dan menuntut performance, reliability, serta UX yang sangat baik; sistem publik yang membutuhkan kepercayaan data, auditability, dan kejelasan alur; dan engineering platform yang memprioritaskan maintainability dan developer experience. Setiap konteks mengajarkan sesuatu yang berbeda tentang tradeoff dan prioritas.
             </p>
             <p>
               Hasilnya adalah pendekatan yang adaptif: kami tidak membawa template solusi yang sama untuk setiap klien. Kami membaca konteksnya—apakah ini produk F&B yang butuh membership system simpel dan cepat jalan, atau sistem workflow pemerintah daerah yang butuh struktur data yang jelas dan audit trail—dan menyesuaikan arsitektur serta pendekatan delivery-nya.
@@ -322,32 +330,59 @@ const founderBreadcrumbSchema = {
           class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-3"
           style="font-size: var(--fs-28)"
         >
-          Pengalaman lapangan, redacted
+          Karya terpilih
         </h2>
         <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-8 max-w-2xl" style="font-size: var(--fs-17)">
-          Cuplikan kerja teknis dari pengalaman sebelumnya. Detail produk dan branding diredact untuk menghormati kerahasiaan.
+          Cuplikan tampilan dari aplikasi yang sudah kami kerjakan — mulai dari layanan publik
+          daerah, aplikasi konsumen di Indonesia, hingga produk fintech skala jutaan pengguna
+          dari pengalaman sebelumnya. Beberapa tampilan kami sembunyikan brandingnya untuk menjaga
+          kerahasiaan klien.
         </p>
-        <div class="flex flex-wrap gap-4">
-          {[
-            { src: workImg1, alt: "Mobile financial app — light mode portfolio screen" },
-            { src: workImg2, alt: "Mobile financial app — dark mode screen" },
-            { src: workImg3, alt: "Mobile app — complex feature flow with dark theme" },
-            { src: workImg4, alt: "Mobile app — side-by-side dark mode comparison" },
-          ].map(({ src, alt }) => (
-            <div class="border border-dashed border-bnc-stone-400 dark:border-bnc-stone-600 rounded-[var(--radius-sm)] overflow-hidden shrink-0">
-              <Image
-                src={src}
-                alt={alt}
-                width={160}
-                class="block opacity-85 grayscale-[20%]"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          ))}
+        <div
+          class="prior-work-marquee relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8"
+          aria-roledescription="carousel"
+          aria-label="Cuplikan tampilan aplikasi"
+        >
+          <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
+            {[
+              // Group: Reku (prior consumer fintech, redacted) — 4 shots together
+              { src: rekuShot1, alt: "Aplikasi consumer fintech (redacted) — perbandingan light vs dark mode pada layar discover/market", label: 'Consumer fintech · prior' },
+              { src: rekuShot2, alt: "Aplikasi consumer fintech — layar reward/cashback", label: 'Consumer fintech · prior' },
+              { src: rekuShot3, alt: "Aplikasi consumer fintech — Portfolio P/L dengan grafik annotated", label: 'Consumer fintech · prior' },
+              { src: rekuShot4, alt: "Aplikasi consumer fintech — rincian aset dengan card list", label: 'Consumer fintech · prior' },
+              // Group: Sikerja
+              { src: sikerjaShot1, alt: "Sikerja — daftar lowongan kerja Sulawesi Tengah", label: 'Sikerja · 2024' },
+              { src: sikerjaShot2, alt: "Sikerja — detail lowongan dan profil perusahaan mitra", label: 'Sikerja · 2024' },
+              // Group: Detexi
+              { src: detexiShot1, alt: "Detexi Doctor — pencarian dokter berdasarkan spesialisasi", label: 'Detexi · 2023' },
+              { src: detexiShot2, alt: "Detexi Doctor — alur konsultasi pasien dan dokter", label: 'Detexi · 2023' },
+              // Group: Carwa
+              { src: carwaShot1, alt: "Carwa — antarmuka lelang mobil digital live", label: 'Carwa · Dubai · 2024' },
+              { src: carwaShot2, alt: "Carwa — daftar lelang mobil dengan informasi spesifikasi", label: 'Carwa · Dubai · 2024' },
+              // Group: PICO Sulteng
+              { src: picoShot1, alt: "PICO Sulteng — dashboard statistik COVID-19 provinsi", label: 'PICO Sulteng · 2021' },
+              { src: picoShot2, alt: "PICO Sulteng — peta sebaran kasus regional", label: 'PICO Sulteng · 2021' },
+            ].map(({ src, alt, label }) => (
+              <figure class="prior-work-slide shrink-0 group">
+                <div class="border border-bnc-stone-200 dark:border-bnc-stone-800 rounded-[var(--radius-md)] overflow-hidden bg-bnc-stone-50 dark:bg-bnc-stone-900">
+                  <Image
+                    src={src}
+                    alt={alt}
+                    width={280}
+                    class="block w-full h-auto"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption class="font-mono text-[10px] tracking-wider uppercase text-bnc-stone-400 dark:text-bnc-stone-500 mt-2 text-center">
+                  {label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
         <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600 mt-4">
-          Tidak ditampilkan: nama produk, klien tertentu
+          Mencakup produk Banua Coder dan pengalaman sebelumnya · Geser untuk melihat semua
         </p>
       </Container>
     </section>
@@ -420,7 +455,7 @@ const founderBreadcrumbSchema = {
           Saat Ini Memimpin
         </h2>
         <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-4" style="font-size: var(--fs-17); max-width: 60ch">
-          Fajrian memimpin Banua Coder bersama tim yang solid—mencakup engineering, design, dan delivery. Setiap project yang Anda percayakan kepada Banua Coder mendapat perhatian langsung dari Fajrian pada tahap discovery dan arsitektur solusi.
+          Ryan memimpin Banua Coder bersama tim yang solid—mencakup engineering, design, dan delivery. Setiap project yang Anda percayakan kepada Banua Coder mendapat perhatian langsung dari Ryan pada tahap discovery dan arsitektur solusi.
         </p>
         <a
           href="/about/"
@@ -449,7 +484,7 @@ const founderBreadcrumbSchema = {
           Ikuti atau terhubung
         </h2>
         <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm mb-6">
-          Fajrian aktif berbagi tentang engineering, product, dan pengalaman membangun software. Tersedia di platform berikut.
+          Ryan aktif berbagi tentang engineering, product, dan pengalaman membangun software. Tersedia di platform berikut.
         </p>
         <div class="flex flex-wrap gap-4">
           <a href="https://linkedin.com/in/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
@@ -468,7 +503,7 @@ const founderBreadcrumbSchema = {
     <!-- CTA -->
     <CTA
       headline="Jadwalkan percakapan"
-      sub="Diskusikan langsung kebutuhan Anda dengan Fajrian dan tim Banua Coder."
+      sub="Diskusikan langsung kebutuhan Anda dengan Ryan dan tim Banua Coder."
       primaryCta="Mulai Diskusi"
       primaryHref="/contact/"
       inverted={true}
@@ -477,3 +512,55 @@ const founderBreadcrumbSchema = {
 
   <Footer />
 </BaseLayout>
+
+<style>
+  /* Prior-work marquee — auto-scrolling horizontal carousel of redacted
+     screenshots from prior consumer fintech work. Auto-scroll loops on
+     a 40s cycle; pauses on hover (desktop) or focus-within (keyboard).
+     Track is duplicated in CSS to create a seamless infinite loop. */
+  .prior-work-marquee {
+    mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+  }
+  .prior-work-track {
+    animation: prior-work-scroll 60s linear infinite;
+  }
+  .prior-work-marquee:hover .prior-work-track,
+  .prior-work-marquee:focus-within .prior-work-track {
+    animation-play-state: paused;
+  }
+  .prior-work-slide {
+    width: clamp(180px, 24vw, 280px);
+  }
+  .prior-work-slide :global(img) {
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: auto;
+  }
+  @keyframes prior-work-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .prior-work-track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .prior-work-marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+      overflow: visible;
+    }
+  }
+</style>
+
+<script>
+  /* Duplicate the track contents so the CSS keyframe (-50% translate) can
+     loop seamlessly. Without duplication you'd see the row snap back at
+     the loop boundary. */
+  document.querySelectorAll<HTMLElement>('.prior-work-track').forEach((track) => {
+    track.innerHTML += track.innerHTML
+    track.setAttribute('aria-hidden', 'false')
+  })
+</script>

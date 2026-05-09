@@ -1,6 +1,6 @@
 ---
 /**
- * BucketFilter — segmented control: All / Consumer / Public Sector / Operational / Engineering.
+ * BucketFilter — segmented control: All / Consumer / Public Sector / Operational / Open Source.
  * Filters elements with data-bucket attribute via classList show/hide.
  * Updates URL hash for shareable filtered views.
  * On small screens the button row scrolls horizontally to prevent overflow.
@@ -12,7 +12,7 @@ interface Props {
     consumer: string
     public: string
     operational: string
-    engineering: string
+    openSource: string
   }
   /** Extra CSS classes */
   class?: string
@@ -24,7 +24,7 @@ const {
     consumer: 'Consumer',
     public: 'Public Sector',
     operational: 'Operational',
-    engineering: 'Engineering',
+    openSource: 'Open Source',
   },
   class: cls = '',
 } = Astro.props
@@ -34,7 +34,7 @@ const filters = [
   { id: 'consumer', label: labels.consumer },
   { id: 'public-sector', label: labels.public },
   { id: 'operational', label: labels.operational },
-  { id: 'engineering', label: labels.engineering },
+  { id: 'open-source', label: labels.openSource },
 ]
 ---
 

@@ -19,7 +19,7 @@ const portfolio = defineCollection({
     z.object({
       title: z.string(),
       slug: z.string(),
-      bucket: z.enum(['consumer', 'public-sector', 'operational', 'engineering']),
+      bucket: z.enum(['consumer', 'public-sector', 'operational', 'open-source']),
       client: z.string(),
       clientUrl: z.string().url().optional(),
       year: z.number().int(),
@@ -38,6 +38,7 @@ const portfolio = defineCollection({
           appStore: z.string().url().optional(),
           web: z.string().url().optional(),
           github: z.string().url().optional(),
+          pubDev: z.string().url().optional(),
         })
         .optional(),
       featured: z.boolean(),

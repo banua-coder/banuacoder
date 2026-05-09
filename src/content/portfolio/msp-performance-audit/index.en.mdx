@@ -1,0 +1,196 @@
+---
+title: Masjid Sejuta Pemuda — Performance Audit
+slug: msp-performance-audit
+bucket: consumer
+client: Masjid Sejuta Pemuda
+year: 2025
+status: live
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Performance audit and rescue of the Masjid Sejuta Pemuda app — a Flutter
+  consumer app for an Indonesian Muslim youth community, originally built by
+  a previous contractor. We diagnosed and fixed jank and rebuild loops that
+  made the app feel sluggish on lower-end devices, using Flutter's built-in
+  Performance Overlay and Rebuild Rainbow as objective evidence before and
+  after.
+problem: >
+  The Masjid Sejuta Pemuda team inherited a Flutter codebase from a previous
+  contractor — built fast, without engineering discipline ("vibecoded").
+  Users on low-end devices reported the UI felt heavy and unresponsive:
+  scrolling stuttered, the subuh prayer countdown lurched, and the home
+  screen felt slow on first paint. The team could see something was wrong
+  when they opened the source, but they couldn't pinpoint exactly which
+  parts needed fixing.
+solution: >
+  Banua Coder ran a structured performance audit using Flutter's built-in
+  tooling to prove the issue objectively first, then fixed it iteratively
+  until the same numeric and visual evidence came back clean.
+
+  Diagnosis started with the Performance Overlay turned on. On the test
+  device, max frame time reached 62.8 ms — far above the 16 ms budget for
+  60 fps — with many red jank frames. We also enabled the widget rebuild
+  visualizer ("rebuild rainbow") and found the root cause: every second,
+  the subuh countdown was triggering a rebuild of the entire home-screen
+  widget tree, not just the countdown digits.
+
+  The fix happened in three iterations, each measured with the same
+  overlay so progress was provable:
+
+  Iteration 1 — audit every widget that should be `const` but wasn't.
+  Result: jank dropped sharply (frame time fell to ~16 ms), but the
+  rebuild rainbow still showed wide swathes of the home screen rebuilding
+  every tick.
+
+  Iteration 2 — encapsulate each home-screen section into its own widget
+  so setState couldn't leak across the whole tree. Result: the rebuild
+  area narrowed, but the countdown still triggered a parent rebuild
+  containing the program list, stats card, and shortcut buttons.
+
+  Iteration 3 — build a custom text-rotator and countdown widget from
+  scratch, with internal state fully isolated from the tree above.
+  Final result: the rebuild rainbow lit up only on the countdown digit
+  ticking each second; the rest of the home screen stayed static. Frame
+  time held below 16 ms.
+impact:
+  - Max frame time dropped from 62.8 ms (severe jank) to <16 ms (60 fps target met)
+  - Whole-tree rebuild every second became an isolated countdown rebuild — the rest of the home screen sits static
+  - Low-end-device users can use the app without the choppy-UI complaints that prompted the audit
+  - Client team has a documented audit process they can reuse as an internal checklist for future contractor work
+stack:
+  - Flutter
+  - Dart
+  - Performance Overlay
+  - Widget Rebuild Tracking
+  - Custom Widgets
+featured: true
+order: 32
+locale: en
+---
+
+## Context
+
+Masjid Sejuta Pemuda (MSP) is a consumer mobile app that bundles daily
+worship features (prayer schedule, dzikir, Qur'an reader), donation/wakaf
+flows, and Muslim-community event listings. The app was already live with
+an active user base — but the previous Flutter contractor had built it
+fast: many widgets without `const`, state lifted higher than it should be,
+and several features that ought to be stateless were implemented with
+setState too high in the tree.
+
+The client team noticed the app felt heavy on low-end devices and asked
+Banua Coder to audit, diagnose, and fix it without ripping out features
+that were already working.
+
+## What We Did
+
+### 1. Diagnosis with Performance Overlay & Rebuild Rainbow
+
+Before changing a single line, we turned on two of Flutter's built-in
+tools to get objective evidence:
+
+- **Performance Overlay** draws a live frame-time graph. On our test
+  device, max frame time hit 62.8 ms — well above the 16 ms budget for
+  60 fps. The many red bars meant the user saw choppy frames.
+- **Rebuild Rainbow** (widget rebuild visualizer) outlines every widget
+  that rebuilds. The picture was unmistakable: nearly the entire home
+  screen lit up every second. The subuh countdown wasn't just rebuilding
+  itself — it was triggering a rebuild of everything above it.
+
+<video
+  src="/portfolio/msp/02-overlay-jank.mp4"
+  poster="/portfolio/msp/02-overlay-jank.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 2. Iteration 1 — `const` audit
+
+The first pass was the most basic engineering hygiene: audit every static
+widget that could be a `const` constructor but wasn't. `const` widgets in
+Flutter get reused across frames without rebuilding, so adding `const`
+where it belongs cuts per-frame work measurably.
+
+The result showed up in the overlay — frame time dropped to the 16 ms
+target and the red jank bars largely disappeared. But the rebuild rainbow
+still showed broad areas rebuilding every tick.
+
+<video
+  src="/portfolio/msp/03-const-and-encapsulate.mp4"
+  poster="/portfolio/msp/03-const-and-encapsulate.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 3. Iteration 2 — encapsulate sections into their own widgets
+
+Next we split each home-screen section (prayer-schedule header, community
+stats, program list, shortcut tiles) into its own widget. Goal: contain
+setState so a change in one section couldn't drag a rebuild into another.
+
+The rebuild area narrowed, but the countdown timer inside the header
+still pulled in a rebuild of the whole header section — including
+elements that should have been static.
+
+### 4. Iteration 3 — custom text-rotator and countdown widgets
+
+The remaining offender: the text-rotator and countdown packages used by
+the previous contractor were calling setState on a parent that sat far
+too high. Every second, they forced a parent rebuild, and that rebuild
+spread across every child in the same section.
+
+Fix: we wrote both widgets from scratch. Our custom text-rotator and
+countdown have internal state fully isolated from anything above —
+changing the displayed text or counting down a digit never triggers a
+parent rebuild. Only the widget that actually renders that text rebuilds.
+
+<video
+  src="/portfolio/msp/04-custom-widgets-isolated.mp4"
+  poster="/portfolio/msp/04-custom-widgets-isolated.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 5. Final result — same overlay, clean evidence
+
+We ran the app one more time with the exact same Performance Overlay and
+rebuild rainbow that started the audit. Frame time stayed below 16 ms
+(60 fps target met). The rebuild rainbow only lit up on the sub-second
+countdown widget — the rest of the home screen stayed static frame to
+frame.
+
+<video
+  src="/portfolio/msp/05-final-clean.mp4"
+  poster="/portfolio/msp/05-final-clean.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+## Impact
+
+What we shipped wasn't just "a faster app." More importantly, the client
+team now has objective evidence — captured in the same overlay — that
+their app meets the Flutter performance standards used across the
+industry (16 ms frame budget, isolated rebuilds). They also have the
+process artifacts (screen recordings + documentation) they can use as an
+internal checklist when building new features or vetting future
+contractor work.
+
+For Banua Coder, this engagement is a clean example of how Flutter
+performance debugging differs from "rewriting the app": we didn't
+replace features, didn't redesign the UI, didn't change the backend
+architecture. We read what was already there objectively through
+Flutter's tooling, located the source of jank and rebuild loops with
+precision, and fixed it with minimal intervention.

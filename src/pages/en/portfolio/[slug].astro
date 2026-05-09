@@ -8,6 +8,7 @@ import Nav from '../../../components/layout/Nav.astro'
 import Footer from '../../../components/layout/Footer.astro'
 import Container from '../../../components/layout/Container.astro'
 import Tag from '../../../components/atoms/Tag.astro'
+import TechStack from '../../../components/atoms/TechStack.astro'
 import Button from '../../../components/atoms/Button.astro'
 import Prose from '../../../components/typography/Prose.astro'
 
@@ -46,14 +47,14 @@ const bucketLabel = {
   consumer: 'Consumer',
   'public-sector': 'Public Sector',
   operational: 'Operational',
-  engineering: 'Engineering',
+  'open-source': 'Open Source',
 }[data.bucket]
 
-const bucketVariantMap: Record<string, 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-engineering'> = {
+const bucketVariantMap: Record<string, 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'> = {
   consumer: 'bucket-consumer',
   'public-sector': 'bucket-public',
   operational: 'bucket-operational',
-  engineering: 'bucket-engineering',
+  'open-source': 'bucket-open-source',
 }
 const bucketVariant = bucketVariantMap[data.bucket] ?? 'bucket-consumer'
 
@@ -289,11 +290,7 @@ const breadcrumbSchema = {
         <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
           // Tech Stack
         </p>
-        <div class="flex flex-wrap gap-2">
-          {data.stack.map((tech) => (
-            <Tag variant="default">{tech}</Tag>
-          ))}
-        </div>
+        <TechStack items={data.stack} size="md" />
       </Container>
     </section>
 
@@ -304,11 +301,25 @@ const breadcrumbSchema = {
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
             // Links
           </p>
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap items-center gap-4">
             {data.links.playStore && (
-              <Button href={data.links.playStore} external variant="secondary" size="md">
-                Google Play →
-              </Button>
+              <a
+                href={data.links.playStore}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Get it on Google Play"
+                class="inline-block transition-opacity hover:opacity-80"
+              >
+                <img
+                  src="/badges/get-on-google-play.png"
+                  alt="Get it on Google Play"
+                  width={194}
+                  height={75}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-[60px] w-auto"
+                />
+              </a>
             )}
             {data.links.appStore && (
               <Button href={data.links.appStore} external variant="secondary" size="md">
@@ -323,6 +334,11 @@ const breadcrumbSchema = {
             {data.links.github && (
               <Button href={data.links.github} external variant="ghost" size="md">
                 GitHub →
+              </Button>
+            )}
+            {data.links.pubDev && (
+              <Button href={data.links.pubDev} external variant="ghost" size="md">
+                pub.dev →
               </Button>
             )}
           </div>

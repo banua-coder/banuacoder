@@ -1,11 +1,11 @@
 ---
 /**
  * Tag — small pill for bucket tags and tech stack labels.
- * Variants: default, bucket-consumer, bucket-public, bucket-operational, bucket-engineering.
- * Engineering uses a border-only mono treatment to visually separate SDK/library work from product buckets.
+ * Variants: default, bucket-consumer, bucket-public, bucket-operational, bucket-open-source.
+ * Open-source uses a border-only mono treatment to visually separate SDK/library work from product buckets.
  */
 interface Props {
-  variant?: 'default' | 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-engineering'
+  variant?: 'default' | 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
   class?: string
 }
 
@@ -16,7 +16,7 @@ const variantClass = {
   'bucket-consumer': 'bg-bnc-accent/10 text-bnc-accent border border-bnc-accent/20',
   'bucket-public': 'bg-bnc-primary/10 text-bnc-primary dark:text-blue-300 border border-bnc-primary/20',
   'bucket-operational': 'bg-bnc-stone-200 dark:bg-bnc-stone-700 text-bnc-stone-700 dark:text-bnc-stone-300',
-  'bucket-engineering': 'bg-transparent border border-bnc-stone-400 dark:border-bnc-stone-500 text-bnc-stone-500 dark:text-bnc-stone-400',
+  'bucket-open-source': 'bg-transparent border border-bnc-stone-400 dark:border-bnc-stone-500 text-bnc-stone-500 dark:text-bnc-stone-400',
 }[variant]
 ---
 

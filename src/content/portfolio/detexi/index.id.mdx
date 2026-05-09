@@ -41,6 +41,13 @@ order: 25
 locale: id
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+import shot5 from './screenshots/screenshot-5.webp'
+
 ## Konteks
 
 Detexi Doctor adalah aplikasi layanan kesehatan digital yang memberikan akses mudah ke
@@ -66,6 +73,16 @@ kemudahan penggunaan:
   pertukaran informasi kesehatan secara aman dan terstruktur.
 - **Riwayat kesehatan**: Pengelolaan rekam konsultasi dan dokumen medis pribadi yang
   mudah diakses kapan saja.
+
+## Tampilan Aplikasi
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Tampilan onboarding Detexi Doctor" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Pencarian dokter berdasarkan spesialisasi" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Detail profil dokter dan jadwal konsultasi" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Antarmuka konsultasi pasien-dokter" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Riwayat konsultasi dan rekam medis pribadi" class="rounded-lg w-full" />
+</div>
 
 ## Dampak
 
