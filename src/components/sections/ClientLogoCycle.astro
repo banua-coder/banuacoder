@@ -75,25 +75,30 @@ type Slot = {
 
 const slots: Slot[] = [
   // Each slot EMERGES from near/behind the headline (fromX/Y close to center)
-  // and DRIFTS OUTWARD to a more peripheral position as it fades — so logos
-  // feel like they're appearing from behind the text, then radiating away.
-  { logoFile: 'ulearna.png',            fromX: 45, fromY: 42, toX: 15, toY: 18, enter: 0.00, exit: 0.26 },
-  { logoFile: 'pemprov-sulteng.svg',    fromX: 55, fromY: 42, toX: 85, toY: 18, enter: 0.05, exit: 0.31 },
-  { logoFile: 'caretaker.png',          fromX: 45, fromY: 58, toX: 15, toY: 82, enter: 0.10, exit: 0.36 },
-  { logoFile: 'bps.svg',                fromX: 55, fromY: 58, toX: 85, toY: 82, enter: 0.14, exit: 0.40 },
-  { logoFile: 'pemkab-gowa.png',        fromX: 50, fromY: 35, toX: 50, toY: 12, enter: 0.18, exit: 0.44 },
-  { logoFile: 'detexi.png',             fromX: 50, fromY: 65, toX: 50, toY: 88, enter: 0.22, exit: 0.48 },
-  { logoFile: 'klinikgo.png',           fromX: 35, fromY: 50, toX:  8, toY: 50, enter: 0.26, exit: 0.52 },
-  { logoFile: 'pemkab-donggala.png',    fromX: 65, fromY: 50, toX: 92, toY: 50, enter: 0.30, exit: 0.56 },
-  { logoFile: 'brantas-inti-utama.png', fromX: 40, fromY: 38, toX: 22, toY: 22, enter: 0.34, exit: 0.60 },
-  { logoFile: 'pemprov-sulsel.svg',     fromX: 60, fromY: 62, toX: 78, toY: 78, enter: 0.38, exit: 0.64 },
-  { logoFile: 'caretaker.png',          fromX: 38, fromY: 60, toX: 18, toY: 78, enter: 0.42, exit: 0.68 },
-  { logoFile: 'bps.svg',                fromX: 62, fromY: 40, toX: 80, toY: 22, enter: 0.46, exit: 0.72 },
-  { logoFile: 'ulearna.png',            fromX: 36, fromY: 42, toX: 14, toY: 30, enter: 0.50, exit: 0.76 },
+  // and DRIFTS OUTWARD past a viewport edge as it fades. The exit fade in
+  // animations.ts completes exactly when position arrives at toX/toY, so
+  // pushing toX/toY off-screen (-10% / 110%) means the logo reaches zero
+  // opacity right as it crosses the visible edge — matching ZOG's
+  // "vanish at the edge" feel.
+  { logoFile: 'ulearna.png',            fromX: 45, fromY: 42, toX:  -8, toY:   2, enter: 0.00, exit: 0.26 },
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 55, fromY: 42, toX: 108, toY:   2, enter: 0.05, exit: 0.31 },
+  { logoFile: 'caretaker.png',          fromX: 45, fromY: 58, toX:  -8, toY: 102, enter: 0.10, exit: 0.36 },
+  { logoFile: 'bps.svg',                fromX: 55, fromY: 58, toX: 108, toY: 102, enter: 0.14, exit: 0.40 },
+  { logoFile: 'pemkab-gowa.png',        fromX: 50, fromY: 35, toX:  50, toY:  -8, enter: 0.18, exit: 0.44 },
+  { logoFile: 'detexi.png',             fromX: 50, fromY: 65, toX:  50, toY: 108, enter: 0.22, exit: 0.48 },
+  { logoFile: 'klinikgo.png',           fromX: 35, fromY: 50, toX: -10, toY:  50, enter: 0.26, exit: 0.52 },
+  { logoFile: 'pemkab-donggala.png',    fromX: 65, fromY: 50, toX: 110, toY:  50, enter: 0.30, exit: 0.56 },
+  { logoFile: 'brantas-inti-utama.png', fromX: 40, fromY: 38, toX:  -8, toY:  -2, enter: 0.34, exit: 0.60 },
+  { logoFile: 'pemprov-sulsel.svg',     fromX: 60, fromY: 62, toX: 108, toY: 102, enter: 0.38, exit: 0.64 },
+  { logoFile: 'caretaker.png',          fromX: 38, fromY: 60, toX:  -8, toY: 102, enter: 0.42, exit: 0.68 },
+  { logoFile: 'bps.svg',                fromX: 62, fromY: 40, toX: 108, toY:  -4, enter: 0.46, exit: 0.72 },
+  { logoFile: 'ulearna.png',            fromX: 36, fromY: 42, toX: -10, toY:  20, enter: 0.50, exit: 0.76 },
   // Last 3: emerge dead-centre behind the headline, anchor through end-of-section
-  { logoFile: 'pemprov-sulteng.svg',    fromX: 48, fromY: 48, toX: 35, toY: 25, enter: 0.56 },
-  { logoFile: 'klinikgo.png',           fromX: 52, fromY: 52, toX: 65, toY: 75, enter: 0.62 },
-  { logoFile: 'detexi.png',             fromX: 50, fromY: 50, toX: 60, toY: 28, enter: 0.68 },
+  // (no exit fade) — keep their toX/toY inside the viewport so they remain
+  // visible as the section unpins.
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 48, fromY: 48, toX:  35, toY:  25, enter: 0.56 },
+  { logoFile: 'klinikgo.png',           fromX: 52, fromY: 52, toX:  65, toY:  75, enter: 0.62 },
+  { logoFile: 'detexi.png',             fromX: 50, fromY: 50, toX:  60, toY:  28, enter: 0.68 },
 ]
 ---
 

@@ -8,12 +8,18 @@ import Container from '../../components/layout/Container.astro'
 import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
 import CTA from '../../components/sections/CTA.astro'
 import iconImage from '../../assets/brand/banuacoder-icon.png'
-import workImg1 from '../../assets/founder/work-product/work-1.png'
-import workImg2 from '../../assets/founder/work-product/work-2.png'
-import workImg3 from '../../assets/founder/work-product/work-3.png'
-import workImg4 from '../../assets/founder/work-product/work-4.png'
-import workImg5 from '../../assets/founder/work-product/work-5.png'
-import workImg6 from '../../assets/founder/work-product/work-6.png'
+import rekuShot1 from '../../assets/founder/work-product/work-1.png'
+import rekuShot2 from '../../assets/founder/work-product/work-3.png'
+import rekuShot3 from '../../assets/founder/work-product/work-5.png'
+import rekuShot4 from '../../assets/founder/work-product/work-6.png'
+import sikerjaShot1 from '../../content/portfolio/sikerja/screenshots/screenshot-2.png'
+import sikerjaShot2 from '../../content/portfolio/sikerja/screenshots/screenshot-3.png'
+import detexiShot1 from '../../content/portfolio/detexi/screenshots/screenshot-2.png'
+import detexiShot2 from '../../content/portfolio/detexi/screenshots/screenshot-4.png'
+import carwaShot1 from '../../content/portfolio/carwa/screenshots/screenshot-2.webp'
+import carwaShot2 from '../../content/portfolio/carwa/screenshots/screenshot-3.webp'
+import picoShot1 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import picoShot2 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
 import ambientImg from '../../assets/stock/clean-workspace-notebook.jpg'
 {/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
 
@@ -324,40 +330,53 @@ const founderBreadcrumbSchema = {
           class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-3"
           style="font-size: var(--fs-28)"
         >
-          Field experience, redacted
+          UI we've shipped
         </h2>
         <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-8 max-w-2xl" style="font-size: var(--fs-17)">
-          Snapshots of technical work from prior engagements — including consumer fintech product development at multi-million-user scale. Product and brand details redacted to respect confidentiality.
+          Interface snapshots from across the products Banua Coder has built — regional public-sector
+          systems, consumer mobile apps, and consumer fintech work at multi-million-user scale from
+          earlier engagements. Some shots are lightly redacted to respect client confidentiality.
         </p>
         <div
           class="prior-work-marquee relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8"
           aria-roledescription="carousel"
-          aria-label="Prior work product snapshots"
+          aria-label="UI we have shipped"
         >
           <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
             {[
-              { src: workImg1, alt: "Side-by-side light vs dark mode comparison on a discover/market screen" },
-              { src: workImg2, alt: "Detail flow within a consumer fintech app" },
-              { src: workImg3, alt: "Reward / cashback screen with redacted brand illustrations" },
-              { src: workImg4, alt: "Detailed feature flow with micro-animations" },
-              { src: workImg5, alt: "Portfolio P/L screen with annotated chart and tooltip" },
-              { src: workImg6, alt: "Asset detail screen with card list and tab navigation" },
-            ].map(({ src, alt }) => (
-              <div class="prior-work-slide shrink-0 border border-bnc-stone-200 dark:border-bnc-stone-800 rounded-[var(--radius-md)] overflow-hidden bg-bnc-stone-50 dark:bg-bnc-stone-900">
-                <Image
-                  src={src}
-                  alt={alt}
-                  width={280}
-                  class="block w-full h-auto"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+              { src: rekuShot1, alt: "Consumer fintech app (redacted) — light vs dark mode comparison on the discover/market screen", label: 'Consumer fintech · prior' },
+              { src: sikerjaShot1, alt: "Sikerja — list of available jobs in Central Sulawesi", label: 'Sikerja · 2024' },
+              { src: detexiShot1, alt: "Detexi Doctor — search doctors by specialization", label: 'Detexi · 2023' },
+              { src: rekuShot3, alt: "Consumer fintech app — Portfolio P/L with annotated chart", label: 'Consumer fintech · prior' },
+              { src: carwaShot1, alt: "Carwa — live digital car auction interface", label: 'Carwa · Dubai · 2024' },
+              { src: picoShot1, alt: "PICO Sulteng — provincial COVID-19 statistics dashboard", label: 'PICO Sulteng · 2021' },
+              { src: rekuShot2, alt: "Consumer fintech app — reward/cashback screen", label: 'Consumer fintech · prior' },
+              { src: sikerjaShot2, alt: "Sikerja — listing detail with partner company profile", label: 'Sikerja · 2024' },
+              { src: detexiShot2, alt: "Detexi Doctor — patient–doctor consultation flow", label: 'Detexi · 2023' },
+              { src: rekuShot4, alt: "Consumer fintech app — asset detail with card list", label: 'Consumer fintech · prior' },
+              { src: carwaShot2, alt: "Carwa — auction listing with vehicle specifications", label: 'Carwa · Dubai · 2024' },
+              { src: picoShot2, alt: "PICO Sulteng — regional case-distribution map", label: 'PICO Sulteng · 2021' },
+            ].map(({ src, alt, label }) => (
+              <figure class="prior-work-slide shrink-0 group">
+                <div class="border border-bnc-stone-200 dark:border-bnc-stone-800 rounded-[var(--radius-md)] overflow-hidden bg-bnc-stone-50 dark:bg-bnc-stone-900">
+                  <Image
+                    src={src}
+                    alt={alt}
+                    width={280}
+                    class="block w-full h-auto"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption class="font-mono text-[10px] tracking-wider uppercase text-bnc-stone-400 dark:text-bnc-stone-500 mt-2 text-center">
+                  {label}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
         <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600 mt-4">
-          Not shown: product or specific client names · Drag to view all
+          Mix of Banua Coder products and prior engagements · Drag to view all
         </p>
       </Container>
     </section>
