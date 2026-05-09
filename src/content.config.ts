@@ -38,6 +38,7 @@ const portfolio = defineCollection({
           appStore: z.string().url().optional(),
           web: z.string().url().optional(),
           github: z.string().url().optional(),
+          pubDev: z.string().url().optional(),
         })
         .optional(),
       featured: z.boolean(),

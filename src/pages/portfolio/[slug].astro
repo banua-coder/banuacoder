@@ -343,6 +343,11 @@ const breadcrumbSchema = {
                 GitHub →
               </Button>
             )}
+            {data.links.pubDev && (
+              <Button href={data.links.pubDev} external variant="ghost" size="md">
+                pub.dev →
+              </Button>
+            )}
           </div>
         </Container>
       </section>
