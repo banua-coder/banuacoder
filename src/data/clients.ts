@@ -7,10 +7,18 @@ export type Client = {
   context?: string
 }
 
+// LICENSE NOTES:
+// - ulearna.png: source https://ulearna.com (og:image asset). Nominative fair use for client identification.
+// - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem).
+// - dinas-bmpr-sulteng.svg: copy of pemprov-sulteng.svg (no distinct emblem; dinas uses parent province emblem).
+// - pemkab-gowa.png: https://commons.wikimedia.org/wiki/File:Lambang_Kabupaten_Gowa.png — Public domain (PD-IDGov).
+// - pemprov-sulsel.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_South_Sulawesi.svg — Public domain (PD-IDGov).
+// - brantas-inti-utama.svg: not sourced — text fallback retained.
+
 export const clients: Client[] = [
   {
     name: 'Ulearna Technology LTD',
-    logo: 'ulearna.svg',
+    logo: 'ulearna.png',
     url: 'https://ulearna.com',
     tier: 'featured',
     context: 'Dubai, UAE — international consumer products (Reab, Carwa)',
@@ -35,7 +43,7 @@ export const clients: Client[] = [
   },
   {
     name: 'Pemerintah Kabupaten Gowa',
-    logo: 'pemkab-gowa.svg',
+    logo: 'pemkab-gowa.png',
     tier: 'standard',
     context: 'Regional tax services (Patonro)',
   },

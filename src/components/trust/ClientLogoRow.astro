@@ -2,10 +2,26 @@
 /**
  * ClientLogoRow — grayscale row, color-on-hover.
  * Imports from src/data/clients.ts.
- * Uses named-text fallback (mono uppercase company name in a thin border box)
- * when SVG logo files are missing.
+ * Renders <img> when a real logo asset is available in src/assets/clients/,
+ * falling back to a named-text box (mono uppercase company name in a thin
+ * border box) when the file is missing.
  */
 import { clients } from '../../data/clients'
+
+// Eagerly resolve every logo file in src/assets/clients/* as a URL string.
+// Keys are the absolute project paths (e.g. '/src/assets/clients/foo.svg').
+const logoModules = import.meta.glob('/src/assets/clients/*.{svg,png}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const logoUrls: Record<string, string> = Object.fromEntries(
+  Object.entries(logoModules).map(([path, url]) => [
+    path.split('/').pop() ?? '',
+    url,
+  ]),
+)
 
 interface Props {
   class?: string
@@ -23,31 +39,40 @@ const { class: cls = '' } = Astro.props
   role="list"
   aria-label="Clients and partners"
 >
-  {clients.map((client) => (
-    <li>
-      {client.url ? (
-        <a
-          href={client.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="client-logo-item block px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]"
-          aria-label={client.name}
-        >
-          <!-- Text fallback — replace inner span with <img> when SVG is available -->
-          <span class="font-mono text-xs font-medium uppercase tracking-widest text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
-            {client.name}
-          </span>
-        </a>
-      ) : (
-        <div
-          class="client-logo-item block px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]"
-          aria-label={client.name}
-        >
-          <span class="font-mono text-xs font-medium uppercase tracking-widest text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
-            {client.name}
-          </span>
-        </div>
-      )}
-    </li>
-  ))}
+  {clients.map((client) => {
+    const logoUrl = logoUrls[client.logo]
+    const inner = logoUrl ? (
+      <img
+        src={logoUrl}
+        alt={client.name}
+        loading="lazy"
+        decoding="async"
+        class="h-8 w-auto max-w-[120px] object-contain"
+      />
+    ) : (
+      <span class="font-mono text-xs font-medium uppercase tracking-widest text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
+        {client.name}
+      </span>
+    )
+    const itemClasses = 'client-logo-item flex items-center justify-center px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]'
+    return (
+      <li>
+        {client.url ? (
+          <a
+            href={client.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={itemClasses}
+            aria-label={client.name}
+          >
+            {inner}
+          </a>
+        ) : (
+          <div class={itemClasses} aria-label={client.name}>
+            {inner}
+          </div>
+        )}
+      </li>
+    )
+  })}
 </ul>
