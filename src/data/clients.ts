@@ -12,7 +12,7 @@ export type Client = {
 // - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem). Covers both PICO Sulteng and Surat BMPR engagements.
 // - pemkab-gowa.png: https://commons.wikimedia.org/wiki/File:Lambang_Kabupaten_Gowa.png — Public domain (PD-IDGov).
 // - pemprov-sulsel.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_South_Sulawesi.svg — Public domain (PD-IDGov).
-// - brantas-inti-utama.svg: not sourced — text fallback retained.
+// - brantas-inti-utama.png: extracted from Patonro/Lontara app splash branding asset (cropped + trimmed via ImageMagick from app's flutter_native_splash branding.png). Nominative fair use — partner is credited on Patonro/Lontara case studies.
 //
 // NOTE: Dinas BMPR Sulteng deliberately omitted from the home trust strip — it
 // shares the same parent-province emblem as Pemprov Sulteng so two adjacent
@@ -29,7 +29,7 @@ export const clients: Client[] = [
   },
   {
     name: 'PT Brantas Inti Utama',
-    logo: 'brantas-inti-utama.svg',
+    logo: 'brantas-inti-utama.png',
     tier: 'featured',
     context: 'Implementation partner for regional tax digitalization (Patonro, Lontara)',
   },
