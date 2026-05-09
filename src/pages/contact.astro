@@ -9,6 +9,67 @@ import { contact, buildWhatsAppUrl } from '../data/contact'
 const whatsappUrl = buildWhatsAppUrl('id')
 const emailUrl = `mailto:${contact.email}`
 const calendlyUrl = whatsappUrl // placeholder — founder can replace with Calendly URL
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': 'https://banuacoder.com/contact/#local-business',
+  name: 'Banua Coder',
+  url: 'https://banuacoder.com',
+  telephone: `+${contact.whatsappNumber}`,
+  email: contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: contact.office.city,
+    addressRegion: contact.office.region,
+    postalCode: '94111',
+    addressCountry: 'ID',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: contact.office.coords.lat,
+    longitude: contact.office.coords.lng,
+  },
+  openingHours: 'Mo-Fr 09:00-17:00',
+  priceRange: '$$',
+  sameAs: [
+    contact.socials.linkedin,
+    contact.socials.instagram,
+    contact.socials.github,
+    contact.socials.youtube,
+  ],
+}
+
+const contactFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Berapa lama Banua Coder merespons pesan WhatsApp?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Kami biasanya merespons dalam 1–2 jam di hari kerja (Senin–Jumat, 09:00–17:00 WITA).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Apakah Banua Coder menerima proyek dari luar Sulawesi Tengah?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ya. Kami mengerjakan proyek dari seluruh Indonesia dan klien internasional. Semua diskusi awal dapat dilakukan melalui WhatsApp atau email.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Bagaimana cara memulai proyek dengan Banua Coder?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Hubungi kami melalui WhatsApp atau email untuk memulai diskusi awal. Kami akan membantu memetakan kebutuhan dan memberikan gambaran solusi yang realistis.',
+      },
+    },
+  ],
+}
 ---
 
 <BaseLayout
@@ -16,6 +77,9 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
   description="Punya ide, kebutuhan sistem, atau proses bisnis yang ingin dirapikan? Mari diskusikan kebutuhan Anda bersama Banua Coder."
   ogImage={ogUrl('contact')}
 >
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(localBusinessSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(contactFaqSchema)} />
+
   <a
     href="#main-content"
     class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
