@@ -8,7 +8,7 @@ import Footer from '../../components/layout/Footer.astro'
 import Container from '../../components/layout/Container.astro'
 import Hero from '../../components/sections/Hero.astro'
 import TrustStrip from '../../components/sections/TrustStrip.astro'
-import ClientLogoRow from '../../components/trust/ClientLogoRow.astro'
+import ClientLogoCycle from '../../components/sections/ClientLogoCycle.astro'
 import SectionHeader from '../../components/typography/SectionHeader.astro'
 import ProcessStep from '../../components/sections/ProcessStep.astro'
 import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
@@ -201,18 +201,8 @@ const orgSchema = {
     <!-- ② Trust strip -->
     {trustClaims && <TrustStrip claims={trustClaims} />}
 
-    <!-- ②b Client logo row -->
-    <section
-      aria-label="Trusted by"
-      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800 py-6"
-    >
-      <Container>
-        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
-          // TRUSTED BY
-        </p>
-        <ClientLogoRow />
-      </Container>
-    </section>
+    <!-- ②b Client logo cycle (pinned scroll-driven) -->
+    <ClientLogoCycle lang="en" />
 
     <!-- ③ About snippet -->
     {about && (
