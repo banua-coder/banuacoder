@@ -7,13 +7,13 @@
 import { Image } from 'astro:assets'
 import Tag from '../atoms/Tag.astro'
 
-type BucketVariant = 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-engineering'
+type BucketVariant = 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
 
 interface Props {
   title: string
   client: string
   year: number
-  bucket: 'consumer' | 'public-sector' | 'operational' | 'engineering'
+  bucket: 'consumer' | 'public-sector' | 'operational' | 'open-source'
   summary: string
   impactStat?: string
   coverSrc?: ImageMetadata
@@ -39,14 +39,14 @@ const bucketLabel = {
   consumer: 'Consumer',
   'public-sector': 'Public Sector',
   operational: 'Operational',
-  engineering: 'Engineering',
+  'open-source': 'Open Source',
 }[bucket]
 
 const bucketVariantMap: Record<string, BucketVariant> = {
   consumer: 'bucket-consumer',
   'public-sector': 'bucket-public',
   operational: 'bucket-operational',
-  engineering: 'bucket-engineering',
+  'open-source': 'bucket-open-source',
 }
 const bucketVariant: BucketVariant = bucketVariantMap[bucket] ?? 'bucket-consumer'
 ---

@@ -1,0 +1,362 @@
+- generic [active] [ref=e1]:
+  - link "Lewati ke konten utama" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - navigation "Site navigation" [ref=e4]:
+      - link "Banua Coder home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]:
+          - img "Banua Coder" [ref=e8]
+          - img [ref=e9]
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Layanan" [ref=e12] [cursor=pointer]:
+            - /url: /services/
+        - listitem [ref=e13]:
+          - link "Portfolio" [ref=e14] [cursor=pointer]:
+            - /url: /portfolio/
+        - listitem [ref=e15]:
+          - link "Tentang" [ref=e16] [cursor=pointer]:
+            - /url: /about/
+        - listitem [ref=e17]:
+          - link "Blog" [ref=e18] [cursor=pointer]:
+            - /url: /blog/
+        - listitem [ref=e19]:
+          - link "Estimasi" [ref=e20] [cursor=pointer]:
+            - /url: /estimate/
+        - listitem [ref=e21]:
+          - link "Kontak" [ref=e22] [cursor=pointer]:
+            - /url: /contact/
+      - generic [ref=e23]:
+        - link "Switch to English" [ref=e24] [cursor=pointer]:
+          - /url: /en
+          - text: EN
+        - button "Switch to dark mode" [ref=e25]:
+          - img
+          - img [ref=e26]
+  - main [ref=e28]:
+    - region "Hero" [ref=e29]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e34]: // PARTNER TEKNOLOGI
+          - heading "Bangun sistem digital yang membantu bisnis bertumbuh" [level=1] [ref=e35]
+          - paragraph [ref=e36]: Dari aplikasi pajak Pemkab Gowa hingga produk consumer di Dubai — kami bangun sistem digital yang benar-benar dipakai, bukan sekadar diluncurkan.
+          - generic [ref=e37]:
+            - link "Jadwalkan Diskusi" [ref=e38] [cursor=pointer]:
+              - /url: /contact/
+            - link "Lihat Portfolio →" [ref=e39] [cursor=pointer]:
+              - /url: /portfolio/
+        - img "Pratinjau produk digital" [ref=e41]:
+          - img [ref=e43]
+          - img "Pratinjau aplikasi PICO Sulteng" [ref=e45]
+          - generic [ref=e48]: // engineering-led
+    - region "Trust indicators" [ref=e49]:
+      - list [ref=e51]:
+        - listitem [ref=e52]:
+          - generic [ref=e53]: // Berdiri sejak 2019
+        - listitem [ref=e55]:
+          - generic [ref=e56]: // 15+ studi kasus dipublikasikan
+        - listitem [ref=e58]:
+          - generic [ref=e59]: // Engineering-led delivery
+        - listitem [ref=e61]:
+          - generic [ref=e62]: "// Klien: Pemprov Sulteng · Pemkab Gowa · Ulearna (Dubai)"
+    - region "Klien dan partner kami" [ref=e63]:
+      - generic [ref=e64]:
+        - generic:
+          - paragraph: // DIPERCAYA OLEH
+          - heading "Klien dan partner kami" [level=2]
+          - paragraph: Dari sektor publik hingga produk consumer internasional.
+    - region "Tentang Banua Coder" [ref=e65]:
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - paragraph [ref=e69]: // TENTANG KAMI
+          - heading "Tentang Banua Coder" [level=2] [ref=e70]
+          - paragraph [ref=e71]: Banua Coder adalah partner teknologi yang membantu bisnis dan organisasi merancang dan membangun solusi digital yang relevan dengan kebutuhan mereka—mulai dari website, aplikasi mobile, dashboard, hingga sistem internal untuk operasional. Kami menggabungkan product thinking, engineering discipline, dan pendekatan implementasi yang praktis agar setiap solusi tidak hanya selesai dibangun, tetapi juga siap digunakan dan dikembangkan.
+          - link "Selengkapnya tentang kami →" [ref=e72] [cursor=pointer]:
+            - /url: /about/
+        - generic [ref=e73]:
+          - paragraph [ref=e74]: // didirikan 2019
+          - paragraph [ref=e75]: Berbasis di Sulawesi Tengah
+          - paragraph [ref=e77]: Mobile · Web · Dashboard · Sistem Operasional
+    - region [ref=e78]:
+      - generic [ref=e79]:
+        - generic [ref=e80]:
+          - generic [ref=e81]:
+            - generic [ref=e82]: // LAYANAN
+            - generic [ref=e83]: "[ 02 ]"
+          - heading "Apa yang kami bangun" [level=2] [ref=e84]
+          - paragraph [ref=e85]: Kami mengelompokkan layanan berdasarkan problem dan use case, bukan sekadar teknologi yang digunakan.
+        - generic [ref=e86]:
+          - link "Build & Engineer Produk Digital & Sistem Website, aplikasi mobile, dashboard, dan sistem operasional yang dibangun dengan engineering depth dan pemahaman bisnis nyata. Customer-Facing Internal Ops Product Engineering Lihat layanan →" [ref=e87] [cursor=pointer]:
+            - /url: /services/#build
+            - paragraph [ref=e88]: Build & Engineer
+            - heading "Produk Digital & Sistem" [level=3] [ref=e89]
+            - paragraph [ref=e90]: Website, aplikasi mobile, dashboard, dan sistem operasional yang dibangun dengan engineering depth dan pemahaman bisnis nyata.
+            - generic [ref=e91]:
+              - generic [ref=e92]: Customer-Facing
+              - generic [ref=e93]: Internal Ops
+              - generic [ref=e94]: Product Engineering
+            - generic [ref=e95]: Lihat layanan →
+          - link "Brand & Grow Desain & Pertumbuhan Identitas visual, UI/UX, dan pengelolaan media sosial untuk membangun brand yang konsisten dan presense digital yang kuat. Design Social Media Lihat layanan →" [ref=e96] [cursor=pointer]:
+            - /url: /services/#grow
+            - paragraph [ref=e97]: Brand & Grow
+            - heading "Desain & Pertumbuhan" [level=3] [ref=e98]
+            - paragraph [ref=e99]: Identitas visual, UI/UX, dan pengelolaan media sosial untuk membangun brand yang konsisten dan presense digital yang kuat.
+            - generic [ref=e100]:
+              - generic [ref=e101]: Design
+              - generic [ref=e102]: Social Media
+            - generic [ref=e103]: Lihat layanan →
+    - region "Beda cara berpikir, beda hasil" [ref=e104]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - paragraph [ref=e109]: // MENGAPA BANUA CODER
+          - generic [ref=e110]:
+            - generic [ref=e111]: "[ 03 ]"
+            - heading "Beda cara berpikir, beda hasil" [level=2] [ref=e112]
+          - paragraph [ref=e113]: Cara kami berbeda…
+        - generic [ref=e120]:
+          - generic [ref=e121]: "01"
+          - generic [ref=e122]:
+            - heading "Paham bisnis, bukan sekadar code" [level=3] [ref=e124]
+            - paragraph [ref=e125]: Kami membantu menerjemahkan kebutuhan bisnis menjadi solusi digital yang realistis dan bertahap.
+    - region [ref=e126]:
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - generic [ref=e130]: // PROSES
+            - generic [ref=e131]: "[ 04 ]"
+          - heading "Cara kami bekerja" [level=2] [ref=e132]
+          - paragraph [ref=e133]: Proses yang jelas dari awal hingga akhir, sehingga terasa low-risk bagi Anda sebagai klien.
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e138]: "01"
+            - generic [ref=e139]:
+              - paragraph [ref=e140]: "[ 01 ]"
+              - heading "Discovery" [level=3] [ref=e141]
+              - paragraph [ref=e142]: Memahami konteks bisnis, pain point, dan prioritas Anda.
+          - generic [ref=e143]:
+            - generic [ref=e146]: "02"
+            - generic [ref=e147]:
+              - paragraph [ref=e148]: "[ 02 ]"
+              - heading "Solution Mapping" [level=3] [ref=e149]
+              - paragraph [ref=e150]: Menyusun ruang lingkup, struktur solusi, dan fase implementasi yang realistis.
+          - generic [ref=e151]:
+            - generic [ref=e154]: "03"
+            - generic [ref=e155]:
+              - paragraph [ref=e156]: "[ 03 ]"
+              - heading "Design & Validation" [level=3] [ref=e157]
+              - paragraph [ref=e158]: Menyusun alur, tampilan, dan validasi kebutuhan utama sebelum implementasi penuh.
+          - generic [ref=e159]:
+            - generic [ref=e162]: "04"
+            - generic [ref=e163]:
+              - paragraph [ref=e164]: "[ 04 ]"
+              - heading "Development" [level=3] [ref=e165]
+              - paragraph [ref=e166]: Membangun sistem secara terstruktur, iteratif, dan terukur.
+          - generic [ref=e167]:
+            - generic [ref=e169]: "05"
+            - generic [ref=e170]:
+              - paragraph [ref=e171]: "[ 05 ]"
+              - heading "Testing & Launch" [level=3] [ref=e172]
+              - paragraph [ref=e173]: Melakukan UAT, revisi penting, dan persiapan go-live.
+          - generic [ref=e174]:
+            - generic [ref=e176]: "06"
+            - generic [ref=e177]:
+              - paragraph [ref=e178]: "[ 06 ]"
+              - heading "Support & Iteration" [level=3] [ref=e179]
+              - paragraph [ref=e180]: Membantu monitoring, maintenance, dan pengembangan lanjutan.
+    - region "Cocok untuk" [ref=e181]:
+      - generic [ref=e182]:
+        - generic [ref=e183]:
+          - paragraph [ref=e184]: // COCOK UNTUK
+          - generic [ref=e185]:
+            - generic [ref=e186]: "[ 07 ]"
+            - heading "Cocok untuk" [level=2] [ref=e187]
+        - generic [ref=e188]:
+          - generic [ref=e189]:
+            - img [ref=e191]
+            - heading "Bisnis F&B, retail, dan kafe" [level=3] [ref=e193]
+            - paragraph [ref=e194]: Yang ingin tampil lebih profesional, membangun loyalty, dan menyederhanakan operasional.
+          - generic [ref=e195]:
+            - img [ref=e197]
+            - heading "Brand kecantikan dan personal care" [level=3] [ref=e200]
+            - paragraph [ref=e201]: Yang ingin punya kehadiran digital lebih kuat dan sistem membership yang rapi.
+          - generic [ref=e202]:
+            - img [ref=e204]
+            - heading "Pemerintah daerah dan instansi publik" [level=3] [ref=e206]
+            - paragraph [ref=e207]: Yang membutuhkan aplikasi layanan masyarakat, dashboard, atau modernisasi sistem internal.
+          - generic [ref=e208]:
+            - img [ref=e210]
+            - heading "Bisnis berkembang dan UMKM" [level=3] [ref=e213]
+            - paragraph [ref=e214]: Yang masih banyak bergantung pada proses manual dan ingin tumbuh dengan struktur yang lebih siap.
+          - generic [ref=e215]:
+            - img [ref=e217]
+            - heading "Founder dan organisasi" [level=3] [ref=e219]
+            - paragraph [ref=e220]: Yang butuh MVP, sistem operasional, atau partner berpikir — bukan sekadar vendor eksekusi.
+    - region "Pengalaman terverifikasi pada sistem publik dan workflow pemerintah daerah" [ref=e221]:
+      - generic [ref=e223]:
+        - generic [ref=e224]:
+          - paragraph [ref=e225]: // KAPABILITAS SEKTOR PUBLIK
+          - heading "Pengalaman terverifikasi pada sistem publik dan workflow pemerintah daerah" [level=2] [ref=e226]
+        - generic [ref=e227]:
+          - list [ref=e228]:
+            - listitem [ref=e229]:
+              - generic [ref=e230]: →
+              - text: "6 case study sektor publik: pajak daerah, layanan informasi, talenta SDM, dashboard institusi"
+            - listitem [ref=e231]:
+              - generic [ref=e232]: →
+              - text: Bermitra dengan PT Brantas Inti Utama untuk digitalisasi pajak Sulawesi Selatan
+            - listitem [ref=e233]:
+              - generic [ref=e234]: →
+              - text: SDK dan tooling internal untuk ekosistem aplikasi BPS
+          - link "Lihat portofolio sektor publik →" [ref=e235] [cursor=pointer]:
+            - /url: /portfolio/#public-sector
+    - region [ref=e236]:
+      - generic [ref=e237]:
+        - generic [ref=e238]:
+          - generic [ref=e239]:
+            - generic [ref=e240]:
+              - generic [ref=e241]: // PORTFOLIO
+              - generic [ref=e242]: "[ 05 ]"
+            - heading "Pekerjaan terpilih" [level=2] [ref=e243]
+            - paragraph [ref=e244]: Kami telah mengerjakan berbagai solusi digital, mulai dari aplikasi consumer-facing, platform informasi publik, hingga sistem operasional yang membantu proses bisnis berjalan lebih rapi dan efisien.
+          - link "Lihat semua portfolio →" [ref=e245] [cursor=pointer]:
+            - /url: /portfolio/
+        - generic [ref=e246]:
+          - article [ref=e247]:
+            - link [ref=e248] [cursor=pointer]:
+              - /url: /portfolio/reab/
+              - img [ref=e249]
+            - generic [ref=e250]:
+              - generic [ref=e251]:
+                - generic [ref=e252]: Consumer
+                - generic [ref=e253]: Ulearna Technology LTD · 2024
+              - link "Reab" [ref=e254] [cursor=pointer]:
+                - /url: /portfolio/reab/
+              - paragraph [ref=e255]: Platform sosial dan media consumer-facing yang dipublikasikan oleh Ulearna Technology LTD — startup teknologi berbasis Dubai, UAE. Dengan 50 ribu+ unduhan di Google Play dan pembaruan aktif hingga 2026, Reab membuktikan kemampuan Banua Coder dalam menangani aplikasi consumer yang hidup di produksi nyata di pasar internasional.
+              - paragraph [ref=e256]: 50.000+ unduhan di Google Play
+          - article [ref=e257]:
+            - link [ref=e258] [cursor=pointer]:
+              - /url: /portfolio/carwa/
+              - img [ref=e259]
+            - generic [ref=e260]:
+              - generic [ref=e261]:
+                - generic [ref=e262]: Consumer
+                - generic [ref=e263]: Ulearna Technology LTD · 2024
+              - link "Carwa — Digital Car Auction" [ref=e264] [cursor=pointer]:
+                - /url: /portfolio/carwa/
+              - paragraph [ref=e265]: Aplikasi lelang mobil digital untuk pasar UAE yang membantu pengguna membeli dan menawar mobil bekas secara real-time. Dikembangkan untuk Ulearna Technology LTD (Dubai, UAE), Carwa menunjukkan kemampuan Banua Coder dalam domain fintech-adjacent dengan alur transaksi real-time dan pengalaman pengguna yang intuitif.
+              - paragraph [ref=e266]: Aplikasi dipublikasikan ke Google Play dan aktif digunakan
+          - article [ref=e267]:
+            - link [ref=e268] [cursor=pointer]:
+              - /url: /portfolio/patonro/
+              - img [ref=e269]
+            - generic [ref=e270]:
+              - generic [ref=e271]:
+                - generic [ref=e272]: Public Sector
+                - generic [ref=e273]: Pemerintah Kabupaten Gowa (kemitraan dengan PT Brantas Inti Utama) · 2024
+              - link "Patonro" [ref=e274] [cursor=pointer]:
+                - /url: /portfolio/patonro/
+              - paragraph [ref=e275]: Aplikasi layanan informasi dan pembayaran pajak/retribusi daerah untuk Kabupaten Gowa, Sulawesi Selatan. Dikembangkan dalam kemitraan dengan PT Brantas Inti Utama, Patonro memudahkan masyarakat mengakses tagihan, riwayat pembayaran, dan notifikasi jatuh tempo dari perangkat mobile. Proyek ini membuktikan pengalaman Banua Coder di domain publik dengan sistem pembayaran dan data wajib pajak.
+              - paragraph [ref=e276]: Aplikasi dipublikasikan dan digunakan oleh masyarakat wajib pajak daerah
+    - region "Dipimpin oleh pengalaman engineering" [ref=e277]:
+      - generic [ref=e278]:
+        - generic [ref=e279]:
+          - paragraph [ref=e280]: // FOUNDER
+          - generic [ref=e281]:
+            - generic [ref=e282]: "[ 06 ]"
+            - heading "Dipimpin oleh pengalaman engineering" [level=2] [ref=e283]
+        - generic [ref=e284]:
+          - generic [ref=e286]: // photo
+          - generic [ref=e287]:
+            - generic [ref=e288]:
+              - paragraph [ref=e289]: Founder & Director
+              - heading "Fajrian Aidil Pratama" [level=3] [ref=e290]
+            - paragraph [ref=e291]: Dipimpin oleh engineer dengan exposure pada product, platform, dan sistem operasional
+            - paragraph [ref=e292]: Pengalaman Fajrian mencakup produk consumer untuk pasar internasional (Dubai/UAE via Ulearna Technology LTD), sistem publik dan pajak daerah, hingga platform engineering di GoTo Financial, Reku, dan Stockbit/Bibit. Banua Coder mendekati setiap proyek dengan kombinasi product thinking, engineering depth, dan pemahaman operasional bisnis lintas konteks.
+            - generic [ref=e293]:
+              - link "LinkedIn →" [ref=e294] [cursor=pointer]:
+                - /url: https://linkedin.com/in/fajrianaidilpratama
+              - link "GitHub →" [ref=e295] [cursor=pointer]:
+                - /url: https://github.com/fajrianaidilpratama
+            - link "Full profile →" [ref=e296] [cursor=pointer]:
+              - /url: /founder/
+        - generic [ref=e297]:
+          - paragraph [ref=e298]: // Latar belakang terpilih
+          - list "Founder experience at companies" [ref=e299]:
+            - listitem [ref=e300]:
+              - button "GoTo Financial — Mobile platform engineering" [ref=e301]:
+                - img "GoTo Financial"
+              - tooltip "Mobile platform engineering"
+            - listitem [ref=e302]:
+              - button "Reku — Mobile engineering" [ref=e303]:
+                - img "Reku"
+              - tooltip "Mobile engineering"
+            - listitem [ref=e304]:
+              - button "Stockbit/Bibit — Mobile platform" [ref=e305]:
+                - img "Stockbit/Bibit"
+              - tooltip "Mobile platform"
+            - listitem [ref=e306]:
+              - button "Ulearna — International product collaboration (Dubai, UAE)" [ref=e307]:
+                - img "Ulearna"
+              - tooltip "International product collaboration (Dubai, UAE)"
+        - link "Profil lengkap founder →" [ref=e309] [cursor=pointer]:
+          - /url: /founder/
+    - generic [ref=e310]:
+      - paragraph [ref=e311]:
+        - text: Tidak yakin biayanya?
+        - link "Coba kalkulator estimasi →" [ref=e312] [cursor=pointer]:
+          - /url: /estimate/
+      - region "Call to action" [ref=e313]:
+        - generic [ref=e314]:
+          - heading "Punya proses yang masih dijalankan dengan WhatsApp dan Google Sheets?" [level=2] [ref=e315]
+          - paragraph [ref=e316]: Kami petakan dalam diskusi 30 menit. Gratis, tanpa proposal panjang. Founder yang langsung jawab.
+          - link "Mulai Discovery Call (gratis, 30 menit)" [ref=e318] [cursor=pointer]:
+            - /url: /contact/
+  - contentinfo "Site footer" [ref=e319]:
+    - generic [ref=e320]:
+      - paragraph [ref=e321]: // banua coder
+      - generic [ref=e322]:
+        - generic [ref=e323]:
+          - img "Banua Coder" [ref=e324]:
+            - img [ref=e325]
+          - paragraph [ref=e328]: Partner teknologi berbasis engineering untuk bisnis dan organisasi.
+          - paragraph [ref=e329]: © 2026 Banua Coder
+        - navigation "Footer site map" [ref=e330]:
+          - paragraph [ref=e331]: // Situs
+          - list [ref=e332]:
+            - listitem [ref=e333]:
+              - link "Layanan" [ref=e334] [cursor=pointer]:
+                - /url: /services/
+            - listitem [ref=e335]:
+              - link "Portfolio" [ref=e336] [cursor=pointer]:
+                - /url: /portfolio/
+            - listitem [ref=e337]:
+              - link "Tentang" [ref=e338] [cursor=pointer]:
+                - /url: /about/
+            - listitem [ref=e339]:
+              - link "Founder" [ref=e340] [cursor=pointer]:
+                - /url: /founder/
+            - listitem [ref=e341]:
+              - link "Blog" [ref=e342] [cursor=pointer]:
+                - /url: /blog/
+            - listitem [ref=e343]:
+              - link "Kontak" [ref=e344] [cursor=pointer]:
+                - /url: /contact/
+        - generic [ref=e345]:
+          - paragraph [ref=e346]: // Social
+          - list [ref=e347]:
+            - listitem [ref=e348]:
+              - link "LinkedIn" [ref=e349] [cursor=pointer]:
+                - /url: https://linkedin.com/company/banuacoder
+            - listitem [ref=e350]:
+              - link "GitHub" [ref=e351] [cursor=pointer]:
+                - /url: https://github.com/banua-coder
+            - listitem [ref=e352]:
+              - link "Instagram" [ref=e353] [cursor=pointer]:
+                - /url: https://instagram.com/banuacoder
+            - listitem [ref=e354]:
+              - link "Medium" [ref=e355] [cursor=pointer]:
+                - /url: https://medium.com/@banuacoder
+            - listitem [ref=e356]:
+              - link "YouTube" [ref=e357] [cursor=pointer]:
+                - /url: https://youtube.com/@banuacoder

@@ -46,14 +46,14 @@ const bucketLabel = {
   consumer: 'Consumer',
   'public-sector': 'Public Sector',
   operational: 'Operational',
-  engineering: 'Engineering',
+  'open-source': 'Open Source',
 }[data.bucket]
 
-const bucketVariantMap: Record<string, 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-engineering'> = {
+const bucketVariantMap: Record<string, 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'> = {
   consumer: 'bucket-consumer',
   'public-sector': 'bucket-public',
   operational: 'bucket-operational',
-  engineering: 'bucket-engineering',
+  'open-source': 'bucket-open-source',
 }
 const bucketVariant = bucketVariantMap[data.bucket] ?? 'bucket-consumer'
 

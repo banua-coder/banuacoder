@@ -1,0 +1,229 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - link "Home" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+      - generic [ref=e8]:
+        - button "Contact Us" [ref=e9] [cursor=pointer]
+        - button [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+    - generic [ref=e12]:
+      - button [ref=e14] [cursor=pointer]:
+        - img [ref=e15]
+      - navigation [ref=e19]:
+        - list [ref=e20]:
+          - listitem [ref=e21]:
+            - link "Our Works" [ref=e22] [cursor=pointer]:
+              - /url: /case-studies
+          - listitem [ref=e23]:
+            - link "Our Values" [ref=e24] [cursor=pointer]:
+              - /url: /#our-values
+          - listitem [ref=e25]:
+            - link "Our Services" [ref=e26] [cursor=pointer]:
+              - /url: /#our-services
+          - listitem [ref=e27]:
+            - link "Work With Us" [ref=e28] [cursor=pointer]:
+              - /url: /careers
+        - button "Contact Us" [ref=e29] [cursor=pointer]
+    - generic [ref=e30]:
+      - generic [ref=e31]: Designing Intelligent Solutions
+      - generic [ref=e32]:
+        - img [ref=e33]
+        - generic [ref=e40]:
+          - paragraph [ref=e42]: "1"
+          - generic [ref=e43]:
+            - paragraph [ref=e44]: "1"
+            - paragraph [ref=e45]: "2"
+            - paragraph [ref=e46]: "3"
+            - paragraph [ref=e47]: "4"
+            - paragraph [ref=e48]: "5"
+            - paragraph [ref=e49]: "6"
+            - paragraph [ref=e50]: "7"
+            - paragraph [ref=e51]: "8"
+            - paragraph [ref=e52]: "9"
+            - paragraph [ref=e53]: "0"
+          - generic [ref=e54]:
+            - paragraph [ref=e55]: "1"
+            - paragraph [ref=e56]: "2"
+            - paragraph [ref=e57]: "3"
+            - paragraph [ref=e58]: "4"
+            - paragraph [ref=e59]: "5"
+            - paragraph [ref=e60]: "6"
+            - paragraph [ref=e61]: "7"
+            - paragraph [ref=e62]: "8"
+            - paragraph [ref=e63]: "9"
+            - paragraph [ref=e64]: "0"
+    - heading "Zero One Group | Transforming Tomorrow, Today" [level=1] [ref=e65]
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - text: Transforming tomorrow, today.
+        - paragraph [ref=e70]: We help businesses redefine future possibilities with comprehensive strategic solutions today
+      - generic [ref=e77]: POWERED BY ZERO ONE
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - heading "Our Works" [level=1] [ref=e81]
+        - link "See All" [ref=e82] [cursor=pointer]:
+          - /url: /case-studies
+      - generic [ref=e86]:
+        - img "Building a global knowledge hub for climate finance and capacity-building resources" [ref=e90] [cursor=pointer]
+        - img "Delivering event video & photo production and design comms services for workshops across Asia" [ref=e94] [cursor=pointer]
+        - img "Designing visual communications that bring global environmental issues and initiatives to life" [ref=e103] [cursor=pointer]
+        - img "Building a global knowledge hub for climate finance and capacity-building resources" [ref=e107] [cursor=pointer]
+        - img "Delivering event video & photo production and design comms services for workshops across Asia" [ref=e111] [cursor=pointer]
+        - img "Designing visual communications that bring global environmental issues and initiatives to life" [ref=e120] [cursor=pointer]
+        - img "Building a global knowledge hub for climate finance and capacity-building resources" [ref=e124] [cursor=pointer]
+        - img "Delivering event video & photo production and design comms services for workshops across Asia" [ref=e128] [cursor=pointer]
+        - img "Designing visual communications that bring global environmental issues and initiatives to life" [ref=e137] [cursor=pointer]
+      - heading "Global Knowledge Hub for Climate Finance Capacity Building" [level=1] [ref=e139]
+    - generic [ref=e143]:
+      - generic [ref=e145]:
+        - heading "90+ Clients Across the Globe" [level=2] [ref=e146]
+        - paragraph [ref=e147]: Since 2018, we have worked with clients ranging from startups to multinationals and philanthropies around the world.
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - img "dentsu" [ref=e150]
+          - img "chigo" [ref=e151]
+          - img "chandra-asri" [ref=e152]
+          - img "cerestar" [ref=e153]
+        - generic [ref=e154]:
+          - img "wavemaker" [ref=e155]
+          - img "viriya" [ref=e156]
+          - img "kapalPesiarku" [ref=e157]
+          - img "tempea" [ref=e158]
+        - generic [ref=e159]:
+          - img "michellion" [ref=e160]
+          - img "kickAvenue" [ref=e161]
+          - img "leeMansion" [ref=e162]
+          - img "globalEnergyMonitor" [ref=e163]
+        - generic [ref=e164]:
+          - img "wavemaker" [ref=e165]
+          - img "viriya" [ref=e166]
+          - img "kapalPesiarku" [ref=e167]
+          - img "tempea" [ref=e168]
+        - generic [ref=e169]:
+          - img "wavemaker" [ref=e170]
+          - img "viriya" [ref=e171]
+        - img "viriya" [ref=e173]
+        - generic [ref=e174]:
+          - img "michellion" [ref=e175]
+          - img "kickAvenue" [ref=e176]
+          - img "leeMansion" [ref=e177]
+    - generic [ref=e178]:
+      - heading "Our Belief" [level=2] [ref=e179]
+      - generic [ref=e184]:
+        - generic [ref=e185]: Innovative
+        - generic [ref=e186]: Innovative
+        - generic [ref=e187]: Innovative
+        - generic [ref=e188]: Innovative
+        - generic [ref=e189]: Innovative
+        - generic [ref=e190]: Innovative
+        - generic [ref=e191]: Innovative
+        - generic [ref=e192]: Innovative
+        - generic [ref=e193]: Innovative
+        - generic [ref=e194]: Innovative
+      - generic [ref=e199]: "01"
+      - generic:
+        - generic:
+          - generic:
+            - text: We design and develop
+            - text: solutions that are…
+      - article [ref=e209]:
+        - generic [ref=e210]:
+          - heading "Innovative" [level=3] [ref=e211]
+          - heading "Holistic" [level=3] [ref=e212]
+          - heading "Impactful" [level=3] [ref=e213]
+        - paragraph [ref=e214]: We create and craft dynamic and bold tech-powered strategies and products that are built to last and will adapt to our client's ever-growing ambition and vision
+    - generic [ref=e215]:
+      - heading "Our Services" [level=2] [ref=e216]
+      - generic [ref=e218]:
+        - generic:
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+          - generic: Our Services
+      - list [ref=e221]:
+        - listitem [ref=e222]:
+          - generic [ref=e223]:
+            - heading "Branding & Creative" [level=3] [ref=e224]
+            - img "Branding & Creative" [ref=e226]
+        - listitem [ref=e227]:
+          - generic [ref=e228]:
+            - heading "Software Development" [level=3] [ref=e229]
+            - img "Software Development" [ref=e231]
+        - listitem [ref=e232]:
+          - generic [ref=e233]:
+            - heading "Digital Campaigns" [level=3] [ref=e234]
+            - img "Digital Campaigns" [ref=e236]
+    - generic [ref=e237]:
+      - heading "Smart Creative" [level=2] [ref=e238]
+      - generic [ref=e251]:
+        - generic [ref=e252]:
+          - link "Launch of Global Capacity Building Coalition":
+            - /url: https://www.linkedin.com/feed/update/urn:li:activity:7279785197238140928/?actorCompanyId=30225440
+            - img "Launch of Global Capacity Building Coalition"
+          - generic:
+            - heading "Launch of Global Capacity Building Coalition" [level=3]
+        - generic [ref=e253]:
+          - link "A Brand-First Approach to Digital Marketing":
+            - /url: https://medium.com/zero-one-group/brand-first-approach-to-digital-marketing-c32a2c146f58
+            - img "A Brand-First Approach to Digital Marketing"
+          - generic:
+            - heading "A Brand-First Approach to Digital Marketing" [level=3]
+        - generic [ref=e254]:
+          - link "ZOG After Office Series":
+            - /url: https://www.youtube.com/watch?v=Gpe8qlaznSw
+            - img "ZOG After Office Series"
+          - generic:
+            - heading "ZOG After Office Series" [level=3]
+        - generic [ref=e255]:
+          - link "Empowering Indonesian Programmers and Building a Digital Future":
+            - /url: https://www.cnnindonesia.com/teknologi/20210406154400-185-626667/adithya-bocah-16-tahun-majalengka-mentor-3000-programmer
+            - img "Empowering Indonesian Programmers and Building a Digital Future"
+          - generic:
+            - heading "Empowering Indonesian Programmers and Building a Digital Future" [level=3]
+        - generic [ref=e256]:
+          - link "How Python Saved My Life":
+            - /url: https://www.youtube.com/watch?v=VZjzHjYSnfE
+            - img "How Python Saved My Life"
+          - generic:
+            - heading "How Python Saved My Life" [level=3]
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic: "#SMARTCREATIVES"
+          - generic [ref=e257]:
+            - paragraph [ref=e258]:
+              - text: Our people are at the forefront
+              - text: of creative and technology in
+              - text: Indonesia and around the world
+            - link "Work With Us" [ref=e260] [cursor=pointer]:
+              - /url: /careers
+              - button "Work With Us" [ref=e262]
+    - generic [ref=e263]:
+      - heading "Contact Us" [level=2] [ref=e264]
+      - generic [ref=e268]:
+        - paragraph [ref=e269]:
+          - text: How can we transform
+          - text: your tomorrow?
+        - button "Let's talk" [ref=e271] [cursor=pointer]
+    - generic [ref=e272]:
+      - generic [ref=e273]: © Zero One Group 2025
+      - generic [ref=e274]:
+        - link "Instagram" [ref=e275] [cursor=pointer]:
+          - /url: https://www.instagram.com/01.zeroonegroup?igsh=MTVkcTlidTVqaDI2Yg==
+        - link "LinkedIn" [ref=e276] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/zeroonegroup/
+    - generic:
+      - generic: Learn more
+    - region "Notifications (F8)":
+      - list
+  - alert [ref=e277]
+  - button "SCROLL DOWN" [ref=e278] [cursor=pointer]
