@@ -8,10 +8,12 @@ import Container from '../components/layout/Container.astro'
 import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
 import CTA from '../components/sections/CTA.astro'
 import iconImage from '../assets/brand/banuacoder-icon.png'
-import workImg1 from '../assets/founder/work-product/work-1.webp'
-import workImg2 from '../assets/founder/work-product/work-2.webp'
-import workImg3 from '../assets/founder/work-product/work-3.webp'
-import workImg4 from '../assets/founder/work-product/work-4.webp'
+import workImg1 from '../assets/founder/work-product/work-1.png'
+import workImg2 from '../assets/founder/work-product/work-2.png'
+import workImg3 from '../assets/founder/work-product/work-3.png'
+import workImg4 from '../assets/founder/work-product/work-4.png'
+import workImg5 from '../assets/founder/work-product/work-5.png'
+import workImg6 from '../assets/founder/work-product/work-6.png'
 import ambientImg from '../assets/stock/clean-workspace-notebook.jpg'
 {/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
 
@@ -325,29 +327,37 @@ const founderBreadcrumbSchema = {
           Pengalaman lapangan, redacted
         </h2>
         <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-8 max-w-2xl" style="font-size: var(--fs-17)">
-          Cuplikan kerja teknis dari pengalaman sebelumnya. Detail produk dan branding diredact untuk menghormati kerahasiaan.
+          Cuplikan kerja teknis dari pengalaman sebelumnya — termasuk pengembangan produk consumer fintech skala jutaan pengguna. Detail produk dan branding diredact untuk menghormati kerahasiaan.
         </p>
-        <div class="flex flex-wrap gap-4">
-          {[
-            { src: workImg1, alt: "Mobile financial app — light mode portfolio screen" },
-            { src: workImg2, alt: "Mobile financial app — dark mode screen" },
-            { src: workImg3, alt: "Mobile app — complex feature flow with dark theme" },
-            { src: workImg4, alt: "Mobile app — side-by-side dark mode comparison" },
-          ].map(({ src, alt }) => (
-            <div class="border border-dashed border-bnc-stone-400 dark:border-bnc-stone-600 rounded-[var(--radius-sm)] overflow-hidden shrink-0">
-              <Image
-                src={src}
-                alt={alt}
-                width={160}
-                class="block opacity-85 grayscale-[20%]"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          ))}
+        <div
+          class="prior-work-marquee relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8"
+          aria-roledescription="carousel"
+          aria-label="Cuplikan kerja produk sebelumnya"
+        >
+          <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
+            {[
+              { src: workImg1, alt: "Side-by-side perbandingan light vs dark mode pada layar discover/market" },
+              { src: workImg2, alt: "Tampilan flow detail fitur pada aplikasi consumer fintech" },
+              { src: workImg3, alt: "Layar reward/cashback dengan ilustrasi dan elemen brand yang diredact" },
+              { src: workImg4, alt: "Detail flow fitur consumer fintech dengan animasi micro" },
+              { src: workImg5, alt: "Layar Portfolio P/L dengan grafik annotated dan tooltip" },
+              { src: workImg6, alt: "Tampilan rincian aset dengan card list dan tab navigasi" },
+            ].map(({ src, alt }) => (
+              <div class="prior-work-slide shrink-0 border border-bnc-stone-200 dark:border-bnc-stone-800 rounded-[var(--radius-md)] overflow-hidden bg-bnc-stone-50 dark:bg-bnc-stone-900">
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={280}
+                  class="block w-full h-auto"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            ))}
+          </div>
         </div>
         <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600 mt-4">
-          Tidak ditampilkan: nama produk, klien tertentu
+          Tidak ditampilkan: nama produk, klien tertentu · Geser untuk melihat semua
         </p>
       </Container>
     </section>
@@ -477,3 +487,55 @@ const founderBreadcrumbSchema = {
 
   <Footer />
 </BaseLayout>
+
+<style>
+  /* Prior-work marquee — auto-scrolling horizontal carousel of redacted
+     screenshots from prior consumer fintech work. Auto-scroll loops on
+     a 40s cycle; pauses on hover (desktop) or focus-within (keyboard).
+     Track is duplicated in CSS to create a seamless infinite loop. */
+  .prior-work-marquee {
+    mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+  }
+  .prior-work-track {
+    animation: prior-work-scroll 60s linear infinite;
+  }
+  .prior-work-marquee:hover .prior-work-track,
+  .prior-work-marquee:focus-within .prior-work-track {
+    animation-play-state: paused;
+  }
+  .prior-work-slide {
+    width: clamp(180px, 24vw, 280px);
+  }
+  .prior-work-slide :global(img) {
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: auto;
+  }
+  @keyframes prior-work-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .prior-work-track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .prior-work-marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+      overflow: visible;
+    }
+  }
+</style>
+
+<script>
+  /* Duplicate the track contents so the CSS keyframe (-50% translate) can
+     loop seamlessly. Without duplication you'd see the row snap back at
+     the loop boundary. */
+  document.querySelectorAll<HTMLElement>('.prior-work-track').forEach((track) => {
+    track.innerHTML += track.innerHTML
+    track.setAttribute('aria-hidden', 'false')
+  })
+</script>
