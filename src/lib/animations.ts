@@ -148,6 +148,45 @@ export function initAnimations(): () => void {
       })
     }
 
+    // ── Hero auto-cycling product carousels ───────────────────────────────────
+    // Each [data-hero-cycle] slot rotates its [data-hero-slide] children by
+    // toggling the `.is-active` class on a setInterval. Optional comma-list of
+    // labels via data-hero-cycle-labels updates the chip text in sync with the
+    // first/main slot's index.
+    const cycleSlots = gsap.utils.toArray<HTMLElement>('[data-hero-cycle]')
+    const chipLabel = document.querySelector<HTMLElement>('[data-hero-chip-label]')
+    cycleSlots.forEach((slot) => {
+      const slides = Array.from(slot.querySelectorAll<HTMLElement>('[data-hero-slide]'))
+      if (slides.length < 2) return
+      const interval = parseInt(slot.dataset.heroCycleInterval ?? '4000', 10)
+      const offset = parseInt(slot.dataset.heroCycleOffset ?? '0', 10)
+      const labels = (slot.dataset.heroCycleLabels ?? '').split(',').map((s) => s.trim()).filter(Boolean)
+      let index = 0
+
+      const advance = () => {
+        slides[index].classList.remove('is-active')
+        index = (index + 1) % slides.length
+        slides[index].classList.add('is-active')
+        if (labels.length && chipLabel) {
+          // Soft fade the label text on each rotation so it doesn't snap.
+          gsap.to(chipLabel, {
+            opacity: 0,
+            duration: 0.18,
+            ease: 'power2.in',
+            onComplete: () => {
+              chipLabel.textContent = `// ${labels[index] ?? labels[0]}`
+              gsap.to(chipLabel, { opacity: 1, duration: 0.22, ease: 'power2.out' })
+            },
+          })
+        }
+      }
+
+      // Stagger start so back/front phones don't crossfade in lockstep.
+      window.setTimeout(() => {
+        window.setInterval(advance, interval)
+      }, offset)
+    })
+
     // ── Pinned client logo cycle ──────────────────────────────────────────────
     // Each .client-cycle-cell carries data-cell-enter / data-cell-exit (0–1
     // scroll progress) and gets its own fromTo + (optional) to placed on a

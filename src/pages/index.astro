@@ -20,7 +20,12 @@ import DeviceFrame from '../components/interactive/DeviceFrame.astro'
 import Testimonial from '../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
 import heroPico from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
-import heroCarwa from '../content/portfolio/carwa/screenshots/screenshot-1.webp'
+import heroSikerja from '../content/portfolio/sikerja/screenshots/screenshot-2.png'
+import heroSiap from '../content/portfolio/siap-donggala/screenshots/screenshot-1.png'
+import heroDetexi from '../content/portfolio/detexi/screenshots/screenshot-4.png'
+import heroBackCarwa from '../content/portfolio/carwa/screenshots/screenshot-clean-1.png'
+import heroBackReku from '../assets/founder/work-product/work-3.png'
+import heroBackSiapAlt from '../content/portfolio/siap-donggala/screenshots/screenshot-3.png'
 import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
 
 const idealClientIcons: Record<string, typeof Coffee> = {
@@ -166,22 +171,54 @@ const orgSchema = {
           <!-- Soft brand glow behind shots -->
           <div class="hero-glow" aria-hidden="true"></div>
 
-          <!-- Secondary screenshot (already framed, smaller, angled, back) -->
-          <div class="hero-shot hero-shot-back">
+          <!-- Secondary screenshot stack — auto-cycles between 3 secondary
+               shots (Carwa international, Reku prior fintech, alt SIAP view)
+               offset from main cycle so the two phones never crossfade in
+               lockstep. -->
+          <div class="hero-shot hero-shot-back" data-hero-cycle data-hero-cycle-interval="4200" data-hero-cycle-offset="2100">
             <Image
-              src={heroCarwa}
+              src={heroBackCarwa}
               alt=""
               widths={[200, 400]}
               sizes="200px"
               aria-hidden="true"
               loading="eager"
               decoding="async"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroBackReku}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
               class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroBackSiapAlt}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
             />
           </div>
 
-          <!-- Main screenshot (already framed, front, larger) — LCP candidate -->
-          <div class="hero-shot hero-shot-main">
+          <!-- Main screenshot stack — 4 Banua Coder products. LCP image is
+               the first slide which uses fetchpriority high; others lazy. -->
+          <div
+            class="hero-shot hero-shot-main"
+            data-hero-cycle
+            data-hero-cycle-interval="4200"
+            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi"
+          >
             <Image
               src={heroPico}
               alt="Pratinjau aplikasi PICO Sulteng"
@@ -190,14 +227,45 @@ const orgSchema = {
               loading="eager"
               decoding="async"
               fetchpriority="high"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroSikerja}
+              alt="Pratinjau aplikasi Sikerja — portal lowongan kerja Sulteng"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
               class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroSiap}
+              alt="Pratinjau aplikasi Siap Donggala — sistem informasi kepegawaian"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexi}
+              alt="Pratinjau aplikasi Detexi — detail rujukan layanan medis"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
             />
           </div>
 
-          <!-- Floating engineering chip -->
-          <div class="hero-chip" aria-hidden="true">
+          <!-- Floating product label — updates as the main phone cycles -->
+          <div class="hero-chip" aria-hidden="true" data-hero-chip>
             <span class="hero-chip-dot"></span>
-            <span class="hero-chip-label">// engineering-led</span>
+            <span class="hero-chip-label" data-hero-chip-label>// PICO Sulteng</span>
           </div>
         </div>
       </Hero>
@@ -633,7 +701,9 @@ const orgSchema = {
       radial-gradient(50% 60% at 35% 60%, rgba(29, 156, 212, 0.18), transparent 70%);
   }
 
-  /* Screenshots already include device frame in the image — render bare with depth */
+  /* Screenshots already include device frame in the image — render bare with depth.
+     Each .hero-shot can hold multiple stacked .hero-shot-img siblings; only the
+     one with .is-active is fully opaque. Crossfades between them are CSS-driven. */
   .hero-shot {
     position: absolute;
   }
@@ -641,6 +711,20 @@ const orgSchema = {
     display: block;
     height: auto;
     border-radius: 28px;
+    transition: opacity 0.7s ease;
+  }
+  /* When a phone slot has multiple slides, stack them — only the first is in
+     normal flow (so the wrapper sizes to it), the rest are absolutely
+     positioned on top and faded out. */
+  .hero-shot[data-hero-cycle] :global(.hero-shot-img) {
+    opacity: 0;
+  }
+  .hero-shot[data-hero-cycle] :global(.hero-shot-img.is-active) {
+    opacity: 1;
+  }
+  .hero-shot[data-hero-cycle] :global(.hero-shot-img:not(:first-child)) {
+    position: absolute;
+    inset: 0;
   }
 
   /* Main shot — front-right, slightly tilted, real screenshot, big shadow */
