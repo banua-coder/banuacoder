@@ -37,6 +37,7 @@ const {
   ]}
   style="padding-block: var(--spacing-section-y)"
   aria-label="Call to action"
+  data-tell-cta
 >
   <div
     class="mx-auto px-4 sm:px-6 lg:px-8 text-center"
@@ -48,6 +49,7 @@ const {
         inverted ? 'text-white' : 'text-bnc-ink dark:text-bnc-paper',
       ]}
       style="font-size: var(--fs-48)"
+      data-tell-cta-headline
     >
       {headline}
     </h2>
@@ -59,12 +61,13 @@ const {
           inverted ? 'text-blue-200' : 'text-bnc-stone-600 dark:text-bnc-stone-400',
         ]}
         style="font-size: var(--fs-20); max-width: 52ch"
+        data-tell-cta-sub
       >
         {sub}
       </p>
     )}
 
-    <div class="flex flex-wrap gap-4 justify-center">
+    <div class="flex flex-wrap gap-4 justify-center" data-tell-cta-actions>
       {primaryCta && (
         inverted ? (
           <Button href={primaryHref} size="lg" variant="secondary" class="!border-white !text-white hover:!bg-white hover:!text-bnc-primary">

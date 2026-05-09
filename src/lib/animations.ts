@@ -540,6 +540,104 @@ export function initAnimations(): () => void {
       })
     }
 
+    // ── About decoration card slide-from-right ───────────────────────────────
+    // The mono "founded 2019 / based in Sulteng" decoration card on the
+    // about snippet now has its own entrance distinct from the section
+    // text, sliding in from the right with a slight scale.
+    const aboutDecor = document.querySelector<HTMLElement>('[data-tell-about-decor]')
+    if (aboutDecor) {
+      gsap.fromTo(
+        aboutDecor,
+        { opacity: 0, x: 60, scale: 0.96 },
+        {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: aboutDecor,
+            start: 'top 88%',
+            once: true,
+          },
+        },
+      )
+    }
+
+    // ── Founder experience strip burst-in ────────────────────────────────────
+    // The horizontal row of past-employer logos cascades in from y:20
+    // with a tight stagger, after the founder card has settled.
+    const founderExpStrip = document.querySelector<HTMLElement>('[data-tell-founder-experience]')
+    if (founderExpStrip) {
+      const items = Array.from(founderExpStrip.querySelectorAll<HTMLElement>('.experience-item'))
+      if (items.length) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, y: 20, scale: 0.9 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            stagger: 0.07,
+            ease: 'back.out(1.4)',
+            scrollTrigger: {
+              trigger: founderExpStrip,
+              start: 'top 88%',
+              once: true,
+            },
+          },
+        )
+      }
+    }
+
+    // ── Final CTA — heading scales up, sub fades, buttons settle ─────────────
+    const ctaSection = document.querySelector<HTMLElement>('[data-tell-cta]')
+    const ctaHeadline = ctaSection?.querySelector<HTMLElement>('[data-tell-cta-headline]')
+    const ctaSub = ctaSection?.querySelector<HTMLElement>('[data-tell-cta-sub]')
+    const ctaActions = ctaSection?.querySelector<HTMLElement>('[data-tell-cta-actions]')
+    if (ctaSection && ctaHeadline) {
+      const ctaTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ctaSection,
+          start: 'top 78%',
+          once: true,
+        },
+      })
+      ctaTl.fromTo(
+        ctaHeadline,
+        { opacity: 0, scale: 0.92, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+        0,
+      )
+      if (ctaSub) {
+        ctaTl.fromTo(
+          ctaSub,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' },
+          0.2,
+        )
+      }
+      if (ctaActions) {
+        const buttons = Array.from(ctaActions.children) as HTMLElement[]
+        if (buttons.length) {
+          ctaTl.fromTo(
+            buttons,
+            { opacity: 0, y: 12, scale: 0.95 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.5,
+              stagger: 0.08,
+              ease: 'back.out(1.6)',
+            },
+            0.35,
+          )
+        }
+      }
+    }
+
     // ── Testimonial word-by-word reveal ──────────────────────────────────────
     // Splits the quote text into individual word-spans (constructed via
     // createElement, NOT innerHTML, so MDX-authored content stays
