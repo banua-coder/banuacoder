@@ -141,6 +141,7 @@ const slots: Slot[] = [
                 loading="lazy"
                 decoding="async"
                 class="client-cycle-logo h-16 sm:h-20 w-auto max-w-[180px] object-contain"
+                data-pemda={slot.logoFile.startsWith('pemprov-') || slot.logoFile.startsWith('pemkab-') ? '' : undefined}
               />
             ) : (
               <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
@@ -155,12 +156,13 @@ const slots: Slot[] = [
 </section>
 
 <style>
-  /* Dark theme: render every logo as a flat white silhouette so the cycle
-     reads as luminous shapes against the ink background — matches the ZOG
-     visual treatment. Light theme keeps the natural brand/coat-of-arms
-     colours (mostly multi-coloured emblems already legible on the paper bg).
+  /* Dark theme: brand/agency logos (Ulearna, Brantas, KlinikGo, BPS) render
+     as flat white silhouettes for a ZOG-style luminous treatment.
+     Pemda emblems (pemprov-* / pemkab-* coats of arms) keep their natural
+     red/yellow/multi-colour heraldry — silhouetting state symbols would
+     strip their identity. Light theme leaves all logos in natural colours.
      `brightness(0)` collapses to pure black, then `invert(1)` flips to white. */
-  :global(html.dark) .client-cycle-logo {
+  :global(html.dark) .client-cycle-logo:not([data-pemda]) {
     filter: brightness(0) invert(1);
   }
 
