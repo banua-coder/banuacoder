@@ -21,12 +21,14 @@ import Testimonial from '../../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
 import heroPicoFront from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
 import heroPicoBack from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
-import heroSikerjaFront from '../../content/portfolio/sikerja/screenshots/screenshot-2.png'
-import heroSikerjaBack from '../../content/portfolio/sikerja/screenshots/screenshot-4.png'
+import heroSikerjaFront from '../../content/portfolio/sikerja/screenshots/screenshot-home.png'
+import heroSikerjaBack from '../../content/portfolio/sikerja/screenshots/screenshot-2.png'
 import heroSiapFront from '../../content/portfolio/siap-donggala/screenshots/screenshot-1.png'
 import heroSiapBack from '../../content/portfolio/siap-donggala/screenshots/screenshot-3.png'
 import heroDetexiFront from '../../content/portfolio/detexi/screenshots/screenshot-4.png'
 import heroDetexiBack from '../../content/portfolio/detexi/screenshots/screenshot-5.png'
+import heroCarwaFront from '../../content/portfolio/carwa/screenshots/screenshot-clean-1.png'
+import heroCarwaBack from '../../content/portfolio/carwa/screenshots/screenshot-clean-2.png'
 import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
 
 const idealClientIcons: Record<string, typeof Coffee> = {
@@ -217,13 +219,24 @@ const orgSchema = {
               class="hero-shot-img"
               data-hero-slide
             />
+            <Image
+              src={heroCarwaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
           </div>
 
           <div
             class="hero-shot hero-shot-main"
             data-hero-cycle-group="hero-products"
             data-hero-cycle-interval="4200"
-            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi"
+            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi,Carwa"
           >
             <Image
               src={heroPicoFront}
@@ -238,7 +251,7 @@ const orgSchema = {
             />
             <Image
               src={heroSikerjaFront}
-              alt="Sikerja preview — Central Sulawesi job portal"
+              alt="Sikerja preview — Central Sulawesi job portal home screen"
               widths={[280, 560]}
               sizes="280px"
               loading="lazy"
@@ -259,6 +272,16 @@ const orgSchema = {
             <Image
               src={heroDetexiFront}
               alt="Detexi preview — medical referral detail"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaFront}
+              alt="Carwa preview — Dubai digital car auction"
               widths={[280, 560]}
               sizes="280px"
               loading="lazy"

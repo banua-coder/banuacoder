@@ -23,12 +23,14 @@ import { Image } from 'astro:assets'
 // so the two phones always reference the SAME product at any given tick.
 import heroPicoFront from '../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
 import heroPicoBack from '../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
-import heroSikerjaFront from '../content/portfolio/sikerja/screenshots/screenshot-2.png'
-import heroSikerjaBack from '../content/portfolio/sikerja/screenshots/screenshot-4.png'
+import heroSikerjaFront from '../content/portfolio/sikerja/screenshots/screenshot-home.png'
+import heroSikerjaBack from '../content/portfolio/sikerja/screenshots/screenshot-2.png'
 import heroSiapFront from '../content/portfolio/siap-donggala/screenshots/screenshot-1.png'
 import heroSiapBack from '../content/portfolio/siap-donggala/screenshots/screenshot-3.png'
 import heroDetexiFront from '../content/portfolio/detexi/screenshots/screenshot-4.png'
 import heroDetexiBack from '../content/portfolio/detexi/screenshots/screenshot-5.png'
+import heroCarwaFront from '../content/portfolio/carwa/screenshots/screenshot-clean-1.png'
+import heroCarwaBack from '../content/portfolio/carwa/screenshots/screenshot-clean-2.png'
 import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
 
 const idealClientIcons: Record<string, typeof Coffee> = {
@@ -222,15 +224,26 @@ const orgSchema = {
               class="hero-shot-img"
               data-hero-slide
             />
+            <Image
+              src={heroCarwaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
           </div>
 
-          <!-- Main screenshot stack — 4 Banua Coder products. LCP image is
+          <!-- Main screenshot stack — 5 Banua Coder products. LCP image is
                the first slide which uses fetchpriority high; others lazy. -->
           <div
             class="hero-shot hero-shot-main"
             data-hero-cycle-group="hero-products"
             data-hero-cycle-interval="4200"
-            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi"
+            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi,Carwa"
           >
             <Image
               src={heroPicoFront}
@@ -245,7 +258,7 @@ const orgSchema = {
             />
             <Image
               src={heroSikerjaFront}
-              alt="Pratinjau aplikasi Sikerja — portal lowongan kerja Sulteng"
+              alt="Pratinjau aplikasi Sikerja — beranda portal lowongan kerja Sulawesi Tengah"
               widths={[280, 560]}
               sizes="280px"
               loading="lazy"
@@ -266,6 +279,16 @@ const orgSchema = {
             <Image
               src={heroDetexiFront}
               alt="Pratinjau aplikasi Detexi — detail rujukan layanan medis"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaFront}
+              alt="Pratinjau aplikasi Carwa — lelang mobil digital Dubai"
               widths={[280, 560]}
               sizes="280px"
               loading="lazy"
