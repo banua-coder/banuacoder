@@ -50,39 +50,56 @@ const byLogo = Object.fromEntries(clients.map((c) => [c.logo, c]))
  * is kept clear for the pinned headline.
  *
  * Each slot defines:
- *   - logoFile: which client emblem to render
- *   - x / y    : percent coords (translate -50%/-50% for centering)
+ *   - logoFile : which client emblem to render
+ *   - fromX/Y  : percent coords where the logo APPEARS (small + blurred)
+ *   - toX/Y    : percent coords where the logo DRIFTS to as it fades away
+ *                (animations.ts tweens left/top from from→to across the cell's
+ *                full lifespan, matching ZOG's parallax-drift effect)
  *   - enter    : scroll progress (0–1) when this cell starts fading IN
  *   - exit     : scroll progress when it starts fading OUT (omit for slots
  *                that should remain visible until the section ends)
  *
- * Stagger of ~0.06 between entries with a long enter (0.22) + hold (0.08) +
- * exit (0.22) keeps 5–6 logos visible at any moment, all in mid-transition.
- * Each slot's full lifespan is ~0.52 of timeline so the blur/zoom feels
- * gradual rather than a hard swap.
+ * Stagger of ~0.06 with enter/exit windows of 0.22 keeps 5–6 logos visible
+ * mid-transition at any moment. Drifts are subtle (±5–12%) so logos move
+ * in a parallax direction during their lifespan rather than just blipping.
  */
 type Slot = {
   logoFile: string
-  x: number
-  y: number
+  fromX: number
+  fromY: number
+  toX: number
+  toY: number
   enter: number
   exit?: number
 }
 
 const slots: Slot[] = [
-  { logoFile: 'ulearna.png',            x: 15, y: 18, enter: 0.00, exit: 0.30 },
-  { logoFile: 'pemprov-sulteng.svg',    x: 85, y: 22, enter: 0.06, exit: 0.36 },
-  { logoFile: 'brantas-inti-utama.png', x: 10, y: 78, enter: 0.12, exit: 0.42 },
-  { logoFile: 'pemkab-gowa.png',        x: 88, y: 82, enter: 0.18, exit: 0.48 },
-  { logoFile: 'pemprov-sulsel.svg',     x: 42, y: 10, enter: 0.24, exit: 0.54 },
-  { logoFile: 'klinikgo.png',           x: 58, y: 88, enter: 0.30, exit: 0.60 },
-  { logoFile: 'pemkab-donggala.png',    x:  8, y: 48, enter: 0.36, exit: 0.66 },
-  { logoFile: 'ulearna.png',            x: 92, y: 52, enter: 0.42, exit: 0.72 },
-  { logoFile: 'brantas-inti-utama.png', x: 72, y: 14, enter: 0.48, exit: 0.78 },
-  { logoFile: 'pemkab-donggala.png',    x: 28, y: 86, enter: 0.54, exit: 0.84 },
-  { logoFile: 'pemprov-sulteng.svg',    x: 78, y: 78, enter: 0.60 },
-  { logoFile: 'klinikgo.png',           x: 22, y: 18, enter: 0.66 },
-  { logoFile: 'pemprov-sulsel.svg',     x: 50, y: 88, enter: 0.72 },
+  // top-left → drifts further NW
+  { logoFile: 'ulearna.png',            fromX: 15, fromY: 18, toX:  5, toY: 13, enter: 0.00, exit: 0.30 },
+  // top-right → drifts NE
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 85, fromY: 22, toX: 95, toY: 17, enter: 0.06, exit: 0.36 },
+  // bottom-left → drifts SW
+  { logoFile: 'brantas-inti-utama.png', fromX: 10, fromY: 78, toX:  3, toY: 88, enter: 0.12, exit: 0.42 },
+  // bottom-right → drifts SE
+  { logoFile: 'pemkab-gowa.png',        fromX: 88, fromY: 82, toX: 96, toY: 92, enter: 0.18, exit: 0.48 },
+  // top-mid-left → drifts up + left
+  { logoFile: 'pemprov-sulsel.svg',     fromX: 42, fromY: 10, toX: 32, toY:  6, enter: 0.24, exit: 0.54 },
+  // bottom-mid-right → drifts down + right
+  { logoFile: 'klinikgo.png',           fromX: 58, fromY: 88, toX: 70, toY: 94, enter: 0.30, exit: 0.60 },
+  // mid-far-left → drifts further off-screen left
+  { logoFile: 'pemkab-donggala.png',    fromX:  8, fromY: 48, toX: -2, toY: 53, enter: 0.36, exit: 0.66 },
+  // mid-far-right → drifts further right
+  { logoFile: 'ulearna.png',            fromX: 92, fromY: 52, toX: 102, toY: 47, enter: 0.42, exit: 0.72 },
+  // top-right-2 → drifts NE
+  { logoFile: 'brantas-inti-utama.png', fromX: 72, fromY: 14, toX: 82, toY: 10, enter: 0.48, exit: 0.78 },
+  // bottom-left-2 → drifts SW
+  { logoFile: 'pemkab-donggala.png',    fromX: 28, fromY: 86, toX: 18, toY: 92, enter: 0.54, exit: 0.84 },
+  // bottom-right-2 → drifts SE (no exit, anchors the end)
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 78, fromY: 78, toX: 86, toY: 86, enter: 0.60 },
+  // top-left-2 → drifts NW
+  { logoFile: 'klinikgo.png',           fromX: 22, fromY: 18, toX: 14, toY: 13, enter: 0.66 },
+  // bottom-mid → drifts down + slight right
+  { logoFile: 'pemprov-sulsel.svg',     fromX: 50, fromY: 88, toX: 56, toY: 94, enter: 0.72 },
 ]
 ---
 
@@ -116,8 +133,12 @@ const slots: Slot[] = [
         return (
           <div
             class="client-cycle-cell absolute"
-            style={`left: ${slot.x}%; top: ${slot.y}%; transform: translate(-50%, -50%);`}
+            style={`left: ${slot.fromX}%; top: ${slot.fromY}%; transform: translate(-50%, -50%);`}
             data-cell-index={idx}
+            data-cell-from-x={slot.fromX}
+            data-cell-from-y={slot.fromY}
+            data-cell-to-x={slot.toX}
+            data-cell-to-y={slot.toY}
             data-cell-enter={slot.enter}
             data-cell-exit={slot.exit ?? ''}
           >

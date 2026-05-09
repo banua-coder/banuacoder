@@ -180,6 +180,10 @@ export function initAnimations(): () => void {
         const enter = parseFloat(cell.dataset.cellEnter ?? '0')
         const exitRaw = cell.dataset.cellExit ?? ''
         const exit = exitRaw === '' ? null : parseFloat(exitRaw)
+        const fromX = parseFloat(cell.dataset.cellFromX ?? '50')
+        const fromY = parseFloat(cell.dataset.cellFromY ?? '50')
+        const toX = parseFloat(cell.dataset.cellToX ?? String(fromX))
+        const toY = parseFloat(cell.dataset.cellToY ?? String(fromY))
         const rotIn = gsap.utils.random(-25, 25, 1)
         const rotOut = -rotIn * 1.3
 
@@ -204,6 +208,26 @@ export function initAnimations(): () => void {
           },
           enter,
         )
+
+        // Position drift across the cell's FULL lifespan (enter → exit-end).
+        // Logos travel from fromX/Y to toX/Y while they're on screen — this
+        // is the parallax-drift that gives the cycle ZOG-like motion instead
+        // of pop-in/pop-out. ease: 'none' for a constant scroll-linked drift.
+        const exitEnd = exit !== null && !Number.isNaN(exit) ? exit + 0.22 : 1
+        const driftDuration = exitEnd - enter
+        if (driftDuration > 0 && (toX !== fromX || toY !== fromY)) {
+          cycleTl.fromTo(
+            cell,
+            { left: `${fromX}%`, top: `${fromY}%` },
+            {
+              left: `${toX}%`,
+              top: `${toY}%`,
+              ease: 'none',
+              duration: driftDuration,
+            },
+            enter,
+          )
+        }
 
         // Exit (long, gradual): zoom OUT past 1 (scale 1 → 1.55) so the logo
         // appears to fly toward the camera as it dissolves — Ken Burns
