@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets'
+import { ogUrl } from '../lib/og/url'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Nav from '../components/layout/Nav.astro'
 import Footer from '../components/layout/Footer.astro'
@@ -71,6 +72,7 @@ const personSchema = {
 <BaseLayout
   title="Fajrian Aidil Pratama — Founder, Banua Coder"
   description="Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development."
+  ogImage={ogUrl('founder')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
 

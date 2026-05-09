@@ -2,6 +2,7 @@
 import type { ImageMetadata } from 'astro'
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../../../lib/og/url'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import Nav from '../../../components/layout/Nav.astro'
 import Footer from '../../../components/layout/Footer.astro'
@@ -24,6 +25,7 @@ function formatDate(d: Date): string {
 <BaseLayout
   title="Engineering & Product Blog — Banua Coder"
   description="Insights on engineering, product, and digital transformation from the Banua Coder team."
+  ogImage={ogUrl('en-blog')}
 >
   <a
     href="#main-content"

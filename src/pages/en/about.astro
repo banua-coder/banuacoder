@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
 import Footer from '../../components/layout/Footer.astro'
@@ -79,6 +80,7 @@ const howWeWork = [
 <BaseLayout
   title="About Banua Coder — Engineering-Led Software House in Central Sulawesi"
   description="Banua Coder is a technology partner that helps businesses and organizations build relevant, structured, and growth-ready digital solutions."
+  ogImage={ogUrl('en-about')}
 >
   <a
     href="#main-content"

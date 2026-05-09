@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../../../lib/og/url'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import Nav from '../../../components/layout/Nav.astro'
 import Footer from '../../../components/layout/Footer.astro'
@@ -27,6 +28,7 @@ const breadcrumbSchema = {
 <BaseLayout
   title="Portfolio — Mobile Apps, Web & Government Systems — Banua Coder"
   description="Banua Coder's portfolio: consumer-facing apps, public-sector systems, and digital operational solutions we have built and maintained."
+  ogImage={ogUrl('en-portfolio')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
 

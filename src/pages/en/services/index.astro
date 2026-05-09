@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../../../lib/og/url'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import Nav from '../../../components/layout/Nav.astro'
 import Footer from '../../../components/layout/Footer.astro'
@@ -70,6 +71,7 @@ const engagementModels = [
 <BaseLayout
   title="App & Website Development Services — Banua Coder"
   description="Banua Coder helps businesses build websites, mobile apps, operational systems, brand design, and social media management."
+  ogImage={ogUrl('en-services')}
 >
   <a
     href="#main-content"

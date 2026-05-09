@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content'
+import { serviceOgUrl } from '../../lib/og/url'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
 import Footer from '../../components/layout/Footer.astro'
@@ -63,7 +64,7 @@ const serviceSchema = {
 }
 ---
 
-<BaseLayout title={`${title} — Banua Coder`} description={tagline}>
+<BaseLayout title={`${title} — Banua Coder`} description={tagline} ogImage={serviceOgUrl(entry.data.slug, 'id')}>
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(serviceSchema)} />
 
   <a
