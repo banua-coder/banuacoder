@@ -131,21 +131,27 @@ export function initAnimations(): () => void {
       })
     }
 
-    // ── Hero shots parallax scrub ─────────────────────────────────────────────
-    const heroShots = gsap.utils.toArray<HTMLElement>('.hero-shot')
-    if (heroShots.length) {
-      gsap.to(heroShots, {
-        yPercent: -15,
-        scale: 0.92,
-        opacity: 0.6,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.hero-stage',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.5,
-        },
-      })
+    // ── Hero shots parallax scrub (desktop only) ─────────────────────────────
+    // The mobile media query in index.astro centres the main phone using
+    // `transform: translateX(50%) rotate(0)`. GSAP's parallax tween writes
+    // its own transform string, which would clobber that centering — so we
+    // only enable the parallax above the 640px breakpoint.
+    if (window.matchMedia('(min-width: 641px)').matches) {
+      const heroShots = gsap.utils.toArray<HTMLElement>('.hero-shot')
+      if (heroShots.length) {
+        gsap.to(heroShots, {
+          yPercent: -15,
+          scale: 0.92,
+          opacity: 0.6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.hero-stage',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.5,
+          },
+        })
+      }
     }
 
     // ── Hero auto-cycling product carousels ───────────────────────────────────

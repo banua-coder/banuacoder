@@ -814,18 +814,30 @@ const orgSchema = {
     }
   }
 
+  /* Mobile: keep BOTH phones, just tighter layout. Front phone shifts
+     right and shrinks; back phone shrinks more and tucks left. */
   @media (max-width: 640px) {
     .hero-stage {
-      height: 380px;
-      max-width: 320px;
+      height: 420px;
+      max-width: 360px;
     }
     .hero-shot-main {
-      right: 50%;
-      transform: translateX(50%) rotate(0);
+      right: 4%;
+      top: 12px;
     }
-    .hero-shot-back,
+    .hero-shot-main :global(.hero-shot-img) {
+      width: 220px;
+    }
+    .hero-shot-back {
+      left: -4%;
+      top: 60px;
+    }
+    .hero-shot-back :global(.hero-shot-img) {
+      width: 150px;
+    }
     .hero-chip {
-      display: none;
+      bottom: 16px;
+      left: 12px;
     }
   }
 </style>
