@@ -206,22 +206,23 @@ const shouldIndex = indexable && !isDevRoute
     </style>
     <script is:inline>
       (function () {
-        var loader = document.getElementById('page-loader');
-        if (!loader) return;
-        var hide = function () {
+        function hide() {
+          var loader = document.getElementById('page-loader');
+          if (!loader) return;
           loader.classList.add('is-hidden');
-          // Remove from DOM after the fade so it can't trap focus.
           window.setTimeout(function () {
             if (loader.parentNode) loader.parentNode.removeChild(loader);
           }, 500);
-        };
+        }
         if (document.readyState === 'complete') {
           hide();
         } else {
           window.addEventListener('load', hide, { once: true });
-          // Safety timeout: never block more than 4s even if some asset hangs.
           window.setTimeout(hide, 4000);
         }
+        // View transitions inject a fresh loader on every navigation —
+        // remove it immediately, transitions handle their own loading visual.
+        document.addEventListener('astro:after-swap', hide);
       })();
     </script>
 
