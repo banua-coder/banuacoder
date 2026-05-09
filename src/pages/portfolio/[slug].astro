@@ -11,6 +11,7 @@ import Tag from '../../components/atoms/Tag.astro'
 import TechStack from '../../components/atoms/TechStack.astro'
 import Button from '../../components/atoms/Button.astro'
 import Prose from '../../components/typography/Prose.astro'
+import { renderInlineMd } from '../../lib/inline-md'
 
 export async function getStaticPaths() {
   const allPortfolio = await getCollection('portfolio')
@@ -219,9 +220,11 @@ const breadcrumbSchema = {
             >
               Tantangan
             </h2>
-            <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-              {data.problem}
-            </p>
+            <p
+              class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+              style="font-size: var(--fs-17)"
+              set:html={renderInlineMd(data.problem)}
+            />
           </div>
 
           <!-- Solution -->
@@ -235,9 +238,11 @@ const breadcrumbSchema = {
             >
               Yang Kami Bangun
             </h2>
-            <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-              {data.solution}
-            </p>
+            <p
+              class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+              style="font-size: var(--fs-17)"
+              set:html={renderInlineMd(data.solution)}
+            />
           </div>
         </div>
       </Container>
