@@ -209,22 +209,32 @@ export function initAnimations(): () => void {
     })
 
     // ── Pinned client logo cycle ──────────────────────────────────────────────
-    // Each .client-cycle-cell carries data-cell-enter / data-cell-exit (0–1
-    // scroll progress) and gets its own fromTo + (optional) to placed on a
-    // single scrubbed timeline. Cells overlap in time so multiple logos are
-    // visible / fading at any moment — matches Zero One Group's continuous
-    // scatter rather than a synchronized batch swap.
+    // Two LAYERS of blur, combined via CSS calc on .client-cycle-cell:
+    //
+    //   --cell-fade-blur (timeline-controlled): the entrance/exit dolly
+    //     blur — 40px when off-screen / mid-fade, 0px when the logo is
+    //     fully resolved on-screen.
+    //
+    //   --cell-overlap-blur (ticker-controlled): only non-zero while the
+    //     logo's centre is INSIDE the centred headline's bounding rect
+    //     (1px margin per spec). The instant a logo crosses 1px past the
+    //     headline edge, this falls to 0 and the logo reads sharp.
+    //
+    // CSS combines them additively: filter: blur(calc(fade + overlap))
+    // grayscale(fade-gray). Both vars default to 0 so a fresh cell with
+    // nothing set renders cleanly.
     const cycleSection = document.querySelector<HTMLElement>('.client-cycle')
     const cycleCells = cycleSection
       ? Array.from(cycleSection.querySelectorAll<HTMLElement>('.client-cycle-cell'))
       : []
 
     if (cycleSection && cycleCells.length) {
-      // Hide everything first; per-cell fromTo will reveal at its enter mark.
+      // Hide everything first. Filter is owned entirely by CSS variables.
       gsap.set(cycleCells, {
         autoAlpha: 0,
         scale: 0.4,
-        filter: 'blur(24px) grayscale(1)',
+        '--cell-fade-blur': '40px',
+        '--cell-fade-gray': 1,
       })
 
       const cycleTl = gsap.timeline({
@@ -247,23 +257,25 @@ export function initAnimations(): () => void {
         const rotIn = gsap.utils.random(-25, 25, 1)
         const rotOut = -rotIn * 1.3
 
-        // Enter (long, gradual): scale 0.25 → 1.0, rotation random → 0,
-        // blur 40px → 0, opacity 0 → 1. sine.out lets the blur lift
-        // smoothly across the scrub instead of snapping at the last frame.
+        // Enter — short, snappy: blur unwinds quickly so the logo reads
+        // clean for most of its on-screen life. Opacity, scale, rotation
+        // all settle within the same 0.08 window.
         cycleTl.fromTo(
           cell,
           {
             autoAlpha: 0,
             scale: 0.25,
             rotation: rotIn,
-            filter: 'blur(40px) grayscale(1)',
+            '--cell-fade-blur': '40px',
+            '--cell-fade-gray': 1,
           },
           {
             autoAlpha: 1,
             scale: 1,
             rotation: 0,
-            filter: 'blur(0px) grayscale(0)',
-            duration: 0.22,
+            '--cell-fade-blur': '0px',
+            '--cell-fade-gray': 0,
+            duration: 0.08,
             ease: 'sine.out',
           },
           enter,
@@ -273,7 +285,7 @@ export function initAnimations(): () => void {
         // Logos travel from fromX/Y to toX/Y while they're on screen — this
         // is the parallax-drift that gives the cycle ZOG-like motion instead
         // of pop-in/pop-out. ease: 'none' for a constant scroll-linked drift.
-        const exitEnd = exit !== null && !Number.isNaN(exit) ? exit + 0.22 : 1
+        const exitEnd = exit !== null && !Number.isNaN(exit) ? exit + 0.08 : 1
         const driftDuration = exitEnd - enter
         if (driftDuration > 0 && (toX !== fromX || toY !== fromY)) {
           cycleTl.fromTo(
@@ -289,10 +301,9 @@ export function initAnimations(): () => void {
           )
         }
 
-        // Exit (long, gradual): zoom OUT past 1 (scale 1 → 1.55) so the logo
-        // appears to fly toward the camera as it dissolves — Ken Burns
-        // dolly-out feel — combined with blur 0 → 40px and reverse rotation.
-        // Cells without a defined exit remain visible through end-of-section.
+        // Exit — short and tight, kicks in only as the logo approaches the
+        // far viewport edge. Blur, scale, and grayscale all wind up in
+        // the same 0.08 window so the logo dissolves into the edge cleanly.
         if (exit !== null && !Number.isNaN(exit)) {
           cycleTl.to(
             cell,
@@ -300,14 +311,45 @@ export function initAnimations(): () => void {
               autoAlpha: 0,
               scale: 1.55,
               rotation: rotOut,
-              filter: 'blur(40px) grayscale(1)',
-              duration: 0.22,
+              '--cell-fade-blur': '40px',
+              '--cell-fade-gray': 1,
+              duration: 0.08,
               ease: 'sine.in',
             },
             exit,
           )
         }
       })
+
+      // Position-aware overlap-blur ticker. Adds an EXTRA 18px of blur via
+      // --cell-overlap-blur whenever a cell's centre is inside the headline
+      // rect (1px margin). The CSS calc on .client-cycle-cell stacks this
+      // on top of the timeline's fade-blur.
+      const headline = cycleSection.querySelector<HTMLElement>('h2')
+      if (headline) {
+        const overlapBlurPx = 18
+        const margin = 1
+        const blurTick = () => {
+          const sectionRect = cycleSection.getBoundingClientRect()
+          if (sectionRect.bottom < -200 || sectionRect.top > window.innerHeight + 200) {
+            return
+          }
+          const hr = headline.getBoundingClientRect()
+          for (const cell of cycleCells) {
+            const r = cell.getBoundingClientRect()
+            if (r.width === 0) continue
+            const cx = r.left + r.width / 2
+            const cy = r.top + r.height / 2
+            const inside =
+              cx >= hr.left - margin &&
+              cx <= hr.right + margin &&
+              cy >= hr.top - margin &&
+              cy <= hr.bottom + margin
+            cell.style.setProperty('--cell-overlap-blur', inside ? `${overlapBlurPx}px` : '0px')
+          }
+        }
+        gsap.ticker.add(blurTick)
+      }
     }
 
     // ── Pinned why-carousel ───────────────────────────────────────────────────

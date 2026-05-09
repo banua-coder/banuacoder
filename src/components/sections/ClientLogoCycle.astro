@@ -163,6 +163,18 @@ const slots: Slot[] = [
 </section>
 
 <style>
+  /* Two layers of blur stacked additively:
+       --cell-fade-blur     : timeline-driven entrance/exit dolly blur
+       --cell-overlap-blur  : position-driven extra blur while the logo's
+                              centre is inside the centred headline rect
+     Plus the existing entrance grayscale via --cell-fade-gray. */
+  .client-cycle-cell {
+    filter:
+      blur(calc(var(--cell-fade-blur, 0px) + var(--cell-overlap-blur, 0px)))
+      grayscale(var(--cell-fade-gray, 0));
+    transition: filter 0.18s ease;
+  }
+
   /* Dark theme: brand/agency logos (Ulearna, Brantas, KlinikGo, BPS) render
      as flat white silhouettes for a ZOG-style luminous treatment.
      Pemda emblems (pemprov-* / pemkab-* coats of arms) keep their natural
