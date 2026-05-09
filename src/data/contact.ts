@@ -4,7 +4,7 @@ export const contact = {
     id: 'Halo Banua Coder, saya tertarik untuk konsultasi mengenai',
     en: "Hi Banua Coder, I'd like to discuss a project —",
   },
-  email: 'hello@banuacoder.com',
+  email: 'contact@banuacoder.com',
   office: {
     city: 'Palu',
     region: 'Sulawesi Tengah',
