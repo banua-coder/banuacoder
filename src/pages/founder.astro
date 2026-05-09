@@ -344,17 +344,22 @@ const founderBreadcrumbSchema = {
         >
           <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
             {[
+              // Group: Reku (prior consumer fintech, redacted) — 4 shots together
               { src: rekuShot1, alt: "Aplikasi consumer fintech (redacted) — perbandingan light vs dark mode pada layar discover/market", label: 'Consumer fintech · prior' },
-              { src: sikerjaShot1, alt: "Sikerja — daftar lowongan kerja Sulawesi Tengah", label: 'Sikerja · 2024' },
-              { src: detexiShot1, alt: "Detexi Doctor — pencarian dokter berdasarkan spesialisasi", label: 'Detexi · 2023' },
-              { src: rekuShot3, alt: "Aplikasi consumer fintech — Portfolio P/L dengan grafik annotated", label: 'Consumer fintech · prior' },
-              { src: carwaShot1, alt: "Carwa — antarmuka lelang mobil digital live", label: 'Carwa · Dubai · 2024' },
-              { src: picoShot1, alt: "PICO Sulteng — dashboard statistik COVID-19 provinsi", label: 'PICO Sulteng · 2021' },
               { src: rekuShot2, alt: "Aplikasi consumer fintech — layar reward/cashback", label: 'Consumer fintech · prior' },
-              { src: sikerjaShot2, alt: "Sikerja — detail lowongan dan profil perusahaan mitra", label: 'Sikerja · 2024' },
-              { src: detexiShot2, alt: "Detexi Doctor — alur konsultasi pasien dan dokter", label: 'Detexi · 2023' },
+              { src: rekuShot3, alt: "Aplikasi consumer fintech — Portfolio P/L dengan grafik annotated", label: 'Consumer fintech · prior' },
               { src: rekuShot4, alt: "Aplikasi consumer fintech — rincian aset dengan card list", label: 'Consumer fintech · prior' },
+              // Group: Sikerja
+              { src: sikerjaShot1, alt: "Sikerja — daftar lowongan kerja Sulawesi Tengah", label: 'Sikerja · 2024' },
+              { src: sikerjaShot2, alt: "Sikerja — detail lowongan dan profil perusahaan mitra", label: 'Sikerja · 2024' },
+              // Group: Detexi
+              { src: detexiShot1, alt: "Detexi Doctor — pencarian dokter berdasarkan spesialisasi", label: 'Detexi · 2023' },
+              { src: detexiShot2, alt: "Detexi Doctor — alur konsultasi pasien dan dokter", label: 'Detexi · 2023' },
+              // Group: Carwa
+              { src: carwaShot1, alt: "Carwa — antarmuka lelang mobil digital live", label: 'Carwa · Dubai · 2024' },
               { src: carwaShot2, alt: "Carwa — daftar lelang mobil dengan informasi spesifikasi", label: 'Carwa · Dubai · 2024' },
+              // Group: PICO Sulteng
+              { src: picoShot1, alt: "PICO Sulteng — dashboard statistik COVID-19 provinsi", label: 'PICO Sulteng · 2021' },
               { src: picoShot2, alt: "PICO Sulteng — peta sebaran kasus regional", label: 'PICO Sulteng · 2021' },
             ].map(({ src, alt, label }) => (
               <figure class="prior-work-slide shrink-0 group">
