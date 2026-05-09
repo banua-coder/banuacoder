@@ -9,11 +9,15 @@ export type Client = {
 
 // LICENSE NOTES:
 // - ulearna.png: source https://ulearna.com (og:image asset). Nominative fair use for client identification.
-// - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem).
-// - dinas-bmpr-sulteng.svg: copy of pemprov-sulteng.svg (no distinct emblem; dinas uses parent province emblem).
+// - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem). Covers both PICO Sulteng and Surat BMPR engagements.
 // - pemkab-gowa.png: https://commons.wikimedia.org/wiki/File:Lambang_Kabupaten_Gowa.png — Public domain (PD-IDGov).
 // - pemprov-sulsel.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_South_Sulawesi.svg — Public domain (PD-IDGov).
 // - brantas-inti-utama.svg: not sourced — text fallback retained.
+//
+// NOTE: Dinas BMPR Sulteng deliberately omitted from the home trust strip — it
+// shares the same parent-province emblem as Pemprov Sulteng so two adjacent
+// badges would look duplicated. Dinas BMPR remains credited on the Surat BMPR
+// case study (src/content/portfolio/surat-bmpr/) where the partnership context matters.
 
 export const clients: Client[] = [
   {
@@ -34,12 +38,6 @@ export const clients: Client[] = [
     logo: 'pemprov-sulteng.svg',
     tier: 'featured',
     context: 'Public information platform (PICO Sulteng) and internal correspondence (Surat BMPR)',
-  },
-  {
-    name: 'Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah',
-    logo: 'dinas-bmpr-sulteng.svg',
-    tier: 'standard',
-    context: 'Mobile letter-disposition system (Surat BMPR)',
   },
   {
     name: 'Pemerintah Kabupaten Gowa',
