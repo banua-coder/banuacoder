@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import Container from '../components/layout/Container.astro'
+import Button from '../components/atoms/Button.astro'
+---
+
+<BaseLayout
+  title="404 — Halaman tidak ditemukan · Banua Coder"
+  description="Halaman yang Anda cari tidak ditemukan. Kembali ke beranda atau jelajahi portfolio kami."
+>
+  <Nav />
+
+  <main id="main-content">
+    <section
+      aria-labelledby="not-found-heading"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <div class="flex flex-col items-start max-w-2xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // 404 / NOT FOUND
+          </p>
+
+          <p
+            class="font-display font-bold text-bnc-primary dark:text-bnc-accent leading-none mb-6"
+            style="font-size: clamp(6rem, 18vw, 12rem); letter-spacing: -0.04em"
+            aria-hidden="true"
+          >
+            404
+          </p>
+
+          <h1
+            id="not-found-heading"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-4"
+            style="font-size: var(--fs-48)"
+          >
+            Halaman tidak ditemukan
+          </h1>
+
+          <p
+            class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-2"
+            style="font-size: var(--fs-20); max-width: 56ch"
+          >
+            Halaman yang Anda cari mungkin sudah dipindahkan, dihapus, atau tidak pernah ada. Mari kembali ke jalur yang benar.
+          </p>
+          <p
+            class="text-bnc-stone-500 dark:text-bnc-stone-500 italic mb-10"
+            style="font-size: var(--fs-16); max-width: 56ch"
+          >
+            The page you're looking for may have moved, been removed, or never existed. Let's get you back on track.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <Button href="/" variant="primary" size="lg">
+              Kembali ke beranda
+              <span aria-hidden="true">→</span>
+            </Button>
+            <Button href="/portfolio/" variant="secondary" size="lg">
+              Lihat portfolio
+            </Button>
+            <Button href="/contact/" variant="ghost" size="lg">
+              Hubungi kami
+            </Button>
+          </div>
+        </div>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
