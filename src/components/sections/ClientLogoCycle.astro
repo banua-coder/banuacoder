@@ -1,0 +1,172 @@
+---
+/**
+ * ClientLogoCycle — pinned scroll-driven client logo reveal.
+ *
+ * Section is h-[300vh]; inner panel is sticky top-0 h-screen.
+ * A centered headline stays pinned while 2 batches of client logos
+ * cycle through in the surrounding 5×5 grid outer ring.
+ *
+ * Batch layout (col, row) — outer ring only, inner 3×3 reserved for headline:
+ *   Batch 1: Ulearna(1,1), Brantas(5,1), PemprovSulteng(1,3), PemkabGowa(5,3), PemprovSulsel(3,5)
+ *   Batch 2: Ulearna(3,1), PemprovSulteng(1,5), PemkabGowa(5,5), PemprovSulsel(1,2), Brantas(5,2)
+ *
+ * GSAP timelines live in src/lib/animations.ts (`.client-cycle` selector).
+ * Reduced-motion fallback: CSS overrides collapse to a static grid (see global.css additions).
+ */
+
+import { clients } from '../../data/clients'
+
+const logoModules = import.meta.glob('/src/assets/clients/*.{svg,png}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const logoUrls: Record<string, string> = Object.fromEntries(
+  Object.entries(logoModules).map(([path, url]) => [path.split('/').pop() ?? '', url]),
+)
+
+interface Props {
+  /** Language variant for eyebrow / headline copy */
+  lang?: 'id' | 'en'
+}
+
+const { lang = 'id' } = Astro.props
+
+const eyebrow = lang === 'en' ? '// TRUSTED BY' : '// DIPERCAYA OLEH'
+const heading = lang === 'en' ? 'Our clients and partners' : 'Klien dan partner kami'
+const subhead =
+  lang === 'en'
+    ? 'From public sector to international consumer products.'
+    : 'Dari sektor publik hingga produk consumer internasional.'
+
+// Client lookup by logo filename for easy reference
+const byLogo = Object.fromEntries(clients.map((c) => [c.logo, c]))
+
+/**
+ * Each batch entry: { logoFile, col (1-5), row (1-5) }
+ * Positions restricted to the outer ring so logos scatter around the headline.
+ * Inner 3×3 (cols 2-4, rows 2-4) is intentionally empty.
+ */
+type Cell = { logoFile: string; col: number; row: number }
+
+const batch1: Cell[] = [
+  { logoFile: 'ulearna.png', col: 1, row: 1 },
+  { logoFile: 'brantas-inti-utama.png', col: 5, row: 1 },
+  { logoFile: 'pemprov-sulteng.svg', col: 1, row: 3 },
+  { logoFile: 'pemkab-gowa.png', col: 5, row: 3 },
+  { logoFile: 'pemprov-sulsel.svg', col: 3, row: 5 },
+]
+
+const batch2: Cell[] = [
+  { logoFile: 'pemprov-sulteng.svg', col: 3, row: 1 },
+  { logoFile: 'ulearna.png', col: 1, row: 5 },
+  { logoFile: 'brantas-inti-utama.png', col: 5, row: 5 },
+  { logoFile: 'pemkab-gowa.png', col: 1, row: 2 },
+  { logoFile: 'pemprov-sulsel.svg', col: 5, row: 2 },
+]
+
+const batches = [batch1, batch2]
+---
+
+<section
+  class="client-cycle relative h-[300vh]"
+  aria-label={lang === 'en' ? 'Clients and partners' : 'Klien dan partner kami'}
+>
+  <div class="client-cycle-pin sticky top-0 h-screen flex items-center justify-center isolate overflow-hidden">
+    <!-- Centered headline + subhead — pinned while logos cycle -->
+    <div class="relative z-10 text-center px-4 pointer-events-none select-none">
+      <p class="font-mono text-xs uppercase tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400">
+        {eyebrow}
+      </p>
+      <h2
+        class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mt-3 leading-tight"
+        style="font-size: var(--fs-48)"
+      >
+        {heading}
+      </h2>
+      <p class="text-bnc-stone-600 dark:text-bnc-stone-400 max-w-xl mx-auto mt-4" style="font-size: var(--fs-17)">
+        {subhead}
+      </p>
+    </div>
+
+    <!-- 5×5 logo grid — absolute so logos scatter around the headline -->
+    <div
+      class="client-cycle-grid absolute inset-0 grid pointer-events-none"
+      style="grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);"
+      aria-hidden="true"
+    >
+      {batches.map((batch, batchIdx) => (
+        <div
+          class="client-cycle-batch absolute inset-0 grid"
+          style="grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);"
+          data-batch={batchIdx}
+        >
+          {batch.map((cell) => {
+            const client = byLogo[cell.logoFile]
+            if (!client) return null
+            const logoUrl = logoUrls[cell.logoFile]
+            return (
+              <div
+                class="client-cycle-cell flex items-center justify-center p-4"
+                style={`grid-column: ${cell.col}; grid-row: ${cell.row};`}
+              >
+                <div class="flex items-center justify-center px-3 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt={client.name}
+                      loading="lazy"
+                      decoding="async"
+                      class="h-8 w-auto max-w-[100px] object-contain"
+                    />
+                  ) : (
+                    <span class="font-mono text-xs font-medium uppercase tracking-wider text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
+                      {client.name}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Reduced-motion: collapse the 300vh scroll space and show all logos statically */
+  @media (prefers-reduced-motion: reduce) {
+    .client-cycle {
+      height: auto;
+    }
+    .client-cycle-pin {
+      position: static;
+      height: auto;
+      flex-direction: column;
+      gap: 2rem;
+      padding-block: var(--spacing-section-y-sm);
+    }
+    .client-cycle-grid {
+      position: static;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 640px;
+    }
+    .client-cycle-batch {
+      display: contents;
+    }
+    .client-cycle-cell {
+      display: flex;
+      grid-column: unset !important;
+      grid-row: unset !important;
+      filter: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+</style>
