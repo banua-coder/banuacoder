@@ -121,6 +121,108 @@ const shouldIndex = indexable && !isDevRoute
     </script>
   </head>
   <body>
+    <!--
+      Page loader — full-viewport overlay shown immediately on first paint.
+      Inline CSS so it renders before any stylesheet downloads, inline JS
+      hides it on window.load (with 4s safety timeout). Survives view
+      transitions because it ONLY appears on initial document load — once
+      faded out, the next route swap doesn't re-mount this overlay.
+    -->
+    <div id="page-loader" aria-hidden="true">
+      <div class="page-loader-inner">
+        <svg
+          class="page-loader-mark"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 280 280"
+          fill="none"
+        >
+          <rect width="280" height="280" rx="56" fill="#12398C" />
+          <path
+            d="M96 85.5 L99.8 89.3 C92.0 95.3 87.1 104.7 87.1 115.3 C87.1 125.9 92.0 135.3 99.8 141.3 L96 145.1 C86.8 137.3 81.1 125.9 81.1 115.3 C81.1 104.7 86.8 93.3 96 85.5 Z"
+            fill="#1D9CD4"
+          />
+        </svg>
+        <div class="page-loader-bar"><span></span></div>
+      </div>
+    </div>
+    <style is:inline>
+      #page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f7f7f4;
+        transition: opacity 0.45s ease, visibility 0.45s ease;
+      }
+      :root.dark #page-loader { background: #0a0e14; }
+      .page-loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+      .page-loader-mark {
+        width: 64px;
+        height: 64px;
+        animation: page-loader-pulse 1.6s ease-in-out infinite;
+      }
+      .page-loader-bar {
+        position: relative;
+        width: 140px;
+        height: 2px;
+        background: rgba(18, 57, 140, 0.12);
+        overflow: hidden;
+        border-radius: 999px;
+      }
+      :root.dark .page-loader-bar { background: rgba(29, 156, 212, 0.2); }
+      .page-loader-bar > span {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, #12398c, transparent);
+        animation: page-loader-slide 1.2s linear infinite;
+      }
+      :root.dark .page-loader-bar > span {
+        background: linear-gradient(90deg, transparent, #1d9cd4, transparent);
+      }
+      #page-loader.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+      @keyframes page-loader-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: 0.7; transform: scale(0.92); }
+      }
+      @keyframes page-loader-slide {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .page-loader-mark, .page-loader-bar > span { animation: none; }
+      }
+    </style>
+    <script is:inline>
+      (function () {
+        var loader = document.getElementById('page-loader');
+        if (!loader) return;
+        var hide = function () {
+          loader.classList.add('is-hidden');
+          // Remove from DOM after the fade so it can't trap focus.
+          window.setTimeout(function () {
+            if (loader.parentNode) loader.parentNode.removeChild(loader);
+          }, 500);
+        };
+        if (document.readyState === 'complete') {
+          hide();
+        } else {
+          window.addEventListener('load', hide, { once: true });
+          // Safety timeout: never block more than 4s even if some asset hangs.
+          window.setTimeout(hide, 4000);
+        }
+      })();
+    </script>
+
     <slot />
   </body>
 
