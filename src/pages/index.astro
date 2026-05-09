@@ -729,13 +729,13 @@ const orgSchema = {
   /* When a phone slot has multiple slides, stack them — only the first is in
      normal flow (so the wrapper sizes to it), the rest are absolutely
      positioned on top and faded out. */
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img) {
     opacity: 0;
   }
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img.is-active) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img.is-active) {
     opacity: 1;
   }
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img:not(:first-child)) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img:not(:first-child)) {
     position: absolute;
     inset: 0;
   }

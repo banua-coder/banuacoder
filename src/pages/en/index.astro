@@ -714,13 +714,13 @@ const orgSchema = {
     border-radius: 28px;
     transition: opacity 0.7s ease;
   }
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img) {
     opacity: 0;
   }
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img.is-active) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img.is-active) {
     opacity: 1;
   }
-  .hero-shot[data-hero-cycle] :global(.hero-shot-img:not(:first-child)) {
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img:not(:first-child)) {
     position: absolute;
     inset: 0;
   }
