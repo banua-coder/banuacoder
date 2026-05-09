@@ -19,13 +19,14 @@ import WhyCarousel from '../../components/sections/WhyCarousel.astro'
 import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
 import Testimonial from '../../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
-import heroPico from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
-import heroSikerja from '../../content/portfolio/sikerja/screenshots/screenshot-2.png'
-import heroSiap from '../../content/portfolio/siap-donggala/screenshots/screenshot-1.png'
-import heroDetexi from '../../content/portfolio/detexi/screenshots/screenshot-4.png'
-import heroBackCarwa from '../../content/portfolio/carwa/screenshots/screenshot-clean-1.png'
-import heroBackReku from '../../assets/founder/work-product/work-3.png'
-import heroBackSiapAlt from '../../content/portfolio/siap-donggala/screenshots/screenshot-3.png'
+import heroPicoFront from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import heroPicoBack from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
+import heroSikerjaFront from '../../content/portfolio/sikerja/screenshots/screenshot-2.png'
+import heroSikerjaBack from '../../content/portfolio/sikerja/screenshots/screenshot-4.png'
+import heroSiapFront from '../../content/portfolio/siap-donggala/screenshots/screenshot-1.png'
+import heroSiapBack from '../../content/portfolio/siap-donggala/screenshots/screenshot-3.png'
+import heroDetexiFront from '../../content/portfolio/detexi/screenshots/screenshot-4.png'
+import heroDetexiBack from '../../content/portfolio/detexi/screenshots/screenshot-5.png'
 import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
 
 const idealClientIcons: Record<string, typeof Coffee> = {
@@ -171,9 +172,9 @@ const orgSchema = {
         <div slot="media" class="hero-stage" aria-label="Digital product previews" role="img">
           <div class="hero-glow" aria-hidden="true"></div>
 
-          <div class="hero-shot hero-shot-back" data-hero-cycle data-hero-cycle-interval="4200" data-hero-cycle-offset="2100">
+          <div class="hero-shot hero-shot-back" data-hero-cycle-group="hero-products">
             <Image
-              src={heroBackCarwa}
+              src={heroPicoBack}
               alt=""
               widths={[200, 400]}
               sizes="200px"
@@ -184,7 +185,7 @@ const orgSchema = {
               data-hero-slide
             />
             <Image
-              src={heroBackReku}
+              src={heroSikerjaBack}
               alt=""
               widths={[200, 400]}
               sizes="200px"
@@ -195,7 +196,18 @@ const orgSchema = {
               data-hero-slide
             />
             <Image
-              src={heroBackSiapAlt}
+              src={heroSiapBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexiBack}
               alt=""
               widths={[200, 400]}
               sizes="200px"
@@ -209,12 +221,12 @@ const orgSchema = {
 
           <div
             class="hero-shot hero-shot-main"
-            data-hero-cycle
+            data-hero-cycle-group="hero-products"
             data-hero-cycle-interval="4200"
             data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi"
           >
             <Image
-              src={heroPico}
+              src={heroPicoFront}
               alt="PICO Sulteng app preview"
               widths={[280, 560]}
               sizes="280px"
@@ -225,7 +237,7 @@ const orgSchema = {
               data-hero-slide
             />
             <Image
-              src={heroSikerja}
+              src={heroSikerjaFront}
               alt="Sikerja preview — Central Sulawesi job portal"
               widths={[280, 560]}
               sizes="280px"
@@ -235,7 +247,7 @@ const orgSchema = {
               data-hero-slide
             />
             <Image
-              src={heroSiap}
+              src={heroSiapFront}
               alt="Siap Donggala preview — personnel information system"
               widths={[280, 560]}
               sizes="280px"
@@ -245,7 +257,7 @@ const orgSchema = {
               data-hero-slide
             />
             <Image
-              src={heroDetexi}
+              src={heroDetexiFront}
               alt="Detexi preview — medical referral detail"
               widths={[280, 560]}
               sizes="280px"

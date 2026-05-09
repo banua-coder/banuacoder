@@ -149,42 +149,63 @@ export function initAnimations(): () => void {
     }
 
     // ── Hero auto-cycling product carousels ───────────────────────────────────
-    // Each [data-hero-cycle] slot rotates its [data-hero-slide] children by
-    // toggling the `.is-active` class on a setInterval. Optional comma-list of
-    // labels via data-hero-cycle-labels updates the chip text in sync with the
-    // first/main slot's index.
-    const cycleSlots = gsap.utils.toArray<HTMLElement>('[data-hero-cycle]')
+    // Slots tagged with [data-hero-cycle-group="<name>"] advance their
+    // [data-hero-slide] children IN LOCKSTEP. So the front phone and the
+    // back phone always show the SAME product index — the hero never pairs
+    // mismatched apps. Labels for the chip come from the slot in the group
+    // that carries data-hero-cycle-labels (typically the main phone).
+    const groupNames = new Set<string>()
+    document.querySelectorAll<HTMLElement>('[data-hero-cycle-group]').forEach((el) => {
+      groupNames.add(el.dataset.heroCycleGroup ?? '')
+    })
     const chipLabel = document.querySelector<HTMLElement>('[data-hero-chip-label]')
-    cycleSlots.forEach((slot) => {
-      const slides = Array.from(slot.querySelectorAll<HTMLElement>('[data-hero-slide]'))
-      if (slides.length < 2) return
-      const interval = parseInt(slot.dataset.heroCycleInterval ?? '4000', 10)
-      const offset = parseInt(slot.dataset.heroCycleOffset ?? '0', 10)
-      const labels = (slot.dataset.heroCycleLabels ?? '').split(',').map((s) => s.trim()).filter(Boolean)
-      let index = 0
 
+    groupNames.forEach((groupName) => {
+      if (!groupName) return
+      const groupSlots = Array.from(
+        document.querySelectorAll<HTMLElement>(`[data-hero-cycle-group="${groupName}"]`),
+      )
+      if (!groupSlots.length) return
+
+      // Use the label-bearing slot for tick interval + label list. Default
+      // interval lives on whichever slot carries data-hero-cycle-interval.
+      const masterSlot =
+        groupSlots.find((s) => s.dataset.heroCycleLabels !== undefined) ?? groupSlots[0]
+      const interval = parseInt(masterSlot.dataset.heroCycleInterval ?? '4000', 10)
+      const labels = (masterSlot.dataset.heroCycleLabels ?? '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+
+      // Per-slot slide arrays. Each slot's slide-count may differ; we mod
+      // the global index by each slot's length so they all stay in sync
+      // even if one stack has fewer companion shots.
+      const slotSlides = groupSlots.map((slot) =>
+        Array.from(slot.querySelectorAll<HTMLElement>('[data-hero-slide]')),
+      )
+      if (slotSlides.every((arr) => arr.length < 2)) return
+
+      let index = 0
       const advance = () => {
-        slides[index].classList.remove('is-active')
-        index = (index + 1) % slides.length
-        slides[index].classList.add('is-active')
+        index += 1
+        slotSlides.forEach((slides) => {
+          if (!slides.length) return
+          slides.forEach((s) => s.classList.remove('is-active'))
+          slides[index % slides.length].classList.add('is-active')
+        })
         if (labels.length && chipLabel) {
-          // Soft fade the label text on each rotation so it doesn't snap.
           gsap.to(chipLabel, {
             opacity: 0,
             duration: 0.18,
             ease: 'power2.in',
             onComplete: () => {
-              chipLabel.textContent = `// ${labels[index] ?? labels[0]}`
+              chipLabel.textContent = `// ${labels[index % labels.length]}`
               gsap.to(chipLabel, { opacity: 1, duration: 0.22, ease: 'power2.out' })
             },
           })
         }
       }
-
-      // Stagger start so back/front phones don't crossfade in lockstep.
-      window.setTimeout(() => {
-        window.setInterval(advance, interval)
-      }, offset)
+      window.setInterval(advance, interval)
     })
 
     // ── Pinned client logo cycle ──────────────────────────────────────────────
