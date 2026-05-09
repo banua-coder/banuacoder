@@ -1,0 +1,90 @@
+---
+title: Sikerja
+slug: sikerja
+bucket: consumer
+client: Pemerintah Provinsi Sulawesi Tengah
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  An employment portal app for the people of Central Sulawesi — a partnership between
+  the Central Sulawesi Provincial Government and corporate partners that lets verified
+  job listings from partner companies reach Sulteng job seekers through a single
+  mobile experience.
+problem: >
+  Central Sulawesi's job market still relies heavily on listings scattered across
+  channels: physical bulletin boards, WhatsApp groups, or national job boards that
+  aren't focused on local context. For Sulteng job seekers, finding listings relevant
+  to their location — especially official, verified ones — takes real effort. On the
+  other side, local companies looking to reach regional talent have no structured
+  channel to publish openings in a trusted way.
+solution: >
+  Banua Coder partnered with the Central Sulawesi Provincial Government and corporate
+  partners to build Sikerja — a mobile app that becomes the single storefront for
+  official Sulteng job listings. Partner companies publish openings through Sikerja,
+  and job seekers can search, filter, and apply directly from the app. Because the
+  platform runs as an official partnership with the provincial government, both job
+  seekers and employers get a higher trust layer than a generic job board.
+impact:
+  - A centralized, official storefront for Central Sulawesi job listings
+  - Easier reach for partner corporates into local talent through an official pemprov channel
+  - Reduced friction in job search for the regional public
+  - Banua Coder track record in consumer apps for regional public-sector context
+stack:
+  - Flutter
+  - Dart
+  - Laravel
+  - REST API
+  - Firebase Cloud Messaging
+  - Google Play
+featured: true
+order: 50
+locale: en
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.png'
+import shot2 from './screenshots/screenshot-2.png'
+import shot3 from './screenshots/screenshot-3.png'
+import shot4 from './screenshots/screenshot-4.png'
+import shot5 from './screenshots/screenshot-5.png'
+
+## Context
+
+Sikerja is a mobile employment portal app for the people of Central Sulawesi, built
+as a partnership between the Central Sulawesi Provincial Government and corporate
+partners across the province. Its goal: give Sulteng job seekers a single trusted
+channel to find official listings supplied by partner companies, and give partner
+companies an official channel to reach local talent with the provincial government
+as the verification layer.
+
+## What We Built
+
+- **Job-seeker mobile app**: Search-first interface with filters for location,
+  industry, and experience level; job-seeker profile; and a lightweight application flow.
+- **Partner-company dashboard**: Admin side for partner companies to publish listings,
+  manage incoming applications, and view basic analytics.
+- **Pemprov verification system**: Backend that lets the provincial team verify partner
+  companies and monitor the quality of published listings.
+- **Push notifications**: Job seekers receive alerts for new listings matching their
+  profile and filters.
+
+## App Screens
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Sikerja onboarding screen" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Available job listings feed" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Listing detail with partner company profile" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Search filters by location and industry" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Job-seeker profile and application history" class="rounded-lg w-full" />
+</div>
+
+## Impact
+
+Sikerja is one of the Central Sulawesi provincial government's digital employment
+initiatives that was built with engineering depth — not just a job board listing.
+The official partnership with the provincial government and partner corporations
+gives the platform a different position from generic job boards: listings on Sikerja
+have already passed the provincial verification layer, so Sulteng job seekers can
+use it with a higher level of trust.

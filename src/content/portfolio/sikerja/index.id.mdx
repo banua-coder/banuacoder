@@ -1,0 +1,93 @@
+---
+title: Sikerja
+slug: sikerja
+bucket: consumer
+client: Pemerintah Provinsi Sulawesi Tengah
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Portal lowongan kerja untuk masyarakat Sulawesi Tengah — kemitraan antara Pemerintah
+  Provinsi Sulawesi Tengah dengan korporasi lokal sehingga lowongan resmi yang dipasok
+  oleh perusahaan-perusahaan mitra dapat diakses pencari kerja Sulteng melalui satu
+  aplikasi mobile.
+problem: >
+  Pasar tenaga kerja di Sulawesi Tengah masih banyak bergantung pada informasi lowongan
+  yang tersebar di berbagai kanal: papan pengumuman, grup WhatsApp, atau situs job board
+  nasional yang tidak fokus pada konteks lokal. Bagi pencari kerja Sulteng, mengetahui
+  lowongan yang relevan dengan domisili mereka — apalagi yang resmi dan terverifikasi —
+  membutuhkan effort yang besar. Di sisi lain, perusahaan lokal yang ingin menjangkau
+  talent dari daerah juga tidak memiliki kanal terstruktur untuk mempublikasikan
+  lowongan mereka secara terpercaya.
+solution: >
+  Banua Coder bekerja sama dengan Pemerintah Provinsi Sulawesi Tengah dan korporasi
+  mitra untuk membangun Sikerja — aplikasi mobile yang menjadi etalase tunggal lowongan
+  kerja resmi di Sulteng. Perusahaan mitra mempublikasikan lowongan melalui Sikerja,
+  dan pencari kerja dapat mencari, memfilter, dan melamar langsung dari aplikasi.
+  Karena platform ini dijalankan dalam kemitraan resmi dengan pemprov, baik pencari
+  kerja maupun perusahaan mendapat tingkat kepercayaan yang lebih tinggi dibandingkan
+  job board generik.
+impact:
+  - Etalase lowongan kerja resmi terpusat untuk masyarakat Sulawesi Tengah
+  - Memudahkan korporasi mitra menjangkau talent lokal melalui kanal resmi pemprov
+  - Mengurangi friction pencarian kerja untuk masyarakat daerah
+  - Bukti pengalaman Banua Coder membangun consumer app untuk konteks publik daerah
+stack:
+  - Flutter
+  - Dart
+  - Laravel
+  - REST API
+  - Firebase Cloud Messaging
+  - Google Play
+featured: true
+order: 50
+locale: id
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.png'
+import shot2 from './screenshots/screenshot-2.png'
+import shot3 from './screenshots/screenshot-3.png'
+import shot4 from './screenshots/screenshot-4.png'
+import shot5 from './screenshots/screenshot-5.png'
+
+## Konteks
+
+Sikerja adalah aplikasi mobile employment portal untuk masyarakat Sulawesi Tengah,
+dibangun dalam kemitraan antara Pemerintah Provinsi Sulawesi Tengah dengan
+korporasi-korporasi mitra di Sulteng. Tujuan utamanya: memberi pencari kerja Sulteng
+satu kanal terpercaya untuk menemukan lowongan resmi yang dipasok oleh perusahaan
+mitra, dan memberi perusahaan mitra kanal resmi untuk menjangkau talent lokal dengan
+verifikasi pemprov sebagai layer kepercayaan.
+
+## Yang Kami Bangun
+
+- **Aplikasi mobile pencari kerja**: Antarmuka yang fokus pada pencarian lowongan
+  dengan filter lokasi, industri, dan tingkat pengalaman; profil pencari kerja; dan
+  alur lamaran yang ringan.
+- **Dashboard perusahaan mitra**: Sisi admin untuk perusahaan mitra mempublikasikan
+  lowongan, mengelola lamaran masuk, dan melihat analytics dasar.
+- **Sistem verifikasi pemprov**: Backend yang memungkinkan tim pemprov memverifikasi
+  perusahaan mitra dan memantau kualitas lowongan yang dipublikasikan.
+- **Notifikasi push**: Pencari kerja menerima notifikasi untuk lowongan baru yang
+  cocok dengan profil dan filter mereka.
+
+## Tampilan Aplikasi
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Tampilan onboarding Sikerja" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Daftar lowongan kerja yang tersedia" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Detail lowongan dengan profil perusahaan mitra" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Filter pencarian berdasarkan lokasi dan industri" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Profil pencari kerja dan riwayat lamaran" class="rounded-lg w-full" />
+</div>
+
+## Dampak
+
+Sikerja menjadi salah satu inisiatif employment digital pemprov Sulteng yang dibangun
+dengan engineering depth — bukan sekadar listing job board. Kemitraan resmi dengan
+pemprov dan perusahaan-perusahaan mitra memberi platform ini posisi yang berbeda dari
+job board generik: lowongan yang muncul di Sikerja sudah melalui layer verifikasi
+pemprov, sehingga pencari kerja Sulteng dapat menggunakannya dengan tingkat kepercayaan
+yang lebih tinggi.

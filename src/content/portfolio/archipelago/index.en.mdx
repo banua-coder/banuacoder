@@ -1,0 +1,79 @@
+---
+title: Archipelago
+slug: archipelago
+bucket: open-source
+client: Banua Coder
+year: 2026
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  A monorepo-based Flutter starter kit built on top of Mason bricks and Melos.
+  Archipelago helps individual engineers and enterprise teams generate consistent
+  Flutter monorepo scaffolding — complete with core utilities, UI kit, navigation,
+  network layer, and state management — in minutes instead of weeks.
+problem: >
+  Every time a Flutter team starts a new application — especially one ambitious enough
+  to span multiple modules or apps sharing infrastructure — they return to the same
+  setup work: folder structure, import conventions, internal packages, build pipeline,
+  CI/CD, lint rules. Results are inconsistent across projects and every new engineer
+  has to relearn project-specific conventions before they can contribute features. It's
+  a structural tax paid over and over with no new business value.
+solution: >
+  Banua Coder built Archipelago as an opinionated Flutter monorepo starter kit. By
+  combining Mason bricks for standardized package generation with Melos for
+  cross-package versioning and workflows, Archipelago gives engineering teams a proven
+  reference structure: core module, UI kit, navigation, network, state management,
+  code generation, testing setup, and CI/CD templates — all pre-configured with
+  sensible practices. Teams generate the starter template or add new packages via
+  brick, and instantly have the same foundation Banua Coder uses for production work.
+impact:
+  - Accelerates new Flutter project setup from weeks to a single session
+  - Consistent project conventions across teams; junior engineers onboard faster
+  - Extensible bricks for team- or client-specific needs
+  - Open-source contribution to the broader Flutter ecosystem
+stack:
+  - Flutter
+  - Dart
+  - Mason
+  - Melos
+  - Monorepo
+links:
+  github: https://github.com/banua-coder/archipelago
+featured: false
+order: 130
+locale: en
+---
+
+## Context
+
+Banua Coder runs many Flutter applications in parallel — consumer products,
+public-sector systems, internal tooling. Every app needs the same scaffolding before
+engineers can focus on features: folder structure, internal packages, state management,
+navigation, network layer, code generation, lint rules, and CI/CD pipeline. Without a
+shared standard, every project starts from zero — repetitive work that's prone to
+inconsistency drift.
+
+Archipelago grew out of Banua Coder's internal need for a production-ready Flutter
+monorepo reference. Once it had matured enough through real client work, we released
+Archipelago as open-source so other Flutter teams — individual developers and
+enterprise alike — can start their projects on the same foundation.
+
+## What We Built
+
+- **Mason-powered template generation**: Standard bricks for generating new packages
+  inside the monorepo (UI module, feature module, network client, etc.) with
+  consistent structure.
+- **Melos-managed monorepo**: Workflow management for multiple packages — coordinated
+  versioning, publishing, build, and test pipelines.
+- **Pre-configured packages**: Core utilities, UI kit, navigation routing, HTTP client
+  with interceptors + error handling, and a state management solution ready to use.
+- **Developer experience tooling**: Code generation for models + APIs, pre-configured
+  unit / widget / integration test setup, opinionated lint rules, and CI/CD templates.
+
+## Impact
+
+Archipelago is available open-source on GitHub. It lets Flutter teams skip the
+repetitive setup tax and start building features directly. It also serves as a
+transparent reference for Banua Coder's engineering conventions — every engineer who
+joins can learn how we build Flutter applications by reading public code.

@@ -41,6 +41,13 @@ order: 55
 locale: en
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.png'
+import shot2 from './screenshots/screenshot-2.png'
+import shot3 from './screenshots/screenshot-3.png'
+import shot4 from './screenshots/screenshot-4.png'
+import shot5 from './screenshots/screenshot-5.png'
+
 ## Context
 
 Siap Donggala is a personnel management information system built for Pemerintah Kabupaten
@@ -65,6 +72,16 @@ Siap Donggala was built as a comprehensive personnel management platform:
   automatic notifications to relevant supervisors.
 - **Personnel reporting**: Dashboards and reports that help leadership monitor personnel
   conditions in real time.
+
+## App Screens
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Siap Donggala login screen" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Personnel dashboard home" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Employee data management" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Administrative request and approval flow" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Personnel reports and recap" class="rounded-lg w-full" />
+</div>
 
 ## Impact
 

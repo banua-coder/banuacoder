@@ -42,6 +42,13 @@ order: 55
 locale: id
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.png'
+import shot2 from './screenshots/screenshot-2.png'
+import shot3 from './screenshots/screenshot-3.png'
+import shot4 from './screenshots/screenshot-4.png'
+import shot5 from './screenshots/screenshot-5.png'
+
 ## Konteks
 
 Siap Donggala adalah sistem informasi manajemen kepegawaian yang dibangun untuk
@@ -66,6 +73,16 @@ Siap Donggala dibangun sebagai platform manajemen kepegawaian yang komprehensif:
   dengan notifikasi otomatis ke atasan terkait.
 - **Pelaporan kepegawaian**: Dashboard dan laporan yang membantu pimpinan memantau
   kondisi kepegawaian secara real-time.
+
+## Tampilan Aplikasi
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Tampilan login Siap Donggala" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Dashboard kepegawaian utama" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Manajemen data pegawai" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Pengajuan dan persetujuan administrasi" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Laporan dan rekap kepegawaian" class="rounded-lg w-full" />
+</div>
 
 ## Dampak
 

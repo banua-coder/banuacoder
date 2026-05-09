@@ -39,6 +39,13 @@ order: 25
 locale: en
 ---
 
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.png'
+import shot2 from './screenshots/screenshot-2.png'
+import shot3 from './screenshots/screenshot-3.png'
+import shot4 from './screenshots/screenshot-4.png'
+import shot5 from './screenshots/screenshot-5.png'
+
 ## Context
 
 Detexi Doctor is a digital healthcare application providing easy access to doctor consultations
@@ -63,6 +70,16 @@ and ease of use:
   exchange of health information.
 - **Health history**: Personal consultation records and medical document management
   accessible at any time.
+
+## App Screens
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 my-8">
+  <Image src={shot1} alt="Detexi Doctor onboarding screen" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Search doctors by specialization" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Doctor profile and consultation scheduling" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Patient–doctor consultation interface" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Consultation history and personal medical records" class="rounded-lg w-full" />
+</div>
 
 ## Impact
 

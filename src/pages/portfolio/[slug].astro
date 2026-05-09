@@ -308,11 +308,25 @@ const breadcrumbSchema = {
           <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-4">
             // Links
           </p>
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap items-center gap-4">
             {data.links.playStore && (
-              <Button href={data.links.playStore} external variant="secondary" size="md">
-                Google Play →
-              </Button>
+              <a
+                href={data.links.playStore}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Dapatkan di Google Play"
+                class="inline-block transition-opacity hover:opacity-80"
+              >
+                <img
+                  src="/badges/dapatkan-di-google-play.png"
+                  alt="Dapatkan di Google Play"
+                  width={194}
+                  height={75}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-[60px] w-auto"
+                />
+              </a>
             )}
             {data.links.appStore && (
               <Button href={data.links.appStore} external variant="secondary" size="md">
