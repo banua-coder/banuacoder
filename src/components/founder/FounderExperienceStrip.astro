@@ -2,9 +2,24 @@
 /**
  * FounderExperienceStrip — horizontal logo row with hover tooltips showing context.
  * Imports from src/data/founder-experience.ts.
+ * Renders <img> when a real logo asset is available in src/assets/companies/,
+ * otherwise falls back to a mono uppercase wordmark.
  * Keyboard accessible: focus also reveals tooltip.
  */
 import { founderExperience } from '../../data/founder-experience'
+
+const logoModules = import.meta.glob('/src/assets/companies/*.{svg,png}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const logoUrls: Record<string, string> = Object.fromEntries(
+  Object.entries(logoModules).map(([path, url]) => [
+    path.split('/').pop() ?? '',
+    url,
+  ]),
+)
 ---
 
 <div class="flex flex-wrap gap-6 items-center" role="list" aria-label="Founder experience at companies">
@@ -19,10 +34,19 @@ import { founderExperience } from '../../data/founder-experience'
         aria-describedby={`exp-tip-${exp.company.replace(/\W+/g, '-')}`}
         aria-label={`${exp.company} — ${exp.context}`}
       >
-        <!-- Text fallback — SVG logos not yet available -->
-        <span class="font-mono text-xs font-medium text-bnc-stone-600 dark:text-bnc-stone-400 group-hover:text-bnc-ink dark:group-hover:text-bnc-paper transition-colors whitespace-nowrap tracking-wide uppercase">
-          {exp.company}
-        </span>
+        {logoUrls[exp.logo] ? (
+          <img
+            src={logoUrls[exp.logo]}
+            alt={exp.company}
+            loading="lazy"
+            decoding="async"
+            class="h-8 w-auto max-w-[120px] object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-[filter,opacity] duration-[var(--duration-base)]"
+          />
+        ) : (
+          <span class="font-mono text-xs font-medium text-bnc-stone-600 dark:text-bnc-stone-400 group-hover:text-bnc-ink dark:group-hover:text-bnc-paper transition-colors whitespace-nowrap tracking-wide uppercase">
+            {exp.company}
+          </span>
+        )}
       </button>
 
       <!-- Tooltip -->
