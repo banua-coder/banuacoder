@@ -354,7 +354,7 @@ const orgSchema = {
             description={process.description}
             class="mb-14"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16" data-process-strip>
             {process.steps.map((step, i) => (
               <ProcessStep
                 step={i + 1}
@@ -393,16 +393,18 @@ const orgSchema = {
               </h2>
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal-stagger>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-ideal-strip>
             {idealClients.items.map((item, i) => {
               const IconComponent = idealClientIcons[item.icon] ?? ArrowRight
               return (
-                <div class:list={[
-                  'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
-                  'border-bnc-stone-200 dark:border-bnc-stone-800',
-                  'bg-bnc-stone-50 dark:bg-bnc-stone-900',
-                  i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
-                ]}>
+                <div
+                  data-ideal-tile
+                  class:list={[
+                    'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
+                    'border-bnc-stone-200 dark:border-bnc-stone-800',
+                    'bg-bnc-stone-50 dark:bg-bnc-stone-900',
+                    i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
+                  ]}>
                   <span class="inline-flex items-center justify-center w-10 h-10 rounded-[var(--radius-sm)] bg-bnc-paper dark:bg-bnc-ink text-bnc-primary dark:text-bnc-accent" aria-hidden="true">
                     <IconComponent size={20} strokeWidth={1.75} />
                   </span>

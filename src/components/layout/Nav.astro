@@ -34,7 +34,7 @@ const navLinks = isEn
 
 <header
   id="site-nav"
-  class="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-200 bg-bnc-paper/80 dark:bg-bnc-ink/80 backdrop-blur-md border-b border-transparent"
+  class="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color,transform] duration-300 bg-bnc-paper/80 dark:bg-bnc-ink/80 backdrop-blur-md border-b border-transparent will-change-transform"
   data-nav-scroll
 >
   <nav
@@ -103,5 +103,15 @@ const navLinks = isEn
   :global(html.dark) [data-nav-scroll].is-scrolled {
     background-color: color-mix(in srgb, var(--color-bnc-ink) 92%, transparent);
     border-bottom-color: var(--color-bnc-stone-800);
+  }
+  /* Auto-hide: translate up when not at hero and pointer not near top edge */
+  [data-nav-scroll].is-hidden {
+    transform: translateY(-100%);
+  }
+  /* Reduced-motion: kill the slide so navigate is always instant */
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav-scroll] {
+      transition: background-color 0.2s, border-color 0.2s;
+    }
   }
 </style>

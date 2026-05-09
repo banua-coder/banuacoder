@@ -1,17 +1,20 @@
 ---
 /**
- * ClientLogoCycle — pinned scroll-driven client logo reveal.
+ * ClientLogoCycle — pinned scroll-driven client logo reveal (ZOG-style).
  *
  * Section is h-[300vh]; inner panel is sticky top-0 h-screen.
- * A centered headline stays pinned while 2 batches of client logos
- * cycle through in the surrounding 5×5 grid outer ring.
+ * A centered headline stays pinned while ~12 logo slots cycle through
+ * INDIVIDUAL scroll-triggered enter/exit windows (no batch sync).
  *
- * Batch layout (col, row) — outer ring only, inner 3×3 reserved for headline:
- *   Batch 1: Ulearna(1,1), Brantas(5,1), PemprovSulteng(1,3), PemkabGowa(5,3), PemprovSulsel(3,5)
- *   Batch 2: Ulearna(3,1), PemprovSulteng(1,5), PemkabGowa(5,5), PemprovSulsel(1,2), Brantas(5,2)
+ * Each slot has its own scattered position around the viewport edges,
+ * its own scroll-progress window, and a unique randomized rotation seed.
+ * Multiple slots overlap in time so logos are continuously fading
+ * in and out as the user scrubs.
  *
- * GSAP timelines live in src/lib/animations.ts (`.client-cycle` selector).
- * Reduced-motion fallback: CSS overrides collapse to a static grid (see global.css additions).
+ * GSAP timelines live in src/lib/animations.ts (`.client-cycle` selector,
+ * reads data-cell-* attrs on each `.client-cycle-cell`).
+ *
+ * Reduced-motion fallback: CSS overrides collapse to a static wrap-grid.
  */
 
 import { clients } from '../../data/clients'
@@ -40,34 +43,47 @@ const subhead =
     ? 'From public sector to international consumer products.'
     : 'Dari sektor publik hingga produk consumer internasional.'
 
-// Client lookup by logo filename for easy reference
 const byLogo = Object.fromEntries(clients.map((c) => [c.logo, c]))
 
 /**
- * Each batch entry: { logoFile, col (1-5), row (1-5) }
- * Logos placed across the grid avoiding the central 3×3 reserved for the headline.
- * Used cells: top row (1) full, bottom row (5) full, plus rows 2 + 4 columns 1 & 5.
- * This gives a ring of ~10 visible positions per batch with the headline anchoring center.
+ * 13 slots scattered around the viewport edges. Center 25–75% × 28–68%
+ * is kept clear for the pinned headline.
+ *
+ * Each slot defines:
+ *   - logoFile: which client emblem to render
+ *   - x / y    : percent coords (translate -50%/-50% for centering)
+ *   - enter    : scroll progress (0–1) when this cell starts fading IN
+ *   - exit     : scroll progress when it starts fading OUT (omit for slots
+ *                that should remain visible until the section ends)
+ *
+ * Stagger of ~0.06 between entries with a long enter (0.22) + hold (0.08) +
+ * exit (0.22) keeps 5–6 logos visible at any moment, all in mid-transition.
+ * Each slot's full lifespan is ~0.52 of timeline so the blur/zoom feels
+ * gradual rather than a hard swap.
  */
-type Cell = { logoFile: string; col: number; row: number }
+type Slot = {
+  logoFile: string
+  x: number
+  y: number
+  enter: number
+  exit?: number
+}
 
-const batch1: Cell[] = [
-  { logoFile: 'ulearna.png', col: 1, row: 1 },
-  { logoFile: 'pemprov-sulteng.svg', col: 3, row: 1 },
-  { logoFile: 'brantas-inti-utama.png', col: 5, row: 1 },
-  { logoFile: 'pemkab-gowa.png', col: 1, row: 5 },
-  { logoFile: 'pemprov-sulsel.svg', col: 5, row: 5 },
+const slots: Slot[] = [
+  { logoFile: 'ulearna.png',            x: 15, y: 18, enter: 0.00, exit: 0.30 },
+  { logoFile: 'pemprov-sulteng.svg',    x: 85, y: 22, enter: 0.06, exit: 0.36 },
+  { logoFile: 'brantas-inti-utama.png', x: 10, y: 78, enter: 0.12, exit: 0.42 },
+  { logoFile: 'pemkab-gowa.png',        x: 88, y: 82, enter: 0.18, exit: 0.48 },
+  { logoFile: 'pemprov-sulsel.svg',     x: 42, y: 10, enter: 0.24, exit: 0.54 },
+  { logoFile: 'klinikgo.png',           x: 58, y: 88, enter: 0.30, exit: 0.60 },
+  { logoFile: 'pemkab-donggala.png',    x:  8, y: 48, enter: 0.36, exit: 0.66 },
+  { logoFile: 'ulearna.png',            x: 92, y: 52, enter: 0.42, exit: 0.72 },
+  { logoFile: 'brantas-inti-utama.png', x: 72, y: 14, enter: 0.48, exit: 0.78 },
+  { logoFile: 'pemkab-donggala.png',    x: 28, y: 86, enter: 0.54, exit: 0.84 },
+  { logoFile: 'pemprov-sulteng.svg',    x: 78, y: 78, enter: 0.60 },
+  { logoFile: 'klinikgo.png',           x: 22, y: 18, enter: 0.66 },
+  { logoFile: 'pemprov-sulsel.svg',     x: 50, y: 88, enter: 0.72 },
 ]
-
-const batch2: Cell[] = [
-  { logoFile: 'pemprov-sulteng.svg', col: 1, row: 1 },
-  { logoFile: 'pemkab-gowa.png', col: 5, row: 1 },
-  { logoFile: 'pemprov-sulsel.svg', col: 1, row: 5 },
-  { logoFile: 'ulearna.png', col: 3, row: 5 },
-  { logoFile: 'brantas-inti-utama.png', col: 5, row: 5 },
-]
-
-const batches = [batch1, batch2]
 ---
 
 <section
@@ -91,53 +107,45 @@ const batches = [batch1, batch2]
       </p>
     </div>
 
-    <!-- 5×5 logo grid — absolute so logos scatter around the headline -->
-    <div
-      class="client-cycle-grid absolute inset-0 grid pointer-events-none"
-      style="grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);"
-      aria-hidden="true"
-    >
-      {batches.map((batch, batchIdx) => (
-        <div
-          class="client-cycle-batch absolute inset-0 grid"
-          style="grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);"
-          data-batch={batchIdx}
-        >
-          {batch.map((cell) => {
-            const client = byLogo[cell.logoFile]
-            if (!client) return null
-            const logoUrl = logoUrls[cell.logoFile]
-            return (
-              <div
-                class="client-cycle-cell flex items-center justify-center p-2"
-                style={`grid-column: ${cell.col}; grid-row: ${cell.row};`}
-              >
-                <div class="flex items-center justify-center px-5 py-4 rounded-[var(--radius-md)] border border-bnc-stone-200/70 dark:border-bnc-stone-800/70 bg-bnc-paper/95 dark:bg-bnc-stone-900/95 shadow-sm backdrop-blur-sm">
-                  {logoUrl ? (
-                    <img
-                      src={logoUrl}
-                      alt={client.name}
-                      loading="lazy"
-                      decoding="async"
-                      class="h-12 sm:h-14 w-auto max-w-[140px] object-contain"
-                    />
-                  ) : (
-                    <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
-                      {client.name}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      ))}
+    <!-- Scattered absolute-positioned logo cells. Each one animates independently. -->
+    <div class="client-cycle-stage absolute inset-0 pointer-events-none" aria-hidden="true">
+      {slots.map((slot, idx) => {
+        const client = byLogo[slot.logoFile]
+        if (!client) return null
+        const logoUrl = logoUrls[slot.logoFile]
+        return (
+          <div
+            class="client-cycle-cell absolute"
+            style={`left: ${slot.x}%; top: ${slot.y}%; transform: translate(-50%, -50%);`}
+            data-cell-index={idx}
+            data-cell-enter={slot.enter}
+            data-cell-exit={slot.exit ?? ''}
+          >
+            <div class="flex items-center justify-center px-5 py-4 rounded-[var(--radius-md)] border border-bnc-stone-200/70 dark:border-bnc-stone-800/70 bg-bnc-paper/95 dark:bg-bnc-stone-900/95 shadow-sm backdrop-blur-sm">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={client.name}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-12 sm:h-14 w-auto max-w-[140px] object-contain"
+                />
+              ) : (
+                <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
+                  {client.name}
+                </span>
+              )}
+            </div>
+          </div>
+        )
+      })}
     </div>
   </div>
 </section>
 
 <style>
-  /* Reduced-motion: collapse the 300vh scroll space and show all logos statically */
+  /* Reduced-motion: collapse the 300vh scroll space and show all logos
+     statically as a centered wrap row beneath the headline. */
   @media (prefers-reduced-motion: reduce) {
     .client-cycle {
       height: auto;
@@ -149,22 +157,18 @@ const batches = [batch1, batch2]
       gap: 2rem;
       padding-block: var(--spacing-section-y-sm);
     }
-    .client-cycle-grid {
+    .client-cycle-stage {
       position: static;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 1rem;
       width: 100%;
-      max-width: 640px;
-    }
-    .client-cycle-batch {
-      display: contents;
+      max-width: 720px;
     }
     .client-cycle-cell {
-      display: flex;
-      grid-column: unset !important;
-      grid-row: unset !important;
+      position: static !important;
+      transform: none !important;
       filter: none !important;
       opacity: 1 !important;
       visibility: visible !important;

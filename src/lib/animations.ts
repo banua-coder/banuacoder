@@ -35,36 +35,46 @@ export function initAnimations(): () => void {
     lenis.on('scroll', ScrollTrigger.update)
 
     // ── Scroll-reveal sections ────────────────────────────────────────────────
+    // Use fromTo + once:true so the trigger fires reliably even when long
+    // pinned sections above shift the document height after registration.
     gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
-      gsap.from(el, {
-        opacity: 0,
-        y: 24,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 92%',
+            once: true,
+          },
         },
-      })
+      )
     })
 
     // ── Stagger card grids ────────────────────────────────────────────────────
     gsap.utils.toArray<HTMLElement>('[data-reveal-stagger]').forEach((grid) => {
       const items = gsap.utils.toArray<HTMLElement>(grid.children as HTMLCollectionOf<HTMLElement>)
       if (!items.length) return
-      gsap.from(items, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: 'power2.out',
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: grid,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
+      gsap.fromTo(
+        items,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: grid,
+            start: 'top 92%',
+            once: true,
+          },
         },
-      })
+      )
     })
 
     // ── Magnetic CTA (fine-pointer devices only) ──────────────────────────────
@@ -139,17 +149,23 @@ export function initAnimations(): () => void {
     }
 
     // ── Pinned client logo cycle ──────────────────────────────────────────────
+    // Each .client-cycle-cell carries data-cell-enter / data-cell-exit (0–1
+    // scroll progress) and gets its own fromTo + (optional) to placed on a
+    // single scrubbed timeline. Cells overlap in time so multiple logos are
+    // visible / fading at any moment — matches Zero One Group's continuous
+    // scatter rather than a synchronized batch swap.
     const cycleSection = document.querySelector<HTMLElement>('.client-cycle')
-    const batches = cycleSection
-      ? Array.from(cycleSection.querySelectorAll<HTMLElement>('.client-cycle-batch'))
+    const cycleCells = cycleSection
+      ? Array.from(cycleSection.querySelectorAll<HTMLElement>('.client-cycle-cell'))
       : []
 
-    if (cycleSection && batches.length) {
-      // Initial: first batch visible (so the section ANCHORS from scroll 0),
-      // remaining batches hidden. Cells for first batch start sharp.
-      gsap.set(batches, { autoAlpha: 0 })
-      gsap.set(batches[0], { autoAlpha: 1 })
-      gsap.set('.client-cycle-cell', { filter: 'blur(0px) grayscale(0)', autoAlpha: 1, scale: 1 })
+    if (cycleSection && cycleCells.length) {
+      // Hide everything first; per-cell fromTo will reveal at its enter mark.
+      gsap.set(cycleCells, {
+        autoAlpha: 0,
+        scale: 0.4,
+        filter: 'blur(24px) grayscale(1)',
+      })
 
       const cycleTl = gsap.timeline({
         scrollTrigger: {
@@ -160,55 +176,52 @@ export function initAnimations(): () => void {
         },
       })
 
-      // Each batch occupies 1 unit of timeline; batches overlap by 0.15 for smooth handoff.
-      // Phase per batch (within its 1.0 unit slot, starting at t = i):
-      //   0.00 - 0.10  show container (instant)
-      //   0.10 - 0.30  unblur cells with stagger (entrance)
-      //   0.30 - 0.65  HOLD CLEAR — cells fully sharp (longest phase)
-      //   0.65 - 0.85  blur out
-      //   0.85 - 1.00  hide container (next batch starts before this finishes)
-      batches.forEach((batch, i) => {
-        const cells = Array.from(batch.querySelectorAll<HTMLElement>('.client-cycle-cell'))
-        const t = i * 0.85 // overlap each subsequent batch
+      cycleCells.forEach((cell) => {
+        const enter = parseFloat(cell.dataset.cellEnter ?? '0')
+        const exitRaw = cell.dataset.cellExit ?? ''
+        const exit = exitRaw === '' ? null : parseFloat(exitRaw)
+        const rotIn = gsap.utils.random(-25, 25, 1)
+        const rotOut = -rotIn * 1.3
 
-        // For the first batch, skip the entrance — it's already visible/clear from gsap.set above
-        if (i > 0) {
-          cycleTl
-            .to(batch, { autoAlpha: 1, duration: 0.05 }, t + 0.05)
-            .fromTo(
-              cells,
-              { filter: 'blur(20px) grayscale(1)', autoAlpha: 0, scale: 0.9 },
-              {
-                filter: 'blur(0px) grayscale(0)',
-                autoAlpha: 1,
-                scale: 1,
-                stagger: 0.04,
-                duration: 0.25,
-                ease: 'power2.out',
-              },
-              t + 0.1,
-            )
-        }
+        // Enter (long, gradual): scale 0.25 → 1.0, rotation random → 0,
+        // blur 40px → 0, opacity 0 → 1. sine.out lets the blur lift
+        // smoothly across the scrub instead of snapping at the last frame.
+        cycleTl.fromTo(
+          cell,
+          {
+            autoAlpha: 0,
+            scale: 0.25,
+            rotation: rotIn,
+            filter: 'blur(40px) grayscale(1)',
+          },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            rotation: 0,
+            filter: 'blur(0px) grayscale(0)',
+            duration: 0.22,
+            ease: 'sine.out',
+          },
+          enter,
+        )
 
-        // Hold clear (visible at full clarity for the bulk of the slot)
-        cycleTl.to(cells, { duration: 0.4, autoAlpha: 1 }, t + 0.3)
-
-        // Blur out (don't run on the LAST batch — let it stay visible until end of section)
-        if (i < batches.length - 1) {
-          cycleTl
-            .to(
-              cells,
-              {
-                filter: 'blur(20px) grayscale(1)',
-                autoAlpha: 0,
-                scale: 0.95,
-                stagger: 0.03,
-                duration: 0.2,
-                ease: 'power2.in',
-              },
-              t + 0.65,
-            )
-            .to(batch, { autoAlpha: 0, duration: 0.05 }, t + 0.9)
+        // Exit (long, gradual): zoom OUT past 1 (scale 1 → 1.55) so the logo
+        // appears to fly toward the camera as it dissolves — Ken Burns
+        // dolly-out feel — combined with blur 0 → 40px and reverse rotation.
+        // Cells without a defined exit remain visible through end-of-section.
+        if (exit !== null && !Number.isNaN(exit)) {
+          cycleTl.to(
+            cell,
+            {
+              autoAlpha: 0,
+              scale: 1.55,
+              rotation: rotOut,
+              filter: 'blur(40px) grayscale(1)',
+              duration: 0.22,
+              ease: 'sine.in',
+            },
+            exit,
+          )
         }
       })
     }
@@ -253,12 +266,124 @@ export function initAnimations(): () => void {
       })
     }
 
+    // ── Process steps (zig-zag scroll-driven reveal) ─────────────────────────
+    // Each step slides in from its column edge as it enters the viewport;
+    // the connector line "draws" itself as user scrolls. Even-index steps
+    // come in from the left, odd-index from the right.
+    const processStrip = document.querySelector<HTMLElement>('[data-process-strip]')
+    const processSteps = processStrip
+      ? Array.from(processStrip.querySelectorAll<HTMLElement>('[data-process-step]'))
+      : []
+
+    if (processStrip && processSteps.length) {
+      processSteps.forEach((step, i) => {
+        const fromX = i % 2 === 0 ? -60 : 60
+        gsap.fromTo(
+          step,
+          { opacity: 0, x: fromX, scale: 0.95 },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 0.7,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 88%',
+              once: true,
+            },
+          },
+        )
+
+        // Pulse the step dot when it enters
+        const dot = step.querySelector<HTMLElement>('[data-process-dot]')
+        if (dot) {
+          gsap.fromTo(
+            dot,
+            { scale: 0.4, boxShadow: '0 0 0 0 rgba(29,156,212,0.6)' },
+            {
+              scale: 1,
+              boxShadow: '0 0 0 12px rgba(29,156,212,0)',
+              duration: 0.9,
+              ease: 'back.out(1.6)',
+              scrollTrigger: { trigger: step, start: 'top 88%', once: true },
+            },
+          )
+        }
+      })
+
+      // Connector line scales from 0 → full as user scrolls through the strip
+      const connector = processStrip.querySelector<HTMLElement>('[data-process-line]')
+      if (connector) {
+        gsap.fromTo(
+          connector,
+          { scaleY: 0, transformOrigin: 'top' },
+          {
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: processStrip,
+              start: 'top 75%',
+              end: 'bottom 75%',
+              scrub: 0.5,
+            },
+          },
+        )
+      }
+    }
+
+    // ── Ideal-clients tile burst-in ──────────────────────────────────────────
+    // Tiles cascade from a slight rotation + scale + y offset, one after the
+    // next as the section enters viewport. Each tile gets a tiny lingering
+    // float once it lands.
+    const idealStrip = document.querySelector<HTMLElement>('[data-ideal-strip]')
+    const idealTiles = idealStrip
+      ? Array.from(idealStrip.querySelectorAll<HTMLElement>('[data-ideal-tile]'))
+      : []
+
+    if (idealStrip && idealTiles.length) {
+      gsap.fromTo(
+        idealTiles,
+        {
+          opacity: 0,
+          y: 40,
+          scale: 0.85,
+          rotation: (i: number) => (i % 2 === 0 ? -3 : 3),
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+          duration: 0.7,
+          ease: 'back.out(1.2)',
+          stagger: 0.09,
+          scrollTrigger: {
+            trigger: idealStrip,
+            start: 'top 85%',
+            once: true,
+          },
+        },
+      )
+    }
+
     return () => {
       // Cleanup lenis when matchMedia reverts (e.g. user enables reduced-motion)
       gsap.ticker.remove(lenisRaf)
       lenis.destroy()
     }
   })
+
+  // ── ScrollTrigger refresh after init ─────────────────────────────────────
+  // Pinned ScrollTriggers add ~700vh of pin-spacer height to the document.
+  // Without an explicit refresh, downstream non-pinned triggers keep stale
+  // start positions calculated before the spacers existed (root cause of the
+  // Selected Work / portfolio-grid not revealing). Refreshing on next frame
+  // and again after window load handles font/image layout shifts too.
+  requestAnimationFrame(() => ScrollTrigger.refresh())
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true })
+  }
 
   // ── Theme toggle crossfade morph (click-driven, not scroll) ─────────────────
   // Wired here so it participates in the same matchMedia cleanup on revert.
@@ -309,26 +434,77 @@ export function initAnimations(): () => void {
     })
   }
 
-  // ── Nav scroll-elevated state ────────────────────────────────────────────
+  // ── Nav auto-hide + reveal-on-top-hover ──────────────────────────────────
   // Outside matchMedia: this isn't a motion preference — even reduced-motion
-  // users want the nav to remain readable when content scrolls under it.
-  // Toggles a `is-scrolled` class on [data-nav-scroll] when scrollY > 8.
+  // users get the same show/hide rules (the CSS transition is suppressed
+  // under reduced-motion via the @media block in Nav.astro).
+  //
+  // Desktop (fine pointer + hover capable):
+  //   • scrollY <= 80px              → SHOW (anchored at hero)
+  //   • Pointer within top 80px      → SHOW (hover-to-reveal)
+  //   • Otherwise                    → HIDE (translateY(-100%))
+  //
+  // Touch devices: nav is always shown — there's no hover to trigger reveal,
+  // so auto-hiding would strand mobile users without nav access.
+  //
+  // Elevated state (`is-scrolled`) applies whenever scrollY > 8 regardless,
+  // so the nav has a visible bg/border even when revealed mid-page.
   const navEl = document.querySelector<HTMLElement>('[data-nav-scroll]')
-  let lastNavScrolled: boolean | null = null
+  const canHover = window.matchMedia('(pointer: fine) and (hover: hover)').matches
+  const HOVER_BAND = 80
+  const TOP_BAND = 80
+  let pointerNearTop = false
+  let lastShown: boolean | null = null
+  let lastScrolled: boolean | null = null
+
   const updateNav = () => {
-    const scrolled = window.scrollY > 8
-    if (scrolled !== lastNavScrolled) {
-      navEl?.classList.toggle('is-scrolled', scrolled)
-      lastNavScrolled = scrolled
+    if (!navEl) return
+    const y = window.scrollY
+    const scrolled = y > 8
+    const atTop = y <= TOP_BAND
+    const shown = canHover ? atTop || pointerNearTop : true
+
+    if (shown !== lastShown) {
+      navEl.classList.toggle('is-hidden', !shown)
+      lastShown = shown
+    }
+    if (scrolled !== lastScrolled) {
+      navEl.classList.toggle('is-scrolled', scrolled)
+      lastScrolled = scrolled
     }
   }
+
+  const onPointerMove = (e: PointerEvent) => {
+    const next = e.clientY <= HOVER_BAND
+    if (next !== pointerNearTop) {
+      pointerNearTop = next
+      updateNav()
+    }
+  }
+  const onPointerLeave = () => {
+    if (pointerNearTop) {
+      pointerNearTop = false
+      updateNav()
+    }
+  }
+
   if (navEl) {
     updateNav()
     window.addEventListener('scroll', updateNav, { passive: true })
+    if (canHover) {
+      window.addEventListener('pointermove', onPointerMove, { passive: true })
+      document.addEventListener('pointerleave', onPointerLeave)
+    }
   }
 
   return () => {
     mm.revert()
-    if (navEl) window.removeEventListener('scroll', updateNav)
+    if (navEl) {
+      window.removeEventListener('scroll', updateNav)
+      if (canHover) {
+        window.removeEventListener('pointermove', onPointerMove)
+        document.removeEventListener('pointerleave', onPointerLeave)
+      }
+    }
   }
 }
