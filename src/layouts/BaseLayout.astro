@@ -104,19 +104,29 @@ const shouldIndex = indexable && !isDevRoute
     <!-- Page-specific head content (meta, structured data, etc.) -->
     <slot name="head" />
 
-    <!-- FOUC prevention: read localStorage.theme before first paint -->
+    <!-- FOUC prevention + view-transition persistence -->
     <script is:inline>
       (function () {
-        try {
-          var stored = localStorage.getItem('theme');
-          if (stored === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else if (stored === 'light') {
-            document.documentElement.classList.remove('dark');
-          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
+        function resolveTheme() {
+          try {
+            var stored = localStorage.getItem('theme');
+            if (stored === 'dark') return 'dark';
+            if (stored === 'light') return 'light';
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } catch (e) {
+            return 'light';
           }
-        } catch (e) {}
+        }
+        function apply(root) {
+          if (resolveTheme() === 'dark') root.classList.add('dark');
+          else root.classList.remove('dark');
+        }
+        // Initial paint
+        apply(document.documentElement);
+        // View transitions: re-apply to the incoming document BEFORE swap so no flash
+        document.addEventListener('astro:before-swap', function (e) {
+          apply(e.newDocument.documentElement);
+        });
       })();
     </script>
   </head>
