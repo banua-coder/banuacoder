@@ -1,0 +1,196 @@
+---
+title: Masjid Sejuta Pemuda — Performance Audit
+slug: msp-performance-audit
+bucket: consumer
+client: Masjid Sejuta Pemuda
+year: 2025
+status: live
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Audit dan rescue performa aplikasi Masjid Sejuta Pemuda — aplikasi consumer
+  Flutter berbasis komunitas yang sebelumnya dikerjakan oleh kontraktor lain.
+  Kami mendiagnosis dan memperbaiki jank dan rebuild loop yang menyebabkan
+  aplikasi terasa berat di perangkat low-end, menggunakan Flutter Performance
+  Overlay dan Rebuild Rainbow sebagai bukti objektif sebelum dan sesudah.
+problem: >
+  Tim Masjid Sejuta Pemuda mewarisi codebase Flutter dari kontraktor sebelumnya
+  yang dibangun cepat tanpa engineering discipline ("vibecoded"). Pengguna di
+  perangkat low-end mengeluhkan UI yang terasa berat dan tidak responsif —
+  scroll patah-patah, animasi countdown subuh tersendat, dan home screen
+  terasa lambat saat baru dibuka. Saat tim klien membuka kode sumbernya,
+  mereka melihat ada yang tidak beres tapi sulit memetakan dengan tepat
+  bagian mana yang perlu diperbaiki.
+solution: >
+  Banua Coder melakukan audit performa terstruktur dengan tooling Flutter
+  bawaan untuk membuktikan masalahnya secara objektif, lalu menyelesaikannya
+  bertahap sampai bukti angka dan visualnya bersih.
+
+  Diagnosis dimulai dengan mengaktifkan Performance Overlay — di perangkat
+  pengujian, frame time mencapai 62.8 ms (jauh di atas budget 16 ms untuk
+  60 fps), dengan banyak frame merah jank. Kami juga mengaktifkan widget
+  rebuild visualizer ("rebuild rainbow") dan menemukan penyebab utamanya:
+  setiap detik, countdown waktu subuh memicu rebuild seluruh widget tree home
+  screen — bukan hanya angka countdown-nya.
+
+  Perbaikan dilakukan dalam tiga iterasi, dengan setiap iterasi diukur ulang
+  pakai overlay yang sama untuk membuktikan progress:
+
+  Iterasi 1 — audit semua widget yang seharusnya `const` tapi tidak. Hasil:
+  jank berkurang banyak (frame time turun ke target 16 ms), tapi rebuild
+  rainbow masih menunjukkan seluruh home screen di-rebuild setiap tick.
+
+  Iterasi 2 — encapsulate setiap section home screen ke dalam widget
+  terpisah sehingga setState tidak bocor ke seluruh tree. Hasil: rebuild
+  area sedikit menyempit, tapi countdown timer masih memicu rebuild parent
+  yang mengandung daftar program, statistik, dan tombol shortcut.
+
+  Iterasi 3 — bangun text-rotator dan countdown widget custom dari nol,
+  dengan internal state yang sepenuhnya isolated dari tree di atasnya.
+  Hasil akhir: rebuild rainbow hanya menunjukkan widget countdown yang
+  berkedip setiap detik, sisa home screen statis. Frame time stabil di
+  bawah 16 ms.
+impact:
+  - Frame time max turun dari 62.8 ms (jank parah) ke <16 ms (target 60 fps tercapai)
+  - Whole-tree rebuild setiap detik berubah menjadi isolated countdown rebuild — sisa home screen statis
+  - Pengguna di perangkat low-end dapat menggunakan aplikasi tanpa keluhan UI patah-patah
+  - Tim klien mendapat dokumentasi proses audit yang dapat mereka pakai sebagai checklist internal di masa depan
+stack:
+  - Flutter
+  - Dart
+  - Performance Overlay
+  - Widget Rebuild Tracking
+  - Custom Widgets
+featured: true
+order: 32
+locale: id
+---
+
+## Konteks
+
+Masjid Sejuta Pemuda (MSP) adalah aplikasi mobile consumer yang menyatukan
+fitur ibadah harian (jadwal shalat, dzikir, Al-Quran), program donasi/wakaf,
+dan informasi event komunitas Muslim. Aplikasinya sudah live dan punya basis
+pengguna aktif, tapi kontraktor Flutter sebelumnya membangunnya dengan
+pendekatan cepat: banyak widget tanpa `const`, state management yang menerus
+ke parent, dan beberapa fitur yang seharusnya stateless tapi diimplementasi
+dengan setState di tree yang terlalu tinggi.
+
+Tim klien menyadari aplikasinya terasa berat pada device low-end dan minta
+Banua Coder mengaudit, mendiagnosis, dan memperbaiki tanpa membongkar fitur
+yang sudah jalan.
+
+## Yang Kami Bangun
+
+### 1. Diagnosis dengan Performance Overlay & Rebuild Rainbow
+
+Sebelum mengubah satu baris kode pun, kami menyalakan dua tooling Flutter
+bawaan untuk mendapat bukti objektif:
+
+- **Performance Overlay** menampilkan grafik frame time secara live. Di
+  perangkat pengujian kami, max frame time menyentuh 62.8 ms — jauh di
+  atas budget 16 ms untuk 60 fps. Banyak bar merah berarti banyak frame
+  jank yang terlihat patah-patah oleh user.
+- **Rebuild Rainbow** (widget rebuild visualizer) menggambar outline
+  berwarna setiap kali widget di-rebuild. Yang kami lihat: garis warna
+  menyala di hampir seluruh home screen, setiap detik. Itu artinya
+  countdown timer waktu subuh tidak hanya merebuild dirinya sendiri —
+  ia memicu rebuild seluruh tree di atasnya.
+
+<video
+  src="/portfolio/msp/02-overlay-jank.mp4"
+  poster="/portfolio/msp/02-overlay-jank.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 2. Iterasi 1 — `const` audit
+
+Langkah pertama adalah pekerjaan paling mendasar: audit setiap widget statis
+yang seharusnya bisa pakai `const` constructor. Widget `const` di Flutter
+direuse dari frame ke frame tanpa rebuild, jadi menambahkan `const` di
+tempat yang tepat menurunkan jumlah pekerjaan setiap frame secara signifikan.
+
+Hasil terlihat di overlay — frame time turun ke target 16 ms dan jank merah
+jauh berkurang. Tapi rebuild rainbow masih menunjukkan widget tree
+di-rebuild di area yang luas.
+
+<video
+  src="/portfolio/msp/03-const-and-encapsulate.mp4"
+  poster="/portfolio/msp/03-const-and-encapsulate.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 3. Iterasi 2 — encapsulate sections menjadi widget terpisah
+
+Berikutnya kami pisahkan setiap section home screen (header dengan jadwal
+shalat, statistik komunitas, daftar program, shortcut) ke dalam widget
+sendiri. Tujuannya: membatasi jangkauan setState supaya kalau ada satu
+section yang berubah, dia tidak menyeret rebuild ke section lain.
+
+Hasil: rebuild area menyempit, tapi countdown timer di dalam header masih
+memicu rebuild section header secara keseluruhan, termasuk widget yang
+seharusnya statis.
+
+### 4. Iterasi 3 — text-rotator dan countdown widget custom
+
+Inti masalah yang tersisa: paket text-rotator dan countdown yang dipakai
+kontraktor sebelumnya menggunakan setState di parent yang terlalu tinggi.
+Setiap detik, mereka memaksa parent rebuild, dan hasil rebuild itu menyebar
+ke semua child di section yang sama.
+
+Solusinya: kami bangun ulang dua widget itu dari nol. Widget text-rotator
+custom dan countdown custom buatan kami punya internal state yang sepenuhnya
+isolated — perubahan teks atau angka countdown tidak pernah memicu rebuild
+ke parent. Hanya widget yang berisi teks itu sendiri yang ikut rebuild.
+
+<video
+  src="/portfolio/msp/04-custom-widgets-isolated.mp4"
+  poster="/portfolio/msp/04-custom-widgets-isolated.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+### 5. Hasil akhir — bukti di overlay yang sama
+
+Kami menjalankan ulang aplikasi dengan Performance Overlay dan rebuild
+rainbow yang sama persis seperti di awal audit. Frame time stabil di bawah
+16 ms (target 60 fps tercapai). Rebuild rainbow hanya menyala di widget
+countdown sub-second — sisa home screen tetap statis di setiap frame.
+
+<video
+  src="/portfolio/msp/05-final-clean.mp4"
+  poster="/portfolio/msp/05-final-clean.jpg"
+  controls
+  muted
+  playsinline
+  preload="metadata"
+  class="w-full h-auto rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 my-6"
+></video>
+
+## Dampak
+
+Yang kami selesaikan bukan sekadar "aplikasi lebih cepat". Yang lebih
+penting: tim klien sekarang punya bukti objektif — di overlay yang sama —
+bahwa aplikasinya telah memenuhi standar performa Flutter yang umum dipakai
+di industri (frame budget 16 ms, isolated rebuild). Mereka juga punya
+artefak proses (rekaman screen + dokumentasi) yang dapat mereka jadikan
+checklist internal saat mengembangkan fitur baru atau mengaudit kontraktor
+lain di masa depan.
+
+Bagi Banua Coder, engagement ini adalah contoh nyata bagaimana Flutter
+performance debugging berbeda dari "menulis ulang aplikasi": kami tidak
+mengganti fitur, tidak meredesign UI, tidak mengubah arsitektur backend.
+Kami hanya membaca apa yang sudah ada secara objektif lewat tooling Flutter,
+mengidentifikasi sumber jank dan rebuild loop dengan presisi, dan
+memperbaikinya dengan intervention minimum.

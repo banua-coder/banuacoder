@@ -87,4 +87,10 @@ export const clients: Client[] = [
     tier: 'standard',
     context: 'Health/medical detection app',
   },
+  {
+    name: 'Masjid Sejuta Pemuda',
+    logo: '',
+    tier: 'standard',
+    context: 'Muslim youth community app — Flutter performance audit & fix engagement (2025)',
+  },
 ]
