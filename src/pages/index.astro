@@ -15,6 +15,7 @@ import CaseStudyCard from '../components/cards/CaseStudyCard.astro'
 import FounderCard from '../components/founder/FounderCard.astro'
 import FounderExperienceStrip from '../components/founder/FounderExperienceStrip.astro'
 import CTA from '../components/sections/CTA.astro'
+import WhyCarousel from '../components/sections/WhyCarousel.astro'
 import DeviceFrame from '../components/interactive/DeviceFrame.astro'
 import Testimonial from '../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
@@ -327,39 +328,15 @@ const orgSchema = {
       </section>
     )}
 
-    <!-- ⑤ Why Banua Coder -->
+    <!-- ⑤ Why Banua Coder (pinned scroll carousel) -->
     {why && (
-      <section
-        aria-labelledby="why-heading"
-        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
-        style="padding-block: var(--spacing-section-y)"
-        data-reveal
-      >
-        <Container>
-          <SectionHeader
-            eyebrow={why.eyebrow}
-            marker={why.marker}
-            title={why.title}
-            class="mb-12"
-          />
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" data-reveal-stagger>
-            {why.items.map((item) => (
-              <div class="flex flex-col gap-3">
-                <div class="w-8 h-px bg-bnc-accent" aria-hidden="true"></div>
-                <h3
-                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
-                  style="font-size: var(--fs-20)"
-                >
-                  {item.title}
-                </h3>
-                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-                  {item.body}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <WhyCarousel
+        eyebrow={why.eyebrow}
+        marker={why.marker}
+        title={why.title}
+        items={why.items}
+        lang="id"
+      />
     )}
 
     <!-- ⑥ Process -->
