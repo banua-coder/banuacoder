@@ -19,6 +19,15 @@ import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
 import Testimonial from '../../components/cards/Testimonial.astro'
 import { Image } from 'astro:assets'
 import heroPico from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
+
+const idealClientIcons: Record<string, typeof Coffee> = {
+  'coffee': Coffee,
+  'sparkles': Sparkles,
+  'landmark': Landmark,
+  'trending-up': TrendingUp,
+  'lightbulb': Lightbulb,
+}
 import heroCarwa from '../../content/portfolio/carwa/screenshots/screenshot-1.webp'
 
 // Load featured portfolio entries for EN locale
@@ -414,25 +423,30 @@ const orgSchema = {
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal-stagger>
-            {idealClients.items.map((item, i) => (
-              <div class:list={[
-                'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
-                'border-bnc-stone-200 dark:border-bnc-stone-800',
-                'bg-bnc-stone-50 dark:bg-bnc-stone-900',
-                i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
-              ]}>
-                <span class="font-mono text-xs text-bnc-accent tracking-widest">// {item.icon}</span>
-                <h3
-                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
-                  style="font-size: var(--fs-20)"
-                >
-                  {item.title}
-                </h3>
-                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
-                  {item.body}
-                </p>
-              </div>
-            ))}
+            {idealClients.items.map((item, i) => {
+              const IconComponent = idealClientIcons[item.icon] ?? ArrowRight
+              return (
+                <div class:list={[
+                  'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
+                  'border-bnc-stone-200 dark:border-bnc-stone-800',
+                  'bg-bnc-stone-50 dark:bg-bnc-stone-900',
+                  i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
+                ]}>
+                  <span class="inline-flex items-center justify-center w-10 h-10 rounded-[var(--radius-sm)] bg-bnc-paper dark:bg-bnc-ink text-bnc-primary dark:text-bnc-accent" aria-hidden="true">
+                    <IconComponent size={20} strokeWidth={1.75} />
+                  </span>
+                  <h3
+                    class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
+                    style="font-size: var(--fs-20)"
+                  >
+                    {item.title}
+                  </h3>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                    {item.body}
+                  </p>
+                </div>
+              )
+            })}
           </div>
         </Container>
       </section>
