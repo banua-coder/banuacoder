@@ -8,6 +8,7 @@
 import Logo from '../brand/Logo.astro'
 import LangSwitcher from '../interactive/LangSwitcher.astro'
 import ThemeToggle from '../interactive/ThemeToggle.astro'
+import MobileDrawer from './MobileDrawer.astro'
 
 const locale = Astro.currentLocale ?? 'id'
 const isEn = locale === 'en'
@@ -91,6 +92,9 @@ const navLinks = isEn
     </div>
   </nav>
 </header>
+
+<!-- Mobile drawer renders alongside the nav so the hamburger has something to open -->
+<MobileDrawer />
 
 <!-- Nav scroll-elevated state is wired in src/lib/animations.ts via [data-nav-scroll]
      so it survives Astro view transitions (re-init on astro:after-swap). -->

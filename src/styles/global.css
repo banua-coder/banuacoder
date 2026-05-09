@@ -118,6 +118,10 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: clip;
+  }
+
   html {
     font-family: var(--font-body);
     color: var(--color-bnc-ink);
