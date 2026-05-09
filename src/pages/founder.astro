@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets'
+import { ogUrl } from '../lib/og/url'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Nav from '../components/layout/Nav.astro'
 import Footer from '../components/layout/Footer.astro'
@@ -51,10 +52,12 @@ const engineeringPhilosophy = [
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': 'https://banuacoder.com/founder/#person',
   name: 'Fajrian Aidil Pratama',
   jobTitle: 'Founder & Director',
   worksFor: {
     '@type': 'Organization',
+    '@id': 'https://banuacoder.com/#organization',
     name: 'Banua Coder',
     url: 'https://banuacoder.com',
   },
@@ -62,17 +65,39 @@ const personSchema = {
   sameAs: [
     'https://linkedin.com/in/ryanaidilp',
     'https://twitter.com/ryanaidilp_',
+    'https://github.com/ryanaidilp',
+    'https://youtube.com/@banuacoder',
   ],
   description: 'Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development.',
-  knowsAbout: ['Mobile Engineering', 'Flutter', 'Platform Engineering', 'Product Development', 'Digital Systems'],
+  knowsAbout: [
+    'Mobile Engineering',
+    'Flutter',
+    'Platform Engineering',
+    'Product Development',
+    'Digital Systems',
+    'Laravel',
+    'Public Sector Digitalization',
+  ],
+  nationality: 'Indonesia',
+}
+
+const founderBreadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://banuacoder.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Founder', item: 'https://banuacoder.com/founder/' },
+  ],
 }
 ---
 
 <BaseLayout
   title="Fajrian Aidil Pratama — Founder, Banua Coder"
   description="Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development."
+  ogImage={ogUrl('founder')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(founderBreadcrumbSchema)} />
 
   <a
     href="#main-content"
@@ -145,6 +170,8 @@ const personSchema = {
                 height={60}
                 class="opacity-15"
                 aria-hidden="true"
+                loading="eager"
+                decoding="async"
               />
               <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-center px-4">
                 // foto founder
@@ -190,6 +217,8 @@ const personSchema = {
                 width={400}
                 class="w-full object-cover"
                 style="max-height: 320px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </aside>
@@ -311,6 +340,8 @@ const personSchema = {
                 alt={alt}
                 width={160}
                 class="block opacity-85 grayscale-[20%]"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

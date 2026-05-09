@@ -1,4 +1,5 @@
 ---
+import { ogUrl } from '../../lib/og/url'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
 import Footer from '../../components/layout/Footer.astro'
@@ -13,6 +14,7 @@ const calendlyUrl = whatsappUrl // placeholder — founder can replace with Cale
 <BaseLayout
   title="Contact Banua Coder — Software House, Palu, Central Sulawesi"
   description="Got an idea, a system need, or a business process you want to streamline? Let's discuss what you need with Banua Coder."
+  ogImage={ogUrl('en-contact')}
 >
   <a
     href="#main-content"

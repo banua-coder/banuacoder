@@ -19,6 +19,13 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => !page.includes('/dev/'),
+      i18n: {
+        defaultLocale: 'id',
+        locales: {
+          id: 'id-ID',
+          en: 'en-US',
+        },
+      },
     }),
   ],
   vite: { plugins: [/** @type {any} */ (tailwindcss())] },

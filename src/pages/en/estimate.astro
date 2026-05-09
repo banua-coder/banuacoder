@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import Nav from '../../components/layout/Nav.astro'
 import Footer from '../../components/layout/Footer.astro'
@@ -55,8 +56,9 @@ const howToSchema = {
 ---
 
 <BaseLayout
-  title="Project Cost Estimate — Banua Coder"
+  title="Project Cost Estimate — Mobile App, Web, Internal Systems · Banua Coder"
   description="Get an initial cost range for your digital project in 1 minute. Free, no commitment."
+  ogImage={ogUrl('en-estimate')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
 

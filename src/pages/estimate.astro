@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../lib/og/url'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Nav from '../components/layout/Nav.astro'
 import Footer from '../components/layout/Footer.astro'
@@ -49,8 +50,9 @@ const howToSchema = {
 ---
 
 <BaseLayout
-  title="Estimasi Biaya Proyek — Banua Coder"
+  title="Estimasi Biaya Proyek — Aplikasi Mobile, Web, Sistem Internal · Banua Coder"
   description="Dapatkan kisaran biaya awal untuk proyek digital Anda dalam 1 menit. Gratis, tanpa komitmen."
+  ogImage={ogUrl('estimate')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
 

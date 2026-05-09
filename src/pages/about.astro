@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import { ogUrl } from '../lib/og/url'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Nav from '../components/layout/Nav.astro'
 import Footer from '../components/layout/Footer.astro'
@@ -74,12 +75,23 @@ const howWeWork = [
     desc: 'Partnership jangka panjang, bukan sekadar hand-off. Kami tetap ada untuk maintenance, iterasi, dan pertumbuhan produk.',
   },
 ]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://banuacoder.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Tentang Kami', item: 'https://banuacoder.com/about/' },
+  ],
+}
 ---
 
 <BaseLayout
   title="Tentang Banua Coder — Software House Engineering-Led di Sulawesi Tengah"
   description="Banua Coder adalah partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan, terstruktur, dan siap berkembang."
+  ogImage={ogUrl('about')}
 >
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
   <a
     href="#main-content"
     class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
@@ -157,6 +169,8 @@ const howWeWork = [
                 width={600}
                 class="w-full object-cover"
                 style="max-height: 320px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div
@@ -251,6 +265,8 @@ const howWeWork = [
               width={600}
               class="w-full object-cover"
               style="max-height: 400px"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
@@ -286,6 +302,8 @@ const howWeWork = [
                 height={64}
                 class="w-16 h-16 opacity-20"
                 aria-hidden="true"
+                loading="lazy"
+                decoding="async"
               />
             </div>
             <div class="flex flex-col gap-3 flex-1">
@@ -351,6 +369,8 @@ const howWeWork = [
                   width={32}
                   height={32}
                   class="w-8 h-8 opacity-20"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div>
