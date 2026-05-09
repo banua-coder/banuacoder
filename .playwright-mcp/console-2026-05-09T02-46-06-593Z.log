@@ -1,3 +1,0 @@
-[     763ms] [ERROR] Framing 'https://www.google.com/' violates the following report-only Content Security Policy directive: "frame-ancestors 'self'". The violation has been logged, but no further action has been taken.
- @ :0
-[    6670ms] [ERROR] Failed to load resource: net::ERR_CERT_DATE_INVALID @ https://assets.zero-one-group.com/videos/clear-video-desktop.mp4:0

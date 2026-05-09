@@ -38,3 +38,4 @@ docs/
 
 # CodeGraph local index
 .codegraph/
+.playwright-mcp/
