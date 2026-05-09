@@ -75,6 +75,15 @@ const howWeWork = [
     desc: 'Long-term partnership, not just a hand-off. We stay available for maintenance, iteration, and product growth.',
   },
 ]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://banuacoder.com/en/' },
+    { '@type': 'ListItem', position: 2, name: 'About', item: 'https://banuacoder.com/en/about/' },
+  ],
+}
 ---
 
 <BaseLayout
@@ -82,6 +91,8 @@ const howWeWork = [
   description="Banua Coder is a technology partner that helps businesses and organizations build relevant, structured, and growth-ready digital solutions."
   ogImage={ogUrl('en-about')}
 >
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+
   <a
     href="#main-content"
     class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
