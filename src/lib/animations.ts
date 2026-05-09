@@ -458,6 +458,88 @@ export function initAnimations(): () => void {
       }
     }
 
+    // ── Services 2-card slide-in ─────────────────────────────────────────────
+    // The two service preview cards slide in from opposite sides with a
+    // touch of 3D rotation Y for depth, alternating: Build & Engineer
+    // comes from the left tilted away, Brand & Grow from the right.
+    const servicesGrid = document.querySelector<HTMLElement>('[data-tell-services]')
+    const servicesCards = servicesGrid
+      ? Array.from(servicesGrid.querySelectorAll<HTMLElement>('[data-tell-services-card]'))
+      : []
+    if (servicesGrid && servicesCards.length) {
+      servicesCards.forEach((card, i) => {
+        const fromX = i % 2 === 0 ? -120 : 120
+        const fromRotY = i % 2 === 0 ? -25 : 25
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: fromX, rotationY: fromRotY, scale: 0.95 },
+          {
+            opacity: 1,
+            x: 0,
+            rotationY: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: i * 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: servicesGrid,
+              start: 'top 82%',
+              once: true,
+            },
+          },
+        )
+      })
+    }
+
+    // ── Public-sector bullets cascade ────────────────────────────────────────
+    // Each bullet slides in from the left with the arrow scaling up — gives
+    // the bullet list a sense of progressive proof rather than a wall of
+    // text dumping in at once.
+    const publicBulletsList = document.querySelector<HTMLElement>('[data-tell-public-bullets]')
+    const publicBullets = publicBulletsList
+      ? Array.from(publicBulletsList.querySelectorAll<HTMLElement>('[data-tell-public-bullet]'))
+      : []
+    if (publicBulletsList && publicBullets.length) {
+      gsap.fromTo(
+        publicBullets,
+        { opacity: 0, x: -24 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: publicBulletsList,
+            start: 'top 88%',
+            once: true,
+          },
+        },
+      )
+      // Pulse the arrow span on each bullet so it feels like a list of
+      // proof points being checked off in sequence.
+      publicBullets.forEach((li, i) => {
+        const arrow = li.querySelector<HTMLElement>('span[aria-hidden="true"]')
+        if (!arrow) return
+        gsap.fromTo(
+          arrow,
+          { scale: 0, rotation: -90 },
+          {
+            scale: 1,
+            rotation: 0,
+            duration: 0.4,
+            delay: i * 0.08 + 0.05,
+            ease: 'back.out(2)',
+            scrollTrigger: {
+              trigger: publicBulletsList,
+              start: 'top 88%',
+              once: true,
+            },
+          },
+        )
+      })
+    }
+
     // ── Ideal-clients tile burst-in ──────────────────────────────────────────
     // Tiles cascade from a slight rotation + scale + y offset, one after the
     // next as the section enters viewport. Each tile gets a tiny lingering

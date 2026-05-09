@@ -369,11 +369,12 @@ const orgSchema = {
             description={services.description}
             class="mb-12"
           />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-stagger>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-tell-services>
             <!-- Build & Engineer -->
             <a
               href="/en/services/#build"
               class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
             >
               <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Build & Engineer</p>
               <h3
@@ -399,6 +400,7 @@ const orgSchema = {
             <a
               href="/en/services/#grow"
               class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
             >
               <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Brand & Grow</p>
               <h3
@@ -544,9 +546,9 @@ const orgSchema = {
               </h2>
             </div>
             <div>
-              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list">
+              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list" data-tell-public-bullets>
                 {publicSector.bullets.map((bullet) => (
-                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed" data-tell-public-bullet>
                     <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
                     {bullet}
                   </li>
