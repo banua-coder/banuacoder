@@ -23,6 +23,26 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 2, name: 'Portfolio', item: 'https://banuacoder.com/en/portfolio/' },
   ],
 }
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Banua Coder Portfolio',
+  url: 'https://banuacoder.com/en/portfolio/',
+  numberOfItems: projects.length,
+  itemListElement: projects.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.data.title,
+    url: `https://banuacoder.com/en/portfolio/${p.data.slug}/`,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      description: p.data.summary,
+      url: `https://banuacoder.com/en/portfolio/${p.data.slug}/`,
+    },
+  })),
+}
 ---
 
 <BaseLayout
@@ -31,6 +51,7 @@ const breadcrumbSchema = {
   ogImage={ogUrl('en-portfolio')}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(itemListSchema)} />
 
   <a
     href="#main-content"
