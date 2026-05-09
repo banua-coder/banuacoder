@@ -15,6 +15,7 @@ export type Client = {
 // - pemprov-sulsel.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_South_Sulawesi.svg — Public domain (PD-IDGov).
 // - brantas-inti-utama.png: extracted from Patonro/Lontara app splash branding asset (cropped + trimmed via ImageMagick from app's flutter_native_splash branding.png). Nominative fair use — partner is credited on Patonro/Lontara case studies.
 // - klinikgo.png: source https://klinikgo.com/logo-klinikgo.png — nominative fair use for client identification (mobile app partnership).
+// - bps.svg: https://commons.wikimedia.org/wiki/File:Lambang_Badan_Pusat_Statistik_(BPS)_Indonesia.svg — Public domain (PD-IDGov). Covers Banua Coder's BPS engagements: performance metrics, SE scrapper, bps_sso_sdk, form_gear_engine_sdk, form gear builder.
 //
 // NOTE: Dinas BMPR Sulteng deliberately omitted from the home trust strip — it
 // shares the same parent-province emblem as Pemprov Sulteng so two adjacent
@@ -65,5 +66,12 @@ export const clients: Client[] = [
     logo: 'pemprov-sulsel.svg',
     tier: 'standard',
     context: 'Province-scale regional tax services (Lontara)',
+  },
+  {
+    name: 'Badan Pusat Statistik (BPS) Republik Indonesia',
+    logo: 'bps.svg',
+    url: 'https://www.bps.go.id',
+    tier: 'featured',
+    context: 'National statistics agency — performance metrics, SE scrapper, BPS SSO SDK, FormGear engine + builder',
   },
 ]

@@ -74,32 +74,24 @@ type Slot = {
 }
 
 const slots: Slot[] = [
-  // top-left → drifts further NW
-  { logoFile: 'ulearna.png',            fromX: 15, fromY: 18, toX:  5, toY: 13, enter: 0.00, exit: 0.30 },
-  // top-right → drifts NE
-  { logoFile: 'pemprov-sulteng.svg',    fromX: 85, fromY: 22, toX: 95, toY: 17, enter: 0.06, exit: 0.36 },
-  // bottom-left → drifts SW
-  { logoFile: 'brantas-inti-utama.png', fromX: 10, fromY: 78, toX:  3, toY: 88, enter: 0.12, exit: 0.42 },
-  // bottom-right → drifts SE
-  { logoFile: 'pemkab-gowa.png',        fromX: 88, fromY: 82, toX: 96, toY: 92, enter: 0.18, exit: 0.48 },
-  // top-mid-left → drifts up + left
-  { logoFile: 'pemprov-sulsel.svg',     fromX: 42, fromY: 10, toX: 32, toY:  6, enter: 0.24, exit: 0.54 },
-  // bottom-mid-right → drifts down + right
-  { logoFile: 'klinikgo.png',           fromX: 58, fromY: 88, toX: 70, toY: 94, enter: 0.30, exit: 0.60 },
-  // mid-far-left → drifts further off-screen left
-  { logoFile: 'pemkab-donggala.png',    fromX:  8, fromY: 48, toX: -2, toY: 53, enter: 0.36, exit: 0.66 },
-  // mid-far-right → drifts further right
-  { logoFile: 'ulearna.png',            fromX: 92, fromY: 52, toX: 102, toY: 47, enter: 0.42, exit: 0.72 },
-  // top-right-2 → drifts NE
-  { logoFile: 'brantas-inti-utama.png', fromX: 72, fromY: 14, toX: 82, toY: 10, enter: 0.48, exit: 0.78 },
-  // bottom-left-2 → drifts SW
-  { logoFile: 'pemkab-donggala.png',    fromX: 28, fromY: 86, toX: 18, toY: 92, enter: 0.54, exit: 0.84 },
-  // bottom-right-2 → drifts SE (no exit, anchors the end)
-  { logoFile: 'pemprov-sulteng.svg',    fromX: 78, fromY: 78, toX: 86, toY: 86, enter: 0.60 },
-  // top-left-2 → drifts NW
-  { logoFile: 'klinikgo.png',           fromX: 22, fromY: 18, toX: 14, toY: 13, enter: 0.66 },
-  // bottom-mid → drifts down + slight right
-  { logoFile: 'pemprov-sulsel.svg',     fromX: 50, fromY: 88, toX: 56, toY: 94, enter: 0.72 },
+  // Each slot EMERGES from near/behind the headline (fromX/Y close to center)
+  // and DRIFTS OUTWARD to a more peripheral position as it fades — so logos
+  // feel like they're appearing from behind the text, then radiating away.
+  { logoFile: 'ulearna.png',            fromX: 45, fromY: 42, toX: 15, toY: 18, enter: 0.00, exit: 0.28 },
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 55, fromY: 42, toX: 85, toY: 18, enter: 0.05, exit: 0.33 },
+  { logoFile: 'brantas-inti-utama.png', fromX: 45, fromY: 58, toX: 15, toY: 82, enter: 0.10, exit: 0.38 },
+  { logoFile: 'bps.svg',                fromX: 55, fromY: 58, toX: 85, toY: 82, enter: 0.15, exit: 0.43 },
+  { logoFile: 'pemkab-gowa.png',        fromX: 50, fromY: 35, toX: 50, toY: 12, enter: 0.20, exit: 0.48 },
+  { logoFile: 'pemprov-sulsel.svg',     fromX: 50, fromY: 65, toX: 50, toY: 88, enter: 0.25, exit: 0.53 },
+  { logoFile: 'klinikgo.png',           fromX: 35, fromY: 50, toX:  8, toY: 50, enter: 0.30, exit: 0.58 },
+  { logoFile: 'pemkab-donggala.png',    fromX: 65, fromY: 50, toX: 92, toY: 50, enter: 0.35, exit: 0.63 },
+  { logoFile: 'bps.svg',                fromX: 40, fromY: 38, toX: 22, toY: 22, enter: 0.40, exit: 0.68 },
+  { logoFile: 'ulearna.png',            fromX: 60, fromY: 62, toX: 78, toY: 78, enter: 0.45, exit: 0.73 },
+  { logoFile: 'brantas-inti-utama.png', fromX: 38, fromY: 60, toX: 18, toY: 78, enter: 0.50, exit: 0.78 },
+  // Last 3: emerge dead-centre behind the headline, anchor through end-of-section
+  { logoFile: 'pemprov-sulteng.svg',    fromX: 48, fromY: 48, toX: 35, toY: 25, enter: 0.56 },
+  { logoFile: 'klinikgo.png',           fromX: 52, fromY: 52, toX: 65, toY: 75, enter: 0.62 },
+  { logoFile: 'bps.svg',                fromX: 50, fromY: 50, toX: 60, toY: 28, enter: 0.68 },
 ]
 ---
 
@@ -142,21 +134,19 @@ const slots: Slot[] = [
             data-cell-enter={slot.enter}
             data-cell-exit={slot.exit ?? ''}
           >
-            <div class="flex items-center justify-center px-5 py-4 rounded-[var(--radius-md)] border border-bnc-stone-200/70 dark:border-bnc-stone-800/70 bg-bnc-paper/95 dark:bg-bnc-stone-900/95 shadow-sm backdrop-blur-sm">
-              {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt={client.name}
-                  loading="lazy"
-                  decoding="async"
-                  class="h-12 sm:h-14 w-auto max-w-[140px] object-contain"
-                />
-              ) : (
-                <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
-                  {client.name}
-                </span>
-              )}
-            </div>
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={client.name}
+                loading="lazy"
+                decoding="async"
+                class="client-cycle-logo h-16 sm:h-20 w-auto max-w-[180px] object-contain"
+              />
+            ) : (
+              <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
+                {client.name}
+              </span>
+            )}
           </div>
         )
       })}
@@ -165,6 +155,15 @@ const slots: Slot[] = [
 </section>
 
 <style>
+  /* Dark theme: render every logo as a flat white silhouette so the cycle
+     reads as luminous shapes against the ink background — matches the ZOG
+     visual treatment. Light theme keeps the natural brand/coat-of-arms
+     colours (mostly multi-coloured emblems already legible on the paper bg).
+     `brightness(0)` collapses to pure black, then `invert(1)` flips to white. */
+  :global(html.dark) .client-cycle-logo {
+    filter: brightness(0) invert(1);
+  }
+
   /* Reduced-motion: collapse the 300vh scroll space and show all logos
      statically as a centered wrap row beneath the headline. */
   @media (prefers-reduced-motion: reduce) {
