@@ -45,26 +45,85 @@ const featuredTestimonial = allTestimonials.find(
   (t) => t.data.featured && t.data.locale === 'id',
 )
 
-// JSON-LD Organization schema
+// JSON-LD Organization schema — extended per M7 schema audit
 const orgSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Banua Coder',
-  url: 'https://banuacoder.com',
-  logo: 'https://banuacoder.com/favicon.svg',
-  sameAs: [
-    'https://linkedin.com/company/banuacoder',
-    'https://github.com/banuacoder',
-    'https://instagram.com/banuacoder',
+  '@graph': [
+    {
+      '@type': ['Organization', 'ProfessionalService'],
+      '@id': 'https://banuacoder.com/#organization',
+      name: 'Banua Coder',
+      url: 'https://banuacoder.com',
+      logo: 'https://banuacoder.com/favicon.svg',
+      sameAs: [
+        'https://linkedin.com/company/banuacoder',
+        'https://github.com/banua-coder',
+        'https://instagram.com/banuacoder',
+        'https://youtube.com/@banuacoder',
+      ],
+      foundingDate: '2019',
+      description:
+        'Partner teknologi engineering-led yang membantu bisnis F&B, brand kecantikan, dan pemerintah daerah membangun solusi digital yang relevan dan siap berkembang.',
+      slogan: 'Engineering-led. Built to last.',
+      priceRange: '$$',
+      email: 'hello@banuacoder.com',
+      telephone: '+6287784808269',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Palu',
+        addressRegion: 'Sulawesi Tengah',
+        postalCode: '94111',
+        addressCountry: 'ID',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: -0.8917,
+        longitude: 119.8707,
+      },
+      areaServed: [
+        { '@type': 'Country', name: 'Indonesia' },
+        { '@type': 'City', name: 'Palu' },
+        { '@type': 'AdministrativeArea', name: 'Sulawesi Tengah' },
+        'ID',
+      ],
+      knowsAbout: [
+        'Mobile App Development',
+        'Flutter',
+        'Laravel',
+        'Public Sector Digitalization',
+        'Membership Systems',
+        'F&B Technology',
+        'Operational Systems',
+        'UI/UX Design',
+      ],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        telephone: '+6287784808269',
+        availableLanguage: ['Indonesian', 'English'],
+        hoursAvailable: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: '09:00',
+          closes: '17:00',
+        },
+      },
+      founder: {
+        '@type': 'Person',
+        '@id': 'https://banuacoder.com/founder/#person',
+        name: 'Fajrian Aidil Pratama',
+        url: 'https://banuacoder.com/founder/',
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://banuacoder.com/#website',
+      url: 'https://banuacoder.com',
+      name: 'Banua Coder',
+      inLanguage: ['id', 'en'],
+      publisher: { '@id': 'https://banuacoder.com/#organization' },
+    },
   ],
-  foundingDate: '2019',
-  description:
-    'Partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan.',
-  address: {
-    '@type': 'PostalAddress',
-    addressRegion: 'Sulawesi Tengah',
-    addressCountry: 'ID',
-  },
 }
 ---
 
