@@ -145,8 +145,11 @@ export function initAnimations(): () => void {
       : []
 
     if (cycleSection && batches.length) {
+      // Initial: first batch visible (so the section ANCHORS from scroll 0),
+      // remaining batches hidden. Cells for first batch start sharp.
       gsap.set(batches, { autoAlpha: 0 })
-      gsap.set('.client-cycle-cell', { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.5 })
+      gsap.set(batches[0], { autoAlpha: 1 })
+      gsap.set('.client-cycle-cell', { filter: 'blur(0px) grayscale(0)', autoAlpha: 1, scale: 1 })
 
       const cycleTl = gsap.timeline({
         scrollTrigger: {
@@ -157,18 +160,56 @@ export function initAnimations(): () => void {
         },
       })
 
+      // Each batch occupies 1 unit of timeline; batches overlap by 0.15 for smooth handoff.
+      // Phase per batch (within its 1.0 unit slot, starting at t = i):
+      //   0.00 - 0.10  show container (instant)
+      //   0.10 - 0.30  unblur cells with stagger (entrance)
+      //   0.30 - 0.65  HOLD CLEAR — cells fully sharp (longest phase)
+      //   0.65 - 0.85  blur out
+      //   0.85 - 1.00  hide container (next batch starts before this finishes)
       batches.forEach((batch, i) => {
         const cells = Array.from(batch.querySelectorAll<HTMLElement>('.client-cycle-cell'))
-        cycleTl
-          .to(batch, { autoAlpha: 1, duration: 0.2 }, i)
-          .fromTo(
-            cells,
-            { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.4 },
-            { filter: 'blur(0px) grayscale(0)', autoAlpha: 1, stagger: 0.06, duration: 0.6 },
-            i + 0.1,
-          )
-          .to(cells, { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.4, duration: 0.4 }, i + 0.65)
-          .to(batch, { autoAlpha: 0, duration: 0.2 }, i + 0.9)
+        const t = i * 0.85 // overlap each subsequent batch
+
+        // For the first batch, skip the entrance — it's already visible/clear from gsap.set above
+        if (i > 0) {
+          cycleTl
+            .to(batch, { autoAlpha: 1, duration: 0.05 }, t + 0.05)
+            .fromTo(
+              cells,
+              { filter: 'blur(20px) grayscale(1)', autoAlpha: 0, scale: 0.9 },
+              {
+                filter: 'blur(0px) grayscale(0)',
+                autoAlpha: 1,
+                scale: 1,
+                stagger: 0.04,
+                duration: 0.25,
+                ease: 'power2.out',
+              },
+              t + 0.1,
+            )
+        }
+
+        // Hold clear (visible at full clarity for the bulk of the slot)
+        cycleTl.to(cells, { duration: 0.4, autoAlpha: 1 }, t + 0.3)
+
+        // Blur out (don't run on the LAST batch — let it stay visible until end of section)
+        if (i < batches.length - 1) {
+          cycleTl
+            .to(
+              cells,
+              {
+                filter: 'blur(20px) grayscale(1)',
+                autoAlpha: 0,
+                scale: 0.95,
+                stagger: 0.03,
+                duration: 0.2,
+                ease: 'power2.in',
+              },
+              t + 0.65,
+            )
+            .to(batch, { autoAlpha: 0, duration: 0.05 }, t + 0.9)
+        }
       })
     }
 

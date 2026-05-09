@@ -45,25 +45,26 @@ const byLogo = Object.fromEntries(clients.map((c) => [c.logo, c]))
 
 /**
  * Each batch entry: { logoFile, col (1-5), row (1-5) }
- * Positions restricted to the outer ring so logos scatter around the headline.
- * Inner 3×3 (cols 2-4, rows 2-4) is intentionally empty.
+ * Logos placed across the grid avoiding the central 3×3 reserved for the headline.
+ * Used cells: top row (1) full, bottom row (5) full, plus rows 2 + 4 columns 1 & 5.
+ * This gives a ring of ~10 visible positions per batch with the headline anchoring center.
  */
 type Cell = { logoFile: string; col: number; row: number }
 
 const batch1: Cell[] = [
   { logoFile: 'ulearna.png', col: 1, row: 1 },
+  { logoFile: 'pemprov-sulteng.svg', col: 3, row: 1 },
   { logoFile: 'brantas-inti-utama.png', col: 5, row: 1 },
-  { logoFile: 'pemprov-sulteng.svg', col: 1, row: 3 },
-  { logoFile: 'pemkab-gowa.png', col: 5, row: 3 },
-  { logoFile: 'pemprov-sulsel.svg', col: 3, row: 5 },
+  { logoFile: 'pemkab-gowa.png', col: 1, row: 5 },
+  { logoFile: 'pemprov-sulsel.svg', col: 5, row: 5 },
 ]
 
 const batch2: Cell[] = [
-  { logoFile: 'pemprov-sulteng.svg', col: 3, row: 1 },
-  { logoFile: 'ulearna.png', col: 1, row: 5 },
+  { logoFile: 'pemprov-sulteng.svg', col: 1, row: 1 },
+  { logoFile: 'pemkab-gowa.png', col: 5, row: 1 },
+  { logoFile: 'pemprov-sulsel.svg', col: 1, row: 5 },
+  { logoFile: 'ulearna.png', col: 3, row: 5 },
   { logoFile: 'brantas-inti-utama.png', col: 5, row: 5 },
-  { logoFile: 'pemkab-gowa.png', col: 1, row: 2 },
-  { logoFile: 'pemprov-sulsel.svg', col: 5, row: 2 },
 ]
 
 const batches = [batch1, batch2]
@@ -108,20 +109,20 @@ const batches = [batch1, batch2]
             const logoUrl = logoUrls[cell.logoFile]
             return (
               <div
-                class="client-cycle-cell flex items-center justify-center p-4"
+                class="client-cycle-cell flex items-center justify-center p-2"
                 style={`grid-column: ${cell.col}; grid-row: ${cell.row};`}
               >
-                <div class="flex items-center justify-center px-3 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900">
+                <div class="flex items-center justify-center px-5 py-4 rounded-[var(--radius-md)] border border-bnc-stone-200/70 dark:border-bnc-stone-800/70 bg-bnc-paper/95 dark:bg-bnc-stone-900/95 shadow-sm backdrop-blur-sm">
                   {logoUrl ? (
                     <img
                       src={logoUrl}
                       alt={client.name}
                       loading="lazy"
                       decoding="async"
-                      class="h-8 w-auto max-w-[100px] object-contain"
+                      class="h-12 sm:h-14 w-auto max-w-[140px] object-contain"
                     />
                   ) : (
-                    <span class="font-mono text-xs font-medium uppercase tracking-wider text-bnc-stone-600 dark:text-bnc-stone-400 whitespace-nowrap">
+                    <span class="font-mono text-sm font-medium uppercase tracking-wider text-bnc-stone-700 dark:text-bnc-stone-300 whitespace-nowrap">
                       {client.name}
                     </span>
                   )}
