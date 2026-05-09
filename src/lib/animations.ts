@@ -1,5 +1,5 @@
 /**
- * animations.ts — GSAP + ScrollTrigger micro-interactions for Banua Coder.
+ * animations.ts — GSAP + ScrollTrigger + Lenis micro-interactions for Banua Coder.
  * Single entry point replacing vanilla IntersectionObserver scroll-reveal,
  * RAF-based magnetic, and manual counter animation.
  *
@@ -10,6 +10,7 @@
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Lenis from 'lenis'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -17,6 +18,22 @@ export function initAnimations(): () => void {
   const mm = gsap.matchMedia()
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
+    // ── Lenis smooth scroll ───────────────────────────────────────────────────
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      autoRaf: false,
+    })
+
+    // Drive lenis via gsap ticker so they share the same frame loop
+    const lenisRaf = (time: number) => lenis.raf(time * 1000)
+    gsap.ticker.add(lenisRaf)
+    gsap.ticker.lagSmoothing(0)
+
+    // Tell ScrollTrigger to use lenis scroll events for updates
+    lenis.on('scroll', ScrollTrigger.update)
+
     // ── Scroll-reveal sections ────────────────────────────────────────────────
     gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((el) => {
       gsap.from(el, {
@@ -119,6 +136,86 @@ export function initAnimations(): () => void {
           scrub: 0.5,
         },
       })
+    }
+
+    // ── Pinned client logo cycle ──────────────────────────────────────────────
+    const cycleSection = document.querySelector<HTMLElement>('.client-cycle')
+    const batches = cycleSection
+      ? Array.from(cycleSection.querySelectorAll<HTMLElement>('.client-cycle-batch'))
+      : []
+
+    if (cycleSection && batches.length) {
+      gsap.set(batches, { autoAlpha: 0 })
+      gsap.set('.client-cycle-cell', { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.5 })
+
+      const cycleTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: cycleSection,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.8,
+        },
+      })
+
+      batches.forEach((batch, i) => {
+        const cells = Array.from(batch.querySelectorAll<HTMLElement>('.client-cycle-cell'))
+        cycleTl
+          .to(batch, { autoAlpha: 1, duration: 0.2 }, i)
+          .fromTo(
+            cells,
+            { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.4 },
+            { filter: 'blur(0px) grayscale(0)', autoAlpha: 1, stagger: 0.06, duration: 0.6 },
+            i + 0.1,
+          )
+          .to(cells, { filter: 'blur(30px) grayscale(1)', autoAlpha: 0.4, duration: 0.4 }, i + 0.65)
+          .to(batch, { autoAlpha: 0, duration: 0.2 }, i + 0.9)
+      })
+    }
+
+    // ── Pinned why-carousel ───────────────────────────────────────────────────
+    const whySection = document.querySelector<HTMLElement>('.why-carousel')
+    const whyTiles = whySection
+      ? Array.from(whySection.querySelectorAll<HTMLElement>('.why-tile'))
+      : []
+    const whyDots = whySection
+      ? Array.from(whySection.querySelectorAll<HTMLElement>('.why-dot'))
+      : []
+
+    if (whySection && whyTiles.length) {
+      gsap.set(whyTiles, { autoAlpha: 0, y: 40 })
+      gsap.set(whyTiles[0], { autoAlpha: 1, y: 0 })
+      if (whyDots.length) {
+        gsap.set(whyDots, { opacity: 0.3 })
+        gsap.set(whyDots[0], { opacity: 1 })
+      }
+
+      const whyTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: whySection,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.6,
+        },
+      })
+
+      whyTiles.forEach((tile, i) => {
+        if (i === 0) return
+        const prev = whyTiles[i - 1]
+        whyTl
+          .to(prev, { autoAlpha: 0, y: -40, duration: 0.3 }, i)
+          .fromTo(tile, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.3 }, i + 0.1)
+        if (whyDots.length) {
+          whyTl
+            .to(whyDots[i - 1], { opacity: 0.3, duration: 0.2 }, i)
+            .to(whyDots[i], { opacity: 1, duration: 0.2 }, i + 0.1)
+        }
+      })
+    }
+
+    return () => {
+      // Cleanup lenis when matchMedia reverts (e.g. user enables reduced-motion)
+      gsap.ticker.remove(lenisRaf)
+      lenis.destroy()
     }
   })
 
