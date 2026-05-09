@@ -91,8 +91,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const GET: APIRoute = async ({ props }) => {
   const { title, pageType } = props as { title: string; pageType: OGPageType }
-  const png = await generateOGImage({ title, pageType, dark: true })
-  return new Response(png, {
+  const pngBuffer = await generateOGImage({ title, pageType, dark: true })
+  return new Response(new Uint8Array(pngBuffer), {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',

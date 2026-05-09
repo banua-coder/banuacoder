@@ -2,30 +2,41 @@
  * Build-time OG image generator using Satori + @resvg/resvg-js
  * Produces 1200×630 PNG for each route.
  *
- * Font files are loaded once (module-level) so multiple calls amortise I/O.
+ * Fonts must be TTF (not woff2) for Satori's opentype.js parser.
+ * Bundled TTF files are stored in src/assets/fonts/ — downloaded once
+ * from Google Fonts (Inter v20, Geist v4, latin subset, weight 400).
  */
 import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { join, dirname } from 'node:path'
+import { join } from 'node:path'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const rootDir = join(__dirname, '..', '..', '..')
+// ── Fonts — TTF required by Satori's opentype.js ───────────────────────────
+// Fonts live in public/fonts/ so they are always copied to dist/fonts/
+// during the static build. At prerender time Astro's cwd is the project root,
+// so `dist/fonts/` resolves correctly.
+//
+// During dev / check, process.cwd() is also the project root → same path.
+function readFontFile(name: string): Buffer {
+  // After build Astro prerenders from project root; dist/fonts/ has the files.
+  // During the two-pass Vite build the font file is also available there.
+  // Fallback: public/fonts/ for when dist/ hasn't been populated yet.
+  const candidates = [
+    join(process.cwd(), 'dist', 'fonts', name),
+    join(process.cwd(), 'public', 'fonts', name),
+  ]
+  for (const p of candidates) {
+    try {
+      return readFileSync(p)
+    } catch {
+      // try next
+    }
+  }
+  throw new Error(`Font file not found: ${name}. Checked: ${candidates.join(', ')}`)
+}
 
-// ── Fonts ──────────────────────────────────────────────────────────────────
-const geistFont = readFileSync(
-  join(
-    rootDir,
-    'node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2',
-  ),
-)
-const interFont = readFileSync(
-  join(
-    rootDir,
-    'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
-  ),
-)
+const geistFont = readFontFile('geist-latin-400.ttf')
+const interFont = readFontFile('inter-latin-400.ttf')
 
 // ── Brand colours ─────────────────────────────────────────────────────────
 const INK = '#0A0E14'
