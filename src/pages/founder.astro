@@ -170,6 +170,8 @@ const founderBreadcrumbSchema = {
                 height={60}
                 class="opacity-15"
                 aria-hidden="true"
+                loading="eager"
+                decoding="async"
               />
               <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-center px-4">
                 // foto founder
@@ -215,6 +217,8 @@ const founderBreadcrumbSchema = {
                 width={400}
                 class="w-full object-cover"
                 style="max-height: 320px"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </aside>
@@ -336,6 +340,8 @@ const founderBreadcrumbSchema = {
                 alt={alt}
                 width={160}
                 class="block opacity-85 grayscale-[20%]"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           ))}

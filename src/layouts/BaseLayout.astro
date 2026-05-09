@@ -6,12 +6,15 @@ interface Props {
   title: string
   description?: string
   ogImage?: string
+  /** Set to false only for noindex pages like /dev/components */
+  indexable?: boolean
 }
 
 const {
   title,
   description = 'Banua Coder — Technology partner for websites, apps, and operational systems.',
   ogImage = '/og-default.png',
+  indexable = true,
 } = Astro.props
 
 const locale = Astro.currentLocale ?? 'id'
@@ -23,6 +26,10 @@ const idPath = isEn ? currentPath.replace(/^\/en/, '') || '/' : currentPath
 const enPath = isEn ? currentPath : `/en${currentPath === '/' ? '' : currentPath}`
 const idUrl = new URL(idPath, Astro.site).href
 const enUrl = new URL(enPath, Astro.site).href
+
+// Detect /dev/ routes to force noindex
+const isDevRoute = currentPath.startsWith('/dev/')
+const shouldIndex = indexable && !isDevRoute
 ---
 
 <!doctype html>
@@ -31,9 +38,33 @@ const enUrl = new URL(enPath, Astro.site).href
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content={shouldIndex ? 'index, follow' : 'noindex, nofollow'} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      Critical font preloads — Geist (display/headlines) and Inter (body).
+      These are variable fonts; the latin subset covers all site copy.
+      crossorigin is required for font preloads even for same-origin files.
+      Actual filenames are hashed by Vite; these preloads use the @fontsource
+      paths directly before Vite hashing — browsers will de-dupe via
+      Content-Type match when the stylesheet fires.
+    -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2"
+      crossorigin
+    />
 
     <!-- Theme color — deep blue works on light and dark OS chrome -->
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F7F7F4" />
@@ -58,6 +89,8 @@ const enUrl = new URL(enPath, Astro.site).href
     <meta property="og:url" content={Astro.url.href} />
     <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@banuacoder" />
+    <meta name="twitter:creator" content="@ryanaidilp_" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site).href} />

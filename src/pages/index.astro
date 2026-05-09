@@ -164,17 +164,22 @@ const orgSchema = {
               widths={[200, 400]}
               sizes="200px"
               aria-hidden="true"
+              loading="eager"
+              decoding="async"
               class="hero-shot-img"
             />
           </div>
 
-          <!-- Main screenshot (already framed, front, larger) -->
+          <!-- Main screenshot (already framed, front, larger) — LCP candidate -->
           <div class="hero-shot hero-shot-main">
             <Image
               src={heroPico}
               alt="Pratinjau aplikasi PICO Sulteng"
               widths={[280, 560]}
               sizes="280px"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
               class="hero-shot-img"
             />
           </div>
