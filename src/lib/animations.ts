@@ -236,7 +236,11 @@ export function initAnimations(): () => void {
 
     if (cycleSection && cycleCells.length) {
       // Hide everything first. Filter is owned entirely by CSS variables.
+      // xPercent/yPercent: -50 preserves the inline `translate(-50%, -50%)`
+      // centering once GSAP starts writing scale/rotation into transform.
       gsap.set(cycleCells, {
+        xPercent: -50,
+        yPercent: -50,
         autoAlpha: 0,
         scale: 0.4,
         '--cell-fade-blur': '40px',
