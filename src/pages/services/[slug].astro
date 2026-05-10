@@ -7,6 +7,7 @@ import Footer from '../../components/layout/Footer.astro'
 import Container from '../../components/layout/Container.astro'
 import ServiceCard from '../../components/cards/ServiceCard.astro'
 import CTA from '../../components/sections/CTA.astro'
+import { renderInlineMd } from '../../lib/inline-md'
 
 export async function getStaticPaths() {
   const allServices = await getCollection('services')
@@ -167,9 +168,11 @@ const faqSchema = faq && faq.length > 0
                       <dt class="font-semibold text-bnc-ink dark:text-bnc-paper mb-2" style="font-size: var(--fs-17)">
                         {item.q}
                       </dt>
-                      <dd class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-                        {item.a}
-                      </dd>
+                      <dd
+                        class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+                        style="font-size: var(--fs-17)"
+                        set:html={renderInlineMd(item.a)}
+                      />
                     </div>
                   ))}
                 </dl>

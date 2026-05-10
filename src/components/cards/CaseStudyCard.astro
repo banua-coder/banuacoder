@@ -6,6 +6,7 @@
  */
 import { Image } from 'astro:assets'
 import Tag from '../atoms/Tag.astro'
+import { renderInlineMd } from '../../lib/inline-md'
 
 type BucketVariant = 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
 
@@ -106,15 +107,15 @@ const bucketVariant: BucketVariant = bucketVariantMap[bucket] ?? 'bucket-consume
     <p
       class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1"
       style="font-size: var(--fs-17); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
-    >
-      {summary}
-    </p>
+      set:html={renderInlineMd(summary)}
+    />
 
     <!-- Impact stat -->
     {impactStat && (
-      <p class="font-mono text-xs text-bnc-accent pt-2 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
-        {impactStat}
-      </p>
+      <p
+        class="font-mono text-xs text-bnc-accent pt-2 border-t border-bnc-stone-200 dark:border-bnc-stone-800"
+        set:html={renderInlineMd(impactStat)}
+      />
     )}
   </div>
 </article>

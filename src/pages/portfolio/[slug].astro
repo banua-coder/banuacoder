@@ -193,9 +193,8 @@ const breadcrumbSchema = {
           <p
             class="text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed"
             style="font-size: var(--fs-20)"
-          >
-            {data.summary}
-          </p>
+            set:html={renderInlineMd(data.summary)}
+          />
         </div>
       </Container>
     </section>
@@ -283,9 +282,11 @@ const breadcrumbSchema = {
                 <span class="mt-1 shrink-0 w-4 h-4 rounded-full bg-bnc-accent/20 flex items-center justify-center" aria-hidden="true">
                   <span class="w-1.5 h-1.5 rounded-full bg-bnc-accent block"></span>
                 </span>
-                <span class="text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed" style="font-size: var(--fs-17)">
-                  {item}
-                </span>
+                <span
+                  class="text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed"
+                  style="font-size: var(--fs-17)"
+                  set:html={renderInlineMd(item)}
+                />
               </li>
             ))}
           </ul>
