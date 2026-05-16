@@ -311,9 +311,10 @@ export function initAnimations(): () => void {
           )
         }
 
-        // Exit — short and tight, kicks in only as the logo approaches the
-        // far viewport edge. Blur, scale, and grayscale all wind up in
-        // the same 0.08 window so the logo dissolves into the edge cleanly.
+        // Exit — fade starts LATE in the drift (logo already crossing the
+        // viewport edge) and snaps off quickly. Logo stays at full opacity
+        // for most of its lifespan, then dissolves once it's already at/past
+        // the edge instead of mid-flight.
         if (exit !== null && !Number.isNaN(exit)) {
           cycleTl.to(
             cell,
@@ -323,10 +324,10 @@ export function initAnimations(): () => void {
               rotation: rotOut,
               '--cell-fade-blur': '40px',
               '--cell-fade-gray': 1,
-              duration: 0.08,
+              duration: 0.03,
               ease: 'sine.in',
             },
-            exit,
+            exit + 0.05,
           )
         }
       })

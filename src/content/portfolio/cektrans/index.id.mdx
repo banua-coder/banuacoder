@@ -1,0 +1,134 @@
+---
+title: cektrans
+slug: cektrans
+bucket: consumer
+client: Banua Coder
+clientUrl: https://cektrans.banuacoder.com
+year: 2026
+status: live
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Pelacak realtime untuk TransPalu dan Trans Donggala — menyajikan posisi bus
+  dan estimasi waktu tiba langsung dari sistem resmi Mitra Darat, lewat web app
+  yang ringan dan bisa dibuka di HP tanpa install.
+problem: >
+  Sistem BRT Nusantara yang dipakai operator TransPalu dan Trans Donggala
+  menyediakan data realtime, tapi data itu tidak dapat diakses publik secara
+  langsung: payload-nya terenkripsi `AES-256-CBC`, butuh kunci operator, dan
+  tidak ada antarmuka publik resmi yang menampilkan posisi bus untuk pengguna
+  akhir. Akibatnya, calon penumpang di Palu dan Donggala tidak punya cara
+  sederhana untuk tahu apakah bus sudah dekat, masih jauh, atau bahkan belum
+  beroperasi — mereka harus berangkat ke halte tanpa kepastian.
+solution: >
+  Banua Coder membangun cektrans sebagai pelacak independen untuk TransPalu dan
+  Trans Donggala. Sebuah Rust proxy (`axum` + `socketioxide` + `rust_socketio`)
+  menjembatani API operator yang terenkripsi: menangani crypto AES-256-CBC,
+  caching REST, dan fan-out Socket.IO ke browser. Di sisi pengguna, Vue 3 SPA
+  dengan Leaflet menampilkan peta realtime, daftar koridor, detail halte,
+  estimasi tiba, sampai trip planner — semua tanpa install, dapat dibuka
+  langsung dari browser HP atau desktop.
+impact:
+  - "Antarmuka publik pertama untuk melacak TransPalu & Trans Donggala secara realtime"
+  - "Membantu commuter Palu dan Donggala mengecek bus sebelum berangkat ke halte"
+  - "Menunjukkan engineering depth Banua Coder pada civic tech & infra realtime"
+  - "Stack penuh sendiri: Vue 3 frontend, Rust proxy, Docker + Traefik di VPS"
+stack:
+  - Vue 3
+  - TypeScript
+  - Vite
+  - Pinia
+  - Tailwind v4
+  - Leaflet
+  - Socket.IO
+  - Vue Router
+  - Vue I18n
+  - Rust
+  - Axum
+  - Docker
+  - Traefik
+links:
+  web: https://cektrans.banuacoder.com
+featured: true
+order: 15
+locale: id
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+
+## Konteks
+
+TransPalu dan Trans Donggala adalah dua layanan Bus Rapid Transit (BRT) yang
+dijalankan oleh operator daerah di Sulawesi Tengah, terintegrasi ke sistem BRT
+Nusantara milik Mitra Darat. Sistem operator memang mencatat posisi bus secara
+realtime, tapi datanya hidup di balik API internal — payload-nya dienkripsi
+`AES-256-CBC` dengan kunci yang hanya dipegang operator. Tidak ada aplikasi
+publik resmi yang menampilkan posisi bus, sehingga calon penumpang tidak punya
+cara melihat apakah bus sudah dekat sebelum mereka jalan ke halte.
+
+cektrans dibangun sebagai jembatan: mengambil data realtime dari sistem
+operator, menanganinya dengan aman di server, lalu menyajikannya ke publik dalam
+bentuk yang ringan, cepat, dan mudah dipakai dari HP maupun desktop.
+
+## Tampilan Aplikasi
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
+  <Image src={shot1} alt="Halaman utama cektrans dengan pemilih kota TransPalu dan Trans Donggala" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Peta realtime koridor TransPalu dengan posisi bus berwarna" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Tampilan desktop dengan sidebar daftar koridor dan peta" class="rounded-lg w-full md:col-span-2" />
+</div>
+
+## Yang Kami Bangun
+
+- **Rust proxy**: Layanan `axum` yang membungkus API operator. Menangani
+  enkripsi/dekripsi `AES-256-CBC` untuk token dan body, caching response REST,
+  dan jembatan Socket.IO antara upstream (`rust_socketio`) dan publik
+  (`socketioxide`). Kunci dan endpoint operator hanya hidup di environment
+  proxy — frontend tidak pernah menyentuhnya.
+- **Vue 3 SPA**: Aplikasi web dengan Leaflet untuk peta, Pinia untuk state
+  global (koridor, halte, bus aktif), Vue Router untuk navigasi antara kota,
+  dan Vue I18n untuk dukungan bilingual. Tailwind v4 menjaga tampilan
+  konsisten dengan brand Banua Coder.
+- **Realtime UX**: Posisi bus bergerak di peta begitu update masuk via
+  Socket.IO. Setiap koridor punya warna berbeda, dan tiap halte punya kartu
+  detail dengan daftar bus yang akan datang plus estimasi waktu tiba.
+- **Trip planner**: Pengguna bisa memilih halte asal dan tujuan, dan aplikasi
+  menyarankan rute dengan kombinasi koridor yang masuk akal.
+- **Operasional**: Dua container (web + proxy) dibangun via Dockerfile,
+  dijalankan dengan `docker compose` di belakang Traefik dengan TLS dari
+  Let's Encrypt. Versi dan SHA build muncul di footer untuk traceability.
+
+## Engineering Notes
+
+Tantangan utama bukan di UI, melainkan di proxy. Upstream BRT Nusantara
+menggunakan handshake terenkripsi — token harus dienkripsi dengan AES-256-CBC,
+respons body juga terenkripsi, dan koneksi Socket.IO mengikuti varian protokol
+mereka sendiri. Rust dipilih untuk proxy karena:
+
+- **Type safety untuk crypto path**: kompiler menangkap kesalahan handling
+  buffer/byte yang gampang lepas di bahasa dinamis.
+- **Performance**: proxy melayani Socket.IO fan-out, REST caching, dan
+  decrypt body per request tanpa menjadi bottleneck.
+- **Single binary deploy**: container kecil, restart cepat, predictable
+  memory footprint di shared VPS.
+
+Pemisahan tegas antara proxy (semua secret) dan web (publik, tanpa secret)
+menjaga rotasi kunci operator tetap sederhana — cukup update env var di
+container proxy tanpa menyentuh frontend.
+
+## Dampak
+
+cektrans adalah salah satu pertama (kalau bukan satu-satunya) antarmuka
+publik untuk melacak TransPalu dan Trans Donggala secara realtime. Untuk
+pengguna sehari-hari di Palu dan Donggala, ini mengubah pengalaman naik BRT
+dari "datang ke halte dan menunggu tanpa tahu kapan" menjadi "cek peta dulu,
+baru berangkat saat bus mendekat".
+
+Buat Banua Coder, cektrans adalah bukti bahwa tim lokal di Palu sanggup
+membangun infra realtime end-to-end — dari Rust proxy yang menangani crypto
+operator, ke Socket.IO fan-out, ke peta Leaflet di browser — dan menjalankannya
+24/7 di VPS sendiri. Ini juga produk consumer pertama Banua Coder di kategori
+civic tech / transportasi publik.
