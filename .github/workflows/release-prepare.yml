@@ -1,0 +1,232 @@
+name: Prepare Release
+
+on:
+  push:
+    branches:
+      - 'release/v*'
+      - 'hotfix/v*'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      branch-type: ${{ steps.parse.outputs.branch-type }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Parse branch name
+        id: parse
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          SUFFIX="${BRANCH_NAME#release/}"
+          SUFFIX="${SUFFIX#hotfix/}"
+          VERSION="${SUFFIX#v}"
+
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::Cannot parse semver from branch $BRANCH_NAME"
+            exit 1
+          fi
+
+          if echo "$BRANCH_NAME" | grep -q '^hotfix/'; then
+            BRANCH_TYPE="hotfix"
+          else
+            BRANCH_TYPE="release"
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "branch-type=$BRANCH_TYPE" >> "$GITHUB_OUTPUT"
+          echo "Parsed: version=$VERSION type=$BRANCH_TYPE"
+
+      - name: Bump package.json
+        id: bump
+        env:
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$PKG_VERSION" != "$VERSION" ]; then
+            node -e "
+              const fs = require('fs');
+              const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+              pkg.version = process.env.VERSION;
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+            "
+            echo "package.json: $PKG_VERSION -> $VERSION"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "package.json already at $VERSION"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate grouped changelog
+        env:
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          LAST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -1)
+          if [ -z "$LAST_TAG" ]; then
+            RANGE="HEAD"
+            echo "Range: initial (no previous tag)"
+          else
+            RANGE="$LAST_TAG..HEAD"
+            echo "Range: $LAST_TAG..HEAD"
+          fi
+
+          declare -A BUCKETS
+          ORDER=(feat fix perf refactor docs test ci build chore style revert other)
+
+          while IFS=$'\t' read -r subject sha; do
+            type=$(printf '%s' "$subject" | sed -nE 's/^([a-z]+)(\([^)]+\))?!?:.*/\1/p')
+            case "$type" in
+              feat|fix|perf|refactor|docs|test|ci|build|chore|style|revert) ;;
+              *) type="other" ;;
+            esac
+            BUCKETS["$type"]+="- ${subject} (${sha})"$'\n'
+          done < <(git log "$RANGE" --pretty=format:"%s%x09%h" --no-merges)
+
+          declare -A LABEL=(
+            [feat]="### ✨ Features"
+            [fix]="### 🐛 Bug Fixes"
+            [perf]="### ⚡ Performance"
+            [refactor]="### ♻️ Refactor"
+            [docs]="### 📝 Docs"
+            [test]="### ✅ Tests"
+            [ci]="### 👷 CI"
+            [build]="### 📦 Build"
+            [chore]="### 🧹 Chore"
+            [style]="### 💄 Style"
+            [revert]="### ⏪ Revert"
+            [other]="### 📌 Other"
+          )
+
+          {
+            for type in "${ORDER[@]}"; do
+              entries="${BUCKETS[$type]:-}"
+              if [ -n "$entries" ]; then
+                printf '%s\n\n%s\n' "${LABEL[$type]}" "$entries"
+              fi
+            done
+          } > /tmp/changelog.md
+
+          if [ ! -s /tmp/changelog.md ]; then
+            echo "- Initial release" > /tmp/changelog.md
+          fi
+
+          echo "----- changelog -----"
+          cat /tmp/changelog.md
+          echo "---------------------"
+
+      - name: Commit version bump
+        env:
+          VERSION: ${{ steps.parse.outputs.version }}
+          CHANGED: ${{ steps.bump.outputs.changed }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          if [ "$CHANGED" = "true" ] && ! git diff --cached --quiet; then
+            git commit -m "chore: bump version to $VERSION"
+            git push
+            echo "Version bump committed and pushed"
+          else
+            echo "Versions already at $VERSION — no commit needed"
+          fi
+
+      - name: Create release PR to main
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ github.ref_name }}
+          VERSION: ${{ steps.parse.outputs.version }}
+          BRANCH_TYPE: ${{ steps.parse.outputs.branch-type }}
+        run: |
+          PR_TYPE="Release"
+          PR_TYPE_LOWER="release"
+          if [ "$BRANCH_TYPE" = "hotfix" ]; then
+            PR_TYPE="Hotfix"
+            PR_TYPE_LOWER="hotfix"
+          fi
+
+          EXISTING=$(gh pr list --head "$BRANCH_NAME" --base main --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists — skipping creation"
+            exit 0
+          fi
+
+          {
+            echo "## $PR_TYPE: banuacoder v$VERSION"
+            echo ""
+            echo "### Changelog"
+            echo ""
+            cat /tmp/changelog.md
+            echo ""
+            echo "---"
+            echo ""
+            echo "When merged, \`release-finalize.yml\` will:"
+            echo "- tag \`v$VERSION\` and trigger deploy"
+            echo "- prepend the changelog above to \`CHANGELOG.md\` on \`main\`"
+            echo "- open a back-merge PR to \`develop\`"
+            echo ""
+            echo "### Checklist"
+            echo ""
+            echo "- [ ] All checks passing"
+            echo "- [ ] Smoke test on staging or local preview"
+            echo "- [ ] Ready for release"
+          } > /tmp/pr_body.md
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --title "$PR_TYPE_LOWER: banuacoder v$VERSION" \
+            --body-file /tmp/pr_body.md
+
+      - name: Bump develop to next minor (release only)
+        if: steps.parse.outputs.branch-type == 'release'
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          IFS='.' read -r MAJ MIN _PATCH <<<"$VERSION"
+          NEXT_MINOR_VERSION="$MAJ.$((MIN + 1)).0"
+          DEV_BRANCH="chore/bump-dev-version-v$NEXT_MINOR_VERSION"
+
+          if git ls-remote --exit-code origin "refs/heads/$DEV_BRANCH" >/dev/null 2>&1; then
+            echo "Dev bump branch $DEV_BRANCH already exists — skipping"
+            exit 0
+          fi
+
+          git fetch origin develop
+          git checkout -B "$DEV_BRANCH" origin/develop
+
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$PKG_VERSION" = "$NEXT_MINOR_VERSION" ]; then
+            echo "Develop already at $NEXT_MINOR_VERSION — skipping"
+            exit 0
+          fi
+
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.version = '${NEXT_MINOR_VERSION}';
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: bump dev version to $NEXT_MINOR_VERSION"
+          git push -u origin "$DEV_BRANCH"
+
+          gh pr create \
+            --base develop \
+            --head "$DEV_BRANCH" \
+            --title "chore: bump dev version to v$NEXT_MINOR_VERSION" \
+            --body "Routine post-release bump of \`develop\` to the next minor while \`main\` locks v$VERSION."
