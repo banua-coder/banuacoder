@@ -1,0 +1,70 @@
+---
+/**
+ * FounderExperienceStrip — horizontal logo row with hover tooltips showing context.
+ * Imports from src/data/founder-experience.ts.
+ * Renders <img> when a real logo asset is available in src/assets/companies/,
+ * otherwise falls back to a mono uppercase wordmark.
+ * Keyboard accessible: focus also reveals tooltip.
+ */
+import { founderExperience } from '../../data/founder-experience'
+
+const logoModules = import.meta.glob('/src/assets/companies/*.{svg,png}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const logoUrls: Record<string, string> = Object.fromEntries(
+  Object.entries(logoModules).map(([path, url]) => [
+    path.split('/').pop() ?? '',
+    url,
+  ]),
+)
+---
+
+<div class="flex flex-wrap gap-6 items-center" role="list" aria-label="Founder experience at companies">
+  {founderExperience.map((exp) => (
+    <div
+      class="experience-item relative inline-flex"
+      role="listitem"
+    >
+      <button
+        type="button"
+        class="flex items-center justify-center px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900 hover:border-bnc-stone-400 dark:hover:border-bnc-stone-600 transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-bnc-accent"
+        aria-describedby={`exp-tip-${exp.company.replace(/\W+/g, '-')}`}
+        aria-label={`${exp.company} — ${exp.context}`}
+      >
+        {logoUrls[exp.logo] ? (
+          <img
+            src={logoUrls[exp.logo]}
+            alt={exp.company}
+            loading="lazy"
+            decoding="async"
+            class="h-8 w-auto max-w-[120px] object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-[filter,opacity] duration-[var(--duration-base)]"
+          />
+        ) : (
+          <span class="font-mono text-xs font-medium text-bnc-stone-600 dark:text-bnc-stone-400 group-hover:text-bnc-ink dark:group-hover:text-bnc-paper transition-colors whitespace-nowrap tracking-wide uppercase">
+            {exp.company}
+          </span>
+        )}
+      </button>
+
+      <!-- Tooltip -->
+      <span
+        id={`exp-tip-${exp.company.replace(/\W+/g, '-')}`}
+        role="tooltip"
+        class="exp-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-[var(--radius-sm)] bg-bnc-ink dark:bg-bnc-stone-800 text-bnc-paper font-mono text-xs whitespace-nowrap pointer-events-none opacity-0 translate-y-1 transition-all duration-[var(--duration-quick)] z-20 shadow-[var(--shadow-elevated)]"
+      >
+        {exp.context}
+      </span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .experience-item:hover .exp-tooltip,
+  .experience-item button:focus-visible ~ .exp-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>

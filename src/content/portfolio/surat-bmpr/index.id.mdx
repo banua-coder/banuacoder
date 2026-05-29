@@ -1,0 +1,86 @@
+---
+title: Surat BMPR
+slug: surat-bmpr
+bucket: public-sector
+client: Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Aplikasi mobile untuk disposisi surat dan tata persuratan internal di lingkungan
+  Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah. Dibangun bersama
+  Banua Coder, Surat BMPR memodernisasi alur kerja persuratan—dari penerimaan,
+  disposisi pimpinan, hingga distribusi—agar lebih cepat, terlacak, dan dapat
+  diakses dari perangkat mobile.
+problem: >
+  Tata persuratan dan proses disposisi di lingkungan dinas masih banyak bergantung
+  pada alur fisik: tanda tangan basah, ekspedisi antar-bagian, dan pemantauan
+  manual yang rentan tertunda. Dinas Bina Marga dan Penataan Ruang Provinsi
+  Sulawesi Tengah membutuhkan sistem digital yang menyederhanakan alur disposisi,
+  memberi visibilitas status surat secara real-time, dan tetap dapat digunakan
+  oleh pimpinan maupun staf dari mana saja melalui perangkat mobile—tanpa
+  mengorbankan jejak audit yang dibutuhkan layanan publik.
+solution: >
+  Banua Coder mengembangkan aplikasi mobile Surat BMPR menggunakan Flutter dengan
+  backend Laravel sebagai layer API. Aplikasi mencakup penerimaan surat masuk,
+  alur disposisi berjenjang, notifikasi push setiap perubahan status, riwayat
+  surat yang dapat ditelusuri, pencarian dan filter berdasarkan klasifikasi,
+  serta tanda tangan digital untuk keperluan disposisi. Arsitektur dirancang
+  dengan kebutuhan audit trail yang lengkap dan integrasi yang siap diperluas
+  ke modul tata persuratan lain di masa depan.
+impact:
+  - Disposisi surat yang sebelumnya membutuhkan kunjungan fisik antar-ruangan kini dilakukan dari aplikasi mobile
+  - Visibilitas real-time atas status setiap surat di seluruh alur disposisi
+  - Audit trail lengkap yang mendukung kebutuhan tata kelola layanan publik
+  - Siap dikembangkan sebagai dasar modernisasi sistem tata persuratan di OPD lain
+stack:
+  - Flutter
+  - Dart
+  - Laravel
+  - REST API
+  - Push Notification
+  - Google Play
+featured: false
+order: 45
+locale: id
+---
+
+## Konteks
+
+Surat BMPR adalah aplikasi tata persuratan dan disposisi surat untuk lingkungan
+Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah. Proyek ini berdiri
+di persimpangan dua kebutuhan yang biasa muncul di sektor publik: kebutuhan untuk
+mempercepat alur kerja administratif tanpa kehilangan kejelasan jejak dan
+akuntabilitas yang menjadi standar layanan pemerintah.
+
+Pada konteks Pemerintah Provinsi Sulawesi Tengah, modernisasi alur persuratan
+seperti ini adalah salah satu upaya konkret menuju tata kelola pemerintahan
+yang lebih responsif dan terdokumentasi.
+
+## Yang Kami Bangun
+
+Aplikasi mobile Surat BMPR dibangun dengan Flutter dan didukung backend Laravel:
+
+- **Inbox surat masuk**: Daftar surat yang ditujukan ke pengguna, dengan status
+  yang diperbarui mengikuti alur disposisi.
+- **Alur disposisi berjenjang**: Pimpinan dapat mendisposisikan surat ke staf
+  atau bagian terkait, dengan catatan dan instruksi tindak lanjut.
+- **Riwayat dan pencarian**: Setiap surat memiliki rekam jejak penanganan yang
+  dapat dilihat oleh pihak berwenang—penting untuk audit dan koordinasi
+  lintas bagian.
+- **Notifikasi push**: Pemberitahuan langsung saat ada disposisi baru atau
+  perubahan status, sehingga tindak lanjut tidak tertunda.
+- **Tanda tangan digital**: Disposisi dapat ditandatangani dari aplikasi tanpa
+  perlu sirkulasi dokumen fisik.
+
+## Dampak
+
+Surat BMPR membawa proses tata persuratan internal Dinas Bina Marga dan
+Penataan Ruang Provinsi Sulawesi Tengah ke kanal mobile, mengurangi
+ketergantungan pada alur fisik dan memberi pimpinan kemampuan untuk
+melakukan disposisi dari mana saja.
+
+Bersama PICO Sulteng, Surat BMPR memperkuat portofolio Banua Coder dalam
+membangun solusi digital untuk Pemerintah Provinsi Sulawesi Tengah—di tingkat
+pelayanan publik (PICO) dan di tingkat tata kelola internal (Surat BMPR).

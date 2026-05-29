@@ -1,0 +1,100 @@
+---
+title: PICO Sulteng
+slug: pico-sulteng
+bucket: public-sector
+client: Pemerintah Provinsi Sulawesi Tengah
+year: 2021
+status: archived
+cover: ./cover.webp
+thumbnail: ./thumbnail.svg
+summary: >
+  A COVID-19 information platform for Central Sulawesi Province covering a mobile app,
+  web portal, and REST API. Built during the pandemic to help residents and government
+  access situational data quickly and in a structured way.
+problem: >
+  At the height of the COVID-19 pandemic, regional governments faced the challenge of
+  distributing fast, accurate, and trustworthy information to the public. Case data,
+  healthcare facility locations, and health protocol guidelines were scattered across
+  multiple uncoordinated channels. The Central Sulawesi Provincial Government needed a
+  centralised platform accessible via both mobile and web, with data that operators could
+  update in real-time.
+solution: >
+  Banua Coder built PICO Sulteng as a multi-layer platform: a REST API as the single data
+  source, a Flutter mobile application for public access, and a web portal for broader
+  reach. Features include a periodically updated case statistics dashboard (confirmed,
+  recovered, deceased), a case distribution map by district/city, a healthcare facility
+  directory, and official health protocol guidelines.
+impact:
+  - Official COVID-19 public information platform for Central Sulawesi Province
+  - "Multi-platform coverage: mobile app, web portal, and public API"
+  - Supported information distribution during a regional health emergency
+  - Archived after the pandemic subsided — mission accomplished
+stack:
+  - Flutter
+  - Laravel
+  - REST API
+  - Web (HTML/CSS/JS)
+  - MySQL
+links:
+  web: https://pico.banuacoder.com
+featured: false
+order: 60
+locale: en
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+import shot5 from './screenshots/screenshot-5.webp'
+import shot6 from './screenshots/screenshot-6.webp'
+import shot7 from './screenshots/screenshot-7.webp'
+
+## Context
+
+PICO Sulteng (Platform Informasi COVID-19 Sulawesi Tengah) was built in 2021 when the
+COVID-19 pandemic was still in its active phase. This was a high-urgency project — regional
+government needed a platform that could go live in weeks, not months.
+
+The project taught Banua Coder a great deal about fast delivery under pressure: from
+prioritising scope and keeping infrastructure stable under traffic spikes, to coordinating
+with government stakeholders who have different approval processes from commercial clients.
+
+## What We Built
+
+PICO Sulteng consists of three components:
+
+**1. REST API (Laravel Backend)**
+- Case statistics endpoints that operators can update
+- Healthcare facility data management
+- Public endpoints consumed by both the mobile app and web portal
+
+**2. Mobile Application (Flutter)**
+- Case statistics dashboard by province and district/city
+- Interactive case distribution map
+- COVID referral hospital and health centre directory
+- Health protocol and quarantine guidelines
+
+**3. Web Portal**
+- Web version accessible from a browser without downloading an app
+- Shares the same data as the mobile app via the API
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="PICO Sulteng COVID-19 statistics dashboard" class="rounded-lg w-full" />
+  <Image src={shot2} alt="PICO Sulteng district/city case view" class="rounded-lg w-full" />
+  <Image src={shot3} alt="PICO Sulteng health protocol guidelines" class="rounded-lg w-full" />
+  <Image src={shot4} alt="PICO Sulteng regional case distribution map" class="rounded-lg w-full" />
+  <Image src={shot5} alt="PICO Sulteng healthcare facility directory" class="rounded-lg w-full" />
+  <Image src={shot6} alt="PICO Sulteng statistics with data charts" class="rounded-lg w-full" />
+  <Image src={shot7} alt="PICO Sulteng updated app interface (2024)" class="rounded-lg w-full" />
+</div>
+
+## Impact
+
+PICO Sulteng launched successfully and became the official COVID-19 information platform
+for Central Sulawesi Province. The platform was archived after the pandemic subsided — a
+project that accomplished its mission within its context.
+
+For Banua Coder, this project is a reference for the capability to build multi-layer public
+systems with fast delivery in emergency conditions.

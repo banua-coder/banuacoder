@@ -1,0 +1,87 @@
+---
+title: Carwa — Digital Car Auction
+slug: carwa
+bucket: consumer
+client: Ulearna Technology LTD
+year: 2024
+status: maintained
+cover: ./cover.webp
+thumbnail: ./thumbnail.svg
+summary: >
+  Aplikasi lelang mobil digital untuk pasar UAE yang membantu pengguna membeli dan menawar
+  mobil bekas secara real-time. Dikembangkan untuk Ulearna Technology LTD (Dubai, UAE),
+  Carwa menunjukkan kemampuan Banua Coder dalam domain fintech-adjacent dengan alur transaksi
+  real-time dan pengalaman pengguna yang intuitif.
+problem: >
+  Pasar jual beli mobil bekas di kawasan Timur Tengah masih banyak bergantung pada pertemuan
+  fisik dan negosiasi yang tidak efisien. Klien Dubai-based membutuhkan platform digital yang
+  mampu menghadirkan proses lelang yang transparan, real-time, dan dapat dipercaya oleh pembeli
+  maupun penjual — sebuah tantangan yang mencakup sisi teknis (sinkronisasi harga lelang,
+  manajemen sesi, penanganan race condition) maupun sisi produk (kepercayaan pengguna dan
+  pengalaman yang mudah digunakan oleh segmen yang belum terbiasa lelang digital).
+solution: >
+  Banua Coder mengembangkan aplikasi mobile Carwa menggunakan Flutter. Implementasi mencakup
+  real-time bidding dengan WebSocket atau polling berkala, tampilan daftar unit kendaraan dengan
+  filter dan pencarian yang efisien, detail unit dengan galeri foto, sesi lelang dengan countdown
+  timer, serta alur pembayaran dan konfirmasi. Arsitektur dirancang untuk menangani concurrency
+  pada sesi lelang aktif, dan UI dirancang untuk kejelasan informasi harga dan status bid.
+impact:
+  - Aplikasi dipublikasikan ke Google Play dan aktif digunakan
+  - Pembaruan rutin, dengan pembaruan terbaru Februari 2026
+  - Proses lelang digital menggantikan proses manual yang tidak efisien
+  - Domain otomotif dengan transaksi real-time sebagai referensi capability Banua Coder
+stack:
+  - Flutter
+  - Dart
+  - REST API
+  - WebSocket / Real-time sync
+  - Google Play
+links:
+  playStore: https://play.google.com/store/apps/details?id=com.ulearna.carx
+featured: true
+order: 20
+locale: id
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+
+## Konteks
+
+Carwa adalah platform lelang mobil digital yang dikembangkan oleh Ulearna Technology LTD,
+startup teknologi berbasis Dubai, untuk pasar UAE. Dalam segmen kendaraan bekas, kepercayaan
+dan transparansi adalah faktor utama yang menentukan adopsi. Carwa dirancang untuk menjawab
+keduanya melalui proses lelang yang terdokumentasi dengan baik dan pengalaman pengguna yang jelas.
+
+Proyek ini memberikan Banua Coder pengalaman di domain yang lebih kompleks dari sekedar
+aplikasi informasi — yaitu aplikasi dengan transaksi berkolisi, state real-time, dan kebutuhan
+UX yang presisi untuk menghindari kebingungan saat pengguna melakukan penawaran.
+
+## Yang Kami Bangun
+
+Aplikasi mobile Carwa dibangun menggunakan Flutter dengan pendekatan fitur-per-domain:
+
+- **Listing unit**: Daftar kendaraan dengan filter merk, tahun, harga dasar, dan kondisi.
+  Search diimplementasikan dengan debounce agar tidak membebani backend.
+- **Sesi lelang**: Tampilan sesi lelang dengan countdown timer, harga saat ini, dan bid
+  terakhir. Update harga dilakukan secara periodik untuk menjaga sinkronisasi.
+- **Alur penawaran**: Flow yang jelas mulai dari konfirmasi jumlah tawaran hingga notifikasi
+  kemenangan atau kekalahan lelang.
+- **Galeri unit**: Tampilan foto kondisi kendaraan yang bisa di-zoom untuk membantu
+  keputusan pembelian.
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Tampilan listing lelang Carwa dengan kartu kendaraan" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Detail unit dan tampilan sesi lelang Carwa" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Alur penawaran Carwa dengan countdown timer" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Listing unit lelang Carwa dengan filter pencarian" class="rounded-lg w-full" />
+</div>
+
+## Dampak
+
+Carwa dipublikasikan ke Google Play dan terus diperbarui secara aktif hingga Februari 2026.
+Proyek ini memperkuat portofolio Banua Coder di segmen consumer apps dengan kompleksitas
+domain yang tinggi dan kebutuhan sinkronisasi data real-time.

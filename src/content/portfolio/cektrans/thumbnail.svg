@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F2849;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D9CD4;stop-opacity:0.85" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="360" fill="url(#g)" />
+  <rect x="0" y="0" width="600" height="360" fill="rgba(0,0,0,0.16)" />
+  <path d="M 40 270 C 160 220, 220 170, 360 150 S 540 110, 580 70" stroke="#FF6B35" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <circle cx="230" cy="195" r="8" fill="#FF6B35" stroke="white" stroke-width="2"/>
+  <circle cx="430" cy="138" r="8" fill="#FF6B35" stroke="white" stroke-width="2"/>
+  <text x="40" y="125" font-family="Georgia, serif" font-size="68" font-weight="700" fill="#FFFFFF" letter-spacing="-2">cektrans</text>
+  <text x="42" y="160" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.55)">consumer · BRT tracker · 2026</text>
+</svg>

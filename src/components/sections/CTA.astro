@@ -1,0 +1,89 @@
+---
+/**
+ * CTA — final-CTA block.
+ * Default: paper/ink. Inverted variant: deep blue bg, white text.
+ */
+import Button from '../atoms/Button.astro'
+
+interface Props {
+  headline: string
+  sub?: string
+  primaryCta?: string
+  primaryHref?: string
+  secondaryCta?: string
+  secondaryHref?: string
+  /** Inverted: deep blue background, white text */
+  inverted?: boolean
+  class?: string
+}
+
+const {
+  headline,
+  sub,
+  primaryCta,
+  primaryHref = '#',
+  secondaryCta,
+  secondaryHref = '#',
+  inverted = false,
+  class: cls = '',
+} = Astro.props
+---
+
+<section
+  class:list={[
+    'relative overflow-hidden',
+    inverted ? 'bg-bnc-primary text-bnc-primary-fg' : 'bg-bnc-paper dark:bg-bnc-ink',
+    cls,
+  ]}
+  style="padding-block: var(--spacing-section-y)"
+  aria-label="Call to action"
+  data-tell-cta
+>
+  <div
+    class="mx-auto px-4 sm:px-6 lg:px-8 text-center"
+    style="max-width: var(--container-max)"
+  >
+    <h2
+      class:list={[
+        'font-display font-bold leading-tight mb-4',
+        inverted ? 'text-white' : 'text-bnc-ink dark:text-bnc-paper',
+      ]}
+      style="font-size: var(--fs-48)"
+      data-tell-cta-headline
+    >
+      {headline}
+    </h2>
+
+    {sub && (
+      <p
+        class:list={[
+          'mb-10 leading-relaxed mx-auto',
+          inverted ? 'text-blue-200' : 'text-bnc-stone-600 dark:text-bnc-stone-400',
+        ]}
+        style="font-size: var(--fs-20); max-width: 52ch"
+        data-tell-cta-sub
+      >
+        {sub}
+      </p>
+    )}
+
+    <div class="flex flex-wrap gap-4 justify-center" data-tell-cta-actions>
+      {primaryCta && (
+        inverted ? (
+          <Button href={primaryHref} size="lg" variant="secondary" class="!border-white !text-white hover:!bg-white hover:!text-bnc-primary">
+            {primaryCta}
+          </Button>
+        ) : (
+          <Button href={primaryHref} size="lg" variant="primary">
+            {primaryCta}
+          </Button>
+        )
+      )}
+      {secondaryCta && (
+        <Button href={secondaryHref} size="lg" variant="ghost" class={inverted ? '!text-blue-200 hover:!text-white' : ''}>
+          {secondaryCta} →
+        </Button>
+      )}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F2849;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D9CD4;stop-opacity:0.85" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#g)" />
+  <rect x="0" y="0" width="1280" height="720" fill="rgba(0,0,0,0.16)" />
+  <!-- abstract route lines (suggesting BRT corridors on a map) -->
+  <path d="M 60 540 C 280 460, 320 360, 540 320 S 880 280, 1080 200" stroke="#FF6B35" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.75"/>
+  <path d="M 100 600 C 280 520, 460 460, 700 460 S 1020 420, 1180 360" stroke="#FFD166" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.65"/>
+  <path d="M 80 360 C 260 320, 420 280, 620 260 S 940 220, 1140 140" stroke="#06D6A0" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <!-- bus markers along the orange corridor -->
+  <circle cx="380" cy="402" r="14" fill="#FF6B35" stroke="white" stroke-width="3"/>
+  <circle cx="640" cy="318" r="14" fill="#FF6B35" stroke="white" stroke-width="3"/>
+  <circle cx="940" cy="252" r="14" fill="#FF6B35" stroke="white" stroke-width="3"/>
+  <!-- subtle map grid -->
+  <line x1="0" y1="180" x2="1280" y2="180" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+  <line x1="0" y1="540" x2="1280" y2="540" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+  <line x1="320" y1="0" x2="320" y2="720" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+  <line x1="960" y1="0" x2="960" y2="720" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+  <!-- copy block -->
+  <rect x="80" y="240" width="120" height="28" rx="4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+  <text x="140" y="259" font-family="monospace" font-size="13" fill="rgba(255,255,255,0.7)" text-anchor="middle">// consumer</text>
+  <text x="80" y="350" font-family="Georgia, serif" font-size="92" font-weight="700" fill="#FFFFFF" letter-spacing="-3">cektrans</text>
+  <text x="80" y="420" font-family="Georgia, serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.7)" letter-spacing="-1">Realtime BRT tracker · Palu &amp; Donggala</text>
+  <text x="82" y="465" font-family="monospace" font-size="16" fill="rgba(255,255,255,0.5)">Vue 3 · Rust · Socket.IO · Leaflet · 2026</text>
+</svg>

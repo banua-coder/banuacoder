@@ -1,14 +1,41 @@
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
-/cache/
+# Build output
+dist/
+.output/
+
+# Generated types
+.astro/
+
+# Dependencies
+node_modules/
+
+# Lockfiles from other package managers (this project uses pnpm)
+package-lock.json
+yarn.lock
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
 .env
-.env.backup
-.phpunit.result.cache
-docker-compose.override.yml
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
+.env.production
+.env.local
+
+# macOS / editor cruft
+.DS_Store
+**/.DS_Store
+.idea/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+
+# Internal planning docs — not committed
+docs/
+
+# CodeGraph local index
+.codegraph/
+.playwright-mcp/

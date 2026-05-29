@@ -1,0 +1,142 @@
+---
+/**
+ * Prose — MDX content wrapper with editorial rhythm.
+ * 68ch max-width, JetBrains Mono for code, cyan underline reveals on links.
+ */
+interface Props {
+  class?: string
+}
+
+const { class: cls = '' } = Astro.props
+---
+
+<div
+  class:list={['prose-bnc', cls]}
+  style="max-width: var(--prose-max)"
+>
+  <slot />
+</div>
+
+<style>
+  .prose-bnc {
+    color: var(--color-bnc-ink);
+    font-size: var(--fs-17);
+    line-height: 1.7;
+  }
+
+  html.dark .prose-bnc {
+    color: var(--color-bnc-paper);
+  }
+
+  .prose-bnc :global(h1),
+  .prose-bnc :global(h2),
+  .prose-bnc :global(h3),
+  .prose-bnc :global(h4) {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-bnc-ink);
+    line-height: 1.25;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+
+  html.dark .prose-bnc :global(h1),
+  html.dark .prose-bnc :global(h2),
+  html.dark .prose-bnc :global(h3),
+  html.dark .prose-bnc :global(h4) {
+    color: var(--color-bnc-paper);
+  }
+
+  .prose-bnc :global(h1) { font-size: var(--fs-48); }
+  .prose-bnc :global(h2) { font-size: var(--fs-36); }
+  .prose-bnc :global(h3) { font-size: var(--fs-28); }
+  .prose-bnc :global(h4) { font-size: var(--fs-20); }
+
+  .prose-bnc :global(p) {
+    margin-bottom: 1.25em;
+  }
+
+  .prose-bnc :global(a) {
+    color: var(--color-bnc-primary);
+    text-decoration: none;
+    background-image: linear-gradient(to right, var(--color-bnc-accent), var(--color-bnc-accent));
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 250ms ease;
+  }
+
+  .prose-bnc :global(a:hover),
+  .prose-bnc :global(a:focus-visible) {
+    background-size: 100% 1.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose-bnc :global(a) { transition: none; }
+  }
+
+  .prose-bnc :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-bnc-stone-100);
+    color: var(--color-bnc-ink);
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+  }
+
+  html.dark .prose-bnc :global(code) {
+    background: var(--color-bnc-stone-800);
+    color: var(--color-bnc-paper);
+  }
+
+  .prose-bnc :global(pre) {
+    font-family: var(--font-mono);
+    font-size: var(--fs-14);
+    background: var(--color-bnc-stone-100);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1.5em 0;
+  }
+
+  html.dark .prose-bnc :global(pre) {
+    background: var(--color-bnc-stone-900);
+  }
+
+  .prose-bnc :global(pre code) {
+    background: transparent;
+    padding: 0;
+  }
+
+  .prose-bnc :global(blockquote) {
+    border-left: 3px solid var(--color-bnc-accent);
+    padding-left: 1.25rem;
+    margin: 1.5em 0;
+    color: var(--color-bnc-stone-600);
+    font-style: italic;
+  }
+
+  html.dark .prose-bnc :global(blockquote) {
+    color: var(--color-bnc-stone-400);
+  }
+
+  .prose-bnc :global(ul),
+  .prose-bnc :global(ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25em;
+  }
+
+  .prose-bnc :global(li) {
+    margin-bottom: 0.4em;
+  }
+
+  .prose-bnc :global(hr) {
+    border: none;
+    border-top: 1px solid var(--color-bnc-stone-200);
+    margin: 2em 0;
+  }
+
+  html.dark .prose-bnc :global(hr) {
+    border-top-color: var(--color-bnc-stone-800);
+  }
+</style>

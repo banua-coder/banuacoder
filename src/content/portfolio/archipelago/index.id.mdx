@@ -1,0 +1,84 @@
+---
+title: Archipelago
+slug: archipelago
+bucket: consumer
+client: Banua Coder
+year: 2026
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Produk Banua Coder berbentuk starter kit Flutter berbasis monorepo, dibangun di atas
+  Mason brick dan Melos. Archipelago membantu engineer individual maupun tim enterprise
+  membangkitkan struktur monorepo Flutter yang konsisten — lengkap dengan core utilities,
+  UI kit, navigation, network layer, dan state management — dalam hitungan menit, bukan
+  minggu. Tersedia sebagai produk berlisensi di archipelago.banuacoder.com.
+problem: >
+  Setiap kali sebuah tim Flutter memulai aplikasi baru — apalagi dengan ambisi membangun
+  beberapa modul atau aplikasi yang berbagi infrastruktur — mereka kembali ke pekerjaan
+  setup yang sama: struktur folder, konvensi import, package internal, build pipeline,
+  CI/CD, lint rules. Hasilnya inkonsisten antar proyek dan setiap onboarding engineer baru
+  harus mempelajari ulang konvensi project itu sendiri sebelum bisa berkontribusi pada
+  fitur. Ini adalah pajak struktural yang dibayar berulang kali tanpa nilai bisnis baru.
+solution: >
+  Banua Coder membangun Archipelago sebagai opinionated starter kit Flutter berbasis
+  monorepo. Mengandalkan Mason brick untuk standardisasi generation package dan Melos
+  untuk versioning + workflow lintas package, Archipelago memberi tim engineering sebuah
+  struktur referensi yang sudah terbukti: core module, UI kit, navigation, network,
+  state management, code generation, testing setup, dan CI/CD template — semua
+  pre-konfigurasi dengan praktik yang masuk akal. Tim cukup men-generate template
+  starter atau menambahkan package baru lewat brick, dan mereka langsung memiliki
+  pondasi yang sama yang digunakan Banua Coder untuk produksi.
+impact:
+  - Mempercepat setup proyek Flutter baru dari beberapa minggu menjadi satu sesi
+  - Konvensi project konsisten lintas tim dan engineer junior bisa onboarding lebih cepat
+  - Brick template yang dapat diperluas untuk kebutuhan spesifik tim atau klien
+  - Tersedia sebagai produk berlisensi untuk profesional dan enterprise di Indonesia
+stack:
+  - Flutter
+  - Dart
+  - Mason
+  - Melos
+  - Monorepo
+links:
+  web: https://archipelago.banuacoder.com
+featured: false
+order: 130
+locale: id
+---
+
+## Konteks
+
+Banua Coder mengerjakan banyak aplikasi Flutter di sepanjang waktu — produk consumer,
+sistem publik, hingga internal tooling. Setiap aplikasi membutuhkan setup yang sama
+sebelum tim engineering dapat fokus pada fitur: struktur folder, package internal,
+state management, navigation, network layer, code generation, lint rules, dan CI/CD
+pipeline. Tanpa standar bersama, setiap project dimulai dari nol — pekerjaan yang
+berulang dan rentan terhadap inkonsistensi.
+
+Archipelago lahir dari kebutuhan internal Banua Coder untuk memiliki referensi
+implementasi monorepo Flutter yang siap dipakai. Setelah cukup matang untuk produksi,
+kami merilis Archipelago sebagai produk berlisensi sehingga tim Flutter lain — baik
+individual developer maupun enterprise — dapat memulai proyek mereka dengan pondasi
+yang sama yang kami gunakan untuk klien Banua Coder.
+
+## Yang Kami Bangun
+
+- **Mason-powered template generation**: Brick standar untuk membangkitkan package baru
+  di dalam monorepo (UI module, feature module, network client, dst.) dengan struktur
+  konsisten.
+- **Melos-managed monorepo**: Workflow management untuk multiple packages — versioning,
+  publishing, build, dan test pipeline yang terkoordinasi.
+- **Pre-configured packages**: Core utilities, UI kit, navigation routing, HTTP client
+  dengan interceptor + error handling, dan state management solution yang siap dipakai.
+- **Developer experience tooling**: Code generation untuk model + API, pre-configured
+  unit / widget / integration test setup, lint rules opinionated, dan CI/CD template.
+
+## Dampak
+
+Archipelago tersedia sebagai produk berlisensi di archipelago.banuacoder.com. Dengan
+Archipelago, tim Flutter dapat menghindari pajak setup berulang dan langsung mulai
+membangun fitur. Selain menjadi sumber pendapatan produk untuk Banua Coder, Archipelago
+juga merepresentasikan konvensi engineering yang sama dengan yang kami gunakan untuk
+klien — sehingga klien yang mengadopsi Archipelago bisa berkolaborasi dengan tim kami
+di atas pondasi yang sudah saling kenal.

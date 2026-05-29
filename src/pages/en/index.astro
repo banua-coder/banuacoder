@@ -1,0 +1,843 @@
+---
+import { getCollection } from 'astro:content'
+import type { ImageMetadata } from 'astro'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import Hero from '../../components/sections/Hero.astro'
+import TrustStrip from '../../components/sections/TrustStrip.astro'
+import ClientLogoCycle from '../../components/sections/ClientLogoCycle.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import ProcessStep from '../../components/sections/ProcessStep.astro'
+import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
+import FounderCard from '../../components/founder/FounderCard.astro'
+import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
+import CTA from '../../components/sections/CTA.astro'
+import WhyCarousel from '../../components/sections/WhyCarousel.astro'
+import DeviceFrame from '../../components/interactive/DeviceFrame.astro'
+import Testimonial from '../../components/cards/Testimonial.astro'
+import { Image } from 'astro:assets'
+import heroPicoFront from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import heroPicoBack from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
+import heroSikerjaFront from '../../content/portfolio/sikerja/screenshots/screenshot-home.webp'
+import heroSikerjaBack from '../../content/portfolio/sikerja/screenshots/screenshot-2.webp'
+import heroSiapFront from '../../content/portfolio/siap-donggala/screenshots/screenshot-1.webp'
+import heroSiapBack from '../../content/portfolio/siap-donggala/screenshots/screenshot-3.webp'
+import heroDetexiFront from '../../content/portfolio/detexi/screenshots/screenshot-4.webp'
+import heroDetexiBack from '../../content/portfolio/detexi/screenshots/screenshot-5.webp'
+import heroCarwaFront from '../../content/portfolio/carwa/screenshots/screenshot-clean-1.webp'
+import heroCarwaBack from '../../content/portfolio/carwa/screenshots/screenshot-clean-2.webp'
+import { Coffee, Sparkles, Landmark, TrendingUp, Lightbulb, ArrowRight } from 'lucide-astro'
+
+const idealClientIcons: Record<string, typeof Coffee> = {
+  'coffee': Coffee,
+  'sparkles': Sparkles,
+  'landmark': Landmark,
+  'trending-up': TrendingUp,
+  'lightbulb': Lightbulb,
+}
+import heroCarwa from '../../content/portfolio/carwa/screenshots/screenshot-1.webp'
+
+// Load featured portfolio entries for EN locale
+const allPortfolioEntries = await getCollection('portfolio')
+const featuredProjects = allPortfolioEntries
+  .filter((p) => p.data.locale === 'en' && p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3)
+
+// Load home EN copy
+const allPages = await getCollection('pages')
+// Astro glob loader slugifies filenames: home.en.mdx -> 'homeen'
+const homePage = allPages.find(
+  (p) => p.id === 'homeen' || p.id === 'home.en' || (p.data.locale === 'en' && p.id.startsWith('home')),
+)
+if (!homePage) throw new Error('home EN page entry not found in pages collection')
+
+const { hero, trustClaims, about, services, why, process, portfolio, founder, cta, idealClients, publicSector } =
+  homePage.data
+
+// Featured testimonial (English locale)
+const allTestimonials = await getCollection('testimonials')
+const featuredTestimonial = allTestimonials.find(
+  (t) => t.data.featured && t.data.locale === 'en',
+)
+
+// JSON-LD Organization schema — extended per M7 schema audit
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['Organization', 'ProfessionalService'],
+      '@id': 'https://banuacoder.com/#organization',
+      name: 'Banua Coder',
+      url: 'https://banuacoder.com',
+      logo: 'https://banuacoder.com/favicon.svg',
+      sameAs: [
+        'https://linkedin.com/company/banuacoder',
+        'https://github.com/banua-coder',
+        'https://instagram.com/banuacoder',
+        'https://youtube.com/@banuacoder',
+      ],
+      foundingDate: '2019',
+      description:
+        'Engineering-led technology partner helping F&B brands, beauty businesses, and regional governments build relevant, scalable digital solutions.',
+      slogan: 'Engineering-led. Built to last.',
+      priceRange: '$$',
+      email: 'contact@banuacoder.com',
+      telephone: '+6287784808269',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Palu',
+        addressRegion: 'Central Sulawesi',
+        postalCode: '94111',
+        addressCountry: 'ID',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: -0.8917,
+        longitude: 119.8707,
+      },
+      areaServed: [
+        { '@type': 'Country', name: 'Indonesia' },
+        { '@type': 'City', name: 'Palu' },
+        { '@type': 'AdministrativeArea', name: 'Central Sulawesi' },
+        'ID',
+      ],
+      knowsAbout: [
+        'Mobile App Development',
+        'Flutter',
+        'Laravel',
+        'Public Sector Digitalization',
+        'Membership Systems',
+        'F&B Technology',
+        'Operational Systems',
+        'UI/UX Design',
+      ],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        telephone: '+6287784808269',
+        availableLanguage: ['Indonesian', 'English'],
+        hoursAvailable: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: '09:00',
+          closes: '17:00',
+        },
+      },
+      founder: {
+        '@type': 'Person',
+        '@id': 'https://banuacoder.com/founder/#person',
+        name: 'Fajrian Aidil Pratama',
+        url: 'https://banuacoder.com/founder/',
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://banuacoder.com/#website',
+      url: 'https://banuacoder.com',
+      name: 'Banua Coder',
+      inLanguage: ['id', 'en'],
+      publisher: { '@id': 'https://banuacoder.com/#organization' },
+    },
+  ],
+}
+---
+
+<BaseLayout title={homePage.data.title} description={homePage.data.description} ogImage={ogUrl('en-home')}>
+  <!-- JSON-LD Organization -->
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(orgSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Skip to main content
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- ① Hero -->
+    {hero && (
+      <Hero
+        eyebrow={hero.eyebrow}
+        title={hero.headline}
+        subtitle={hero.subheadline}
+        primaryCta={hero.primaryCta}
+        primaryHref={hero.primaryHref}
+        secondaryCta={hero.secondaryCta}
+        secondaryHref={hero.secondaryHref}
+      >
+        <div slot="media" class="hero-stage" aria-label="Digital product previews" role="img">
+          <div class="hero-glow" aria-hidden="true"></div>
+
+          <div class="hero-shot hero-shot-back" data-hero-cycle-group="hero-products">
+            <Image
+              src={heroPicoBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="eager"
+              decoding="async"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroSikerjaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroSiapBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexiBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaBack}
+              alt=""
+              widths={[200, 400]}
+              sizes="200px"
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+          </div>
+
+          <div
+            class="hero-shot hero-shot-main"
+            data-hero-cycle-group="hero-products"
+            data-hero-cycle-interval="4200"
+            data-hero-cycle-labels="PICO Sulteng,Sikerja,SIAP Donggala,Detexi,Carwa"
+          >
+            <Image
+              src={heroPicoFront}
+              alt="PICO Sulteng app preview"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              class="hero-shot-img is-active"
+              data-hero-slide
+            />
+            <Image
+              src={heroSikerjaFront}
+              alt="Sikerja preview — Central Sulawesi job portal home screen"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroSiapFront}
+              alt="Siap Donggala preview — personnel information system"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroDetexiFront}
+              alt="Detexi preview — medical referral detail"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+            <Image
+              src={heroCarwaFront}
+              alt="Carwa preview — Dubai digital car auction"
+              widths={[280, 560]}
+              sizes="280px"
+              loading="lazy"
+              decoding="async"
+              class="hero-shot-img"
+              data-hero-slide
+            />
+          </div>
+
+          <div class="hero-chip" aria-hidden="true" data-hero-chip>
+            <span class="hero-chip-dot"></span>
+            <span class="hero-chip-label" data-hero-chip-label>// PICO Sulteng</span>
+          </div>
+        </div>
+      </Hero>
+    )}
+
+    <!-- ② Trust strip -->
+    {trustClaims && <TrustStrip claims={trustClaims} />}
+
+    <!-- ②b Client logo cycle (pinned scroll-driven) -->
+    <ClientLogoCycle lang="en" />
+
+    <!-- ③ About snippet -->
+    {about && (
+      <section
+        aria-labelledby="about-heading"
+        class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+        data-reveal
+      >
+        <Container>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+                // {about.eyebrow}
+              </p>
+              <h2
+                id="about-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+                style="font-size: var(--fs-36)"
+              >
+                About Banua Coder
+              </h2>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-6" style="font-size: var(--fs-17)">
+                {about.body}
+              </p>
+              <a
+                href="/en/about/"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+              >
+                More about us →
+              </a>
+            </div>
+            <div
+              class="hidden md:flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+              aria-hidden="true"
+              data-tell-about-decor
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">// founded 2019</p>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+                Based in Central Sulawesi, Indonesia
+              </p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-2"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+                Mobile · Web · Dashboard · Operational Systems
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ④ Services preview -->
+    {services && (
+      <section
+        aria-labelledby="services-heading"
+        style="padding-block: var(--spacing-section-y)"
+        data-reveal
+      >
+        <Container>
+          <SectionHeader
+            eyebrow={services.eyebrow}
+            marker={services.marker}
+            title={services.title}
+            description={services.description}
+            class="mb-12"
+          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-tell-services>
+            <!-- Build & Engineer -->
+            <a
+              href="/en/services/#build"
+              class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Build & Engineer</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-accent transition-colors"
+                style="font-size: var(--fs-28)"
+              >
+                Digital Products & Systems
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                Websites, mobile apps, dashboards, and operational systems built with real engineering depth and genuine business understanding.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {['Customer-Facing', 'Internal Ops', 'Product Engineering'].map((tag) => (
+                  <span class="font-mono text-xs px-2.5 py-1 rounded-full border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span class="font-mono text-xs text-bnc-accent group-hover:underline">View services →</span>
+            </a>
+
+            <!-- Brand & Grow -->
+            <a
+              href="/en/services/#grow"
+              class="group flex flex-col gap-4 p-8 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors"
+              data-tell-services-card
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-widest uppercase">Brand & Grow</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-accent transition-colors"
+                style="font-size: var(--fs-28)"
+              >
+                Design & Growth
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                Visual identity, UI/UX, and social media management to build a consistent brand and strong digital presence.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {['Design', 'Social Media'].map((tag) => (
+                  <span class="font-mono text-xs px-2.5 py-1 rounded-full border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span class="font-mono text-xs text-bnc-accent group-hover:underline">View services →</span>
+            </a>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑤ Why Banua Coder (pinned scroll carousel) -->
+    {why && (
+      <WhyCarousel
+        eyebrow={why.eyebrow}
+        marker={why.marker}
+        title={why.title}
+        items={why.items}
+        lang="en"
+      />
+    )}
+
+    <!-- ⑥ Process -->
+    {process && (
+      <section
+        aria-labelledby="process-heading"
+        style="padding-block: var(--spacing-section-y)"
+        data-reveal
+      >
+        <Container>
+          <SectionHeader
+            eyebrow={process.eyebrow}
+            marker={process.marker}
+            title={process.title}
+            description={process.description}
+            class="mb-14"
+          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16" data-process-strip>
+            {process.steps.map((step, i) => (
+              <ProcessStep
+                step={i + 1}
+                title={step.title}
+                body={step.body}
+                last={i === process.steps.length - 1 || i === process.steps.length - 2}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑥b Ideal client fit -->
+    {idealClients && (
+      <section
+        aria-labelledby="ideal-clients-heading"
+        style="padding-block: var(--spacing-section-y)"
+        data-reveal
+      >
+        <Container>
+          <div class="mb-10">
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+              // {idealClients.eyebrow}
+            </p>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">
+                {idealClients.marker}
+              </span>
+              <h2
+                id="ideal-clients-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-36)"
+              >
+                {idealClients.title}
+              </h2>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" data-ideal-strip>
+            {idealClients.items.map((item, i) => {
+              const IconComponent = idealClientIcons[item.icon] ?? ArrowRight
+              return (
+                <div
+                  data-ideal-tile
+                  class:list={[
+                    'flex flex-col gap-3 p-6 rounded-[var(--radius-md)] border',
+                    'border-bnc-stone-200 dark:border-bnc-stone-800',
+                    'bg-bnc-stone-50 dark:bg-bnc-stone-900',
+                    i === 4 ? 'sm:col-span-2 lg:col-span-1' : '',
+                  ]}>
+                  <span class="inline-flex items-center justify-center w-10 h-10 rounded-[var(--radius-sm)] bg-bnc-paper dark:bg-bnc-ink text-bnc-primary dark:text-bnc-accent" aria-hidden="true">
+                    <IconComponent size={20} strokeWidth={1.75} />
+                  </span>
+                  <h3
+                    class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
+                    style="font-size: var(--fs-20)"
+                  >
+                    {item.title}
+                  </h3>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                    {item.body}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑥c Public-sector capability module -->
+    {publicSector && (
+      <section
+        aria-labelledby="public-sector-heading"
+        class="border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm); border-left: 3px solid var(--color-bnc-accent)"
+        data-reveal
+      >
+        <Container>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div>
+              <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">
+                // {publicSector.eyebrow}
+              </p>
+              <h2
+                id="public-sector-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug mb-5"
+                style="font-size: var(--fs-28)"
+              >
+                {publicSector.title}
+              </h2>
+            </div>
+            <div>
+              <ul class="list-none m-0 p-0 flex flex-col gap-3 mb-5" role="list" data-tell-public-bullets>
+                {publicSector.bullets.map((bullet) => (
+                  <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed" data-tell-public-bullet>
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={publicSector.ctaHref}
+                class="font-mono text-xs text-bnc-accent hover:underline underline-offset-4 inline-flex items-center gap-1.5"
+              >
+                {publicSector.ctaLabel} →
+              </a>
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑦ Portfolio highlight -->
+    {portfolio && (
+      <section
+        aria-labelledby="portfolio-heading"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y)"
+        data-reveal
+      >
+        <Container>
+          <div class="flex items-end justify-between gap-4 flex-wrap mb-12">
+            <SectionHeader
+              eyebrow={portfolio.eyebrow}
+              marker={portfolio.marker}
+              title={portfolio.title}
+              description={portfolio.description}
+            />
+            <a
+              href="/en/portfolio/"
+              class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors shrink-0 self-end mb-1 inline-flex items-center gap-1.5"
+            >
+              {portfolio.viewAllLabel} →
+            </a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal-stagger>
+            {featuredProjects.map((project) => (
+              <CaseStudyCard
+                title={project.data.title}
+                client={project.data.client}
+                year={project.data.year}
+                bucket={project.data.bucket}
+                summary={project.data.summary}
+                impactStat={project.data.impact[0]}
+                coverSrc={project.data.thumbnail as ImageMetadata}
+                coverAlt={`${project.data.title} preview`}
+                href={`/en/portfolio/${project.data.slug}/`}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑧ Founder strip -->
+    {founder && (
+      <section
+        aria-labelledby="founder-heading"
+        style="padding-block: var(--spacing-section-y)"
+        data-reveal
+      >
+        <Container>
+          <div class="mb-8">
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+              // {founder.eyebrow}
+            </p>
+            <div class="flex items-center gap-3">
+              <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">
+                {founder.marker}
+              </span>
+              <h2
+                id="founder-heading"
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-36)"
+              >
+                {founder.sectionTitle}
+              </h2>
+            </div>
+          </div>
+          <FounderCard
+            name="Fajrian Aidil Pratama"
+            role="Founder & Director"
+            headline={founder.headline}
+            narrative={founder.narrative}
+            variant="compact"
+            href="/en/founder/"
+            socials={{
+              linkedin: 'https://linkedin.com/in/fajrianaidilpratama',
+              github: 'https://github.com/fajrianaidilpratama',
+            }}
+          />
+          <div class="mt-8 pt-8 border-t border-bnc-stone-200 dark:border-bnc-stone-800" data-tell-founder-experience>
+            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 mb-4 tracking-widest uppercase">
+              // Selected background
+            </p>
+            <FounderExperienceStrip />
+          </div>
+          <div class="mt-6">
+            <a
+              href="/en/founder/"
+              class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+            >
+              {founder.readMoreLabel} →
+            </a>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑨ Featured testimonial (hidden when none exist) -->
+    {featuredTestimonial && (
+      <section
+        aria-label="Testimonial"
+        class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y-sm)"
+        data-tell-testimonial
+      >
+        <Container class="max-w-3xl">
+          <Testimonial
+            quote={featuredTestimonial.data.quote}
+            author={featuredTestimonial.data.author}
+            role={featuredTestimonial.data.role}
+            company={featuredTestimonial.data.company}
+          />
+        </Container>
+      </section>
+    )}
+
+    <!-- ⑩ Final CTA -->
+    {cta && (
+      <div data-reveal>
+        <p class="text-center font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 py-4">
+          Not sure about the cost?{' '}
+          <a href="/en/estimate/" class="text-bnc-accent hover:underline underline-offset-4">
+            Try the estimate calculator →
+          </a>
+        </p>
+        <CTA
+          headline={cta.headline}
+          sub={cta.sub}
+          primaryCta={cta.primaryCta}
+          primaryHref={cta.primaryHref}
+          inverted={true}
+        />
+      </div>
+    )}
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* ── Hero stage: real screenshots (already framed) + glow + chip ── */
+  .hero-stage {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+
+  .hero-glow {
+    position: absolute;
+    inset: -40px;
+    background:
+      radial-gradient(60% 50% at 65% 50%, rgba(29, 156, 212, 0.18), transparent 70%),
+      radial-gradient(50% 60% at 35% 60%, rgba(18, 57, 140, 0.15), transparent 70%);
+    filter: blur(20px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  :global(html.dark) .hero-glow {
+    background:
+      radial-gradient(60% 50% at 65% 50%, rgba(29, 156, 212, 0.28), transparent 70%),
+      radial-gradient(50% 60% at 35% 60%, rgba(29, 156, 212, 0.18), transparent 70%);
+  }
+
+  .hero-shot {
+    position: absolute;
+  }
+  .hero-shot :global(.hero-shot-img) {
+    display: block;
+    height: auto;
+    border-radius: 28px;
+    transition: opacity 0.7s ease;
+  }
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img) {
+    opacity: 0;
+  }
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img.is-active) {
+    opacity: 1;
+  }
+  .hero-shot[data-hero-cycle-group] :global(.hero-shot-img:not(:first-child)) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-shot-main {
+    right: 8%;
+    top: 0;
+    z-index: 3;
+    transform: rotate(-2deg);
+    filter: drop-shadow(0 30px 50px rgba(10, 14, 20, 0.22));
+  }
+  .hero-shot-main :global(.hero-shot-img) {
+    width: 280px;
+  }
+
+  .hero-shot-back {
+    left: 0;
+    top: 60px;
+    z-index: 1;
+    transform: rotate(-9deg);
+    transform-origin: top left;
+    opacity: 0.9;
+    filter: drop-shadow(0 20px 30px rgba(10, 14, 20, 0.18));
+  }
+  .hero-shot-back :global(.hero-shot-img) {
+    width: 200px;
+  }
+
+  .hero-chip {
+    position: absolute;
+    z-index: 4;
+    bottom: 32px;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--color-bnc-paper);
+    border: 1px solid var(--color-bnc-stone-200);
+    box-shadow: var(--shadow-elevated, 0 6px 20px rgba(10, 14, 20, 0.08));
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-bnc-stone-700);
+    transform: rotate(-3deg);
+  }
+  :global(html.dark) .hero-chip {
+    background: var(--color-bnc-stone-900);
+    border-color: var(--color-bnc-stone-700);
+    color: var(--color-bnc-stone-300);
+  }
+  .hero-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-bnc-accent);
+    box-shadow: 0 0 0 3px rgba(29, 156, 212, 0.18);
+  }
+
+  @media (max-width: 1023px) {
+    .hero-stage {
+      height: 440px;
+      max-width: 480px;
+    }
+  }
+
+  /* Mobile: keep BOTH phones, just tighter layout. Front phone shifts
+     right and shrinks; back phone shrinks more and tucks left. */
+  @media (max-width: 640px) {
+    .hero-stage {
+      height: 420px;
+      max-width: 360px;
+    }
+    .hero-shot-main {
+      right: 4%;
+      top: 12px;
+    }
+    .hero-shot-main :global(.hero-shot-img) {
+      width: 220px;
+    }
+    .hero-shot-back {
+      left: -4%;
+      top: 60px;
+    }
+    .hero-shot-back :global(.hero-shot-img) {
+      width: 150px;
+    }
+    .hero-chip {
+      bottom: 16px;
+      left: 12px;
+    }
+  }
+</style>

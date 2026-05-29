@@ -1,0 +1,73 @@
+---
+title: BPS SE Scrapper
+slug: bps-se-scrapper
+bucket: public-sector
+client: Badan Pusat Statistik
+year: 2026
+status: archived
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Tooling pengumpulan data untuk Sensus Ekonomi (SE) Badan Pusat Statistik yang
+  mengotomatisasi proses scraping dan agregasi data dari berbagai sumber untuk keperluan
+  sensus dan pengolahan data statistik. Proyek ini mencerminkan kemampuan Banua Coder
+  dalam domain data engineering untuk lembaga statistik nasional.
+problem: >
+  Proses pengumpulan data dalam rangka Sensus Ekonomi BPS melibatkan pengambilan data
+  dari berbagai sumber yang beragam format dan strukturnya. Melakukan proses ini secara
+  manual tidak efisien, rentan kesalahan, dan tidak dapat diskalakan untuk volume data
+  sensus yang besar. BPS membutuhkan tooling yang mampu mengotomatisasi pengumpulan,
+  pembersihan, dan standardisasi data dari berbagai sumber secara andal.
+solution: >
+  Banua Coder membangun tooling scraper yang mengotomatisasi proses pengumpulan data
+  untuk keperluan Sensus Ekonomi BPS. Tool mencakup komponen scraping yang dapat
+  dikonfigurasi untuk berbagai struktur sumber data, pipeline pembersihan dan
+  standardisasi data, mekanisme logging untuk auditabilitas, dan output data dalam
+  format yang siap diproses lebih lanjut oleh sistem BPS.
+impact:
+  - Otomatisasi proses pengumpulan data yang sebelumnya dilakukan manual
+  - Peningkatan konsistensi dan kualitas data yang dikumpulkan
+  - Pengurangan waktu dan sumber daya yang dibutuhkan untuk proses data entry
+  - Tooling yang mendukung kelancaran pelaksanaan Sensus Ekonomi BPS
+stack:
+  - Python
+  - Web Scraping
+  - Data Pipeline
+  - REST API
+featured: false
+order: 75
+locale: id
+---
+
+## Konteks
+
+BPS SE Scrapper adalah tooling data engineering yang dibangun untuk mendukung pelaksanaan
+Sensus Ekonomi (SE) Badan Pusat Statistik. Sensus Ekonomi merupakan program besar yang
+diselenggarakan BPS secara berkala untuk memperoleh gambaran lengkap tentang kegiatan
+ekonomi di seluruh Indonesia — dan pengumpulan datanya melibatkan volume serta variasi
+sumber yang sangat besar.
+
+Proyek ini menempatkan Banua Coder dalam peran yang berbeda dari pengembangan aplikasi
+biasa: lebih dekat ke domain data engineering, di mana keandalan tool, akurasi data,
+dan kemampuan audit menjadi prioritas utama.
+
+## Yang Kami Bangun
+
+Tooling scraper dirancang dengan fokus pada keandalan dan auditabilitas:
+
+- **Komponen scraping yang dapat dikonfigurasi**: Adapter untuk berbagai struktur dan
+  format sumber data, sehingga penambahan sumber baru tidak memerlukan perubahan
+  arsitektur inti.
+- **Pipeline pembersihan data**: Proses standardisasi otomatis untuk memastikan
+  konsistensi format sebelum data masuk ke sistem downstream BPS.
+- **Logging dan auditabilitas**: Setiap operasi dicatat dengan detail yang cukup
+  untuk memungkinkan penelusuran dan verifikasi data jika diperlukan.
+- **Format output yang kompatibel**: Data yang dihasilkan dalam format yang langsung
+  dapat dikonsumsi oleh pipeline pengolahan data BPS.
+
+## Dampak
+
+Tooling ini berhasil mengotomatisasi bagian signifikan dari proses pengumpulan data SE BPS,
+mengurangi ketergantungan pada proses manual yang lambat dan rentan kesalahan. Meskipun
+proyek ini kini berstatus archived seiring berakhirnya siklus sensus terkait, ia tetap
+menjadi referensi kemampuan Banua Coder dalam data engineering untuk lembaga pemerintah.

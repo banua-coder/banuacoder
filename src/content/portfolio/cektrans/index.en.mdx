@@ -1,0 +1,132 @@
+---
+title: cektrans
+slug: cektrans
+bucket: consumer
+client: Banua Coder
+clientUrl: https://cektrans.banuacoder.com
+year: 2026
+status: live
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Realtime tracker for TransPalu and Trans Donggala BRT — surfacing live bus
+  positions and arrival estimates straight from the operator's Mitra Darat
+  feed, in a fast web app that opens in any browser without install.
+problem: >
+  The BRT Nusantara backend that powers TransPalu and Trans Donggala already
+  exposes realtime data — but not to the public. Payloads are wrapped in
+  `AES-256-CBC` encryption, keys live with operators, and there's no official
+  public interface that shows bus positions to end users. Riders in Palu and
+  Donggala had no simple way to check whether a bus was close, far, or not
+  even running yet — they had to walk to the halte and hope.
+solution: >
+  Banua Coder built cektrans as an independent tracker for TransPalu and Trans
+  Donggala. A Rust proxy (`axum` + `socketioxide` + `rust_socketio`) bridges
+  the encrypted operator API: handling `AES-256-CBC` crypto, REST caching, and
+  Socket.IO fan-out to browsers. On the client, a Vue 3 SPA with Leaflet
+  renders a live map, corridor list, halte detail, arrival estimates, and a
+  trip planner — install-free, opening in a browser on phone or desktop.
+impact:
+  - "First public interface for tracking TransPalu & Trans Donggala in realtime"
+  - "Helps Palu and Donggala commuters check the bus before heading to the halte"
+  - "Demonstrates Banua Coder's engineering depth in civic tech & realtime infra"
+  - "Full self-built stack — Vue 3 frontend, Rust proxy, Docker + Traefik on VPS"
+stack:
+  - Vue 3
+  - TypeScript
+  - Vite
+  - Pinia
+  - Tailwind v4
+  - Leaflet
+  - Socket.IO
+  - Vue Router
+  - Vue I18n
+  - Rust
+  - Axum
+  - Docker
+  - Traefik
+links:
+  web: https://cektrans.banuacoder.com
+featured: true
+order: 15
+locale: en
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+
+## Context
+
+TransPalu and Trans Donggala are two Bus Rapid Transit (BRT) services in
+Central Sulawesi, operated locally and integrated with the BRT Nusantara
+backend maintained by Mitra Darat. The operator system already tracks every
+bus in realtime — but its data lives behind an internal API where payloads
+are wrapped in `AES-256-CBC` encryption with keys only operators hold. No
+official public-facing app surfaces those bus positions to riders, so
+commuters had no way to check whether a bus was nearby before walking to the
+halte.
+
+cektrans was built as a bridge: pulling live data from the operator backend,
+handling it safely on the server, and surfacing it to the public in a fast,
+phone-friendly web interface.
+
+## App Showcase
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
+  <Image src={shot1} alt="cektrans home with TransPalu and Trans Donggala city picker" class="rounded-lg w-full" />
+  <Image src={shot2} alt="TransPalu realtime corridor map with colour-coded buses" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Desktop view with corridor sidebar and live map" class="rounded-lg w-full md:col-span-2" />
+</div>
+
+## What We Built
+
+- **Rust proxy**: An `axum` service that wraps the operator API. Handles
+  `AES-256-CBC` token and body crypto, REST response caching, and a Socket.IO
+  bridge between upstream (`rust_socketio`) and clients (`socketioxide`).
+  Operator keys and endpoints live in the proxy environment only — the
+  frontend never touches them.
+- **Vue 3 SPA**: Leaflet for the map, Pinia for global state (corridors,
+  haltes, active buses), Vue Router for navigation between cities, and Vue
+  I18n for bilingual support. Tailwind v4 keeps the look consistent with the
+  Banua Coder brand.
+- **Realtime UX**: Buses move on the map the moment updates arrive over
+  Socket.IO. Every corridor has its own colour, and each halte has a card
+  showing incoming buses with arrival estimates.
+- **Trip planner**: Riders can pick origin and destination haltes, and the
+  app suggests sensible multi-corridor routes.
+- **Ops**: Two containers (web + proxy) built via Dockerfiles, run via
+  `docker compose` behind Traefik with Let's Encrypt TLS. Build version and
+  SHA surface in the footer for traceability.
+
+## Engineering Notes
+
+The hard part isn't the UI — it's the proxy. The upstream BRT Nusantara API
+uses an encrypted handshake: tokens are wrapped in `AES-256-CBC`, response
+bodies are encrypted too, and the Socket.IO connection follows the operator's
+own protocol variant. Rust was chosen for the proxy because:
+
+- **Type safety on the crypto path**: the compiler catches buffer/byte
+  handling slips that are easy to leak in a dynamic language.
+- **Performance**: the proxy serves Socket.IO fan-out, REST caching, and
+  per-request body decryption without becoming a bottleneck.
+- **Single-binary deploy**: tiny container, fast restarts, predictable memory
+  footprint on a shared VPS.
+
+The hard split between proxy (holds every secret) and web (public, no
+secrets) keeps operator key rotation simple — just update the env var on the
+proxy container, no frontend touch required.
+
+## Impact
+
+cektrans is among the first public interfaces — if not the first — to track
+TransPalu and Trans Donggala in realtime. For daily riders in Palu and
+Donggala it changes the experience from "show up and wait" to "check the map
+first, leave when the bus is close".
+
+For Banua Coder, cektrans is proof that a local team in Palu can build
+realtime infrastructure end-to-end — from a Rust proxy handling operator
+crypto, through Socket.IO fan-out, to a Leaflet map in the browser — and run
+it 24/7 on our own VPS. It's also our first consumer product in the civic
+tech / public transport space.

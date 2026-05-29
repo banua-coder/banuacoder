@@ -1,0 +1,100 @@
+---
+title: PICO Sulteng
+slug: pico-sulteng
+bucket: public-sector
+client: Pemerintah Provinsi Sulawesi Tengah
+year: 2021
+status: archived
+cover: ./cover.webp
+thumbnail: ./thumbnail.svg
+summary: >
+  Platform informasi COVID-19 untuk Provinsi Sulawesi Tengah yang mencakup aplikasi mobile,
+  web, dan REST API. Dibangun pada masa pandemi untuk membantu masyarakat dan pemerintah
+  mengakses data situasi terkini dengan cepat dan terstruktur.
+problem: >
+  Pada masa puncak pandemi COVID-19, pemerintah daerah menghadapi tantangan distribusi
+  informasi yang cepat, akurat, dan dapat dipercaya kepada masyarakat. Data kasus, lokasi
+  faskes, dan panduan protokol kesehatan tersebar di banyak kanal yang tidak terpadu.
+  Pemerintah Provinsi Sulawesi Tengah membutuhkan platform terpusat yang bisa diakses
+  melalui mobile maupun web, dengan data yang dapat diperbarui oleh operator secara real-time.
+solution: >
+  Banua Coder membangun PICO Sulteng sebagai platform multi-layer: REST API sebagai sumber
+  data tunggal, aplikasi mobile Flutter untuk akses masyarakat umum, dan web portal untuk
+  akses yang lebih luas. Fitur meliputi dashboard statistik kasus (konfirmasi, sembuh,
+  meninggal) yang diperbarui berkala, peta sebaran kasus per kabupaten/kota, direktori
+  fasilitas kesehatan, dan panduan protokol kesehatan resmi.
+impact:
+  - Platform informasi publik COVID-19 resmi Provinsi Sulawesi Tengah
+  - "Cakupan multi-platform: mobile app, web portal, dan API publik"
+  - Mendukung distribusi informasi di masa darurat kesehatan daerah
+  - Diarsipkan setelah pandemi mereda — selesai sesuai tujuan
+stack:
+  - Flutter
+  - Laravel
+  - REST API
+  - Web (HTML/CSS/JS)
+  - MySQL
+links:
+  web: https://pico.banuacoder.com
+featured: false
+order: 60
+locale: id
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+import shot5 from './screenshots/screenshot-5.webp'
+import shot6 from './screenshots/screenshot-6.webp'
+import shot7 from './screenshots/screenshot-7.webp'
+
+## Konteks
+
+PICO Sulteng (Platform Informasi COVID-19 Sulawesi Tengah) dibangun pada 2021 saat pandemi
+COVID-19 masih dalam fase aktif. Ini adalah proyek dengan urgensi tinggi — pemerintah daerah
+membutuhkan platform yang bisa live dalam hitungan minggu, bukan bulan.
+
+Proyek ini mengajarkan Banua Coder banyak hal tentang delivery cepat di bawah tekanan: dari
+scope yang harus diprioritaskan, infrastruktur yang harus stabil di bawah lonjakan traffic,
+hingga koordinasi dengan pemangku kepentingan pemerintah yang memiliki proses persetujuan
+berbeda dari klien komersial.
+
+## Yang Kami Bangun
+
+PICO Sulteng terdiri dari tiga komponen:
+
+**1. REST API (Backend Laravel)**
+- Endpoint untuk statistik kasus yang dapat diperbarui oleh operator
+- Manajemen data fasilitas kesehatan
+- Endpoint publik yang digunakan oleh mobile app dan web portal
+
+**2. Aplikasi Mobile (Flutter)**
+- Dashboard statistik kasus per provinsi dan kabupaten/kota
+- Peta sebaran kasus interaktif
+- Daftar rumah sakit dan puskesmas rujukan COVID
+- Panduan protokol kesehatan dan karantina
+
+**3. Web Portal**
+- Versi web yang bisa diakses dari browser tanpa mengunduh aplikasi
+- Berbagi data yang sama dengan mobile app melalui API
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Dashboard statistik COVID-19 PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Tampilan kasus per kabupaten/kota PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Panduan protokol kesehatan PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Peta sebaran kasus regional PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot5} alt="Direktori fasilitas kesehatan PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot6} alt="Statistik dengan grafik data PICO Sulteng" class="rounded-lg w-full" />
+  <Image src={shot7} alt="Tampilan aplikasi PICO Sulteng terbaru (2024)" class="rounded-lg w-full" />
+</div>
+
+## Dampak
+
+PICO Sulteng berhasil diluncurkan dan menjadi platform informasi COVID-19 resmi Provinsi
+Sulawesi Tengah. Platform ini diarsipkan setelah pandemi mereda — sebuah proyek yang
+berhasil memenuhi tujuannya sesuai konteks.
+
+Bagi Banua Coder, proyek ini menjadi referensi kemampuan mengerjakan sistem publik
+berteknologi multi-layer dengan delivery cepat dalam situasi darurat.

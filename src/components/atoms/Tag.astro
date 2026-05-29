@@ -1,0 +1,32 @@
+---
+/**
+ * Tag — small pill for bucket tags and tech stack labels.
+ * Variants: default, bucket-consumer, bucket-public, bucket-operational, bucket-open-source.
+ * Open-source uses a border-only mono treatment to visually separate SDK/library work from product buckets.
+ */
+interface Props {
+  variant?: 'default' | 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
+  class?: string
+}
+
+const { variant = 'default', class: cls = '' } = Astro.props
+
+const variantClass = {
+  default: 'bg-bnc-stone-100 dark:bg-bnc-stone-800 text-bnc-stone-600 dark:text-bnc-stone-400',
+  'bucket-consumer': 'bg-bnc-accent/10 text-bnc-accent border border-bnc-accent/20',
+  'bucket-public': 'bg-bnc-primary/10 text-bnc-primary dark:text-blue-300 border border-bnc-primary/20',
+  'bucket-operational': 'bg-bnc-stone-200 dark:bg-bnc-stone-700 text-bnc-stone-700 dark:text-bnc-stone-300',
+  'bucket-open-source': 'bg-transparent border border-bnc-stone-400 dark:border-bnc-stone-500 text-bnc-stone-500 dark:text-bnc-stone-400',
+}[variant]
+---
+
+<span
+  class:list={[
+    'inline-flex items-center px-2.5 py-0.5',
+    'font-mono text-xs rounded-[var(--radius-sm)]',
+    variantClass,
+    cls,
+  ]}
+>
+  <slot />
+</span>

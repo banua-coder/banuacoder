@@ -1,0 +1,155 @@
+---
+/**
+ * FounderCard — founder profile display.
+ * Compact variant for home, full variant for /founder page.
+ */
+import { Image } from 'astro:assets'
+
+interface SocialLinks {
+  linkedin?: string
+  github?: string
+  medium?: string
+  youtube?: string
+}
+
+interface Props {
+  name: string
+  role: string
+  headline: string
+  narrative: string
+  photoSrc?: ImageMetadata
+  credibilityBullets?: string[]
+  selectedExperience?: string
+  socials?: SocialLinks
+  /** compact = home strip; full = /founder page */
+  variant?: 'compact' | 'full'
+  href?: string
+  class?: string
+}
+
+const {
+  name,
+  role,
+  headline,
+  narrative,
+  photoSrc,
+  credibilityBullets = [],
+  selectedExperience,
+  socials = {},
+  variant = 'compact',
+  href = '/founder/',
+  class: cls = '',
+} = Astro.props
+
+const isFull = variant === 'full'
+---
+
+<div
+  class:list={[
+    'flex gap-8',
+    isFull ? 'flex-col md:flex-row items-start' : 'flex-col sm:flex-row items-start',
+    cls,
+  ]}
+>
+  <!-- Photo -->
+  {photoSrc ? (
+    <div class:list={['shrink-0', isFull ? 'w-48 md:w-64' : 'w-28 sm:w-36']}>
+      <Image
+        src={photoSrc}
+        alt={`${name}, ${role}`}
+        width={isFull ? 256 : 144}
+        height={isFull ? 320 : 180}
+        class="w-full h-auto rounded-[var(--radius-md)] object-cover"
+        loading="lazy"
+      />
+    </div>
+  ) : (
+    <!-- Photo placeholder -->
+    <div
+      class:list={[
+        'shrink-0 flex items-center justify-center rounded-[var(--radius-md)] bg-bnc-stone-100 dark:bg-bnc-stone-800',
+        isFull ? 'w-48 md:w-64 h-64 md:h-80' : 'w-28 sm:w-36 h-36 sm:h-44',
+      ]}
+      aria-hidden="true"
+    >
+      <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-center px-2">
+        // photo
+      </span>
+    </div>
+  )}
+
+  <!-- Text content -->
+  <div class="flex flex-col gap-4 flex-1">
+    <!-- Name + role -->
+    <div>
+      <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-1">
+        {role}
+      </p>
+      <h3
+        class:list={[
+          'font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight',
+        ]}
+        style={`font-size: var(${isFull ? '--fs-36' : '--fs-28'})`}
+      >
+        {name}
+      </h3>
+    </div>
+
+    <!-- Headline -->
+    <p class="font-semibold text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-17)">
+      {headline}
+    </p>
+
+    <!-- Narrative -->
+    <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+      {narrative}
+    </p>
+
+    <!-- Selected experience (full variant only) -->
+    {isFull && selectedExperience && (
+      <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 border-l-2 border-bnc-accent pl-3">
+        {selectedExperience}
+      </p>
+    )}
+
+    <!-- Credibility bullets (full variant) -->
+    {isFull && credibilityBullets.length > 0 && (
+      <ul class="list-none m-0 p-0 flex flex-col gap-2" role="list">
+        {credibilityBullets.map((bullet) => (
+          <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+            <span class="text-bnc-accent mt-0.5" aria-hidden="true">→</span>
+            {bullet}
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <!-- Social links -->
+    {Object.keys(socials).length > 0 && (
+      <div class="flex gap-3 flex-wrap">
+        {socials.linkedin && (
+          <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+            LinkedIn →
+          </a>
+        )}
+        {socials.github && (
+          <a href={socials.github} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+            GitHub →
+          </a>
+        )}
+        {socials.medium && (
+          <a href={socials.medium} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+            Medium →
+          </a>
+        )}
+      </div>
+    )}
+
+    <!-- Link to full profile (compact variant) -->
+    {!isFull && (
+      <a href={href} class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1">
+        Full profile →
+      </a>
+    )}
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#0A0E14"/>
+  <!-- Subtle dot grid -->
+  <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="20" cy="20" r="1" fill="#1D9CD4" opacity="0.15"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <!-- Accent stripe -->
+  <rect x="0" y="0" width="6" height="630" fill="#12398C"/>
+  <!-- Brand icon placeholder circle -->
+  <circle cx="100" cy="80" r="28" fill="#12398C" opacity="0.6"/>
+  <text x="100" y="86" font-family="monospace" font-size="14" fill="#1D9CD4" text-anchor="middle">BC</text>
+  <!-- Eyebrow -->
+  <text x="148" y="86" font-family="monospace" font-size="13" fill="#1D9CD4" letter-spacing="3">// BLOG · BANUA CODER</text>
+  <!-- Main headline -->
+  <text x="80" y="280" font-family="sans-serif" font-size="62" font-weight="700" fill="#F7F7F4" letter-spacing="-1">Membangun Sistem</text>
+  <text x="80" y="360" font-family="sans-serif" font-size="62" font-weight="700" fill="#F7F7F4" letter-spacing="-1">yang Bertumbuh</text>
+  <!-- Subline -->
+  <text x="80" y="430" font-family="sans-serif" font-size="22" fill="#8A8A85" font-weight="400">Engineering philosophy · Banua Coder</text>
+  <!-- Bottom tag row -->
+  <rect x="80" y="530" width="110" height="32" rx="4" fill="#12398C" opacity="0.4"/>
+  <text x="135" y="550" font-family="monospace" font-size="12" fill="#1D9CD4" text-anchor="middle">company</text>
+  <rect x="204" y="530" width="130" height="32" rx="4" fill="#12398C" opacity="0.4"/>
+  <text x="269" y="550" font-family="monospace" font-size="12" fill="#1D9CD4" text-anchor="middle">engineering</text>
+  <rect x="348" y="530" width="100" height="32" rx="4" fill="#12398C" opacity="0.4"/>
+  <text x="398" y="550" font-family="monospace" font-size="12" fill="#1D9CD4" text-anchor="middle">product</text>
+</svg>

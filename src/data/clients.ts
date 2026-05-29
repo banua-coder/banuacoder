@@ -1,0 +1,96 @@
+export type Client = {
+  name: string
+  logo: string
+  url?: string
+  tier: 'featured' | 'standard'
+  /** Optional context shown as hover tooltip / caption */
+  context?: string
+}
+
+// LICENSE NOTES:
+// - ulearna.png: source https://ulearna.com (og:image asset). Nominative fair use for client identification.
+// - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem). Covers both PICO Sulteng and Surat BMPR engagements.
+// - pemkab-gowa.png: Pemkab Gowa coat of arms — Public domain (PD-IDGov, Indonesian state emblem). Sourced from owner's branding archive (cleaner asset than the Wikimedia commons version).
+// - pemkab-donggala.png: https://commons.wikimedia.org/wiki/File:Lambang_Kabupaten_Donggala.png — Public domain (PD-IDGov). Covers Siap Donggala (Mekari Talenta integration).
+// - pemprov-sulsel.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_South_Sulawesi.svg — Public domain (PD-IDGov).
+// - brantas-inti-utama.png: extracted from Patonro/Lontara app splash branding asset (cropped + trimmed via ImageMagick from app's flutter_native_splash branding.png). Nominative fair use — partner is credited on Patonro/Lontara case studies.
+// - klinikgo.png: source https://klinikgo.com/logo-klinikgo.png — nominative fair use for client identification (mobile app partnership).
+// - bps.svg: https://commons.wikimedia.org/wiki/File:Lambang_Badan_Pusat_Statistik_(BPS)_Indonesia.svg — Public domain (PD-IDGov). Covers Banua Coder's BPS engagements: performance metrics, SE scrapper, bps_sso_sdk, form_gear_engine_sdk, form gear builder.
+// - caretaker.png, detexi.png: sourced from owner's branding archive (~/Pictures/Logo/). Caretaker.id is a private home care & hospice platform; Detexi is a health/medical app. Nominative fair use.
+//
+// NOTE: Dinas BMPR Sulteng deliberately omitted from the home trust strip — it
+// shares the same parent-province emblem as Pemprov Sulteng so two adjacent
+// badges would look duplicated. Dinas BMPR remains credited on the Surat BMPR
+// case study (src/content/portfolio/surat-bmpr/) where the partnership context matters.
+
+export const clients: Client[] = [
+  {
+    name: 'Ulearna Technology LTD',
+    logo: 'ulearna.png',
+    url: 'https://ulearna.com',
+    tier: 'featured',
+    context: 'Dubai, UAE — international consumer products (Reab, Carwa)',
+  },
+  {
+    name: 'PT Brantas Inti Utama',
+    logo: 'brantas-inti-utama.png',
+    tier: 'featured',
+    context: 'Implementation partner for regional tax digitalization (Patonro, Lontara)',
+  },
+  {
+    name: 'Pemerintah Provinsi Sulawesi Tengah',
+    logo: 'pemprov-sulteng.svg',
+    tier: 'featured',
+    context: 'Public information platform (PICO Sulteng) and internal correspondence (Surat BMPR)',
+  },
+  {
+    name: 'KlinikGo',
+    logo: 'klinikgo.png',
+    url: 'https://klinikgo.com',
+    tier: 'featured',
+    context: 'Mobile app partnership for integrated electronic medical records platform',
+  },
+  {
+    name: 'Pemerintah Kabupaten Gowa',
+    logo: 'pemkab-gowa.png',
+    tier: 'standard',
+    context: 'Regional tax services (Patonro)',
+  },
+  {
+    name: 'Pemerintah Kabupaten Donggala',
+    logo: 'pemkab-donggala.png',
+    tier: 'standard',
+    context: 'HR / staff information system (Siap Donggala — Mekari Talenta integration)',
+  },
+  {
+    name: 'Pemerintah Provinsi Sulawesi Selatan',
+    logo: 'pemprov-sulsel.svg',
+    tier: 'standard',
+    context: 'Province-scale regional tax services (Lontara)',
+  },
+  {
+    name: 'Badan Pusat Statistik (BPS) Republik Indonesia',
+    logo: 'bps.svg',
+    url: 'https://www.bps.go.id',
+    tier: 'featured',
+    context: 'National statistics agency — performance metrics, SE scrapper, BPS SSO SDK, FormGear engine + builder',
+  },
+  {
+    name: 'Caretaker.id',
+    logo: 'caretaker.png',
+    tier: 'featured',
+    context: 'Private home care & hospice platform — original Banua Coder product portfolio',
+  },
+  {
+    name: 'Detexi',
+    logo: 'detexi.png',
+    tier: 'standard',
+    context: 'Health/medical detection app',
+  },
+  {
+    name: 'Masjid Sejuta Pemuda',
+    logo: '',
+    tier: 'standard',
+    context: 'Muslim youth community app — Flutter performance audit & fix engagement (2025)',
+  },
+]

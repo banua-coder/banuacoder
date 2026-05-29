@@ -1,0 +1,481 @@
+---
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../lib/og/url'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import Container from '../components/layout/Container.astro'
+import SectionHeader from '../components/typography/SectionHeader.astro'
+import Card from '../components/atoms/Card.astro'
+import Testimonial from '../components/cards/Testimonial.astro'
+import CTA from '../components/sections/CTA.astro'
+import { team } from '../data/team'
+import iconImage from '../assets/brand/banuacoder-icon.png'
+import narrativeImg from '../assets/stock/clean-workspace-notebook.jpg'
+import processImg from '../assets/stock/engineer-focused-laptop.jpg'
+{/* narrativeImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
+{/* processImg — unsplash: https://unsplash.com/photos/person-using-macbook-pro-1498050108023-c5249f4df085 by @cgower */}
+
+let idTestimonials: Awaited<ReturnType<typeof getCollection<'testimonials'>>> = []
+try {
+  const allTestimonials = await getCollection('testimonials')
+  idTestimonials = allTestimonials
+    .filter((t) => t.data.locale === 'id')
+    .sort((a, b) => a.data.order - b.data.order)
+} catch {
+  // No testimonials yet
+}
+
+const founder = team.find((m) => m.highlight === 'founder')!
+const otherMembers = team.filter((m) => m.highlight !== 'founder')
+
+const messagePillars = [
+  {
+    title: 'Pemahaman Bisnis',
+    body: 'Banua Coder tidak hanya menjual coding, tapi membantu memetakan problem bisnis menjadi solusi digital yang realistis.',
+  },
+  {
+    title: 'Kredibilitas Teknis',
+    body: 'Kami punya engineering capability yang kuat, bukan sekadar level pembuatan website company profile atau app sederhana.',
+  },
+  {
+    title: 'Eksekusi Praktis',
+    body: 'Kami menekankan delivery yang terstruktur, bertahap, dan jelas sehingga terasa low-risk bagi client.',
+  },
+  {
+    title: 'Akar Regional, Kapabilitas Modern',
+    body: 'Banua Coder berbasis dari Sulawesi Tengah, tetapi kualitas berpikir, engineering, dan delivery-nya terasa setara dengan company yang lebih besar.',
+  },
+  {
+    title: 'Founder-Led Trust',
+    body: 'Founder memiliki track record kuat di software engineering, mobile platform, dan product thinking—sehingga Banua Coder mendapat trust tambahan dari sosok di belakangnya.',
+  },
+]
+
+const howWeWork = [
+  {
+    step: '01',
+    title: 'Discovery',
+    desc: 'Memahami konteks bisnis, memetakan problem, dan mengidentifikasi prioritas. Tidak ada asumsi—semua dimulai dari percakapan yang jujur.',
+  },
+  {
+    step: '02',
+    title: 'Solution Mapping',
+    desc: 'Mendefinisikan scope, menyusun struktur solusi, dan memilah mana yang harus dibangun sekarang dan mana yang bisa ditunda.',
+  },
+  {
+    step: '03',
+    title: 'Build',
+    desc: 'Engineering yang terstruktur dan iteratif—client dilibatkan di setiap siklus, bukan hanya menerima hasil di akhir.',
+  },
+  {
+    step: '04',
+    title: 'Support',
+    desc: 'Partnership jangka panjang, bukan sekadar hand-off. Kami tetap ada untuk maintenance, iterasi, dan pertumbuhan produk.',
+  },
+]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://banuacoder.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Tentang Kami', item: 'https://banuacoder.com/about/' },
+  ],
+}
+---
+
+<BaseLayout
+  title="Tentang Banua Coder — Software House Engineering-Led di Sulawesi Tengah"
+  description="Banua Coder adalah partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan, terstruktur, dan siap berkembang."
+  ogImage={ogUrl('about')}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="about-hero-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // TENTANG
+        </p>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ 01 ]</span>
+        </div>
+        <h1
+          id="about-hero-heading"
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+          style="font-size: var(--fs-64)"
+        >
+          Tentang Banua Coder
+        </h1>
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+          style="font-size: var(--fs-20); max-width: 60ch"
+        >
+          Partner teknologi untuk bisnis dan organisasi yang ingin membangun solusi digital dengan engineering depth dan pemahaman bisnis yang nyata.
+        </p>
+      </Container>
+    </section>
+
+    <!-- Narrative -->
+    <section aria-labelledby="narrative-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div>
+            <h2
+              id="narrative-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-6"
+              style="font-size: var(--fs-36)"
+            >
+              Kami membantu bisnis membangun solusi digital yang benar-benar berguna
+            </h2>
+            <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Banua Coder berdiri sejak 2019 dari Sulawesi Tengah, dengan satu keyakinan sederhana: teknologi harus membantu bisnis bekerja lebih baik, bukan sekadar membuat mereka terlihat modern. Sejak awal, kami memposisikan diri bukan sebagai vendor pembuat aplikasi, melainkan sebagai partner yang membantu klien memetakan problem dan membangun solusi yang benar-benar relevan dengan konteks mereka.
+              </p>
+              <p>
+                Cara kerja kami dibentuk oleh engineering—bukan sekadar dalam arti teknis, tetapi dalam cara berpikir. Engineer yang baik tidak langsung ngoding; ia bertanya dulu, memahami sistem yang ada, mengidentifikasi akar masalah, lalu menyusun solusi yang tepat. Itulah pendekatan yang kami bawa ke setiap proyek, dari discovery hingga delivery.
+              </p>
+              <p>
+                Klien kami mencakup brand F&B, kafe, dan retail yang ingin tampil lebih profesional dan membangun loyalitas pelanggan; brand kecantikan dan skincare yang memperkuat kehadiran digital; pemerintah daerah dan instansi publik yang membutuhkan aplikasi layanan masyarakat; serta UMKM berkembang dan founder yang ingin membangun produk digital pertama atau sistem operasional mereka.
+              </p>
+              <p>
+                Ketika kami bilang "partner, bukan vendor," itu bukan slogan. Ini tercermin dari cara kami bekerja: kami ikut memikirkan solusinya, bukan hanya mengeksekusi brief yang diberikan. Kami akan bertanya kalau ada sesuatu yang tidak jelas. Kami akan memberitahu kalau ada pendekatan yang lebih baik. Dan kami tetap ada setelah produk diluncurkan.
+              </p>
+              <p>
+                Akar kami di Sulawesi Tengah memberi kami pemahaman kontekstual tentang bisnis dan kebutuhan daerah yang tidak dimiliki banyak agency dari kota besar. Tapi standar berpikir dan engineering yang kami bawa tidak lebih rendah dari mereka—justru itulah yang kami jaga.
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-col gap-6">
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={narrativeImg}
+                alt="Clean workspace with notebook — Banua Coder story"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 320px"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div
+              class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+              aria-hidden="true"
+            >
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">// didirikan 2019</p>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Berbasis di Sulawesi Tengah</p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Mobile · Web · Dashboard · Sistem Operasional</p>
+              <div class="w-full h-px bg-bnc-stone-200 dark:bg-bnc-stone-800 my-1"></div>
+              <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">Design · Social Media</p>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Message Pillars -->
+    <section
+      aria-labelledby="pillars-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="PENDEKATAN"
+          marker="[ 02 ]"
+          title="Cara Kami Berpikir"
+          description="Lima prinsip yang mendasari bagaimana Banua Coder bekerja dan memberikan nilai bagi klien."
+          class="mb-12"
+        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {messagePillars.map((pillar, i) => (
+            <Card padding="lg" class="flex flex-col gap-3">
+              <span class="font-mono text-xs text-bnc-accent">{String(i + 1).padStart(2, '0')}</span>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-20)"
+              >
+                {pillar.title}
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed flex-1">
+                {pillar.body}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </section>
+
+    <!-- How We Work -->
+    <section aria-labelledby="how-we-work-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div>
+            <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+              // CARA KERJA
+            </p>
+            <h2
+              id="how-we-work-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight mb-8"
+              style="font-size: var(--fs-36)"
+            >
+              Proses yang jelas, dari awal hingga support
+            </h2>
+            <ol class="list-none m-0 p-0 flex flex-col gap-8" role="list">
+              {howWeWork.map((stage) => (
+                <li class="flex gap-5 items-start">
+                  <span
+                    class="shrink-0 w-10 h-10 flex items-center justify-center rounded-full border-2 border-bnc-accent text-bnc-accent font-mono text-xs font-bold"
+                    aria-hidden="true"
+                  >
+                    {stage.step}
+                  </span>
+                  <div>
+                    <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-17)">
+                      {stage.title}
+                    </p>
+                    <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                      {stage.desc}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 mt-8 lg:mt-16">
+            <Image
+              src={processImg}
+              alt="Engineer working — Banua Coder process"
+              width={600}
+              class="w-full object-cover"
+              style="max-height: 400px"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Team section -->
+    <section
+      aria-labelledby="team-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="TIM"
+          marker="[ 03 ]"
+          title="Tim Kami"
+          description="Banua Coder digerakkan oleh tim kecil yang solid—dengan keahlian in-house yang saling melengkapi di engineering, design, social media, dan delivery."
+          class="mb-12"
+        />
+
+        <!-- Founder card (larger) -->
+        <div class="mb-10">
+          <Card padding="lg" class="flex flex-col md:flex-row gap-8 items-start">
+            <div
+              class="shrink-0 w-32 h-40 md:w-40 md:h-52 flex items-center justify-center rounded-[var(--radius-md)] bg-bnc-stone-100 dark:bg-bnc-stone-800 overflow-hidden"
+              aria-label="Foto Fajrian — akan diganti dengan foto profesional"
+            >
+              <Image
+                src={iconImage}
+                alt=""
+                width={64}
+                height={64}
+                class="w-16 h-16 opacity-20"
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="flex flex-col gap-3 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-bnc-accent uppercase tracking-widest">Founder</span>
+              </div>
+              <div>
+                <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-1">
+                  {founder.role}
+                </p>
+                <h3
+                  class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight"
+                  style="font-size: var(--fs-36)"
+                >
+                  {founder.name}
+                </h3>
+              </div>
+              {founder.bio && (
+                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+                  {founder.bio}
+                </p>
+              )}
+              <div class="flex flex-wrap gap-2" role="list" aria-label="Keahlian">
+                {founder.expertise.map((tag) => (
+                  <span
+                    role="listitem"
+                    class="font-mono text-xs px-2.5 py-1 rounded-full border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-600 dark:text-bnc-stone-400"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div class="flex gap-4 flex-wrap">
+                {founder.links.linkedin && (
+                  <a href={founder.links.linkedin} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+                    LinkedIn →
+                  </a>
+                )}
+                {founder.links.twitter && (
+                  <a href={founder.links.twitter} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+                    X →
+                  </a>
+                )}
+                <a href="/founder/" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors">
+                  Profil lengkap →
+                </a>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <!-- Other 3 members grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {otherMembers.map((member) => (
+            <Card padding="lg" class="flex flex-col gap-4">
+              <div
+                class="w-16 h-16 flex items-center justify-center rounded-full bg-bnc-stone-100 dark:bg-bnc-stone-800 overflow-hidden"
+                aria-hidden="true"
+              >
+                <Image
+                  src={iconImage}
+                  alt=""
+                  width={32}
+                  height={32}
+                  class="w-8 h-8 opacity-20"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-1">
+                  {member.role}
+                </p>
+                <h3
+                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                  style="font-size: var(--fs-20)"
+                >
+                  {member.name}
+                </h3>
+              </div>
+              <div class="flex flex-wrap gap-1.5" role="list" aria-label="Keahlian">
+                {member.expertise.map((tag) => (
+                  <span
+                    role="listitem"
+                    class="font-mono text-xs px-2 py-0.5 rounded-full border border-bnc-stone-200 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div class="flex gap-3 flex-wrap mt-auto">
+                {member.links.linkedin && (
+                  <a href={member.links.linkedin} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors">
+                    LinkedIn →
+                  </a>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </section>
+
+    <!-- Testimonials (hidden when none exist) -->
+    {idTestimonials.length > 0 && (
+      <section
+        aria-labelledby="testimonials-heading"
+        class="border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow="TESTIMONI"
+            marker="[ 04 ]"
+            title="Apa Kata Klien"
+            class="mb-12"
+          />
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {idTestimonials.map((t) => (
+              <Testimonial
+                quote={t.data.quote}
+                author={t.data.author}
+                role={t.data.role}
+                company={t.data.company}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- Why work with us -->
+    <section aria-labelledby="why-us-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // MENGAPA BANUA CODER
+          </p>
+          <h2
+            id="why-us-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-36)"
+          >
+            Apa yang membedakan kami
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Banyak agency bisa membuat website atau aplikasi. Yang lebih sulit ditemukan adalah partner yang benar-benar memahami bisnis Anda sebelum menyentuh keyboard—yang mau bertanya, mendebat dengan hormat jika ada yang tidak tepat, dan memastikan solusi yang dibangun relevan dengan masalah nyata, bukan hanya dengan brief yang ditulis. Itulah yang kami coba jadi untuk setiap klien.
+            </p>
+            <p>
+              Founder Banua Coder membawa pengalaman lintas konteks yang jarang dimiliki software house lokal: dari platform fintech skala besar, produk consumer untuk pasar internasional, hingga sistem publik daerah. Pengalaman ini bukan untuk dipamerkan—melainkan untuk memastikan bahwa standar berpikir yang kami bawa ke project Anda sudah teruji di lingkungan yang lebih kompleks. Akar kami di Sulawesi Tengah memberi kami kedekatan kontekstual dengan kebutuhan bisnis dan organisasi daerah, sementara pengalaman engineering yang lebih luas memastikan kualitas kerja tidak tergantung lokasi.
+            </p>
+          </div>
+          <a
+            href="/contact/"
+            class="inline-flex items-center gap-2 mt-8 font-mono text-sm text-bnc-accent hover:underline underline-offset-4 transition-colors"
+          >
+            Mulai diskusi dengan kami →
+          </a>
+        </div>
+      </Container>
+    </section>
+
+    <!-- CTA -->
+    <CTA
+      headline="Ingin bekerja bersama tim kami?"
+      sub="Jadwalkan diskusi dan ceritakan tentang kebutuhan bisnis Anda."
+      primaryCta="Mulai Diskusi"
+      primaryHref="/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>

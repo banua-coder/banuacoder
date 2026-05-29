@@ -1,0 +1,984 @@
+---
+/**
+ * EstimatorWizard — 7-step project cost estimator.
+ * Vanilla TypeScript, no framework islands.
+ * State persisted in URL hash. Keyboard navigable.
+ * innerHTML usage is safe: all injected content is generated from our own
+ * calculate() function, static string constants, and trusted portfolio data
+ * injected at build time. No raw user text is ever inserted as HTML.
+ */
+interface Props {
+  locale?: 'id' | 'en'
+  portfolioJson?: string
+}
+
+const { locale = 'id', portfolioJson = '{}' } = Astro.props
+const isEn = locale === 'en'
+
+const steps = isEn
+  ? ['Project Type', 'Scale', 'Users', 'Features', 'Design', 'Timeline', 'Maintenance']
+  : ['Tipe Proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Timeline', 'Maintenance']
+---
+
+<!-- ══════════════════════════════════════════════════════
+     WIZARD SHELL
+══════════════════════════════════════════════════════ -->
+<div id="estimator-root" data-locale={locale}>
+
+  <!-- Portfolio data injected at build-time for TS to reference client-side -->
+  <div id="portfolio-data" data-json={portfolioJson} class="hidden" aria-hidden="true"></div>
+
+  <!-- Progress bar -->
+  <div
+    class="mb-8"
+    role="progressbar"
+    aria-valuemin={1}
+    aria-valuemax={7}
+    aria-valuenow={1}
+    aria-label={isEn ? 'Wizard progress' : 'Progres wizard'}
+    id="wizard-progress-bar-wrapper"
+  >
+    <div class="flex items-center justify-between mb-3">
+      <span
+        class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase"
+        id="step-label"
+      >
+        {isEn ? 'Step 1 of 7' : 'Langkah 1 dari 7'}
+      </span>
+      <span class="font-mono text-xs text-bnc-accent" id="step-name">{steps[0]}</span>
+    </div>
+    <div class="w-full h-1 bg-bnc-stone-200 dark:bg-bnc-stone-800 rounded-full overflow-hidden">
+      <div
+        id="progress-fill"
+        class="h-full bg-bnc-accent rounded-full transition-all duration-[var(--duration-base)]"
+        style="width: 14.28%"
+      ></div>
+    </div>
+    <div class="flex justify-between mt-2" aria-hidden="true">
+      {Array.from({ length: 7 }, (_, i) => (
+        <div
+          class="w-2 h-2 rounded-full transition-colors duration-[var(--duration-base)] bg-bnc-stone-300 dark:bg-bnc-stone-700"
+          data-dot={i + 1}
+        ></div>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 1: Project type ──────────────────────────────── -->
+  <div id="step-1" class="wizard-step" role="group" aria-labelledby="step1-legend">
+    <p id="step1-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'What type of project do you need?' : 'Apa tipe proyek yang Anda butuhkan?'}
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        { value: 'mobile-app', icon: '📱', label: isEn ? 'Mobile App' : 'Aplikasi Mobile', desc: isEn ? 'iOS and/or Android, native or cross-platform.' : 'iOS dan/atau Android, native atau lintas platform.' },
+        { value: 'web-dashboard', icon: '📊', label: isEn ? 'Web Dashboard' : 'Web Dashboard', desc: isEn ? 'Admin panel, analytics, or data-management UI.' : 'Panel admin, analitik, atau manajemen data.' },
+        { value: 'website', icon: '🌐', label: isEn ? 'Website' : 'Website', desc: isEn ? 'Company profile, landing page, or content site.' : 'Profil perusahaan, landing page, atau situs konten.' },
+        { value: 'internal-system', icon: '⚙️', label: isEn ? 'Internal System' : 'Sistem Internal', desc: isEn ? 'ERP, HRIS, inventory, or operational tools.' : 'ERP, HRIS, inventori, atau alat operasional.' },
+        { value: 'hybrid', icon: '🔀', label: 'Hybrid', desc: isEn ? 'Mobile app + web + backend in one engagement.' : 'Aplikasi mobile + web + backend dalam satu proyek.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="1" data-value={opt.value} tabindex="0">
+          <input type="radio" name="type" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 2: Scale ─────────────────────────────────────── -->
+  <div id="step-2" class="wizard-step hidden" role="group" aria-labelledby="step2-legend">
+    <p id="step2-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'What scale are you aiming for?' : 'Skala apa yang Anda targetkan?'}
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      {[
+        { value: 'mvp', icon: '🚀', label: 'MVP', desc: isEn ? 'Core user journey only. Launch fast, learn fast.' : 'Hanya perjalanan pengguna utama. Rilis cepat, belajar cepat.' },
+        { value: 'standard', icon: '⚡', label: 'Standard', desc: isEn ? 'Full feature set, production-ready, polished UX.' : 'Fitur lengkap, siap produksi, UX yang halus.' },
+        { value: 'platform', icon: '🏗️', label: 'Platform', desc: isEn ? 'Multi-tenant, high scalability, extensible architecture.' : 'Multi-tenant, skalabilitas tinggi, arsitektur yang dapat dikembangkan.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="2" data-value={opt.value} tabindex="0">
+          <input type="radio" name="scale" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 3: Users ─────────────────────────────────────── -->
+  <div id="step-3" class="wizard-step hidden" role="group" aria-labelledby="step3-legend">
+    <p id="step3-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'Who will use this system?' : 'Siapa yang akan menggunakan sistem ini?'}
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      {[
+        { value: 'internal', icon: '🏢', label: isEn ? 'Internal team only' : 'Tim internal saja', desc: isEn ? 'Employees, staff, or a closed group.' : 'Karyawan, staf, atau grup pengguna tertutup.' },
+        { value: 'public', icon: '🌍', label: isEn ? 'Public / customer-facing' : 'Publik / menghadap pelanggan', desc: isEn ? 'Open to any end-user or customer.' : 'Terbuka untuk pengguna akhir atau pelanggan mana pun.' },
+        { value: 'mixed', icon: '🔀', label: isEn ? 'Mixed (internal + public)' : 'Campuran (internal + publik)', desc: isEn ? 'Staff portal plus customer-facing interface.' : 'Portal staf dan antarmuka menghadap pelanggan.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="3" data-value={opt.value} tabindex="0">
+          <input type="radio" name="users" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 4: Features (multi-select) ──────────────────── -->
+  <div id="step-4" class="wizard-step hidden" role="group" aria-labelledby="step4-legend">
+    <p id="step4-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2" style="font-size: var(--fs-28)">
+      {isEn ? 'Which features does your project need?' : 'Fitur apa saja yang dibutuhkan proyek Anda?'}
+    </p>
+    <p class="text-bnc-stone-500 dark:text-bnc-stone-400 text-sm mb-6">
+      {isEn ? 'Select all that apply. Skip if none apply.' : 'Pilih semua yang relevan. Bisa dilewati jika tidak ada.'}
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        { value: 'auth-roles', icon: '🔐', label: isEn ? 'Auth & Roles' : 'Autentikasi & Peran', desc: isEn ? 'Login, permissions, role-based access.' : 'Login, izin akses, kontrol berbasis peran.' },
+        { value: 'payments', icon: '💳', label: isEn ? 'Payments' : 'Pembayaran', desc: isEn ? 'Payment gateway, invoicing, billing.' : 'Payment gateway, faktur, penagihan.' },
+        { value: 'realtime', icon: '⚡', label: 'Real-time', desc: isEn ? 'Live updates, WebSocket, chat.' : 'Pembaruan langsung, WebSocket, obrolan.' },
+        { value: 'offline', icon: '📶', label: 'Offline mode', desc: isEn ? 'Works without internet connection.' : 'Berjalan tanpa koneksi internet.' },
+        { value: 'push', icon: '🔔', label: isEn ? 'Push notifications' : 'Notifikasi push', desc: isEn ? 'Mobile or web push notifications.' : 'Notifikasi push mobile atau web.' },
+        { value: 'external-api', icon: '🔗', label: isEn ? 'External API' : 'API Eksternal', desc: isEn ? 'Third-party integrations (maps, SMS, etc.)' : 'Integrasi pihak ketiga (peta, SMS, dll.)' },
+        { value: 'admin-panel', icon: '🛠️', label: isEn ? 'Admin panel' : 'Panel admin', desc: isEn ? 'Back-office for managing content and users.' : 'Back-office untuk mengelola konten dan pengguna.' },
+        { value: 'reporting', icon: '📈', label: isEn ? 'Reporting & Analytics' : 'Laporan & Analitik', desc: isEn ? 'Charts, exports, custom dashboards.' : 'Grafik, ekspor, dasbor kustom.' },
+        { value: 'multi-language', icon: '🌐', label: isEn ? 'Multi-language' : 'Multi-bahasa', desc: isEn ? 'i18n support for 2+ languages.' : 'Dukungan i18n untuk 2+ bahasa.' },
+        { value: 'e-sign', icon: '✍️', label: 'E-sign / E-stamp', desc: isEn ? 'Digital signatures or official stamps.' : 'Tanda tangan digital atau cap resmi.' },
+        { value: 'file-handling', icon: '📁', label: isEn ? 'File handling' : 'Manajemen file', desc: isEn ? 'Upload, storage, document processing.' : 'Unggah, penyimpanan, pemrosesan dokumen.' },
+      ].map(opt => (
+        <label class="wizard-option wizard-option-check" data-step="4" data-value={opt.value} tabindex="0">
+          <input type="checkbox" name="features" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 5: Design level ──────────────────────────────── -->
+  <div id="step-5" class="wizard-step hidden" role="group" aria-labelledby="step5-legend">
+    <p id="step5-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'What level of design do you need?' : 'Tingkat desain apa yang Anda butuhkan?'}
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      {[
+        { value: 'template', icon: '🎨', label: isEn ? 'Template-based' : 'Berbasis template', desc: isEn ? 'Adapts an existing component library. Faster and more cost-efficient.' : 'Mengadaptasi library komponen yang ada. Lebih cepat dan efisien biaya.' },
+        { value: 'custom', icon: '✏️', label: isEn ? 'Custom UX/UI' : 'UX/UI kustom', desc: isEn ? 'Full design from wireframes. Unique look and feel for your product.' : 'Desain penuh dari wireframe. Tampilan unik untuk produk Anda.' },
+        { value: 'design-system', icon: '🏛️', label: isEn ? 'Full design system' : 'Design system lengkap', desc: isEn ? 'Tokens, component library, and guidelines. Scales across multiple products.' : 'Token, library komponen, dan panduan. Skala di beberapa produk.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="5" data-value={opt.value} tabindex="0">
+          <input type="radio" name="design" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 6: Urgency ───────────────────────────────────── -->
+  <div id="step-6" class="wizard-step hidden" role="group" aria-labelledby="step6-legend">
+    <p id="step6-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'What is your timeline expectation?' : 'Apa ekspektasi timeline Anda?'}
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      {[
+        { value: 'standard', icon: '📅', label: isEn ? 'Standard timeline' : 'Timeline standar', desc: isEn ? 'Natural pacing for quality delivery. No premium.' : 'Pacing alami untuk kualitas pengiriman. Tanpa biaya tambahan.' },
+        { value: 'rush', icon: '⚡', label: isEn ? 'Aggressive / Rush' : 'Agresif / Rush', desc: isEn ? 'Compressed schedule. Adds ~35% to estimate due to extra resourcing.' : 'Jadwal yang dipadatkan. Menambah ~35% estimasi karena sumber daya ekstra.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="6" data-value={opt.value} tabindex="0">
+          <input type="radio" name="urgency" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Step 7: Maintenance ──────────────────────────────── -->
+  <div id="step-7" class="wizard-step hidden" role="group" aria-labelledby="step7-legend">
+    <p id="step7-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
+      {isEn ? 'Do you need ongoing maintenance?' : 'Apakah Anda memerlukan pemeliharaan berkelanjutan?'}
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      {[
+        { value: 'one-time', icon: '📦', label: isEn ? 'One-time delivery' : 'Pengiriman sekali', desc: isEn ? 'Deliver the project, then it is in your hands.' : 'Selesaikan proyek, lalu diserahkan ke Anda.' },
+        { value: 'ongoing', icon: '🔄', label: isEn ? 'Ongoing engagement' : 'Kerjasama berkelanjutan', desc: isEn ? 'Monitoring, updates, and minor improvements. Annual estimate shown in output.' : 'Pemantauan, pembaruan, dan perbaikan kecil. Estimasi tahunan ditampilkan di output.' },
+      ].map(opt => (
+        <label class="wizard-option" data-step="7" data-value={opt.value} tabindex="0">
+          <input type="radio" name="maintenance" value={opt.value} class="sr-only" />
+          <span class="option-icon" aria-hidden="true">{opt.icon}</span>
+          <span class="option-body">
+            <span class="option-label">{opt.label}</span>
+            <span class="option-desc">{opt.desc}</span>
+          </span>
+          <span class="option-check" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <!-- ── Navigation buttons ──────────────────────────────── -->
+  <div class="flex items-center justify-between mt-8 pt-6 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
+    <button
+      id="btn-back"
+      type="button"
+      class="hidden font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400 hover:text-bnc-ink dark:hover:text-bnc-paper transition-colors px-4 py-2 rounded-[var(--radius-sm)] hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800"
+      aria-label={isEn ? 'Go back' : 'Kembali'}
+    >
+      {isEn ? '← Back' : '← Kembali'}
+    </button>
+    <span id="back-spacer"></span>
+
+    <button
+      id="btn-next"
+      type="button"
+      disabled
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-[var(--radius-sm)] bg-bnc-primary text-white font-semibold text-sm transition-all duration-[var(--duration-base)] hover:bg-bnc-accent disabled:opacity-40 disabled:pointer-events-none"
+    >
+      {isEn ? 'Next →' : 'Lanjut →'}
+    </button>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     OUTPUT SECTION — populated by TS after final step
+══════════════════════════════════════════════════════ -->
+<div
+  id="estimator-output"
+  class="hidden mt-12 pt-10 border-t-2 border-bnc-stone-200 dark:border-bnc-stone-800"
+  aria-live="polite"
+  aria-label={isEn ? 'Estimate result' : 'Hasil estimasi'}
+>
+</div>
+
+<!-- Print stylesheet -->
+<style>
+  @media print {
+    #estimator-root { display: none; }
+    #estimator-output { display: block !important; }
+    .no-print { display: none !important; }
+  }
+</style>
+
+<style>
+  .wizard-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--color-bnc-stone-200);
+    background: var(--color-bnc-paper);
+    cursor: pointer;
+    transition: border-color var(--duration-base), background var(--duration-base);
+    user-select: none;
+  }
+
+  :global(.dark) .wizard-option {
+    border-color: var(--color-bnc-stone-800);
+    background: var(--color-bnc-stone-900);
+  }
+
+  .wizard-option:hover,
+  .wizard-option:focus-visible {
+    border-color: var(--color-bnc-accent);
+    outline: none;
+  }
+
+  .wizard-option.is-selected {
+    border-color: var(--color-bnc-primary);
+    background: color-mix(in srgb, var(--color-bnc-primary) 6%, var(--color-bnc-paper));
+  }
+
+  :global(.dark) .wizard-option.is-selected {
+    border-color: var(--color-bnc-accent);
+    background: color-mix(in srgb, var(--color-bnc-accent) 8%, var(--color-bnc-stone-900));
+  }
+
+  .option-icon { font-size: 1.25rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .option-body { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+
+  .option-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-17);
+    color: var(--color-bnc-ink);
+  }
+  :global(.dark) .option-label { color: var(--color-bnc-paper); }
+
+  .option-desc {
+    font-size: var(--fs-14);
+    color: var(--color-bnc-stone-500);
+    line-height: 1.5;
+  }
+  :global(.dark) .option-desc { color: var(--color-bnc-stone-400); }
+
+  .option-check {
+    flex-shrink: 0;
+    color: var(--color-bnc-stone-300);
+    transition: color var(--duration-base);
+  }
+  :global(.dark) .option-check { color: var(--color-bnc-stone-700); }
+
+  .wizard-option.is-selected .option-check { color: var(--color-bnc-primary); }
+  :global(.dark) .wizard-option.is-selected .option-check { color: var(--color-bnc-accent); }
+
+  .hidden { display: none !important; }
+</style>
+
+<script>
+// All innerHTML usage in this script injects only:
+// 1. Numbers formatted via toLocaleString (no HTML)
+// 2. Our own string constants (step labels, fixed copy)
+// 3. Portfolio data loaded from a build-time data attribute (trusted, not user input)
+// 4. WhatsApp URL built with encodeURIComponent (safe)
+// No raw user-supplied text is ever inserted as HTML.
+
+import { calculate } from '../../lib/estimator'
+import type {
+  EstimatorInput,
+  FeatureKey,
+  ProjectType,
+  Scale,
+  UserType,
+  DesignLevel,
+  Urgency,
+  Maintenance,
+} from '../../lib/estimator'
+import { contact } from '../../data/contact'
+
+// ─── Types ────────────────────────────────────────────────────────────────
+interface WizardState {
+  step: number
+  type?: ProjectType
+  scale?: Scale
+  users?: UserType
+  features: FeatureKey[]
+  design?: DesignLevel
+  urgency?: Urgency
+  maintenance?: Maintenance
+}
+
+type PortfolioEntry = {
+  title: string
+  client: string
+  year: number
+  bucket: string
+  summary: string
+}
+
+const TOTAL_STEPS = 7
+
+function defaultState(): WizardState {
+  return { step: 1, features: [] }
+}
+
+// ─── Hash serialization ───────────────────────────────────────────────────
+function stateToHash(s: WizardState): string {
+  const p = new URLSearchParams()
+  p.set('step', String(s.step))
+  if (s.type) p.set('type', s.type)
+  if (s.scale) p.set('scale', s.scale)
+  if (s.users) p.set('users', s.users)
+  if (s.features.length) p.set('features', s.features.join(','))
+  if (s.design) p.set('design', s.design)
+  if (s.urgency) p.set('urgency', s.urgency)
+  if (s.maintenance) p.set('maintenance', s.maintenance)
+  return '#' + p.toString()
+}
+
+function hashToState(): WizardState {
+  const hash = location.hash.replace(/^#/, '')
+  if (!hash) return defaultState()
+  const p = new URLSearchParams(hash)
+  const rawFeatures = p.get('features')
+  return {
+    step: Math.max(1, Math.min(TOTAL_STEPS, parseInt(p.get('step') ?? '1', 10) || 1)),
+    type: (p.get('type') as ProjectType) || undefined,
+    scale: (p.get('scale') as Scale) || undefined,
+    users: (p.get('users') as UserType) || undefined,
+    features: rawFeatures ? (rawFeatures.split(',') as FeatureKey[]) : [],
+    design: (p.get('design') as DesignLevel) || undefined,
+    urgency: (p.get('urgency') as Urgency) || undefined,
+    maintenance: (p.get('maintenance') as Maintenance) || undefined,
+  }
+}
+
+// ─── DOM helpers ─────────────────────────────────────────────────────────
+const root = document.getElementById('estimator-root')!
+const locale = (root.dataset.locale as 'id' | 'en') ?? 'id'
+const isEn = locale === 'en'
+
+function getEl(id: string): HTMLElement | null {
+  return document.getElementById(id)
+}
+
+function stepEl(n: number): HTMLElement | null {
+  return getEl(`step-${n}`)
+}
+
+const stepNames = isEn
+  ? ['Project Type', 'Scale', 'Users', 'Features', 'Design', 'Timeline', 'Maintenance']
+  : ['Tipe Proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Timeline', 'Maintenance']
+
+// ─── Portfolio data ───────────────────────────────────────────────────────
+const portfolioEl = getEl('portfolio-data')
+let portfolioMap: Record<string, PortfolioEntry> = {}
+if (portfolioEl?.dataset.json) {
+  try {
+    portfolioMap = JSON.parse(portfolioEl.dataset.json) as Record<string, PortfolioEntry>
+  } catch (_) {}
+}
+
+// ─── Render step ──────────────────────────────────────────────────────────
+function renderStep(s: WizardState): void {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    stepEl(i)?.classList.add('hidden')
+  }
+  stepEl(s.step)?.classList.remove('hidden')
+
+  const fill = getEl('progress-fill')
+  if (fill) fill.style.width = `${(s.step / TOTAL_STEPS) * 100}%`
+
+  const labelEl = getEl('step-label')
+  if (labelEl) {
+    labelEl.textContent = isEn
+      ? `Step ${s.step} of ${TOTAL_STEPS}`
+      : `Langkah ${s.step} dari ${TOTAL_STEPS}`
+  }
+
+  const nameEl = getEl('step-name')
+  if (nameEl) nameEl.textContent = stepNames[s.step - 1]
+
+  getEl('wizard-progress-bar-wrapper')?.setAttribute('aria-valuenow', String(s.step))
+
+  document.querySelectorAll<HTMLElement>('[data-dot]').forEach((dot) => {
+    const n = parseInt(dot.dataset.dot ?? '0', 10)
+    dot.style.background = n <= s.step ? 'var(--color-bnc-accent)' : ''
+  })
+
+  restoreSelections(s)
+
+  const back = getEl('btn-back')
+  const spacer = getEl('back-spacer')
+  if (back && spacer) {
+    if (s.step === 1) {
+      back.classList.add('hidden')
+      spacer.classList.remove('hidden')
+    } else {
+      back.classList.remove('hidden')
+      spacer.classList.add('hidden')
+    }
+  }
+
+  const next = getEl('btn-next') as HTMLButtonElement | null
+  if (next) {
+    next.textContent = s.step === TOTAL_STEPS
+      ? (isEn ? 'Calculate →' : 'Hitung →')
+      : (isEn ? 'Next →' : 'Lanjut →')
+    next.disabled = !isStepValid(s)
+  }
+
+  const firstOpt = stepEl(s.step)?.querySelector<HTMLElement>('.wizard-option')
+  if (firstOpt) setTimeout(() => firstOpt.focus(), 50)
+}
+
+function restoreSelections(s: WizardState): void {
+  const step = s.step
+  document.querySelectorAll<HTMLElement>(`[data-step="${step}"]`).forEach((opt) => {
+    opt.classList.remove('is-selected')
+    const inp = opt.querySelector<HTMLInputElement>('input')
+    if (inp) inp.checked = false
+  })
+
+  const values: Record<number, string | FeatureKey[] | undefined> = {
+    1: s.type, 2: s.scale, 3: s.users, 4: s.features,
+    5: s.design, 6: s.urgency, 7: s.maintenance,
+  }
+  const val = values[step]
+  if (!val) return
+
+  if (Array.isArray(val)) {
+    val.forEach((v) => {
+      const opt = document.querySelector<HTMLElement>(`[data-step="${step}"][data-value="${v}"]`)
+      if (opt) {
+        opt.classList.add('is-selected')
+        const inp = opt.querySelector<HTMLInputElement>('input')
+        if (inp) inp.checked = true
+      }
+    })
+  } else {
+    const opt = document.querySelector<HTMLElement>(`[data-step="${step}"][data-value="${val}"]`)
+    if (opt) {
+      opt.classList.add('is-selected')
+      const inp = opt.querySelector<HTMLInputElement>('input')
+      if (inp) inp.checked = true
+    }
+  }
+}
+
+function isStepValid(s: WizardState): boolean {
+  switch (s.step) {
+    case 1: return !!s.type
+    case 2: return !!s.scale
+    case 3: return !!s.users
+    case 4: return true
+    case 5: return !!s.design
+    case 6: return !!s.urgency
+    case 7: return !!s.maintenance
+    default: return false
+  }
+}
+
+// ─── Option select ────────────────────────────────────────────────────────
+function handleOptionSelect(opt: HTMLElement, s: WizardState): WizardState {
+  const step = parseInt(opt.dataset.step ?? '0', 10)
+  const value = opt.dataset.value ?? ''
+  const isCheckbox = opt.classList.contains('wizard-option-check')
+  const next: WizardState = { ...s, features: [...s.features] }
+
+  if (isCheckbox) {
+    if (next.features.includes(value as FeatureKey)) {
+      next.features = next.features.filter((f) => f !== value)
+    } else {
+      next.features.push(value as FeatureKey)
+    }
+  } else {
+    switch (step) {
+      case 1: next.type = value as ProjectType; break
+      case 2: next.scale = value as Scale; break
+      case 3: next.users = value as UserType; break
+      case 5: next.design = value as DesignLevel; break
+      case 6: next.urgency = value as Urgency; break
+      case 7: next.maintenance = value as Maintenance; break
+    }
+  }
+  return next
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────
+function advance(s: WizardState): WizardState {
+  if (!isStepValid(s) || s.step >= TOTAL_STEPS) return s
+  return { ...s, step: s.step + 1 }
+}
+function goBack(s: WizardState): WizardState {
+  return s.step > 1 ? { ...s, step: s.step - 1 } : s
+}
+
+// ─── IDR formatter ────────────────────────────────────────────────────────
+function fmtIDR(n: number): string {
+  return 'Rp ' + n.toLocaleString('id-ID')
+}
+
+// ─── WhatsApp message ─────────────────────────────────────────────────────
+function buildWAMessage(s: WizardState, out: ReturnType<typeof calculate>): string {
+  const tLabel: Record<string, string> = {
+    'mobile-app': 'Mobile App', 'web-dashboard': 'Web Dashboard',
+    website: 'Website', 'internal-system': isEn ? 'Internal System' : 'Sistem Internal',
+    hybrid: 'Hybrid',
+  }
+  const scLabel: Record<string, string> = { mvp: 'MVP', standard: 'Standard', platform: 'Platform' }
+  const uLabel: Record<string, string> = {
+    internal: isEn ? 'Internal team' : 'Tim internal',
+    public: isEn ? 'Public' : 'Publik',
+    mixed: isEn ? 'Mixed' : 'Campuran',
+  }
+  const dLabel: Record<string, string> = {
+    template: isEn ? 'Template-based' : 'Berbasis template',
+    custom: isEn ? 'Custom UX/UI' : 'UX/UI kustom',
+    'design-system': isEn ? 'Full design system' : 'Design system lengkap',
+  }
+  const urgLabel: Record<string, string> = {
+    standard: isEn ? 'Standard' : 'Standar',
+    rush: 'Rush',
+  }
+  const mLabel: Record<string, string> = {
+    'one-time': isEn ? 'One-time' : 'Pengiriman sekali',
+    ongoing: isEn ? 'Ongoing' : 'Berkelanjutan',
+  }
+  const featureNames: Record<FeatureKey, string> = {
+    'auth-roles': isEn ? 'Auth & Roles' : 'Autentikasi & Peran',
+    payments: isEn ? 'Payments' : 'Pembayaran',
+    realtime: 'Real-time', offline: 'Offline mode',
+    push: isEn ? 'Push notifications' : 'Notifikasi push',
+    'external-api': isEn ? 'External API' : 'API Eksternal',
+    'admin-panel': isEn ? 'Admin panel' : 'Panel admin',
+    reporting: isEn ? 'Reporting & Analytics' : 'Laporan & Analitik',
+    'multi-language': isEn ? 'Multi-language' : 'Multi-bahasa',
+    'e-sign': 'E-sign / E-stamp',
+    'file-handling': isEn ? 'File handling' : 'Manajemen file',
+  }
+  const feats = (s.features ?? []).map((f) => featureNames[f] ?? f)
+  const dur = out.durationWeeks
+  const durStr = isEn ? `${dur[0]}–${dur[1]} weeks` : `${dur[0]}–${dur[1]} minggu`
+
+  if (isEn) {
+    return [
+      "Hi Banua Coder, I'd like to discuss a project.",
+      '',
+      'My estimate:',
+      `- Type: ${tLabel[s.type ?? '']}`,
+      `- Scale: ${scLabel[s.scale ?? '']}`,
+      `- Users: ${uLabel[s.users ?? '']}`,
+      `- Key features: ${feats.length ? feats.join(', ') : 'None'}`,
+      `- Design: ${dLabel[s.design ?? '']}`,
+      `- Timeline: ${urgLabel[s.urgency ?? '']}`,
+      `- Maintenance: ${mLabel[s.maintenance ?? '']}`,
+      '',
+      `Estimate range: ${fmtIDR(out.totalLow)} – ${fmtIDR(out.totalHigh)}`,
+      `Estimated duration: ${durStr}`,
+      '',
+      'Can we continue with a discovery discussion?',
+    ].join('\n')
+  }
+  return [
+    'Halo Banua Coder, saya tertarik untuk konsultasi.',
+    '',
+    'Estimasi saya:',
+    `- Tipe: ${tLabel[s.type ?? '']}`,
+    `- Skala: ${scLabel[s.scale ?? '']}`,
+    `- Pengguna: ${uLabel[s.users ?? '']}`,
+    `- Fitur kritis: ${feats.length ? feats.join(', ') : 'Tidak ada'}`,
+    `- Desain: ${dLabel[s.design ?? '']}`,
+    `- Timeline: ${urgLabel[s.urgency ?? '']}`,
+    `- Maintenance: ${mLabel[s.maintenance ?? '']}`,
+    '',
+    `Range estimasi: ${fmtIDR(out.totalLow)} – ${fmtIDR(out.totalHigh)}`,
+    `Estimasi durasi: ${durStr}`,
+    '',
+    'Bisa kita lanjutkan diskusi discovery?',
+  ].join('\n')
+}
+
+// ─── Build output DOM (safe: all values come from our own code) ───────────
+function buildOutputEl(s: WizardState, out: ReturnType<typeof calculate>): HTMLElement {
+  const wrap = document.createElement('div')
+
+  // Range headline
+  const rangeSection = document.createElement('div')
+  rangeSection.className = 'mb-8'
+  const eyebrow = document.createElement('p')
+  eyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-2'
+  eyebrow.textContent = isEn ? '// Estimated project cost' : '// Estimasi biaya proyek'
+  const rangeVal = document.createElement('p')
+  rangeVal.className = 'font-display font-bold text-bnc-ink dark:text-bnc-paper leading-none'
+  rangeVal.style.fontSize = 'var(--fs-48)'
+  rangeVal.textContent = `${fmtIDR(out.totalLow)} – ${fmtIDR(out.totalHigh)}`
+  rangeSection.appendChild(eyebrow)
+  rangeSection.appendChild(rangeVal)
+
+  // Annual maintenance (if applicable)
+  if (out.annualMaintenanceLow && out.annualMaintenanceHigh) {
+    const maint = document.createElement('div')
+    maint.className = 'mt-4 p-4 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-800'
+    const mEyebrow = document.createElement('p')
+    mEyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 mb-1 tracking-widest uppercase'
+    mEyebrow.textContent = isEn ? '// Annual maintenance estimate' : '// Estimasi pemeliharaan tahunan'
+    const mVal = document.createElement('p')
+    mVal.className = 'font-display font-semibold text-bnc-ink dark:text-bnc-paper'
+    mVal.style.fontSize = 'var(--fs-20)'
+    const yearSuffix = document.createElement('span')
+    yearSuffix.className = 'font-normal text-bnc-stone-400 text-sm'
+    yearSuffix.textContent = isEn ? ' / year' : ' / tahun'
+    mVal.textContent = `${fmtIDR(out.annualMaintenanceLow)} – ${fmtIDR(out.annualMaintenanceHigh)}`
+    mVal.appendChild(yearSuffix)
+    const mNote = document.createElement('p')
+    mNote.className = 'text-bnc-stone-500 dark:text-bnc-stone-400 text-xs mt-1'
+    mNote.textContent = isEn
+      ? '18% of project total covers monitoring, updates, and minor improvements.'
+      : '18% dari total proyek mencakup pemantauan, pembaruan, dan perbaikan kecil.'
+    maint.appendChild(mEyebrow)
+    maint.appendChild(mVal)
+    maint.appendChild(mNote)
+    rangeSection.appendChild(maint)
+  }
+
+  wrap.appendChild(rangeSection)
+
+  // Duration + team grid
+  const grid = document.createElement('div')
+  grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8'
+
+  const durCard = document.createElement('div')
+  durCard.className = 'p-5 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800'
+  const durEyebrow = document.createElement('p')
+  durEyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-3'
+  durEyebrow.textContent = isEn ? '// Duration estimate' : '// Estimasi durasi'
+  const durVal = document.createElement('p')
+  durVal.className = 'font-display font-semibold text-bnc-ink dark:text-bnc-paper'
+  durVal.style.fontSize = 'var(--fs-28)'
+  const dur = out.durationWeeks
+  durVal.textContent = isEn ? `${dur[0]}–${dur[1]} weeks` : `${dur[0]}–${dur[1]} minggu`
+  durCard.appendChild(durEyebrow)
+  durCard.appendChild(durVal)
+
+  const teamCard = document.createElement('div')
+  teamCard.className = 'p-5 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800'
+  const teamEyebrow = document.createElement('p')
+  teamEyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-3'
+  teamEyebrow.textContent = isEn ? '// Suggested team' : '// Tim yang disarankan'
+  const teamList = document.createElement('ul')
+  teamList.className = 'space-y-1'
+  out.team.forEach((member) => {
+    const li = document.createElement('li')
+    li.className = 'text-sm text-bnc-stone-600 dark:text-bnc-stone-400 flex items-start gap-2'
+    const dot = document.createElement('span')
+    dot.className = 'text-bnc-accent mt-0.5 shrink-0'
+    dot.textContent = '·'
+    const text = document.createElement('span')
+    text.textContent = member
+    li.appendChild(dot)
+    li.appendChild(text)
+    teamList.appendChild(li)
+  })
+  teamCard.appendChild(teamEyebrow)
+  teamCard.appendChild(teamList)
+
+  grid.appendChild(durCard)
+  grid.appendChild(teamCard)
+  wrap.appendChild(grid)
+
+  // Matched portfolio cards
+  const validSlugs = out.matchedPortfolioSlugs.filter((slug) => portfolioMap[slug])
+  if (validSlugs.length) {
+    const portfolioSection = document.createElement('div')
+    portfolioSection.className = 'mb-8'
+    const pEyebrow = document.createElement('p')
+    pEyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-4'
+    pEyebrow.textContent = isEn ? '// Similar projects we have built' : '// Proyek serupa yang pernah kami bangun'
+    portfolioSection.appendChild(pEyebrow)
+
+    const pgrid = document.createElement('div')
+    pgrid.className = 'grid grid-cols-1 sm:grid-cols-3 gap-4'
+    validSlugs.forEach((slug) => {
+      const p = portfolioMap[slug]
+      const prefix = isEn ? '/en' : ''
+      const card = document.createElement('a')
+      card.href = `${prefix}/portfolio/${slug}/`
+      card.className = 'group block rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900 p-5 hover:border-bnc-accent transition-colors shadow-[var(--shadow-subtle)]'
+
+      const bucketLabels: Record<string, string> = {
+        consumer: 'Consumer', 'public-sector': 'Public Sector', operational: 'Operational',
+      }
+      const bTag = document.createElement('p')
+      bTag.className = 'font-mono text-xs text-bnc-accent tracking-widest uppercase mb-2'
+      bTag.textContent = bucketLabels[p.bucket] ?? p.bucket
+
+      const pTitle = document.createElement('p')
+      pTitle.className = 'font-display font-semibold text-bnc-ink dark:text-bnc-paper group-hover:text-bnc-primary dark:group-hover:text-bnc-accent transition-colors mb-1'
+      pTitle.style.fontSize = 'var(--fs-17)'
+      pTitle.textContent = p.title
+
+      const meta = document.createElement('p')
+      meta.className = 'text-bnc-stone-500 dark:text-bnc-stone-400 text-xs mb-2'
+      meta.textContent = `${p.client} · ${p.year}`
+
+      const summ = document.createElement('p')
+      summ.className = 'text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed'
+      summ.style.cssText = 'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden'
+      summ.textContent = p.summary
+
+      card.appendChild(bTag)
+      card.appendChild(pTitle)
+      card.appendChild(meta)
+      card.appendChild(summ)
+      pgrid.appendChild(card)
+    })
+    portfolioSection.appendChild(pgrid)
+    wrap.appendChild(portfolioSection)
+  }
+
+  // CTAs
+  const ctaDiv = document.createElement('div')
+  ctaDiv.className = 'flex flex-wrap gap-3 mb-8 no-print'
+
+  const waMsg = buildWAMessage(s, out)
+  const waUrl = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(waMsg)}`
+
+  const waBtn = document.createElement('a')
+  waBtn.href = waUrl
+  waBtn.target = '_blank'
+  waBtn.rel = 'noopener noreferrer'
+  waBtn.className = 'inline-flex items-center gap-2 px-6 py-3 rounded-[var(--radius-sm)] bg-bnc-primary text-white font-semibold text-sm hover:bg-bnc-accent transition-colors'
+  const waSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  waSvg.setAttribute('width', '18')
+  waSvg.setAttribute('height', '18')
+  waSvg.setAttribute('viewBox', '0 0 24 24')
+  waSvg.setAttribute('fill', 'currentColor')
+  waSvg.setAttribute('aria-hidden', 'true')
+  const waPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  waPath.setAttribute('d', 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z')
+  waSvg.appendChild(waPath)
+  waBtn.appendChild(waSvg)
+  const waText = document.createElement('span')
+  waText.textContent = isEn ? 'Discuss on WhatsApp' : 'Diskusikan di WhatsApp'
+  waBtn.appendChild(waText)
+
+  const printBtn = document.createElement('button')
+  printBtn.type = 'button'
+  printBtn.className = 'inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius-sm)] border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-ink dark:text-bnc-paper font-medium text-sm hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800 transition-colors'
+  printBtn.textContent = isEn ? 'Save as PDF' : 'Simpan sebagai PDF'
+  printBtn.addEventListener('click', () => window.print())
+
+  const recalcBtn = document.createElement('button')
+  recalcBtn.id = 'btn-recalculate'
+  recalcBtn.type = 'button'
+  recalcBtn.className = 'inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius-sm)] border border-bnc-stone-300 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400 font-medium text-sm hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800 transition-colors'
+  recalcBtn.textContent = isEn ? '← Recalculate' : '← Hitung ulang'
+
+  ctaDiv.appendChild(waBtn)
+  ctaDiv.appendChild(printBtn)
+  ctaDiv.appendChild(recalcBtn)
+  wrap.appendChild(ctaDiv)
+
+  // Disclaimer
+  const disclaimerDiv = document.createElement('div')
+  disclaimerDiv.className = 'p-5 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900'
+  const dEyebrow = document.createElement('p')
+  dEyebrow.className = 'font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-2'
+  dEyebrow.textContent = isEn ? '// Disclaimer' : '// Catatan penting'
+  const dText = document.createElement('p')
+  dText.className = 'text-sm text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed'
+  dText.textContent = isEn
+    ? 'This is an initial estimate, not a final quotation. Actual scope, team composition, and pricing are determined during a discovery session. Complex requirements, existing system integrations, and regulatory constraints may affect the final figure significantly.'
+    : 'Estimasi ini bersifat awal — bukan quotation final. Scope aktual, komposisi tim, dan harga ditentukan melalui sesi discovery. Persyaratan yang kompleks, integrasi sistem yang ada, dan kendala regulasi dapat mempengaruhi angka akhir secara signifikan.'
+  disclaimerDiv.appendChild(dEyebrow)
+  disclaimerDiv.appendChild(dText)
+  wrap.appendChild(disclaimerDiv)
+
+  return wrap
+}
+
+// ─── Show output ──────────────────────────────────────────────────────────
+function showOutput(s: WizardState): void {
+  const out = calculate(s as EstimatorInput)
+  const outputEl = getEl('estimator-output')
+  if (!outputEl) return
+
+  outputEl.textContent = ''
+  outputEl.appendChild(buildOutputEl(s, out))
+  outputEl.classList.remove('hidden')
+  outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  getEl('btn-recalculate')?.addEventListener('click', () => {
+    outputEl.classList.add('hidden')
+    outputEl.textContent = ''
+    setState(defaultState())
+  })
+}
+
+// ─── State management ─────────────────────────────────────────────────────
+let state: WizardState = hashToState()
+
+function setState(newState: WizardState, pushHash = true): void {
+  state = newState
+  if (pushHash) history.replaceState(null, '', stateToHash(state))
+  renderStep(state)
+}
+
+// ─── Event wiring ─────────────────────────────────────────────────────────
+document.querySelectorAll<HTMLElement>('.wizard-option').forEach((opt) => {
+  opt.addEventListener('click', (e) => {
+    // For <label>-based options that wrap a hidden <input>, the browser
+    // fires a synthetic click on the input which bubbles back up to the
+    // label and would re-trigger this handler — toggling the value twice.
+    // Suppressing the default click avoids the double-fire.
+    e.preventDefault()
+    setState(handleOptionSelect(opt, state))
+  })
+
+  opt.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault()
+      setState(handleOptionSelect(opt, state))
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault()
+      const siblings = Array.from(
+        document.querySelectorAll<HTMLElement>(`[data-step="${opt.dataset.step}"].wizard-option`),
+      )
+      const next = siblings[(siblings.indexOf(opt) + 1) % siblings.length]
+      next?.focus()
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault()
+      const siblings = Array.from(
+        document.querySelectorAll<HTMLElement>(`[data-step="${opt.dataset.step}"].wizard-option`),
+      )
+      const prev = siblings[(siblings.indexOf(opt) - 1 + siblings.length) % siblings.length]
+      prev?.focus()
+    }
+  })
+})
+
+getEl('btn-next')?.addEventListener('click', () => {
+  if (!isStepValid(state)) return
+  if (state.step === TOTAL_STEPS) {
+    showOutput(state)
+  } else {
+    setState(advance(state))
+  }
+})
+
+getEl('btn-back')?.addEventListener('click', () => {
+  setState(goBack(state))
+})
+
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  const outputEl = getEl('estimator-output')
+  if (!outputEl?.classList.contains('hidden')) return
+  if (e.key === 'Escape' && state.step > 1) setState(goBack(state))
+})
+
+window.addEventListener('hashchange', () => {
+  state = hashToState()
+  renderStep(state)
+})
+
+// ─── Initial render ───────────────────────────────────────────────────────
+renderStep(state)
+
+// Restore output if hash contains a complete state
+if (state.type && state.scale && state.users && state.design && state.urgency && state.maintenance) {
+  showOutput(state)
+}
+</script>

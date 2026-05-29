@@ -1,0 +1,67 @@
+---
+/**
+ * Testimonial — pull-quote style card.
+ * Cyan opening quote mark, author, role, company, optional avatar.
+ */
+import { Image } from 'astro:assets'
+
+interface Props {
+  quote: string
+  author: string
+  role: string
+  company: string
+  avatarSrc?: ImageMetadata
+  class?: string
+}
+
+const { quote, author, role, company, avatarSrc, class: cls = '' } = Astro.props
+---
+
+<figure
+  class:list={[
+    'flex flex-col gap-5 p-6 rounded-[var(--radius-md)]',
+    'bg-bnc-paper dark:bg-bnc-stone-900',
+    'border border-bnc-stone-200 dark:border-bnc-stone-800',
+    'shadow-[var(--shadow-subtle)]',
+    cls,
+  ]}
+>
+  <!-- Cyan opening quote -->
+  <span
+    class="block font-display font-bold leading-none text-bnc-accent"
+    style="font-size: var(--fs-64); line-height: 0.6"
+    aria-hidden="true"
+  >
+    "
+  </span>
+
+  <blockquote>
+    <p
+      class="text-bnc-ink dark:text-bnc-paper leading-relaxed italic"
+      style="font-size: var(--fs-17); max-width: var(--prose-max)"
+    >
+      {quote}
+    </p>
+  </blockquote>
+
+  <figcaption class="flex items-center gap-3 mt-auto">
+    {avatarSrc && (
+      <Image
+        src={avatarSrc}
+        alt={author}
+        width={40}
+        height={40}
+        class="w-10 h-10 rounded-full object-cover shrink-0"
+        loading="lazy"
+      />
+    )}
+    <div>
+      <p class="font-semibold text-bnc-ink dark:text-bnc-paper leading-tight" style="font-size: var(--fs-14)">
+        {author}
+      </p>
+      <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400">
+        {role} · {company}
+      </p>
+    </div>
+  </figcaption>
+</figure>

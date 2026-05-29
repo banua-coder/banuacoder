@@ -1,0 +1,77 @@
+---
+title: FormGear Builder
+slug: form-gear-builder
+bucket: open-source
+client: Badan Pusat Statistik
+year: 2024
+status: maintained
+cover: ./cover.svg
+thumbnail: ./thumbnail.svg
+summary: >
+  Visual form builder berbasis web yang memungkinkan desainer survei BPS membuat dan
+  mengedit template formulir secara visual dengan antarmuka drag-and-drop. Output-nya
+  berupa JSON schema yang langsung dikonsumsi oleh FormGear Engine untuk dirender di
+  perangkat mobile petugas lapangan.
+problem: >
+  Membuat dan memodifikasi template formulir survei BPS secara langsung via JSON schema
+  adalah pekerjaan yang lambat dan rawan kesalahan, bahkan bagi pengguna teknis sekalipun.
+  Tim perancang survei membutuhkan alat yang memungkinkan mereka membangun formulir
+  secara visual — tanpa harus menulis atau mengedit JSON secara manual — sambil tetap
+  menghasilkan output schema yang valid dan kompatibel dengan FormGear Engine.
+solution: >
+  Banua Coder membangun FormGear Builder sebagai aplikasi web dengan antarmuka drag-and-drop
+  untuk desain template formulir. Platform memungkinkan pengguna menambahkan, mengatur ulang,
+  dan mengkonfigurasi elemen form (dari 30+ jenis kontrol) secara visual. Setiap perubahan
+  di canvas dikonversi secara real-time menjadi JSON schema yang valid sesuai spesifikasi
+  FormGear. Fitur preview memungkinkan desainer survei melihat tampilan form akhir sebelum
+  dipublikasikan ke petugas lapangan.
+impact:
+  - Waktu pembuatan template formulir berkurang signifikan dibanding editing JSON manual
+  - Non-technical survey designers dapat membuat dan memodifikasi formulir secara mandiri
+  - Schema yang dihasilkan terjamin kompatibel dengan FormGear Engine
+  - Komponen penting dalam ekosistem FormGear BPS yang end-to-end
+stack:
+  - Vue.js
+  - TypeScript
+  - Drag-and-drop
+  - JSON Schema
+links:
+  github: https://github.com/IPDS-59/form-gear-builder
+featured: false
+order: 110
+locale: id
+---
+
+## Konteks
+
+FormGear Builder adalah antarmuka visual yang dibangun untuk melengkapi ekosistem FormGear BPS.
+Jika FormGear Engine (dan Flutter SDK-nya) adalah mesin yang merender dan memproses formulir
+di lapangan, maka Builder adalah studio desain yang memungkinkan tim BPS membuat formulir
+tersebut tanpa harus menyentuh JSON secara langsung.
+
+Kombinasi Builder dan Engine membentuk loop penuh: desain formulir di web → schema di-export →
+formulir berjalan di perangkat mobile petugas lapangan. Banua Coder terlibat di kedua ujung
+loop tersebut.
+
+## Yang Kami Bangun
+
+FormGear Builder dibangun sebagai single-page application dengan fokus pada kemudahan penggunaan
+bagi desainer survei:
+
+- **Drag-and-drop canvas**: Area kerja visual di mana pengguna bisa menambahkan elemen form
+  dari palette di sisi kiri, mengatur urutan, dan mengatur tata letak secara intuitif.
+- **Property panel**: Panel konfigurasi kontekstual yang muncul saat elemen dipilih,
+  memungkinkan konfigurasi label, tipe input, validasi, kondisi tampilan, dan properti lainnya.
+- **Real-time schema generation**: Setiap perubahan di canvas secara otomatis mengupdate
+  JSON schema di background, memastikan output selalu sinkron dengan tampilan visual.
+- **Preview mode**: Tampilan preview yang merender form persis seperti yang akan dilihat
+  oleh petugas lapangan di perangkat mobile mereka.
+- **Validasi schema**: Proses validasi otomatis memastikan schema yang di-export selalu
+  valid dan kompatibel dengan FormGear Engine.
+
+## Dampak
+
+FormGear Builder berhasil mengubah proses pembuatan template survei BPS dari pekerjaan teknis
+yang membutuhkan pengetahuan JSON Schema menjadi aktivitas visual yang dapat dilakukan oleh
+tim perancang survei. Ini adalah bukti bahwa developer tooling yang baik bukan hanya untuk
+engineers — tetapi untuk siapapun yang perlu membuat sesuatu yang kompleks.

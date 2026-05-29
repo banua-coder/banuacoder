@@ -1,0 +1,125 @@
+---
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import { buildWhatsAppUrl } from '../../data/contact'
+
+const allPosts = await getCollection('blog')
+const posts = allPosts
+  .filter((p) => p.data.locale === 'id' && !p.data.draft)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+
+const whatsappUrl = buildWhatsAppUrl('id')
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+---
+
+<BaseLayout
+  title="Blog Engineering & Product — Banua Coder"
+  description="Insights seputar engineering, product, dan transformasi digital dari tim Banua Coder."
+  ogImage={ogUrl('blog')}
+>
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Header -->
+    <section
+      aria-labelledby="blog-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="BLOG"
+          marker="[ 01 ]"
+          title="Blog"
+          description="Insights dari dunia engineering, product, dan transformasi digital."
+        />
+      </Container>
+    </section>
+
+    <!-- Post grid -->
+    <section aria-label="Daftar artikel" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        {posts.length === 0 ? (
+          <div class="flex flex-col items-center gap-6 py-24 text-center">
+            <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest">// coming soon</p>
+            <p
+              class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+              style="font-size: var(--fs-20); max-width: 48ch"
+            >
+              Artikel pertama sedang dalam persiapan. Hubungi kami via WhatsApp untuk mendapat notifikasi saat artikel pertama tayang.
+            </p>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-[var(--radius-sm)] bg-bnc-primary text-white font-semibold text-sm hover:bg-bnc-accent transition-colors"
+            >
+              Hubungi via WhatsApp →
+            </a>
+          </div>
+        ) : (
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <article class="group flex flex-col gap-4 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 overflow-hidden hover:border-bnc-accent dark:hover:border-bnc-accent transition-colors bg-bnc-paper dark:bg-bnc-stone-900 shadow-[var(--shadow-subtle)]">
+                <a href={`/blog/${post.data.slug}/`} class="block overflow-hidden aspect-[16/9] bg-bnc-stone-100 dark:bg-bnc-stone-800">
+                  <Image
+                    src={post.data.cover as ImageMetadata}
+                    alt={post.data.title}
+                    width={640}
+                    height={360}
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </a>
+                <div class="flex flex-col gap-3 p-5 flex-1">
+                  <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-500">
+                    {formatDate(post.data.publishedAt)}
+                  </p>
+                  <h2 style="font-size: var(--fs-20)">
+                    <a
+                      href={`/blog/${post.data.slug}/`}
+                      class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors line-clamp-2"
+                    >
+                      {post.data.title}
+                    </a>
+                  </h2>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed line-clamp-2 flex-1">
+                    {post.data.description}
+                  </p>
+                  {post.data.tags.length > 0 && (
+                    <div class="flex flex-wrap gap-1.5 mt-auto pt-2">
+                      {post.data.tags.map((tag) => (
+                        <span class="font-mono text-xs px-2 py-0.5 rounded-full border border-bnc-stone-200 dark:border-bnc-stone-700 text-bnc-stone-500 dark:text-bnc-stone-400">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

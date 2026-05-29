@@ -1,0 +1,159 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono";
+@import "tailwindcss";
+
+/* Use class-based dark mode so JS-toggled html.dark controls Tailwind dark: variants */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* neutral foundation — dominates the page */
+  --color-bnc-ink: #0A0E14;
+  --color-bnc-paper: #F7F7F4;
+
+  /* brand colors — used as accent only, sourced from the official logo */
+  --color-bnc-primary: #12398C;
+  --color-bnc-primary-fg: #FFFFFF;
+  --color-bnc-accent: #1D9CD4;
+  --color-bnc-accent-fg: #FFFFFF;
+
+  /* warm stone scale (warm gray) */
+  --color-bnc-stone-50: #FAFAF9;
+  --color-bnc-stone-100: #F5F5F4;
+  --color-bnc-stone-200: #E7E5E4;
+  --color-bnc-stone-300: #D6D3D1;
+  --color-bnc-stone-400: #A8A29E;
+  --color-bnc-stone-500: #78716C;
+  --color-bnc-stone-600: #57534E;
+  --color-bnc-stone-700: #44403C;
+  --color-bnc-stone-800: #292524;
+  --color-bnc-stone-900: #1C1917;
+
+  /* fonts */
+  --font-display: 'Geist Variable', system-ui, sans-serif;
+  --font-body: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* spacing rhythm */
+  --spacing-section-y: clamp(6rem, 10vw, 10rem);
+  --spacing-section-y-sm: clamp(3rem, 5vw, 5rem);
+
+  /* layout */
+  --container-max: 80rem;
+  --prose-max: 68ch;
+
+  /* border radius scale */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+
+  /* shadow tokens */
+  --shadow-subtle: 0 1px 2px rgba(10, 14, 20, 0.04), 0 2px 8px rgba(10, 14, 20, 0.04);
+  --shadow-elevated: 0 4px 6px rgba(10, 14, 20, 0.06), 0 8px 24px rgba(10, 14, 20, 0.08);
+
+  /* animation durations */
+  --duration-quick: 150ms;
+  --duration-base: 250ms;
+
+  /* fluid type scale — fluid via clamp() */
+  --fs-12: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem);
+  --fs-14: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --fs-17: clamp(0.9375rem, 0.875rem + 0.3125vw, 1.0625rem);
+  --fs-20: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
+  --fs-28: clamp(1.5rem, 1.25rem + 1.25vw, 1.75rem);
+  --fs-36: clamp(1.75rem, 1.375rem + 1.875vw, 2.25rem);
+  --fs-48: clamp(2.25rem, 1.75rem + 2.5vw, 3rem);
+  --fs-64: clamp(3rem, 2.25rem + 3.75vw, 4rem);
+  --fs-84: clamp(3.5rem, 2.5rem + 5vw, 5.25rem);
+}
+
+/* ── Smooth scroll (respects reduced-motion) ── */
+/* Lenis handles smooth scroll when JS runs; this CSS fallback is for no-JS only */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis) { scroll-behavior: smooth; }
+}
+
+/* ── Pinned scroll sections: reduced-motion hard overrides ── */
+/* Scoped CSS in each component handles structure; these globals ensure
+   GSAP-set inline styles (opacity, transform) are fully overridden. */
+@media (prefers-reduced-motion: reduce) {
+  .client-cycle { height: auto !important; }
+  .client-cycle-pin { position: static !important; height: auto !important; }
+  .client-cycle-batch {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  .client-cycle-cell {
+    filter: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .why-carousel { height: auto !important; }
+  .why-carousel-pin { position: static !important; height: auto !important; }
+  .why-tile {
+    position: static !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+}
+
+
+/* ── Link underline reveal (cyan accent) ── */
+.bnc-link-underline {
+  background-image: linear-gradient(to right, var(--color-bnc-accent), var(--color-bnc-accent));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 250ms ease;
+}
+.bnc-link-underline:hover,
+.bnc-link-underline:focus-visible {
+  background-size: 100% 1.5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bnc-link-underline { transition: none; }
+}
+
+@layer base {
+  html, body {
+    overflow-x: clip;
+  }
+
+  html {
+    font-family: var(--font-body);
+    color: var(--color-bnc-ink);
+    background: var(--color-bnc-paper);
+    font-size: var(--fs-17);
+    line-height: 1.6;
+  }
+
+  html.dark {
+    color: var(--color-bnc-paper);
+    background: var(--color-bnc-ink);
+  }
+
+  /* dark mode surface overrides */
+  html.dark {
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-elevated: 0 4px 6px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  /* focus rings */
+  :focus-visible {
+    outline: 2px solid var(--color-bnc-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

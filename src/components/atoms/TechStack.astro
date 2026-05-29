@@ -1,0 +1,98 @@
+---
+/**
+ * TechStack — render an array of stack labels as branded logo pills.
+ *
+ * Maps recognised tech names (Flutter, Dart, Laravel, etc.) to local SVG
+ * icons in /public/tech/. Unrecognised entries (REST API, Web Scraping,
+ * concepts without a brand mark) fall back to a plain text pill so the
+ * stack list still reads as a complete inventory.
+ *
+ * Props:
+ *   - items: string[]   — the raw stack array from portfolio frontmatter
+ *   - size?: 'sm' | 'md' (default 'md')
+ *   - class?: string    — extra wrapper classes
+ */
+
+interface Props {
+  items: string[]
+  size?: 'sm' | 'md'
+  class?: string
+}
+
+const { items, size = 'md', class: cls = '' } = Astro.props
+
+// Slug map: key is a normalised lowercase version of the stack label.
+// Value is the filename in /public/tech/ (we already downloaded SVGs from
+// simpleicons.org for the recognised brands).
+const slugMap: Record<string, string> = {
+  flutter: 'flutter.svg',
+  dart: 'dart.svg',
+  laravel: 'laravel.svg',
+  'laravel 12': 'laravel.svg',
+  'vue 3': 'vuedotjs.svg',
+  'vue.js': 'vuedotjs.svg',
+  vue: 'vuedotjs.svg',
+  typescript: 'typescript.svg',
+  javascript: 'javascript.svg',
+  python: 'python.svg',
+  mysql: 'mysql.svg',
+  firebase: 'firebase.svg',
+  'firebase auth': 'firebase.svg',
+  'firebase cloud messaging': 'firebase.svg',
+  'tailwind css v4': 'tailwindcss.svg',
+  'tailwind css': 'tailwindcss.svg',
+  'php 8.2+': 'php.svg',
+  php: 'php.svg',
+  'inertia.js': 'inertia.svg',
+  inertia: 'inertia.svg',
+  react: 'react.svg',
+  'google play': 'googleplay.svg',
+  'node.js': 'nodedotjs.svg',
+}
+
+const sizeClasses = size === 'sm'
+  ? 'h-4 w-4'
+  : 'h-5 w-5'
+
+const pillPad = size === 'sm' ? 'px-2.5 py-1' : 'px-3 py-1.5'
+---
+
+<ul class:list={['flex flex-wrap gap-2 list-none m-0 p-0', cls]} role="list">
+  {items.map((item) => {
+    const key = item.toLowerCase()
+    const iconFile = slugMap[key]
+    const iconUrl = iconFile ? `/tech/${iconFile}` : null
+
+    return (
+      <li>
+        <span
+          class:list={[
+            'inline-flex items-center gap-2 rounded-full',
+            'border border-bnc-stone-200 dark:border-bnc-stone-800',
+            'bg-bnc-paper dark:bg-bnc-stone-900',
+            'text-bnc-stone-700 dark:text-bnc-stone-300',
+            'font-mono text-xs',
+            pillPad,
+          ]}
+        >
+          {iconUrl && (
+            <img
+              src={iconUrl}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              class:list={[
+                sizeClasses,
+                'object-contain',
+                /* simpleicons silhouettes are dark by default — invert in dark mode for legibility */
+                'dark:invert dark:opacity-90',
+              ]}
+            />
+          )}
+          <span>{item}</span>
+        </span>
+      </li>
+    )
+  })}
+</ul>

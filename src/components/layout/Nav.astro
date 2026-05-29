@@ -1,0 +1,121 @@
+---
+/**
+ * Nav — sticky top navigation.
+ * Left: horizontal logo (switches to icon-only on mobile).
+ * Right: nav links, language switcher, theme toggle, mobile drawer trigger.
+ * Translucent paper bg with blur on scroll.
+ */
+import Logo from '../brand/Logo.astro'
+import LangSwitcher from '../interactive/LangSwitcher.astro'
+import ThemeToggle from '../interactive/ThemeToggle.astro'
+import MobileDrawer from './MobileDrawer.astro'
+
+const locale = Astro.currentLocale ?? 'id'
+const isEn = locale === 'en'
+const prefix = isEn ? '/en' : ''
+
+const navLinks = isEn
+  ? [
+      { href: `${prefix}/services/`, label: 'Services' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'About' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/estimate/`, label: 'Estimate' },
+      { href: `${prefix}/contact/`, label: 'Contact' },
+    ]
+  : [
+      { href: `${prefix}/services/`, label: 'Layanan' },
+      { href: `${prefix}/portfolio/`, label: 'Portfolio' },
+      { href: `${prefix}/about/`, label: 'Tentang' },
+      { href: `${prefix}/blog/`, label: 'Blog' },
+      { href: `${prefix}/estimate/`, label: 'Estimasi' },
+      { href: `${prefix}/contact/`, label: 'Kontak' },
+    ]
+---
+
+<header
+  id="site-nav"
+  class="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color,transform] duration-300 bg-bnc-paper/80 dark:bg-bnc-ink/80 backdrop-blur-md border-b border-transparent will-change-transform"
+  data-nav-scroll
+>
+  <nav
+    aria-label="Site navigation"
+    class="mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16"
+    style="max-width: var(--container-max)"
+  >
+    <!-- Logo -->
+    <a href={isEn ? '/en/' : '/'} class="flex items-center gap-2 shrink-0" aria-label="Banua Coder home">
+      <span class="hidden sm:block">
+        <Logo variant="horizontal" width={160} />
+      </span>
+      <span class="sm:hidden">
+        <Logo variant="icon" width={36} />
+      </span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0" role="list">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="relative text-sm font-medium text-bnc-ink dark:text-bnc-paper transition-colors hover:text-bnc-primary dark:hover:text-bnc-accent group"
+          >
+            {link.label}
+            <span
+              class="absolute -bottom-0.5 left-0 h-px w-0 bg-bnc-accent transition-all duration-[var(--duration-base)] group-hover:w-full"
+              aria-hidden="true"
+            ></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Right cluster: lang switcher + theme toggle + mobile hamburger -->
+    <div class="flex items-center gap-2">
+      <LangSwitcher />
+      <ThemeToggle />
+
+      <!-- Mobile hamburger -->
+      <button
+        id="nav-hamburger"
+        type="button"
+        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-md transition-colors hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+      >
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Mobile drawer renders alongside the nav so the hamburger has something to open -->
+<MobileDrawer />
+
+<!-- Nav scroll-elevated state is wired in src/lib/animations.ts via [data-nav-scroll]
+     so it survives Astro view transitions (re-init on astro:after-swap). -->
+<style>
+  /* When scrolled past the top: stronger opacity + visible hairline border */
+  [data-nav-scroll].is-scrolled {
+    background-color: color-mix(in srgb, var(--color-bnc-paper) 92%, transparent);
+    border-bottom-color: var(--color-bnc-stone-200);
+  }
+  :global(html.dark) [data-nav-scroll].is-scrolled {
+    background-color: color-mix(in srgb, var(--color-bnc-ink) 92%, transparent);
+    border-bottom-color: var(--color-bnc-stone-800);
+  }
+  /* Auto-hide: translate up when not at hero and pointer not near top edge */
+  [data-nav-scroll].is-hidden {
+    transform: translateY(-100%);
+  }
+  /* Reduced-motion: kill the slide so navigate is always instant */
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav-scroll] {
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+/**
+ * DotGridBackdrop — CSS radial-gradient dot grid.
+ * GSAP ScrollTrigger parallax is wired via [data-dot-grid] in animations.ts.
+ * Respects prefers-reduced-motion: parallax disabled automatically via gsap.matchMedia.
+ */
+interface Props {
+  /** Extra CSS classes on the wrapper */
+  class?: string
+}
+
+const { class: cls = '' } = Astro.props
+---
+
+<div
+  id="dot-grid-backdrop"
+  class:list={['dot-grid-backdrop', cls]}
+  data-dot-grid
+  aria-hidden="true"
+></div>
+
+<style>
+  .dot-grid-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(circle, var(--color-bnc-stone-300) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.4;
+    will-change: transform;
+  }
+
+  html.dark .dot-grid-backdrop {
+    background-image: radial-gradient(circle, var(--color-bnc-stone-700) 1px, transparent 1px);
+    opacity: 0.35;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-grid-backdrop {
+      will-change: auto;
+    }
+  }
+</style>
+

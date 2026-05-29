@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "banuacoder",
+  "project_id": "352aada5-43a6-4b25-b86c-43bdbe2ab758"
+}

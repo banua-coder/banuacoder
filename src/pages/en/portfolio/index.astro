@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../../lib/og/url'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Nav from '../../../components/layout/Nav.astro'
+import Footer from '../../../components/layout/Footer.astro'
+import Container from '../../../components/layout/Container.astro'
+import SectionHeader from '../../../components/typography/SectionHeader.astro'
+import CaseStudyCard from '../../../components/cards/CaseStudyCard.astro'
+import BucketFilter from '../../../components/interactive/BucketFilter.astro'
+
+// Load all EN portfolio entries, sorted by order
+const allPortfolio = await getCollection('portfolio')
+const projects = allPortfolio
+  .filter((p) => p.data.locale === 'en')
+  .sort((a, b) => a.data.order - b.data.order)
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://banuacoder.com/en/' },
+    { '@type': 'ListItem', position: 2, name: 'Portfolio', item: 'https://banuacoder.com/en/portfolio/' },
+  ],
+}
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Banua Coder Portfolio',
+  url: 'https://banuacoder.com/en/portfolio/',
+  numberOfItems: projects.length,
+  itemListElement: projects.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.data.title,
+    url: `https://banuacoder.com/en/portfolio/${p.data.slug}/`,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      description: p.data.summary,
+      url: `https://banuacoder.com/en/portfolio/${p.data.slug}/`,
+    },
+  })),
+}
+---
+
+<BaseLayout
+  title="Portfolio — Mobile Apps, Web & Government Systems — Banua Coder"
+  description="Banua Coder's portfolio: consumer-facing apps, public-sector systems, and digital operational solutions we have built and maintained."
+  ogImage={ogUrl('en-portfolio')}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(itemListSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Skip to main content
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Page header -->
+    <section
+      aria-labelledby="portfolio-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="PORTFOLIO"
+          marker="[ 01 ]"
+          title="Selected Work"
+          description="Consumer-facing apps, public information platforms, and digital operational systems we've built with clients across different contexts."
+          class="mb-10"
+        />
+        <BucketFilter />
+      </Container>
+    </section>
+
+    <!-- Project grid -->
+    <section
+      aria-label="Project list"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        {projects.length === 0 ? (
+          <p class="font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400">
+            // No projects available yet.
+          </p>
+        ) : (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolio-grid">
+            {projects.map((project) => (
+              <CaseStudyCard
+                title={project.data.title}
+                client={project.data.client}
+                year={project.data.year}
+                bucket={project.data.bucket}
+                summary={project.data.summary}
+                impactStat={project.data.impact[0]}
+                coverSrc={project.data.thumbnail as ImageMetadata}
+                coverAlt={`${project.data.title} preview`}
+                href={`/en/portfolio/${project.data.slug}/`}
+              />
+            ))}
+          </div>
+        )}
+
+        <!-- Empty-state after filter -->
+        <p
+          id="portfolio-empty"
+          class="font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400 hidden mt-8"
+          aria-live="polite"
+        >
+          // No projects in this category.
+        </p>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const grid = document.getElementById('portfolio-grid')
+  const empty = document.getElementById('portfolio-empty')
+  if (grid && empty) {
+    const observer = new MutationObserver(() => {
+      const anyVisible = Array.from(grid.querySelectorAll<HTMLElement>('[data-bucket]')).some(
+        (el) => el.style.display !== 'none',
+      )
+      empty.classList.toggle('hidden', anyVisible)
+    })
+    observer.observe(grid, { attributes: true, subtree: true, attributeFilter: ['style'] })
+  }
+</script>

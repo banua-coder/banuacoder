@@ -1,0 +1,200 @@
+name: Finalize Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  finalize:
+    if: >-
+      github.event.pull_request.merged == true &&
+      (startsWith(github.event.pull_request.head.ref, 'release/') ||
+       startsWith(github.event.pull_request.head.ref, 'hotfix/'))
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Parse branch name
+        id: parse
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          SUFFIX="${HEAD_REF#release/}"
+          SUFFIX="${SUFFIX#hotfix/}"
+          VERSION="${SUFFIX#v}"
+
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+'; then
+            echo "::error::Cannot parse semver from branch $HEAD_REF"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "full_tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Parsed: v$VERSION"
+
+      - name: Build grouped changelog from PR commits
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh api "repos/$REPO/pulls/$PR_NUMBER/commits" --paginate \
+            --jq '.[] | "\(.commit.message | split("\n")[0])\t\(.sha[0:7])"' \
+            > /tmp/commits.tsv
+
+          declare -A BUCKETS
+          ORDER=(feat fix perf refactor docs test ci build chore style revert other)
+
+          while IFS=$'\t' read -r subject sha; do
+            [ -z "$subject" ] && continue
+            type=$(printf '%s' "$subject" | sed -nE 's/^([a-z]+)(\([^)]+\))?!?:.*/\1/p')
+            case "$type" in
+              feat|fix|perf|refactor|docs|test|ci|build|chore|style|revert) ;;
+              *) type="other" ;;
+            esac
+            BUCKETS["$type"]+="- ${subject} (${sha})"$'\n'
+          done < /tmp/commits.tsv
+
+          declare -A LABEL=(
+            [feat]="### ✨ Features"
+            [fix]="### 🐛 Bug Fixes"
+            [perf]="### ⚡ Performance"
+            [refactor]="### ♻️ Refactor"
+            [docs]="### 📝 Docs"
+            [test]="### ✅ Tests"
+            [ci]="### 👷 CI"
+            [build]="### 📦 Build"
+            [chore]="### 🧹 Chore"
+            [style]="### 💄 Style"
+            [revert]="### ⏪ Revert"
+            [other]="### 📌 Other"
+          )
+
+          {
+            for type in "${ORDER[@]}"; do
+              entries="${BUCKETS[$type]:-}"
+              if [ -n "$entries" ]; then
+                printf '%s\n\n%s\n' "${LABEL[$type]}" "$entries"
+              fi
+            done
+          } > /tmp/changelog.md
+
+          if [ ! -s /tmp/changelog.md ]; then
+            echo "- Initial release" > /tmp/changelog.md
+          fi
+
+          echo "----- changelog -----"
+          cat /tmp/changelog.md
+          echo "---------------------"
+
+      - name: Prepend new section to CHANGELOG.md
+        env:
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          export RELEASE_DATE=$(date -u +%Y-%m-%d)
+          python3 - <<'PY'
+          import os, pathlib
+          version = os.environ["VERSION"]
+          date = os.environ["RELEASE_DATE"]
+          new_body = pathlib.Path('/tmp/changelog.md').read_text()
+          new_section = f"## v{version} — {date}\n\n{new_body}\n"
+
+          path = pathlib.Path('CHANGELOG.md')
+          if not path.exists():
+              prelude = (
+                  "# Changelog\n\n"
+                  "All notable releases of banuacoder.com are recorded here. "
+                  "Generated automatically by `release-finalize.yml`.\n\n"
+              )
+              path.write_text(prelude + new_section)
+          else:
+              text = path.read_text()
+              lines = text.splitlines(keepends=True)
+              insert_at = None
+              for i, line in enumerate(lines):
+                  if line.startswith('## '):
+                      insert_at = i
+                      break
+              if insert_at is None:
+                  insert_at = len(lines)
+                  for i, line in enumerate(lines):
+                      if i > 0 and line.strip() == '':
+                          insert_at = i + 1
+                          break
+              new_lines = lines[:insert_at] + [new_section + '\n'] + lines[insert_at:]
+              path.write_text(''.join(new_lines))
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(changelog): banuacoder v$VERSION"
+            git push origin HEAD:main
+          else
+            echo "CHANGELOG.md unchanged"
+          fi
+
+      - name: Create and push tag
+        env:
+          VERSION: ${{ steps.parse.outputs.version }}
+          FULL_TAG: ${{ steps.parse.outputs.full_tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$FULL_TAG" -m "banuacoder v$VERSION"
+          git push origin "$FULL_TAG"
+          echo "Tag $FULL_TAG pushed — deploy.yml will trigger"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+          FULL_TAG: ${{ steps.parse.outputs.full_tag }}
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          gh release create "$FULL_TAG" \
+            --title "banuacoder v$VERSION" \
+            --notes-file /tmp/changelog.md
+
+      - name: Open back-merge PR to develop
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          BACK_BRANCH="chore/back-merge-v$VERSION"
+
+          if git ls-remote --exit-code origin "refs/heads/$BACK_BRANCH" >/dev/null 2>&1; then
+            echo "Back-merge branch $BACK_BRANCH already exists — skipping"
+            exit 0
+          fi
+
+          git fetch origin develop main
+          git checkout -B "$BACK_BRANCH" origin/develop
+          # Merge main into develop. Prefer develop's package.json if conflicting
+          # (develop already holds the next minor from release-prepare).
+          git merge --no-edit origin/main || {
+            if git diff --name-only --diff-filter=U | grep -q '^package.json$'; then
+              git checkout --ours package.json
+              git add package.json
+              git commit --no-edit
+            else
+              echo "::error::Unresolvable merge conflict on back-merge"
+              exit 1
+            fi
+          }
+          git push -u origin "$BACK_BRANCH"
+
+          gh pr create \
+            --base develop \
+            --head "$BACK_BRANCH" \
+            --title "chore: back-merge v$VERSION into develop" \
+            --body "Routine back-merge after v$VERSION release. Auto-resolved \`package.json\` to develop's higher semver."

@@ -1,0 +1,560 @@
+---
+import { Image } from 'astro:assets'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import FounderExperienceStrip from '../../components/founder/FounderExperienceStrip.astro'
+import CTA from '../../components/sections/CTA.astro'
+import iconImage from '../../assets/brand/banuacoder-icon.png'
+import rekuShot1 from '../../assets/founder/work-product/work-1.webp'
+import rekuShot2 from '../../assets/founder/work-product/work-3.webp'
+import rekuShot3 from '../../assets/founder/work-product/work-5.webp'
+import rekuShot4 from '../../assets/founder/work-product/work-6.webp'
+import sikerjaShot1 from '../../content/portfolio/sikerja/screenshots/screenshot-2.webp'
+import sikerjaShot2 from '../../content/portfolio/sikerja/screenshots/screenshot-3.webp'
+import detexiShot1 from '../../content/portfolio/detexi/screenshots/screenshot-2.webp'
+import detexiShot2 from '../../content/portfolio/detexi/screenshots/screenshot-4.webp'
+import carwaShot1 from '../../content/portfolio/carwa/screenshots/screenshot-2.webp'
+import carwaShot2 from '../../content/portfolio/carwa/screenshots/screenshot-3.webp'
+import picoShot1 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import picoShot2 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
+import ambientImg from '../../assets/stock/clean-workspace-notebook.jpg'
+{/* ambientImg — unsplash: https://unsplash.com/photos/laptop-computer-on-glass-top-table-1547658719-da2b51169166 by @cgower */}
+
+const credibilityBullets = [
+  'Background in software engineering and digital product development',
+  'Strong focus on mobile engineering, platform, and performance',
+  'Experience across business systems, public workflows, and digital products in diverse contexts',
+  'Practical approach that connects business needs to technical execution',
+  'Active in knowledge sharing and engineering communities',
+]
+
+const selectedExperience = [
+  { company: 'GoTo Financial', context: 'Mobile platform engineering — large-scale fintech ecosystem' },
+  { company: 'Reku', context: 'Mobile engineering — crypto and digital investment application' },
+  { company: 'Stockbit / Bibit', context: 'Mobile platform — investment community and mutual fund application' },
+  { company: 'Ulearna Technology LTD', context: 'International product collaboration — consumer-facing application for global market' },
+  { company: 'Public Sector', context: 'Public digital systems — regional service and payment applications' },
+]
+
+const engineeringPhilosophy = [
+  {
+    label: '// system over feature',
+    title: 'System over feature',
+    desc: 'More features don\'t always mean a better product. Banua Coder builds with an eye on how the system will evolve — not just how it works at launch. This means conscious architectural decisions, not just responding to requests one by one.',
+  },
+  {
+    label: '// product thinking',
+    title: 'Product thinking, not just code',
+    desc: 'Good engineering doesn\'t start from "how do I build this" but from "is this what should be built." We approach every project with an understanding of the business goals behind it — so technical decisions are directed by outcomes, not technical preference alone.',
+  },
+  {
+    label: '// craft and discipline',
+    title: 'Craft and discipline as defaults',
+    desc: 'Code reviews, testing, performance, and accessibility aren\'t optional add-ons — they\'re part of how we work by default. Not from perfectionism, but because systems not built with this discipline will become expensive technical debt in the future.',
+  },
+]
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://banuacoder.com/founder/#person',
+  name: 'Fajrian Aidil Pratama',
+  jobTitle: 'Founder & Director',
+  worksFor: {
+    '@type': 'Organization',
+    '@id': 'https://banuacoder.com/#organization',
+    name: 'Banua Coder',
+    url: 'https://banuacoder.com',
+  },
+  url: 'https://banuacoder.com/en/founder/',
+  sameAs: [
+    'https://linkedin.com/in/ryanaidilp',
+    'https://twitter.com/ryanaidilp_',
+    'https://github.com/ryanaidilp',
+    'https://youtube.com/@banuacoder',
+  ],
+  description: 'Software engineer with experience in mobile engineering, platform, and digital product development.',
+  knowsAbout: [
+    'Mobile Engineering',
+    'Flutter',
+    'Platform Engineering',
+    'Product Development',
+    'Digital Systems',
+    'Laravel',
+    'Public Sector Digitalization',
+  ],
+  nationality: 'Indonesia',
+}
+
+const founderBreadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://banuacoder.com/en/' },
+    { '@type': 'ListItem', position: 2, name: 'Founder', item: 'https://banuacoder.com/en/founder/' },
+  ],
+}
+---
+
+<BaseLayout
+  title="Fajrian Aidil Pratama — Founder, Banua Coder"
+  description="Fajrian Aidil Pratama is the Founder & Director of Banua Coder. Software engineer with experience in mobile engineering, platform, and digital product development."
+  ogImage={ogUrl('en-founder')}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(founderBreadcrumbSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Skip to main content
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="founder-hero-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // FOUNDER
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          <!-- Text -->
+          <div>
+            <p class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 tracking-widest uppercase mb-2">
+              Founder & Director, Banua Coder
+            </p>
+            <h1
+              id="founder-hero-heading"
+              class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-4"
+              style="font-size: var(--fs-64)"
+            >
+              Fajrian Aidil Pratama
+            </h1>
+            <p
+              class="font-semibold text-bnc-stone-700 dark:text-bnc-stone-300 mb-6"
+              style="font-size: var(--fs-20)"
+            >
+              Led by engineering experience across product, platform, and operational systems
+            </p>
+            <div class="flex gap-4 flex-wrap">
+              <a
+                href="https://linkedin.com/in/ryanaidilp"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                LinkedIn →
+              </a>
+              <a
+                href="https://twitter.com/ryanaidilp_"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+              >
+                X / Twitter →
+              </a>
+            </div>
+          </div>
+          <!-- Photo placeholder -->
+          <div
+            class="flex items-center justify-center rounded-[var(--radius-md)] bg-bnc-stone-100 dark:bg-bnc-stone-800 aspect-[3/4] max-w-xs"
+            aria-label="Photo of Fajrian Aidil Pratama — to be replaced with professional headshot"
+          >
+            <div class="flex flex-col items-center gap-3">
+              <Image
+                src={iconImage}
+                alt=""
+                width={60}
+                height={60}
+                class="opacity-15"
+                aria-hidden="true"
+                loading="eager"
+                decoding="async"
+              />
+              <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest text-center px-4">
+                // founder photo
+              </span>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- About Fajrian — expanded story -->
+    <section aria-labelledby="narrative-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+          <div class="lg:col-span-2">
+            <h2
+              id="narrative-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+              style="font-size: var(--fs-28)"
+            >
+              About Ryan
+            </h2>
+            <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Ryan grew up in Central Sulawesi and built his career as a software engineer specializing in mobile engineering, platform systems, and digital product development. From early on, he was drawn to how large systems work from the inside — not just building requested features, but understanding architecture, tradeoffs, and the long-term implications of every technical decision.
+              </p>
+              <p>
+                His career took him into product engineering environments rarely reached by engineers from regional Indonesia: GoTo Financial as Southeast Asia's largest fintech ecosystem, Reku and Stockbit/Bibit as consumer investment platforms serving millions of users, and international collaboration with Ulearna Technology LTD on products targeting a global market. He also worked on public-sector digital systems — regional tax and retribution service applications that demand a different kind of rigor around data trust and workflow clarity than typical consumer apps.
+              </p>
+              <p>
+                Banua Coder was founded in 2019 from a desire to bring those engineering and product-thinking standards to a local context — businesses and organizations in regional Indonesia that need a technology partner they can genuinely rely on, not just a vendor that codes. Ryan founded Banua Coder on one conviction: the quality of digital solutions should not depend on where a business is located.
+              </p>
+              <p>
+                His approach to leading Banua Coder is to combine engineering depth with product thinking — two things that are often separated in conventional software houses. The result is a team that doesn't just build what's asked, but helps clients think more clearly about what actually needs to be built.
+              </p>
+            </div>
+          </div>
+          <aside>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={ambientImg}
+                alt="Clean workspace — craft and engineering focus"
+                width={400}
+                class="w-full object-cover"
+                style="max-height: 320px"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </aside>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Experience strip -->
+    <section
+      aria-labelledby="experience-strip-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <h2
+          id="experience-strip-heading"
+          class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-6"
+        >
+          // Selected background
+        </h2>
+        <FounderExperienceStrip />
+      </Container>
+    </section>
+
+    <!-- Cross-context execution -->
+    <section aria-labelledby="cross-context-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="max-w-3xl">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+            // CROSS-CONTEXT EXECUTION
+          </p>
+          <h2
+            id="cross-context-heading"
+            class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+            style="font-size: var(--fs-28)"
+          >
+            Cross-context execution
+          </h2>
+          <div class="flex flex-col gap-5 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+            <p>
+              Many skilled engineers have only ever worked in one context: consumer startup, or enterprise internal systems, or an agency. When the problem in front of them is different from what they've usually handled, there's a real risk the solution won't fit — not from lack of ability, but from limited reference points.
+            </p>
+            <p>
+              Ryan brings experience across three very different contexts: consumer products used by millions of people that demand high performance, reliability, and strong UX; public systems that require data trust, auditability, and clear workflows; and platform engineering that prioritizes maintainability and developer experience. Each context teaches something different about tradeoffs and priorities.
+            </p>
+            <p>
+              The result is an adaptive approach: we don't bring the same solution template to every client. We read the context — whether this is an F&B brand that needs a simple membership system up and running fast, or a regional government workflow system that needs clean data structures and an audit trail — and adjust the architecture and delivery approach accordingly.
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Engineering philosophy -->
+    <section
+      aria-labelledby="philosophy-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // ENGINEERING PHILOSOPHY
+        </p>
+        <h2
+          id="philosophy-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-10"
+          style="font-size: var(--fs-28)"
+        >
+          Our engineering principles
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {engineeringPhilosophy.map((principle) => (
+            <div class="flex flex-col gap-3">
+              <p class="font-mono text-xs text-bnc-accent tracking-wider">{principle.label}</p>
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-17)"
+              >
+                {principle.title}
+              </h3>
+              <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                {principle.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+
+    <!-- Selected work product (redacted) -->
+    <section
+      aria-labelledby="work-product-heading"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // SELECTED WORK PRODUCT
+        </p>
+        <h2
+          id="work-product-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-3"
+          style="font-size: var(--fs-28)"
+        >
+          Selected work
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-8 max-w-2xl" style="font-size: var(--fs-17)">
+          Interface snapshots from apps Banua Coder has shipped — regional public services,
+          Indonesian consumer apps, and earlier fintech work at multi-million-user scale.
+          Some shots have client branding hidden to respect confidentiality.
+        </p>
+        <div
+          class="prior-work-marquee relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8"
+          aria-roledescription="carousel"
+          aria-label="App interface snapshots"
+        >
+          <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
+            {[
+              // Group: Reku (prior consumer fintech, redacted)
+              { src: rekuShot1, alt: "Consumer fintech app (redacted) — light vs dark mode comparison on the discover/market screen", label: 'Consumer fintech · prior' },
+              { src: rekuShot2, alt: "Consumer fintech app — reward/cashback screen", label: 'Consumer fintech · prior' },
+              { src: rekuShot3, alt: "Consumer fintech app — Portfolio P/L with annotated chart", label: 'Consumer fintech · prior' },
+              { src: rekuShot4, alt: "Consumer fintech app — asset detail with card list", label: 'Consumer fintech · prior' },
+              // Group: Sikerja
+              { src: sikerjaShot1, alt: "Sikerja — list of available jobs in Central Sulawesi", label: 'Sikerja · 2024' },
+              { src: sikerjaShot2, alt: "Sikerja — listing detail with partner company profile", label: 'Sikerja · 2024' },
+              // Group: Detexi
+              { src: detexiShot1, alt: "Detexi Doctor — search doctors by specialization", label: 'Detexi · 2023' },
+              { src: detexiShot2, alt: "Detexi Doctor — patient–doctor consultation flow", label: 'Detexi · 2023' },
+              // Group: Carwa
+              { src: carwaShot1, alt: "Carwa — live digital car auction interface", label: 'Carwa · Dubai · 2024' },
+              { src: carwaShot2, alt: "Carwa — auction listing with vehicle specifications", label: 'Carwa · Dubai · 2024' },
+              // Group: PICO Sulteng
+              { src: picoShot1, alt: "PICO Sulteng — provincial COVID-19 statistics dashboard", label: 'PICO Sulteng · 2021' },
+              { src: picoShot2, alt: "PICO Sulteng — regional case-distribution map", label: 'PICO Sulteng · 2021' },
+            ].map(({ src, alt, label }) => (
+              <figure class="prior-work-slide shrink-0 group">
+                <div class="border border-bnc-stone-200 dark:border-bnc-stone-800 rounded-[var(--radius-md)] overflow-hidden bg-bnc-stone-50 dark:bg-bnc-stone-900">
+                  <Image
+                    src={src}
+                    alt={alt}
+                    width={280}
+                    class="block w-full h-auto"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption class="font-mono text-[10px] tracking-wider uppercase text-bnc-stone-400 dark:text-bnc-stone-500 mt-2 text-center">
+                  {label}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+        <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600 mt-4">
+          Mix of Banua Coder products and prior engagements · Drag to view all
+        </p>
+      </Container>
+    </section>
+
+    <!-- Selected experience + credibility bullets -->
+    <section
+      aria-labelledby="selected-exp-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Experience list -->
+          <div>
+            <h2
+              id="selected-exp-heading"
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+              style="font-size: var(--fs-28)"
+            >
+              Selected Experience
+            </h2>
+            <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-6 text-sm">
+              Includes experience and exposure in environments such as GoTo Financial, Reku, Stockbit/Bibit, public sector digital systems, and international product collaboration.
+            </p>
+            <ul class="list-none m-0 p-0 flex flex-col gap-4" role="list">
+              {selectedExperience.map((exp) => (
+                <li class="flex gap-4 items-start">
+                  <span class="w-8 h-px bg-bnc-accent mt-3 shrink-0" aria-hidden="true"></span>
+                  <div>
+                    <p class="font-semibold text-bnc-ink dark:text-bnc-paper text-sm">{exp.company}</p>
+                    <p class="text-bnc-stone-500 dark:text-bnc-stone-400 text-xs mt-0.5">{exp.context}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Credibility bullets -->
+          <div>
+            <h2
+              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6"
+              style="font-size: var(--fs-28)"
+            >
+              Credibility Highlights
+            </h2>
+            <ul class="list-none m-0 p-0 flex flex-col gap-3" role="list">
+              {credibilityBullets.map((bullet) => (
+                <li class="flex items-start gap-3 text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-17)">
+                  <span class="text-bnc-accent mt-1 shrink-0" aria-hidden="true">→</span>
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Currently leading -->
+    <section
+      aria-labelledby="leading-heading"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <h2
+          id="leading-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-4"
+          style="font-size: var(--fs-28)"
+        >
+          Currently Leading
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 mb-4" style="font-size: var(--fs-17); max-width: 60ch">
+          Ryan leads Banua Coder together with a solid team — spanning engineering, design, and delivery. Every project you entrust to Banua Coder receives Ryan's direct attention during the discovery and solution architecture phases.
+        </p>
+        <a
+          href="/en/about/"
+          class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+        >
+          Meet the full team →
+        </a>
+      </Container>
+    </section>
+
+    <!-- Connect section -->
+    <section
+      aria-labelledby="connect-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // CONNECT
+        </p>
+        <h2
+          id="connect-heading"
+          class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2"
+          style="font-size: var(--fs-20)"
+        >
+          Follow or connect
+        </h2>
+        <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm mb-6">
+          Ryan actively shares thoughts on engineering, product, and building software. Find him on these platforms.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="https://linkedin.com/in/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            LinkedIn →
+          </a>
+          <a href="https://github.com/ryanaidilp" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            GitHub →
+          </a>
+          <a href="https://twitter.com/ryanaidilp_" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors">
+            X / Twitter →
+          </a>
+        </div>
+      </Container>
+    </section>
+
+    <!-- CTA -->
+    <CTA
+      headline="Schedule a conversation"
+      sub="Discuss your needs directly with Ryan and the Banua Coder team."
+      primaryCta="Start a Discussion"
+      primaryHref="/en/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Prior-work marquee — auto-scrolling horizontal carousel of redacted
+     screenshots from prior consumer fintech work. Pauses on hover/focus. */
+  .prior-work-marquee {
+    mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+  }
+  .prior-work-track {
+    animation: prior-work-scroll 60s linear infinite;
+  }
+  .prior-work-marquee:hover .prior-work-track,
+  .prior-work-marquee:focus-within .prior-work-track {
+    animation-play-state: paused;
+  }
+  .prior-work-slide {
+    width: clamp(180px, 24vw, 280px);
+  }
+  .prior-work-slide :global(img) {
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: auto;
+  }
+  @keyframes prior-work-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .prior-work-track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .prior-work-marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+      overflow: visible;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.prior-work-track').forEach((track) => {
+    track.innerHTML += track.innerHTML
+    track.setAttribute('aria-hidden', 'false')
+  })
+</script>

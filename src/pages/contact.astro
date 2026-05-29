@@ -1,0 +1,311 @@
+---
+import { ogUrl } from '../lib/og/url'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import Container from '../components/layout/Container.astro'
+import { contact, buildWhatsAppUrl } from '../data/contact'
+
+const whatsappUrl = buildWhatsAppUrl('id')
+const emailUrl = `mailto:${contact.email}`
+const calendlyUrl = whatsappUrl // placeholder — founder can replace with Calendly URL
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': 'https://banuacoder.com/contact/#local-business',
+  name: 'Banua Coder',
+  url: 'https://banuacoder.com',
+  telephone: `+${contact.whatsappNumber}`,
+  email: contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: contact.office.city,
+    addressRegion: contact.office.region,
+    postalCode: '94111',
+    addressCountry: 'ID',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: contact.office.coords.lat,
+    longitude: contact.office.coords.lng,
+  },
+  openingHours: 'Mo-Fr 09:00-17:00',
+  priceRange: '$$',
+  sameAs: [
+    contact.socials.linkedin,
+    contact.socials.instagram,
+    contact.socials.github,
+    contact.socials.youtube,
+  ],
+}
+
+const contactFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Berapa lama Banua Coder merespons pesan WhatsApp?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Kami biasanya merespons dalam 1–2 jam di hari kerja (Senin–Jumat, 09:00–17:00 WITA).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Apakah Banua Coder menerima proyek dari luar Sulawesi Tengah?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ya. Kami mengerjakan proyek dari seluruh Indonesia dan klien internasional. Semua diskusi awal dapat dilakukan melalui WhatsApp atau email.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Bagaimana cara memulai proyek dengan Banua Coder?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Hubungi kami melalui WhatsApp atau email untuk memulai diskusi awal. Kami akan membantu memetakan kebutuhan dan memberikan gambaran solusi yang realistis.',
+      },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Kontak Banua Coder — Software House Palu, Sulawesi Tengah"
+  description="Punya ide, kebutuhan sistem, atau proses bisnis yang ingin dirapikan? Mari diskusikan kebutuhan Anda bersama Banua Coder."
+  ogImage={ogUrl('contact')}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(localBusinessSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(contactFaqSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="contact-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // KONTAK
+        </p>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ 01 ]</span>
+        </div>
+        <h1
+          id="contact-heading"
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-4"
+          style="font-size: var(--fs-64)"
+        >
+          Mari diskusikan kebutuhan Anda
+        </h1>
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+          style="font-size: var(--fs-20); max-width: 60ch"
+        >
+          Punya ide, kebutuhan sistem, atau proses bisnis yang ingin dirapikan? Ceritakan kepada kami dan kami bantu petakan solusi yang realistis.
+        </p>
+      </Container>
+    </section>
+
+    <!-- Two-col layout -->
+    <section aria-label="Informasi kontak" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+
+          <!-- Left: Primary CTAs -->
+          <div class="flex flex-col gap-8">
+            <div>
+              <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-6">
+                // Mulai dari sini
+              </p>
+
+              <!-- WhatsApp CTA (primary) -->
+              <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 mb-5">
+                <div>
+                  <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
+                    WhatsApp
+                  </p>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                    Cara tercepat untuk memulai diskusi. Kami biasanya merespons dalam 1–2 jam di hari kerja.
+                  </p>
+                </div>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-7 py-3.5 rounded-[var(--radius-sm)] bg-bnc-primary text-white font-semibold text-base hover:bg-bnc-accent transition-colors self-start"
+                  aria-label="Hubungi via WhatsApp"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  Mulai di WhatsApp
+                </a>
+              </div>
+
+              <!-- Discovery call CTA (secondary) -->
+              <div class="flex flex-col gap-4 p-6 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+                <div>
+                  <p class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-1" style="font-size: var(--fs-20)">
+                    Discovery Call
+                  </p>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm leading-relaxed">
+                    Ingin jadwal yang lebih terstruktur? Pilih slot 30 menit langsung di kalender kami.
+                  </p>
+                </div>
+                <a
+                  href={calendlyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5"
+                >
+                  Jadwalkan discovery call →
+                </a>
+                <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-600">
+                  atau email: <a href={emailUrl} class="hover:text-bnc-accent transition-colors">{contact.email}</a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Office info + socials -->
+          <div class="flex flex-col gap-8">
+            <!-- Office details -->
+            <div>
+              <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-5">
+                // Kantor
+              </p>
+              <div class="flex flex-col gap-4">
+                <div>
+                  <p class="font-mono text-xs text-bnc-stone-400 mb-1">Lokasi</p>
+                  <p class="text-bnc-ink dark:text-bnc-paper font-medium">
+                    {contact.office.city}, {contact.office.region}
+                  </p>
+                  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm">
+                    {contact.office.country}
+                  </p>
+                </div>
+                <div>
+                  <p class="font-mono text-xs text-bnc-stone-400 mb-1">Jam Kerja</p>
+                  <p class="text-bnc-ink dark:text-bnc-paper font-medium text-sm">
+                    {contact.hours.id}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- OpenStreetMap embed -->
+            <div>
+              <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
+                // Peta
+              </p>
+              <div class="rounded-[var(--radius-md)] overflow-hidden border border-bnc-stone-200 dark:border-bnc-stone-800" style="height: 220px;">
+                <iframe
+                  title="Lokasi Banua Coder — Palu, Sulawesi Tengah"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=119.8207%2C-0.9417%2C119.9207%2C-0.8417&layer=mapnik&marker=-0.8917%2C119.8707"
+                  width="100%"
+                  height="220"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  class="w-full h-full border-0"
+                  aria-label="Peta lokasi Palu, Sulawesi Tengah"
+                ></iframe>
+              </div>
+              <p class="font-mono text-xs text-bnc-stone-400 mt-2">
+                Palu, Sulawesi Tengah, Indonesia
+              </p>
+            </div>
+
+            <!-- Social links -->
+            <div>
+              <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
+                // Ikuti kami
+              </p>
+              <div class="flex flex-col gap-2">
+                <a
+                  href={contact.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-2"
+                >
+                  LinkedIn →
+                </a>
+                <a
+                  href={contact.socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-2"
+                >
+                  Instagram →
+                </a>
+                <a
+                  href={contact.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-2"
+                >
+                  GitHub →
+                </a>
+                <a
+                  href={contact.socials.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors inline-flex items-center gap-2"
+                >
+                  YouTube →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Estimate note -->
+    <section
+      aria-label="Estimasi proyek"
+      class="border-t border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900"
+      style="padding-block: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+          <div>
+            <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-1">// Estimasi</p>
+            <p class="text-bnc-ink dark:text-bnc-paper font-medium">
+              Ingin gambaran estimasi proyek?
+            </p>
+            <p class="text-bnc-stone-600 dark:text-bnc-stone-400 text-sm mt-1">
+              Coba kalkulator estimasi kami untuk gambaran awal anggaran dan timeline.
+            </p>
+          </div>
+          <a
+            href="/estimate/"
+            class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent transition-colors inline-flex items-center gap-1.5 shrink-0"
+          >
+            Kalkulator estimasi →
+          </a>
+        </div>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

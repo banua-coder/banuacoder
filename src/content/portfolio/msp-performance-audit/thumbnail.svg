@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F2A2C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A4D52;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="360" fill="url(#g)" />
+  <rect x="0" y="0" width="600" height="360" fill="rgba(0,0,0,0.18)" />
+  <text x="40" y="105" font-family="Georgia, serif" font-size="38" font-weight="700" fill="#FFFFFF" letter-spacing="-1">Masjid Sejuta</text>
+  <text x="40" y="148" font-family="Georgia, serif" font-size="38" font-weight="700" fill="#FFFFFF" letter-spacing="-1">Pemuda</text>
+  <text x="42" y="180" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.5)">consumer · Flutter perf audit · 2025</text>
+</svg>

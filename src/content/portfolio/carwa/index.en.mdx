@@ -1,0 +1,87 @@
+---
+title: Carwa — Digital Car Auction
+slug: carwa
+bucket: consumer
+client: Ulearna Technology LTD
+year: 2024
+status: maintained
+cover: ./cover.webp
+thumbnail: ./thumbnail.svg
+summary: >
+  A digital car auction app for the UAE market that lets users buy and bid on used vehicles
+  in real-time. Built for Ulearna Technology LTD (Dubai, UAE), Carwa demonstrates Banua Coder's
+  capability in fintech-adjacent domains with real-time transaction flows and an intuitive
+  user experience.
+problem: >
+  The used car market across the Middle East still relies heavily on physical meet-ups and
+  inefficient negotiations. The Dubai-based client needed a digital platform capable of
+  delivering a transparent, real-time, and trustworthy auction process for both buyers and
+  sellers — a challenge that spanned the technical (bid price synchronization, session
+  management, race condition handling) and the product side (user trust and an experience
+  accessible to segments unfamiliar with digital auctions).
+solution: >
+  Banua Coder developed the Carwa mobile application using Flutter. The implementation
+  covers real-time bidding via WebSocket or periodic polling, a vehicle listing view with
+  efficient filtering and search, unit detail pages with photo galleries, auction sessions
+  with countdown timers, and a payment and confirmation flow. The architecture was designed
+  to handle concurrency in active auction sessions, and the UI was crafted for clear
+  communication of price and bid status.
+impact:
+  - Published to Google Play and actively in use
+  - Regularly updated, with the latest update in February 2026
+  - Digital auction process replacing inefficient manual workflows
+  - Automotive domain with real-time transactions as a Banua Coder capability reference
+stack:
+  - Flutter
+  - Dart
+  - REST API
+  - WebSocket / Real-time sync
+  - Google Play
+links:
+  playStore: https://play.google.com/store/apps/details?id=com.ulearna.carx
+featured: true
+order: 20
+locale: en
+---
+
+import { Image } from 'astro:assets'
+import shot1 from './screenshots/screenshot-1.webp'
+import shot2 from './screenshots/screenshot-2.webp'
+import shot3 from './screenshots/screenshot-3.webp'
+import shot4 from './screenshots/screenshot-4.webp'
+
+## Context
+
+Carwa is a digital car auction platform developed by Ulearna Technology LTD, a Dubai-based
+technology startup, for the UAE market. In the used vehicle segment, trust and transparency
+are the primary factors determining adoption. Carwa was designed to address both through a
+well-documented auction process and a clear user experience.
+
+This project gave Banua Coder experience in a domain more complex than a standard
+information app — one with competing transactions, real-time state, and precise UX
+requirements to prevent confusion during the bidding process.
+
+## What We Built
+
+The Carwa mobile application was built with Flutter using a feature-per-domain approach:
+
+- **Unit listings**: A vehicle list with make, year, starting price, and condition filters.
+  Search is implemented with debouncing to avoid unnecessary backend load.
+- **Auction sessions**: Auction view with countdown timer, current price, and last bid.
+  Price updates are pushed periodically to maintain synchronization.
+- **Bidding flow**: A clear flow from bid amount confirmation through to win/loss
+  notifications.
+- **Unit gallery**: Zoomable vehicle condition photos to support purchase decisions.
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
+  <Image src={shot1} alt="Carwa auction listing view with vehicle cards" class="rounded-lg w-full" />
+  <Image src={shot2} alt="Carwa vehicle detail and auction session screen" class="rounded-lg w-full" />
+  <Image src={shot3} alt="Carwa bidding flow and countdown timer" class="rounded-lg w-full" />
+  <Image src={shot4} alt="Carwa auction unit listing with filters" class="rounded-lg w-full" />
+</div>
+
+## Impact
+
+Carwa was published to Google Play and continues to receive active updates through
+February 2026. The project strengthens Banua Coder's portfolio in the consumer apps
+segment with high domain complexity and real-time data synchronization requirements.

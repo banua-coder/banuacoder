@@ -1,0 +1,92 @@
+---
+/**
+ * Button — versatile CTA component.
+ * Renders <a> if href is provided, otherwise <button>.
+ * Variants: primary, secondary, ghost.
+ * Sizes: md (default), lg.
+ */
+interface Props {
+  /** Visual style */
+  variant?: 'primary' | 'secondary' | 'ghost'
+  /** Size */
+  size?: 'md' | 'lg'
+  /** Link target — renders an <a> when provided */
+  href?: string
+  /** Button type when rendered as <button> */
+  type?: 'button' | 'submit' | 'reset'
+  /** Open in new tab */
+  external?: boolean
+  /** Extra CSS classes */
+  class?: string
+  /** Disabled state */
+  disabled?: boolean
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  external = false,
+  class: cls = '',
+  disabled = false,
+} = Astro.props
+
+const Tag = href ? 'a' : 'button'
+
+const sizeClass =
+  size === 'lg'
+    ? 'px-7 py-3.5 text-base'
+    : 'px-5 py-2.5 text-sm'
+
+const variantClass = {
+  primary: [
+    'bg-bnc-primary text-bnc-primary-fg font-semibold',
+    'hover:bg-bnc-accent focus-visible:bg-bnc-accent',
+    'active:scale-[0.98]',
+  ].join(' '),
+  secondary: [
+    'bg-transparent text-bnc-ink dark:text-bnc-paper font-medium',
+    'border border-bnc-ink dark:border-bnc-stone-400',
+    'hover:bg-bnc-ink hover:text-bnc-paper dark:hover:bg-bnc-paper dark:hover:text-bnc-ink',
+    'active:scale-[0.98]',
+  ].join(' '),
+  ghost: [
+    'bg-transparent text-bnc-ink dark:text-bnc-paper font-medium',
+    'underline-offset-4 hover:underline hover:text-bnc-primary dark:hover:text-bnc-accent',
+  ].join(' '),
+}[variant]
+
+const baseClass = [
+  'inline-flex items-center gap-2 rounded-[var(--radius-sm)]',
+  'transition-all duration-[var(--duration-base)]',
+  'cursor-pointer select-none',
+  sizeClass,
+  variantClass,
+  disabled ? 'opacity-50 pointer-events-none' : '',
+  cls,
+]
+  .filter(Boolean)
+  .join(' ')
+---
+
+{Tag === 'a' ? (
+  <a
+    href={href}
+    class={baseClass}
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener noreferrer' : undefined}
+    data-magnetic={variant === 'primary' ? '' : undefined}
+  >
+    <slot />
+  </a>
+) : (
+  <button
+    type={type}
+    class={baseClass}
+    disabled={disabled}
+    data-magnetic={variant === 'primary' ? '' : undefined}
+  >
+    <slot />
+  </button>
+)}

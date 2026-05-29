@@ -1,0 +1,121 @@
+---
+/**
+ * CaseStudyCard — portfolio case study card.
+ * Shows cover image, bucket tag, client + year, title, summary (2-line clamp), impact stat.
+ * Hover: cover image lifts with slight scale.
+ */
+import { Image } from 'astro:assets'
+import Tag from '../atoms/Tag.astro'
+import { renderInlineMd } from '../../lib/inline-md'
+
+type BucketVariant = 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
+
+interface Props {
+  title: string
+  client: string
+  year: number
+  bucket: 'consumer' | 'public-sector' | 'operational' | 'open-source'
+  summary: string
+  impactStat?: string
+  coverSrc?: ImageMetadata
+  coverAlt?: string
+  href?: string
+  class?: string
+}
+
+const {
+  title,
+  client,
+  year,
+  bucket,
+  summary,
+  impactStat,
+  coverSrc,
+  coverAlt = '',
+  href = '#',
+  class: cls = '',
+} = Astro.props
+
+const bucketLabel = {
+  consumer: 'Consumer',
+  'public-sector': 'Public Sector',
+  operational: 'Operational',
+  'open-source': 'Open Source',
+}[bucket]
+
+const bucketVariantMap: Record<string, BucketVariant> = {
+  consumer: 'bucket-consumer',
+  'public-sector': 'bucket-public',
+  operational: 'bucket-operational',
+  'open-source': 'bucket-open-source',
+}
+const bucketVariant: BucketVariant = bucketVariantMap[bucket] ?? 'bucket-consumer'
+---
+
+<article
+  class:list={[
+    'group flex flex-col overflow-hidden rounded-[var(--radius-md)]',
+    'bg-bnc-paper dark:bg-bnc-stone-900',
+    'border border-bnc-stone-200 dark:border-bnc-stone-800',
+    'shadow-[var(--shadow-subtle)]',
+    'transition-all duration-[var(--duration-base)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)]',
+    cls,
+  ]}
+  data-bucket={bucket}
+>
+  <!-- Cover image -->
+  <a href={href} class="overflow-hidden block relative aspect-[16/9] bg-bnc-stone-100 dark:bg-bnc-stone-800" tabindex="-1" aria-hidden="true">
+    {coverSrc ? (
+      <Image
+        src={coverSrc}
+        alt={coverAlt}
+        width={640}
+        height={360}
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+      />
+    ) : (
+      <!-- Placeholder if no cover -->
+      <div class="w-full h-full flex items-center justify-center">
+        <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest">
+          // {client}
+        </span>
+      </div>
+    )}
+  </a>
+
+  <!-- Content -->
+  <div class="flex flex-col gap-3 p-5 flex-1">
+    <!-- Meta row -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <Tag variant={bucketVariant}>{bucketLabel}</Tag>
+      <span class="font-mono text-xs text-bnc-stone-400">
+        {client} · {year}
+      </span>
+    </div>
+
+    <!-- Title -->
+    <a
+      href={href}
+      class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
+      style="font-size: var(--fs-20)"
+    >
+      {title}
+    </a>
+
+    <!-- Summary — 2-line clamp -->
+    <p
+      class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1"
+      style="font-size: var(--fs-17); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
+      set:html={renderInlineMd(summary)}
+    />
+
+    <!-- Impact stat -->
+    {impactStat && (
+      <p
+        class="font-mono text-xs text-bnc-accent pt-2 border-t border-bnc-stone-200 dark:border-bnc-stone-800"
+        set:html={renderInlineMd(impactStat)}
+      />
+    )}
+  </div>
+</article>

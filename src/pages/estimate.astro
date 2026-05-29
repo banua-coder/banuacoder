@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../lib/og/url'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Nav from '../components/layout/Nav.astro'
+import Footer from '../components/layout/Footer.astro'
+import MobileDrawer from '../components/layout/MobileDrawer.astro'
+import Container from '../components/layout/Container.astro'
+import SectionHeader from '../components/typography/SectionHeader.astro'
+import Card from '../components/atoms/Card.astro'
+import EstimatorWizard from '../components/sections/EstimatorWizard.astro'
+
+// Load all ID-locale portfolio entries to pass as build-time JSON to the wizard
+const allPortfolio = await getCollection('portfolio')
+const idPortfolio = allPortfolio.filter((p) => p.data.locale === 'id')
+
+// Build a slug → summary map for the wizard's portfolio card rendering
+const portfolioMap: Record<
+  string,
+  { title: string; client: string; year: number; bucket: string; summary: string }
+> = {}
+for (const entry of idPortfolio) {
+  portfolioMap[entry.data.slug] = {
+    title: entry.data.title,
+    client: entry.data.client,
+    year: entry.data.year,
+    bucket: entry.data.bucket,
+    summary: entry.data.summary,
+  }
+}
+const portfolioJson = JSON.stringify(portfolioMap)
+
+// JSON-LD for this page
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Kalkulator Estimasi Biaya Proyek Digital — Banua Coder',
+  description:
+    'Dapatkan kisaran biaya awal untuk proyek aplikasi mobile, web dashboard, website, atau sistem internal Anda dalam 7 langkah.',
+  step: [
+    { '@type': 'HowToStep', name: 'Pilih tipe proyek', text: 'Mobile App, Web Dashboard, Website, Sistem Internal, atau Hybrid.' },
+    { '@type': 'HowToStep', name: 'Tentukan skala', text: 'MVP, Standard, atau Platform.' },
+    { '@type': 'HowToStep', name: 'Tentukan pengguna', text: 'Internal, publik, atau campuran.' },
+    { '@type': 'HowToStep', name: 'Pilih fitur kritis', text: 'Auth, pembayaran, realtime, push, dan lainnya.' },
+    { '@type': 'HowToStep', name: 'Pilih tingkat desain', text: 'Template, custom UX/UI, atau design system.' },
+    { '@type': 'HowToStep', name: 'Tentukan timeline', text: 'Standar atau rush.' },
+    { '@type': 'HowToStep', name: 'Pilih model maintenance', text: 'Satu kali atau kerjasama berkelanjutan.' },
+  ],
+}
+---
+
+<BaseLayout
+  title="Estimasi Biaya Proyek — Aplikasi Mobile, Web, Sistem Internal · Banua Coder"
+  description="Dapatkan kisaran biaya awal untuk proyek digital Anda dalam 1 menit. Gratis, tanpa komitmen."
+  ogImage={ogUrl('estimate')}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+  <MobileDrawer />
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-top: calc(var(--spacing-section-y) + 4rem); padding-bottom: var(--spacing-section-y-sm)"
+    >
+      <Container>
+        <SectionHeader
+          eyebrow="ESTIMATE"
+          title="Estimasi proyek"
+          description="Dapatkan kisaran biaya awal dalam 1 menit. Estimasi ini bukan quotation final — diskusi discovery akan menentukan scope dan harga aktual."
+          class="mb-6"
+        />
+
+        <!-- Design/social route note -->
+        <p class="font-mono text-xs text-bnc-stone-400 dark:text-bnc-stone-500 italic">
+          Mencari estimasi untuk design atau social media handling?{' '}
+          <a
+            href="/contact/"
+            class="text-bnc-accent underline-offset-4 hover:underline not-italic"
+          >
+            Hubungi kami →
+          </a>
+        </p>
+      </Container>
+    </section>
+
+    <!-- Wizard -->
+    <section style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <Card padding="lg" noHover class="max-w-3xl mx-auto">
+          <EstimatorWizard locale="id" portfolioJson={portfolioJson} />
+        </Card>
+      </Container>
+    </section>
+
+  </main>
+
+  <Footer />
+</BaseLayout>

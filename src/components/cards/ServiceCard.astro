@@ -1,0 +1,102 @@
+---
+/**
+ * ServiceCard — displays a service with icon, title, tagline, bullet preview, and CTA.
+ * Hover: cyan underline reveal on title.
+ */
+import Card from '../atoms/Card.astro'
+import {
+  AppWindow,
+  LayoutDashboard,
+  PenTool,
+  Wrench,
+  Rocket,
+  Code2,
+  Megaphone,
+  Palette,
+  ArrowRight,
+} from 'lucide-astro'
+
+interface Props {
+  title: string
+  tagline: string
+  icon?: string
+  deliverables?: string[]
+  href?: string
+  class?: string
+}
+
+const {
+  title,
+  tagline,
+  icon,
+  deliverables = [],
+  href = '#',
+  class: cls = '',
+} = Astro.props
+
+const iconMap: Record<string, typeof AppWindow> = {
+  'app-window': AppWindow,
+  'layout-dashboard': LayoutDashboard,
+  'pen-tool': PenTool,
+  'wrench': Wrench,
+  'rocket': Rocket,
+  'code-2': Code2,
+  'megaphone': Megaphone,
+  'palette': Palette,
+}
+const IconComponent = icon ? iconMap[icon] ?? ArrowRight : ArrowRight
+
+// Show max 3 bullets
+const bullets = deliverables.slice(0, 3)
+---
+
+<Card class:list={['group flex flex-col gap-4 h-full', cls]}>
+  <!-- Icon -->
+  <div
+    class="w-10 h-10 flex items-center justify-center rounded-[var(--radius-sm)] bg-bnc-stone-100 dark:bg-bnc-stone-800 text-bnc-primary"
+    aria-hidden="true"
+  >
+    <IconComponent size={20} strokeWidth={1.75} />
+  </div>
+
+  <!-- Title with hover underline -->
+  <div>
+    <a
+      href={href}
+      class="relative inline-block font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug group/link"
+      style="font-size: var(--fs-20)"
+    >
+      {title}
+      <span
+        class="absolute -bottom-0.5 left-0 h-px w-0 bg-bnc-accent transition-all duration-[var(--duration-base)] group-hover/link:w-full"
+        aria-hidden="true"
+      ></span>
+    </a>
+  </div>
+
+  <!-- Tagline -->
+  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1" style="font-size: var(--fs-17)">
+    {tagline}
+  </p>
+
+  <!-- Bullet preview -->
+  {bullets.length > 0 && (
+    <ul class="list-none m-0 p-0 flex flex-col gap-1.5" role="list">
+      {bullets.map((item) => (
+        <li class="flex items-start gap-2 font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-500">
+          <span class="text-bnc-accent mt-0.5" aria-hidden="true">→</span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  <!-- Learn more link -->
+  <a
+    href={href}
+    class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors mt-auto inline-flex items-center gap-1.5"
+    aria-label={`Learn more about ${title}`}
+  >
+    Learn more →
+  </a>
+</Card>

@@ -1,0 +1,384 @@
+---
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../../components/layout/Nav.astro'
+import Footer from '../../components/layout/Footer.astro'
+import Container from '../../components/layout/Container.astro'
+import SectionHeader from '../../components/typography/SectionHeader.astro'
+import ServiceCard from '../../components/cards/ServiceCard.astro'
+import Card from '../../components/atoms/Card.astro'
+import CTA from '../../components/sections/CTA.astro'
+import buildImg from '../../assets/stock/workspace-code-monitor.jpg'
+import brandImg from '../../assets/stock/designer-sketch-tools.jpg'
+{/* buildImg — unsplash: https://unsplash.com/photos/black-laptop-computer-1517694712202-14dd9538aa97 */}
+{/* brandImg — unsplash: https://unsplash.com/photos/person-holding-pencil-and-stick-note-beside-table-1541462608143-67571c6738dd */}
+
+const allServices = await getCollection('services')
+const idServices = allServices
+  .filter((s) => s.data.locale === 'id')
+  .sort((a, b) => a.data.order - b.data.order)
+
+const byCategory = {
+  'customer-facing': idServices.filter((s) => s.data.category === 'customer-facing'),
+  'internal-ops': idServices.filter((s) => s.data.category === 'internal-ops'),
+  'product-engineering': idServices.filter((s) => s.data.category === 'product-engineering'),
+  'design': idServices.filter((s) => s.data.category === 'design'),
+  'social-media': idServices.filter((s) => s.data.category === 'social-media'),
+}
+
+const engagementModels = [
+  {
+    title: 'Project-Based',
+    tagline: 'Scope tetap, timeline jelas, harga pasti.',
+    bullets: [
+      'Deliverables dan milestone yang terdefinisi dengan jelas',
+      'Cocok untuk website, aplikasi, atau sistem baru',
+      'Ideal jika requirement sudah cukup jelas di awal',
+    ],
+  },
+  {
+    title: 'Discovery Sprint',
+    tagline: 'Validasi dan definisi scope dalam 1–2 minggu.',
+    bullets: [
+      'Sesi terfokus untuk memetakan problem dan solusi',
+      'Menghasilkan scope yang terdokumentasi dan siap build',
+      'Reduce risk sebelum komitmen ke development penuh',
+    ],
+  },
+  {
+    title: 'Retainer Bulanan',
+    tagline: 'Kapasitas engineering tersedia setiap bulan.',
+    bullets: [
+      'Developer atau designer reguler tanpa hire full-time',
+      'Cocok untuk iterasi produk atau marketing rutin',
+      'Fleksibel untuk kebutuhan yang berubah dari bulan ke bulan',
+    ],
+  },
+  {
+    title: 'Managed Services',
+    tagline: 'Long-term partnership dari build sampai support.',
+    bullets: [
+      'End-to-end dari scoping, delivery, hingga maintenance',
+      'Cocok untuk organisasi tanpa tim teknis internal',
+      'Satu partner untuk semua kebutuhan digital jangka panjang',
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title="Layanan Pengembangan Aplikasi & Website — Banua Coder"
+  description="Banua Coder membantu bisnis membangun website, aplikasi mobile, sistem operasional, desain brand, dan social media management."
+  ogImage={ogUrl('services')}
+>
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white focus:rounded-[var(--radius-sm)]"
+  >
+    Lewati ke konten utama
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section
+      aria-labelledby="services-hero-heading"
+      class="border-b border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-3">
+          // LAYANAN
+        </p>
+        <div class="flex items-center gap-3 mb-5">
+          <span class="font-mono text-xs tracking-widest text-bnc-accent" aria-hidden="true">[ 01 ]</span>
+        </div>
+        <h1
+          id="services-hero-heading"
+          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+          style="font-size: var(--fs-64)"
+        >
+          Layanan
+        </h1>
+        <p
+          class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed"
+          style="font-size: var(--fs-20); max-width: 60ch"
+        >
+          Dari produk digital customer-facing hingga sistem operasional internal, desain brand, dan social media—Banua Coder membantu bisnis membangun solusi yang relevan dan siap tumbuh.
+        </p>
+      </Container>
+    </section>
+
+    <!-- SUPERCATEGORY 1: Build & Engineer -->
+    <section id="build" aria-labelledby="build-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="mb-12">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Build & Engineer</p>
+          <h2
+            id="build-heading"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+            style="font-size: var(--fs-48)"
+          >
+            Build & Engineer
+          </h2>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
+              <p>
+                Di balik setiap bisnis yang tumbuh ada sistem digital yang bekerja dengan benar. Website yang memuat cepat. Aplikasi yang tidak mengecewakan pengguna saat dipakai. Dashboard yang memberi visibilitas data tanpa perlu meminta laporan manual. Ini bukan fitur mewah—ini adalah fondasi operasional yang bisnis modern butuhkan.
+              </p>
+              <p>
+                Banua Coder membangun produk dan sistem digital dengan engineering discipline yang sesungguhnya: struktur yang siap dikembangkan, kode yang bisa di-maintain, dan delivery yang jelas tahap demi tahap. Founder kami membawa pengalaman dari lingkungan product engineering yang kompleks—fintech skala besar, platform consumer internasional, dan sistem publik—sehingga standar berpikir itu tercermin di setiap proyek yang kami kerjakan, terlepas dari ukurannya.
+              </p>
+            </div>
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800">
+              <Image
+                src={buildImg}
+                alt="Engineer at workstation — Banua Coder engineering approach"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer-facing -->
+        {byCategory['customer-facing'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Customer-Facing Products
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Website, aplikasi mobile, portal, dan membership experience untuk bisnis yang ingin hadir lebih profesional secara digital.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['customer-facing'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Internal ops -->
+        {byCategory['internal-ops'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Internal Operational Systems
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Dashboard, admin panel, approval workflow, dan sistem internal yang merapikan operasional bisnis.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['internal-ops'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Product engineering -->
+        {byCategory['product-engineering'].length > 0 && (
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Product Engineering & Support
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Discovery, MVP, modernisasi, dan dukungan engineering jangka panjang untuk produk digital yang siap berkembang.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['product-engineering'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    </section>
+
+    <!-- SUPERCATEGORY 2: Brand & Grow -->
+    <section
+      id="grow"
+      aria-labelledby="grow-heading"
+      class="bg-bnc-stone-50 dark:bg-bnc-stone-900 border-y border-bnc-stone-200 dark:border-bnc-stone-800"
+      style="padding-block: var(--spacing-section-y)"
+    >
+      <Container>
+        <div class="mb-12">
+          <p class="font-mono text-xs tracking-widest uppercase text-bnc-accent mb-2">// Brand & Grow</p>
+          <h2
+            id="grow-heading"
+            class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-tight mb-5"
+            style="font-size: var(--fs-48)"
+          >
+            Brand & Grow
+          </h2>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-8">
+            <div class="overflow-hidden rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 order-2 lg:order-1">
+              <Image
+                src={brandImg}
+                alt="Designer working on brand identity — Banua Coder brand and grow"
+                width={600}
+                class="w-full object-cover"
+                style="max-height: 260px"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="flex flex-col gap-4 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed order-1 lg:order-2" style="font-size: var(--fs-17)">
+              <p>
+                Produk yang baik tanpa brand yang kuat jarang bertahan lama. Untuk bisnis F&B, kecantikan, dan UMKM, kehadiran visual dan digital adalah pintu masuk utama bagi pelanggan baru. Logo yang asal-asalan, feed Instagram yang tidak konsisten, atau tidak ada presence sama sekali—semua ini memberi sinyal yang salah sebelum produk Anda sempat berbicara sendiri.
+              </p>
+              <p>
+                Banua Coder membantu bisnis membangun identitas visual yang kuat dan kehadiran media sosial yang benar-benar bekerja. Bukan sekadar aktif posting—tetapi terstruktur, konsisten, dan selaras dengan karakter brand. Tim desain kami menggabungkan pengalaman di brand identity, product design, dan konten digital untuk memastikan setiap touchpoint memperkuat kepercayaan pelanggan.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design -->
+        {byCategory['design'].length > 0 && (
+          <div class="mb-14">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Design
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              UI/UX design, logo, brand identity, dan materi marketing—semuanya dengan pendekatan visual yang konsisten dan purposeful.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['design'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Social media -->
+        {byCategory['social-media'].length > 0 && (
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="w-8 h-px bg-bnc-stone-300 dark:bg-bnc-stone-700" aria-hidden="true"></span>
+              <h3 class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400">
+                Social Media
+              </h3>
+            </div>
+            <p class="text-bnc-stone-500 dark:text-bnc-stone-400 mb-6" style="font-size: var(--fs-17)">
+              Strategi, konten, dan community management untuk membangun audiens yang relevan dan terukur.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {byCategory['social-media'].map((svc) => (
+                <ServiceCard
+                  title={svc.data.title}
+                  tagline={svc.data.tagline}
+                  icon={svc.data.icon}
+                  deliverables={svc.data.deliverables}
+                  href={`/services/${svc.data.slug}/`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </Container>
+    </section>
+
+    <!-- Engagement Models -->
+    <section aria-labelledby="engagement-heading" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <p class="font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400 mb-2">
+          // ENGAGEMENT MODELS
+        </p>
+        <SectionHeader
+          eyebrow=""
+          marker="[ 02 ]"
+          title="Cara bekerja sama dengan kami"
+          description="Kami menyesuaikan model keterlibatan dengan kebutuhan dan tahap bisnis Anda—bukan satu ukuran untuk semua."
+          class="mb-12"
+        />
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {engagementModels.map((model) => (
+            <Card padding="lg" class="flex flex-col gap-3">
+              <h3
+                class="font-display font-semibold text-bnc-ink dark:text-bnc-paper"
+                style="font-size: var(--fs-20)"
+              >
+                {model.title}
+              </h3>
+              <p class="font-mono text-xs text-bnc-accent">{model.tagline}</p>
+              <ul class="list-none m-0 p-0 flex flex-col gap-1.5 flex-1" role="list">
+                {model.bullets.map((bullet) => (
+                  <li class="flex items-start gap-2 text-sm text-bnc-stone-600 dark:text-bnc-stone-400">
+                    <span class="text-bnc-accent mt-0.5 shrink-0" aria-hidden="true">→</span>
+                    {bullet}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="/contact/"
+                class="font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 hover:text-bnc-accent transition-colors mt-2 inline-flex items-center gap-1"
+              >
+                Diskusikan model ini →
+              </a>
+            </Card>
+          ))}
+        </div>
+      </Container>
+    </section>
+
+    <!-- CTA -->
+    <p class="text-center font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-400 py-4">
+      Tidak yakin biayanya?{' '}
+      <a href="/estimate/" class="text-bnc-accent hover:underline underline-offset-4">
+        Coba kalkulator estimasi →
+      </a>
+    </p>
+    <CTA
+      headline="Siap mendiskusikan kebutuhan Anda?"
+      sub="Mari petakan solusi yang paling realistis untuk bisnis Anda saat ini."
+      primaryCta="Jadwalkan Diskusi"
+      primaryHref="/contact/"
+      inverted={true}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>
