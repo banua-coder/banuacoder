@@ -2,6 +2,18 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.0.1 — 2026-05-29
+
+### 👷 CI
+
+- ci: bump GH actions to Node 24 majors (checkout@v6, setup-node@v6, pnpm/action-setup@v6) (0ac4610)
+
+### 🧹 Chore
+
+- chore: bump version to 1.0.1 (69e0844)
+
+
+
 ## v1.0.0 — 2026-05-29
 
 ### ✨ Features
