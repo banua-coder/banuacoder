@@ -8,7 +8,6 @@ export type Client = {
 }
 
 // LICENSE NOTES:
-// - ulearna.png: source https://ulearna.com (og:image asset). Nominative fair use for client identification.
 // - pemprov-sulteng.svg: https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Central_Sulawesi.svg — Public domain (PD-IDGov, Indonesian state emblem). Covers both PICO Sulteng and Surat BMPR engagements.
 // - pemkab-gowa.png: Pemkab Gowa coat of arms — Public domain (PD-IDGov, Indonesian state emblem). Sourced from owner's branding archive (cleaner asset than the Wikimedia commons version).
 // - pemkab-donggala.png: https://commons.wikimedia.org/wiki/File:Lambang_Kabupaten_Donggala.png — Public domain (PD-IDGov). Covers Siap Donggala (Mekari Talenta integration).
@@ -24,13 +23,13 @@ export type Client = {
 // case study (src/content/portfolio/surat-bmpr/) where the partnership context matters.
 
 export const clients: Client[] = [
-  {
-    name: 'Ulearna Technology LTD',
-    logo: 'ulearna.png',
-    url: 'https://ulearna.com',
-    tier: 'featured',
-    context: 'Dubai, UAE — international consumer products (Reab, Carwa)',
-  },
+  // {
+  //   name: 'Ulearna Technology LTD',
+  //   logo: 'ulearna.png',
+  //   url: 'https://ulearna.com',
+  //   tier: 'featured',
+  //   context: 'Dubai, UAE — international consumer products (Reab, Carwa)',
+  // },
   {
     name: 'PT Brantas Inti Utama',
     logo: 'brantas-inti-utama.png',

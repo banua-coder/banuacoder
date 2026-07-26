@@ -51,7 +51,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   routes.push(...staticPages)
 
   // ── Portfolio detail pages ─────────────────────────────────────────────
-  const allPortfolio = await getCollection('portfolio')
+  const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
   for (const entry of allPortfolio) {
     const prefix = entry.data.locale === 'en' ? 'en-portfolio-' : 'portfolio-'
     routes.push({

@@ -10,7 +10,7 @@ import CaseStudyCard from '../../components/cards/CaseStudyCard.astro'
 import BucketFilter from '../../components/interactive/BucketFilter.astro'
 
 // Load all ID portfolio entries, sorted by order
-const allPortfolio = await getCollection('portfolio')
+const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
 const projects = allPortfolio
   .filter((p) => p.data.locale === 'id')
   .sort((a, b) => a.data.order - b.data.order)

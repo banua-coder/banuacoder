@@ -24,6 +24,7 @@ const portfolio = defineCollection({
       clientUrl: z.string().url().optional(),
       year: z.number().int(),
       status: z.enum(['live', 'maintained', 'archived']),
+      draft: z.boolean().default(false),
       cover: image(),
       thumbnail: image(),
       gallery: z.array(image()).optional(),
