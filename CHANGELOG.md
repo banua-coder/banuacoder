@@ -2,6 +2,31 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.1.0 — 2026-07-26
+
+### 🐛 Bug Fixes
+
+- fix(ci): add sharp as explicit dependency so Linux image binaries install (b82b68a)
+
+### 👷 CI
+
+- ci: drop pnpm version pin (reads packageManager) + add housekeeping job (9ebe104)
+- ci: make release back-merge auto-resolve conflicts (prefer main, keep develop version) (88bafdb)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.1.0 (adad0b9)
+
+### 📌 Other
+
+- Merge pull request #2 from banua-coder/chore/bump-dev-version-v1.1.0 (32c388e)
+- Merge remote-tracking branch 'origin/main' into chore/back-merge-v1.0.0 (c24536e)
+- Merge pull request #3 from banua-coder/chore/back-merge-v1.0.0 (ff46327)
+- Merge remote-tracking branch 'origin/main' into develop (a45a5ad)
+- Hide Ulearna/Carwa/Reab portfolio references from the live site (1647ddf)
+
+
+
 ## v1.0.1 — 2026-05-29
 
 ### 👷 CI
