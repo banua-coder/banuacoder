@@ -14,7 +14,7 @@ import Prose from '../../../components/typography/Prose.astro'
 import { renderInlineMd } from '../../../lib/inline-md'
 
 export async function getStaticPaths() {
-  const allPortfolio = await getCollection('portfolio')
+  const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
   const enEntries = allPortfolio.filter((p) => p.data.locale === 'en')
   return enEntries.map((entry) => ({
     params: { slug: entry.data.slug },
@@ -27,7 +27,7 @@ const { data } = entry
 const { Content } = await render(entry)
 
 // "Next case study" — same bucket, sorted by order, cycling
-const allPortfolio = await getCollection('portfolio')
+const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
 const sameBucket = allPortfolio
   .filter((p) => p.data.locale === 'en' && p.data.bucket === data.bucket && p.data.slug !== data.slug)
   .sort((a, b) => a.data.order - b.data.order)

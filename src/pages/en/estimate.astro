@@ -11,7 +11,7 @@ import Card from '../../components/atoms/Card.astro'
 import EstimatorWizard from '../../components/sections/EstimatorWizard.astro'
 
 // Load all EN-locale portfolio entries (fallback to ID if EN missing)
-const allPortfolio = await getCollection('portfolio')
+const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
 const enPortfolio = allPortfolio.filter((p) => p.data.locale === 'en')
 const idPortfolio = allPortfolio.filter((p) => p.data.locale === 'id')
 

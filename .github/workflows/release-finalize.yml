@@ -179,18 +179,25 @@ jobs:
 
           git fetch origin develop main
           git checkout -B "$BACK_BRANCH" origin/develop
-          # Merge main into develop. Prefer develop's package.json if conflicting
-          # (develop already holds the next minor from release-prepare).
-          git merge --no-edit origin/main || {
-            if git diff --name-only --diff-filter=U | grep -q '^package.json$'; then
-              git checkout --ours package.json
-              git add package.json
+          # Merge main into develop, preferring main's content for any
+          # conflict (-X theirs) — main holds the shipped release. Then
+          # restore develop's package.json version (develop already carries
+          # the next minor from release-prepare).
+          git merge --no-edit -X theirs origin/main || {
+            UNMERGED=$(git diff --name-only --diff-filter=U)
+            if [ -z "$UNMERGED" ] || [ "$UNMERGED" = "package.json" ]; then
+              [ -n "$UNMERGED" ] && git checkout --ours package.json && git add package.json
               git commit --no-edit
             else
-              echo "::error::Unresolvable merge conflict on back-merge"
+              echo "::error::Unresolvable merge conflict on back-merge: $UNMERGED"
               exit 1
             fi
           }
+          git checkout origin/develop -- package.json 2>/dev/null || true
+          if ! git diff --quiet package.json; then
+            git add package.json
+            git commit -m "chore: keep develop package.json version on back-merge"
+          fi
           git push -u origin "$BACK_BRANCH"
 
           gh pr create \

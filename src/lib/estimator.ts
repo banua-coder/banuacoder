@@ -106,7 +106,7 @@ function buildTeam(input: EstimatorInput): string[] {
 }
 
 // ─── Portfolio matching ────────────────────────────────────────────────────
-const consumerSlugs = ['reab', 'carwa', 'caretaker']
+const consumerSlugs = ['caretaker']
 const publicSlugs = ['pico-sulteng', 'patonro', 'lontara']
 
 function matchPortfolio(input: EstimatorInput): string[] {
@@ -124,16 +124,10 @@ function matchPortfolio(input: EstimatorInput): string[] {
   }
 
   if (features.includes('payments')) {
-    scores['carwa'] = (scores['carwa'] ?? 0) + 1
     scores['patonro'] = (scores['patonro'] ?? 0) + 1
   }
 
-  if (features.includes('realtime')) {
-    scores['carwa'] = (scores['carwa'] ?? 0) + 1
-  }
-
   if (features.includes('push')) {
-    scores['reab'] = (scores['reab'] ?? 0) + 1
     scores['caretaker'] = (scores['caretaker'] ?? 0) + 1
   }
 

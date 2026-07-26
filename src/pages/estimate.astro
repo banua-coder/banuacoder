@@ -11,7 +11,7 @@ import Card from '../components/atoms/Card.astro'
 import EstimatorWizard from '../components/sections/EstimatorWizard.astro'
 
 // Load all ID-locale portfolio entries to pass as build-time JSON to the wizard
-const allPortfolio = await getCollection('portfolio')
+const allPortfolio = await getCollection('portfolio', ({ data }) => !data.draft)
 const idPortfolio = allPortfolio.filter((p) => p.data.locale === 'id')
 
 // Build a slug → summary map for the wizard's portfolio card rendering
