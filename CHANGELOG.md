@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.7.0 — 2026-10-16
+
+### 🐛 Bug Fixes
+
+- fix(player): fullscreen keeps the video's own aspect ratio (letterbox) (0259164)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.7.0 (79bfcd4)
+
+### 📌 Other
+
+- Merge pull request #22 from banua-coder/chore/back-merge-v1.6.0 (7f19ef3)
+- Merge pull request #21 from banua-coder/chore/bump-dev-version-v1.7.0 (32b715e)
+
+
+
 ## v1.6.0 — 2026-10-16
 
 ### 🧹 Chore
