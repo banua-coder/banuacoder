@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.9.0 — 2026-10-16
+
+### 🐛 Bug Fixes
+
+- fix(process-cut): remaining slabs take their "after" wording so the stage matches the Sesudah list (b31c8d4)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.9.0 (612d5e8)
+
+### 📌 Other
+
+- Merge pull request #28 from banua-coder/chore/back-merge-v1.8.0 (353c2a7)
+- Merge pull request #27 from banua-coder/chore/bump-dev-version-v1.9.0 (f86f764)
+
+
+
 ## v1.8.0 — 2026-10-16
 
 ### ✨ Features
