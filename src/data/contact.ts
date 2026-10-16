@@ -1,6 +1,6 @@
 export const contact = {
   // TODO(owner): PLACEHOLDER scheduler link. Replace with the real Cal.com/Calendly URL before launch.
-  bookingUrl: 'https://cal.com/banuacoder/intro',
+  bookingUrl: 'https://cal.com/banua-coder',
   whatsappNumber: '6287784808269',
   whatsappMessages: {
     id: 'Halo Banua Coder, saya tertarik untuk konsultasi mengenai',

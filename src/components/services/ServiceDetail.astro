@@ -15,6 +15,7 @@ import Container from '../layout/Container.astro'
 import Prose from '../typography/Prose.astro'
 import ServiceCard from '../cards/ServiceCard.astro'
 import CTA from '../sections/CTA.astro'
+import MotionShowcase from './MotionShowcase.astro'
 
 interface Props {
   entry: CollectionEntry<'services'>
@@ -158,6 +159,8 @@ const listRow = 'py-3 border-b border-bnc-ink/25 dark:border-bnc-paper/25 grid g
         </div>
       </Container>
     </section>
+
+    {entry.data.slug === 'motion-video' && <MotionShowcase locale={locale} />}
 
     {faq && faq.length > 0 && (
       <!-- FAQ: ruled disclosure rows on ultramarine -->
