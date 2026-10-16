@@ -1,0 +1,365 @@
+---
+/**
+ * ProcessCut: illustrative simulation of manual steps a system removes.
+ * Scenarios use only facts from real case studies (surat-bmpr, patonro/lontara, siap-donggala).
+ * Step counts and the time bar are ILLUSTRATIVE, never measured. The stage is decorative
+ * (aria-hidden); the same information is always present as real before/after ordered lists.
+ * Motion lives in this component's own <script>: one play on enter + replay button, no loops.
+ */
+import Plate from '../layout/Plate.astro'
+
+interface Props {
+  locale: 'id' | 'en'
+  tone?: 'plate' | 'chalk'
+  folio?: string
+  numeral?: string
+  class?: string
+}
+const { locale, tone = 'plate', folio, numeral, class: cls = '' } = Astro.props
+const en = locale === 'en'
+const p = en ? '/en' : ''
+
+type Step = { b: string; a?: string; rm?: boolean; w: number }
+type Scenario = { id: string; tab: string; lead: string; steps: Step[]; sources: [string, string][] }
+
+const t = en
+  ? {
+      folio: '№ 06 / Simulation',
+      title: 'Watch the manual steps drop out.',
+      lede: 'Three processes from systems we built. Pick one and see which manual steps the system took over.',
+      tablist: 'Choose a process',
+      replay: 'Replay',
+      before: 'Before',
+      after: 'After',
+      steps: 'steps',
+      removed: 'replaced by the system',
+      time: 'Process time (illustrative)',
+      note: 'Illustrative, not a measurement. Step labels follow what each case study says the system replaced. Step counts and the time bar are a sketch, not client data or measured savings.',
+      source: 'Source',
+    }
+  : {
+      folio: '№ 06 / Simulasi',
+      title: 'Lihat langkah manual satu per satu menghilang.',
+      lede: 'Tiga proses dari sistem yang kami bangun. Pilih satu, lalu lihat langkah manual mana yang diambil alih sistem.',
+      tablist: 'Pilih proses',
+      replay: 'Putar ulang',
+      before: 'Sebelum',
+      after: 'Sesudah',
+      steps: 'langkah',
+      removed: 'digantikan sistem',
+      time: 'Waktu proses (ilustrasi)',
+      note: 'Ilustrasi, bukan hasil pengukuran. Label langkah mengikuti yang dicatat studi kasus tentang apa yang digantikan sistem. Jumlah langkah dan bar waktu bersifat gambaran, bukan data klien dan bukan klaim penghematan terukur.',
+      source: 'Sumber',
+    }
+
+const scenarios: Scenario[] = en
+  ? [
+      {
+        id: 'letters', tab: 'Letter dispositions',
+        lead: 'Internal correspondence at a provincial public works agency (Surat BMPR).',
+        sources: [['Surat BMPR', 'surat-bmpr']],
+        steps: [
+          { b: 'Paper letter received and logged', a: 'Incoming letter logged in the app inbox', w: 1 },
+          { b: 'Leader writes the disposition on paper', a: 'Leader dispositions from the mobile app', w: 1 },
+          { b: 'Wet signature on the disposition sheet', rm: true, w: 1 },
+          { b: 'Delivery between sections, physical visits between rooms', rm: true, w: 3 },
+          { b: 'Checking letter status by hand', rm: true, w: 3 },
+          { b: 'Staff follow up', a: 'Staff get a push notification and follow up', w: 1 },
+        ],
+      },
+      {
+        id: 'tax', tab: 'Local tax payment',
+        lead: 'Tax and levy bills for residents (Patonro, Lontara).',
+        sources: [['Patonro', 'patonro'], ['Lontara', 'lontara']],
+        steps: [
+          { b: 'Remembering the due date yourself', rm: true, w: 1 },
+          { b: 'Travelling to the tax office to learn the bill', rm: true, w: 3 },
+          { b: 'Asking staff for payment history', rm: true, w: 2 },
+          { b: 'Choosing the bill to pay', a: 'Choosing the bill, searched by tax object number', w: 1 },
+          { b: 'Paying at the office counter', a: 'Paying in the app through a payment gateway', w: 1 },
+        ],
+      },
+      {
+        id: 'hr', tab: 'Staff attendance and leave',
+        lead: 'Personnel administration for a district government (Siap Donggala).',
+        sources: [['Siap Donggala', 'siap-donggala']],
+        steps: [
+          { b: 'Employee signs in manually', a: 'Employee clocks in digitally', w: 1 },
+          { b: 'Compiling attendance by hand per unit', rm: true, w: 2 },
+          { b: 'Filing a leave request manually', a: 'Filing a leave request in the system', w: 1 },
+          { b: 'Reminding the supervisor to approve', rm: true, w: 2 },
+          { b: 'Supervisor approves', a: 'Supervisor approves after an automatic notification', w: 1 },
+          { b: 'Building the personnel report by hand', rm: true, w: 3 },
+        ],
+      },
+    ]
+  : [
+      {
+        id: 'letters', tab: 'Disposisi surat',
+        lead: 'Tata persuratan internal sebuah dinas pekerjaan umum provinsi (Surat BMPR).',
+        sources: [['Surat BMPR', 'surat-bmpr']],
+        steps: [
+          { b: 'Surat fisik diterima dan dicatat', a: 'Surat masuk tercatat di inbox aplikasi', w: 1 },
+          { b: 'Pimpinan menulis disposisi di kertas', a: 'Pimpinan mendisposisikan dari aplikasi mobile', w: 1 },
+          { b: 'Tanda tangan basah di lembar disposisi', rm: true, w: 1 },
+          { b: 'Ekspedisi antar-bagian, kunjungan fisik antar-ruangan', rm: true, w: 3 },
+          { b: 'Memantau status surat secara manual', rm: true, w: 3 },
+          { b: 'Staf menindaklanjuti', a: 'Staf menerima notifikasi push dan menindaklanjuti', w: 1 },
+        ],
+      },
+      {
+        id: 'tax', tab: 'Pembayaran pajak daerah',
+        lead: 'Tagihan pajak dan retribusi untuk masyarakat (Patonro, Lontara).',
+        sources: [['Patonro', 'patonro'], ['Lontara', 'lontara']],
+        steps: [
+          { b: 'Mengingat tanggal jatuh tempo sendiri', rm: true, w: 1 },
+          { b: 'Datang ke kantor pajak untuk tahu tagihan', rm: true, w: 3 },
+          { b: 'Meminta riwayat pembayaran ke petugas', rm: true, w: 2 },
+          { b: 'Memilih tagihan yang akan dibayar', a: 'Memilih tagihan, dicari lewat nomor objek pajak', w: 1 },
+          { b: 'Membayar di loket kantor', a: 'Membayar di aplikasi lewat payment gateway', w: 1 },
+        ],
+      },
+      {
+        id: 'hr', tab: 'Absensi dan cuti pegawai',
+        lead: 'Administrasi kepegawaian sebuah pemerintah kabupaten (Siap Donggala).',
+        sources: [['Siap Donggala', 'siap-donggala']],
+        steps: [
+          { b: 'Pegawai mengisi absensi manual', a: 'Pegawai absen secara digital', w: 1 },
+          { b: 'Merekap absensi per unit secara manual', rm: true, w: 2 },
+          { b: 'Mengajukan cuti secara manual', a: 'Mengajukan cuti di sistem', w: 1 },
+          { b: 'Mengingatkan atasan agar menyetujui', rm: true, w: 2 },
+          { b: 'Atasan menyetujui', a: 'Atasan menyetujui setelah menerima notifikasi otomatis', w: 1 },
+          { b: 'Menyusun laporan kepegawaian secara manual', rm: true, w: 3 },
+        ],
+      },
+    ]
+
+const pad = (n: number) => String(n).padStart(2, '0')
+---
+
+<Plate tone={tone} folio={folio ?? t.folio} numeral={numeral} labelledby="processcut-heading" class={cls}>
+  <div class:list={['pc', tone === 'plate' ? 'pc-plate' : 'pc-chalk']} data-processcut data-total-label={t.steps}>
+    <div class="grid gap-6 lg:grid-cols-12 mb-10 lg:mb-14">
+      <h2 id="processcut-heading" class="display text-balance lg:col-span-7" style="font-size: var(--fs-64)">{t.title}</h2>
+      <p class="pc-mute leading-relaxed lg:col-span-5 lg:self-end" style="font-size: var(--fs-20); max-width: 44ch">{t.lede}</p>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 border-y border-current/25 py-3">
+      <div role="tablist" aria-label={t.tablist} class="flex flex-wrap gap-x-6 gap-y-1" data-pc-tablist>
+        {scenarios.map((s, i) => (
+          <button
+            type="button" role="tab" id={`pc-tab-${s.id}`} aria-controls={`pc-panel-${s.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}
+            class="pc-tab font-semibold py-2" data-pc-tab={s.id}
+          >{s.tab}</button>
+        ))}
+      </div>
+      <button type="button" class="pc-replay folio font-semibold" data-pc-replay>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.8-4.1M2.5 2.5v3h3" /></svg>
+        {t.replay}
+      </button>
+    </div>
+
+    {scenarios.map((s, i) => {
+      const kept = s.steps.filter((x) => !x.rm)
+      const total = s.steps.reduce((a, x) => a + x.w, 0)
+      const keptW = kept.reduce((a, x) => a + x.w, 0)
+      return (
+        <div
+          role="tabpanel" id={`pc-panel-${s.id}`} aria-labelledby={`pc-tab-${s.id}`}
+          hidden={i !== 0} tabindex="0"
+          class="pc-panel grid gap-10 lg:grid-cols-12 pt-10 lg:pt-14"
+          data-pc-panel={s.id} data-before={s.steps.length} data-after={kept.length}
+          data-share={(keptW / total).toFixed(3)}
+        >
+          <div class="lg:col-span-5 flex flex-col gap-8 min-w-0">
+            <p class="pc-mute leading-relaxed" style="font-size: var(--fs-17); max-width: 46ch">{s.lead}</p>
+
+            <div class="pc-count display flex items-baseline gap-4" aria-hidden="true">
+              <span class="pc-count-n" data-pc-from style="font-size: var(--fs-84)">{s.steps.length}</span>
+              <span class="pc-arrow" style="font-size: var(--fs-36)">→</span>
+              <span class="pc-count-n" data-pc-now style="font-size: var(--fs-84)">{s.steps.length}</span>
+              <span class="folio pc-mute self-end pb-3">{t.steps}</span>
+            </div>
+
+            <div>
+              <p class="folio pc-mute mb-2">{t.time}</p>
+              <div class="pc-track" aria-hidden="true"><div class="pc-fill" data-pc-fill></div></div>
+            </div>
+
+            <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              <div>
+                <h3 class="folio border-b border-current/25 pb-2 mb-3">{t.before} · <span class="tabular-nums">{s.steps.length}</span> {t.steps}</h3>
+                <ol class="pc-list">
+                  {s.steps.map((x) => (
+                    <li>{x.b}{x.rm && <span class="pc-mute"> ({t.removed})</span>}</li>
+                  ))}
+                </ol>
+              </div>
+              <div>
+                <h3 class="folio border-b border-current/25 pb-2 mb-3">{t.after} · <span class="tabular-nums">{kept.length}</span> {t.steps}</h3>
+                <ol class="pc-list">
+                  {kept.map((x) => (<li>{x.a ?? x.b}</li>))}
+                </ol>
+              </div>
+            </div>
+
+            <p class="folio pc-mute">
+              {t.source}: {s.sources.map(([name, slug], k) => (
+                <>{k > 0 && ', '}<a class="underline underline-offset-4" href={`${p}/portfolio/${slug}/`}>{name}</a></>
+              ))}
+            </p>
+          </div>
+
+          <div class="pc-stage order-first lg:order-none lg:col-span-7" aria-hidden="true">
+            <div class="pc-stack">
+              {s.steps.map((x, k) => (
+                <div class="pc-row" data-rm={x.rm ? '' : undefined}>
+                  <div class="pc-slab">
+                    <span class="pc-n">{pad(k + 1)}</span>
+                    <span class="pc-t">{x.b}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )
+    })}
+
+    <p class="mt-12 pt-4 border-t border-current/25 leading-relaxed pc-mute" style="font-size: var(--fs-14); max-width: 72ch">
+      {t.note}
+    </p>
+  </div>
+</Plate>
+
+<style is:global>
+  .pc-plate { --pc-face:#fff; --pc-ink:#060B2E; --pc-top:#dce1ff; --pc-side:#8d9dff; --pc-mutec: var(--color-bnc-plate-mute); --pc-fill:var(--color-bnc-accent); --pc-trackline: rgba(255,255,255,.4); }
+  .pc-chalk { --pc-face:var(--color-bnc-plate); --pc-ink:#fff; --pc-top:#4a5df7; --pc-side:#070f7a; --pc-mutec: var(--color-bnc-stone-600); --pc-fill:var(--color-bnc-plate); --pc-trackline: color-mix(in srgb, currentColor 40%, transparent); }
+  :root.dark .pc-chalk { --pc-mutec: var(--color-bnc-stone-400); --pc-fill:var(--color-bnc-accent); }
+  .pc-mute { color: var(--pc-mutec); }
+  .pc-tab { border-bottom: 2px solid transparent; transition: border-color 150ms; color: var(--pc-mutec); }
+  .pc-tab[aria-selected='true'] { border-color: currentColor; color: inherit; }
+  .pc-tab:hover { color: inherit; }
+  .pc-replay { display: inline-flex; align-items: center; gap: .5rem; padding: .5rem 0; text-decoration: underline; text-underline-offset: 6px; }
+  .pc-chalk .pc-tab:focus-visible, .pc-chalk .pc-replay:focus-visible, .pc-chalk .pc-panel:focus-visible { outline-color: var(--color-bnc-plate); }
+  :root.dark .pc-chalk .pc-tab:focus-visible, :root.dark .pc-chalk .pc-replay:focus-visible, :root.dark .pc-chalk .pc-panel:focus-visible { outline-color: var(--color-bnc-accent); }
+  .pc-count-n { font-variant-numeric: tabular-nums; min-width: .6em; }
+  .pc-track { height: 14px; border: 1px solid var(--pc-trackline); }
+  .pc-fill { height: 100%; width: 100%; background: var(--pc-fill); transform-origin: 0 50%; }
+  .pc-list { list-style: decimal; padding-left: 2.2ch; margin: 0; font-size: var(--fs-14); line-height: 1.5; }
+  .pc-list li { padding: .3rem 0 .3rem .4rem; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+  .pc-list li::marker { font-family: var(--font-mono); font-size: .8em; }
+
+  .pc-stage { perspective: 2200px; padding: 2.5rem 1.25rem 1.5rem 0; min-width: 0; }
+  .pc-stack { --d: 14px; transform-style: preserve-3d; transform: rotateX(14deg) rotateY(-12deg); padding-right: var(--d); }
+  .pc-row { transform-style: preserve-3d; margin-bottom: 1rem; }
+  .pc-slab { position: relative; transform-style: preserve-3d; background: var(--pc-face); color: var(--pc-ink); display: flex; gap: 1rem; align-items: baseline; padding: 1rem 1.1rem; outline: 1px solid rgba(255,255,255,.35); }
+  .pc-slab::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: var(--d); background: var(--pc-top); transform-origin: 50% 100%; transform: rotateX(90deg); }
+  .pc-slab::after { content: ''; position: absolute; top: 0; left: 100%; width: var(--d); height: 100%; background: var(--pc-side); transform-origin: 0 50%; transform: rotateY(90deg); }
+  .pc-n { font-family: var(--font-mono); font-size: var(--fs-12); letter-spacing: .1em; opacity: .75; }
+  .pc-t { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; font-size: var(--fs-17); line-height: 1.2; }
+  .pc-row[data-gone] { display: none; }
+  @media (max-width: 640px) {
+    .pc-stage { padding-right: 0; }
+    .pc-stack { transform: rotateX(12deg) rotateY(-10deg); }
+    .pc-slab { padding: .8rem .9rem; gap: .7rem; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger)
+
+  const killers: (() => void)[] = []
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-processcut]').forEach((root) => {
+      if (root.dataset.pcInit) return
+      root.dataset.pcInit = '1'
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+      const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-pc-tab]')]
+      const panels = [...root.querySelectorAll<HTMLElement>('[data-pc-panel]')]
+      let tl: gsap.core.Timeline | null = null
+      let active = panels[0]
+
+      const q = (el: HTMLElement, s: string) => el.querySelector<HTMLElement>(s)!
+      const rowsOf = (el: HTMLElement) => [...el.querySelectorAll<HTMLElement>('.pc-row')]
+      const setNow = (el: HTMLElement, n: number) => { q(el, '[data-pc-now]').textContent = String(Math.round(n)) }
+
+      function reset(el: HTMLElement) {
+        tl?.kill(); tl = null
+        const rows = rowsOf(el)
+        rows.forEach((r) => { r.removeAttribute('data-gone'); gsap.set(r, { clearProps: 'all' }); gsap.set(r.firstElementChild, { clearProps: 'all' }) })
+        gsap.set(q(el, '[data-pc-fill]'), { clearProps: 'all' })
+        setNow(el, Number(el.dataset.before))
+      }
+
+      function showFinal(el: HTMLElement) {
+        reset(el)
+        rowsOf(el).forEach((r) => r.hasAttribute('data-rm') && r.setAttribute('data-gone', ''))
+        gsap.set(q(el, '[data-pc-fill]'), { scaleX: Number(el.dataset.share) })
+        setNow(el, Number(el.dataset.after))
+      }
+
+      function play(el: HTMLElement) {
+        if (reduce) return showFinal(el)
+        reset(el)
+        const share = Number(el.dataset.share)
+        const fill = q(el, '[data-pc-fill]')
+        const rows = rowsOf(el)
+        const removed = rows.filter((r) => r.hasAttribute('data-rm'))
+        let left = rows.length
+        tl = gsap.timeline({ delay: 0.5 })
+        const step = 1.0
+        removed.forEach((r, i) => {
+          const slab = r.firstElementChild as HTMLElement
+          const at = i * step
+          tl!.to(slab, { backgroundColor: '#3DE0F2', color: '#060B2E', duration: 0.25 }, at)
+            .to(slab, { z: 110, x: 50, y: -24, duration: 0.55, ease: 'power3.out' }, at + 0.1)
+            .to(slab, { opacity: 0, duration: 0.4, ease: 'power2.in' }, at + 0.4)
+            .to(r, { height: 0, marginBottom: 0, duration: 0.5, ease: 'power3.inOut' }, at + 0.6)
+            .call(() => { left -= 1; setNow(el, left) }, [], at + 0.6)
+        })
+        tl.to(fill, { scaleX: share, duration: removed.length * step, ease: 'power2.inOut' }, 0)
+        tl.eventCallback('onComplete', () => removed.forEach((r) => r.setAttribute('data-gone', '')))
+      }
+
+      function select(id: string, focus = false) {
+        tabs.forEach((b) => {
+          const on = b.dataset.pcTab === id
+          b.setAttribute('aria-selected', String(on))
+          b.tabIndex = on ? 0 : -1
+          if (on && focus) b.focus()
+        })
+        panels.forEach((el) => { el.hidden = el.dataset.pcPanel !== id })
+        active = panels.find((el) => el.dataset.pcPanel === id)!
+        panels.forEach((el) => el !== active && reset(el))
+        play(active)
+      }
+
+      tabs.forEach((b, i) => {
+        b.addEventListener('click', () => select(b.dataset.pcTab!))
+        b.addEventListener('keydown', (e) => {
+          const k = e.key
+          const j = k === 'ArrowRight' || k === 'ArrowDown' ? (i + 1) % tabs.length
+            : k === 'ArrowLeft' || k === 'ArrowUp' ? (i - 1 + tabs.length) % tabs.length
+            : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : -1
+          if (j < 0) return
+          e.preventDefault()
+          select(tabs[j].dataset.pcTab!, true)
+        })
+      })
+      root.querySelector('[data-pc-replay]')!.addEventListener('click', () => play(active))
+
+      // Single play when the section enters the viewport.
+      const st = ScrollTrigger.create({ trigger: root, start: 'top 60%', once: true, onEnter: () => play(active) })
+      if (reduce) showFinal(active)
+      killers.push(() => { st.kill(); tl?.kill() })
+    })
+  }
+
+  document.addEventListener('astro:page-load', init)
+  document.addEventListener('astro:before-swap', () => { killers.splice(0).forEach((k) => k()) })
+</script>

@@ -16,6 +16,7 @@ import Prose from '../typography/Prose.astro'
 import ServiceCard from '../cards/ServiceCard.astro'
 import CTA from '../sections/CTA.astro'
 import MotionShowcase from './MotionShowcase.astro'
+import ProcessCut from '../sections/ProcessCut.astro'
 
 interface Props {
   entry: CollectionEntry<'services'>
@@ -161,6 +162,8 @@ const listRow = 'py-3 border-b border-bnc-ink/25 dark:border-bnc-paper/25 grid g
     </section>
 
     {entry.data.slug === 'motion-video' && <MotionShowcase locale={locale} />}
+
+    {entry.data.slug === 'internal-operational-systems' && <ProcessCut locale={locale} tone="chalk" folio={`№ 02 / ${en ? 'Simulation' : 'Simulasi'}`} />}
 
     {faq && faq.length > 0 && (
       <!-- FAQ: ruled disclosure rows on ultramarine -->
