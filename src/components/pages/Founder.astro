@@ -1,0 +1,343 @@
+---
+import { Image } from 'astro:assets'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import FounderExperienceStrip from '../founder/FounderExperienceStrip.astro'
+import CTA from '../sections/CTA.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+import iconImage from '../../assets/brand/banuacoder-icon.png'
+import rekuShot1 from '../../assets/founder/work-product/work-1.webp'
+import rekuShot2 from '../../assets/founder/work-product/work-3.webp'
+import rekuShot3 from '../../assets/founder/work-product/work-5.webp'
+import rekuShot4 from '../../assets/founder/work-product/work-6.webp'
+import sikerjaShot1 from '../../content/portfolio/sikerja/screenshots/screenshot-2.webp'
+import sikerjaShot2 from '../../content/portfolio/sikerja/screenshots/screenshot-3.webp'
+import detexiShot1 from '../../content/portfolio/detexi/screenshots/screenshot-2.webp'
+import detexiShot2 from '../../content/portfolio/detexi/screenshots/screenshot-4.webp'
+import picoShot1 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-1.webp'
+import picoShot2 from '../../content/portfolio/pico-sulteng/screenshots/screenshot-4.webp'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+const pad = (n: number) => String(n).padStart(2, '0')
+
+const shots = [
+  { src: rekuShot1, label: 'Consumer fintech · prior', alt: { id: 'Aplikasi consumer fintech (redacted) — perbandingan light vs dark mode pada layar discover/market', en: 'Consumer fintech app (redacted) — light vs dark mode comparison on the discover/market screen' } },
+  { src: rekuShot2, label: 'Consumer fintech · prior', alt: { id: 'Aplikasi consumer fintech — layar reward/cashback', en: 'Consumer fintech app — reward/cashback screen' } },
+  { src: rekuShot3, label: 'Consumer fintech · prior', alt: { id: 'Aplikasi consumer fintech — Portfolio P/L dengan grafik annotated', en: 'Consumer fintech app — Portfolio P/L with annotated chart' } },
+  { src: rekuShot4, label: 'Consumer fintech · prior', alt: { id: 'Aplikasi consumer fintech — rincian aset dengan card list', en: 'Consumer fintech app — asset detail with card list' } },
+  { src: sikerjaShot1, label: 'Sikerja · 2024', alt: { id: 'Sikerja — daftar lowongan kerja Sulawesi Tengah', en: 'Sikerja — list of available jobs in Central Sulawesi' } },
+  { src: sikerjaShot2, label: 'Sikerja · 2024', alt: { id: 'Sikerja — detail lowongan dan profil perusahaan mitra', en: 'Sikerja — listing detail with partner company profile' } },
+  { src: detexiShot1, label: 'Detexi · 2023', alt: { id: 'Detexi Doctor — pencarian dokter berdasarkan spesialisasi', en: 'Detexi Doctor — search doctors by specialization' } },
+  { src: detexiShot2, label: 'Detexi · 2023', alt: { id: 'Detexi Doctor — alur konsultasi pasien dan dokter', en: 'Detexi Doctor — patient–doctor consultation flow' } },
+  { src: picoShot1, label: 'PICO Sulteng · 2021', alt: { id: 'PICO Sulteng — dashboard statistik COVID-19 provinsi', en: 'PICO Sulteng — provincial COVID-19 statistics dashboard' } },
+  { src: picoShot2, label: 'PICO Sulteng · 2021', alt: { id: 'PICO Sulteng — peta sebaran kasus regional', en: 'PICO Sulteng — regional case-distribution map' } },
+]
+
+const copy = {
+  id: {
+    title: 'Fajrian Aidil Pratama — Founder, Banua Coder',
+    desc: 'Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development.',
+    og: ogUrl('founder'),
+    schemaDesc: 'Software engineer dengan pengalaman di mobile engineering, platform, dan digital product development.',
+    crumbHome: 'Beranda',
+    folio: '№ 06 / Founder', folioRight: 'Palu',
+    role: 'Founder & Director, Banua Coder',
+    lede: 'Dipimpin oleh engineer dengan exposure pada product, platform, dan sistem operasional',
+    photoLabel: 'Foto Fajrian Aidil Pratama — akan diganti dengan foto profesional', photoCap: 'Foto founder menyusul',
+    aboutH: 'Tentang Ryan',
+    about: [
+      'Ryan tumbuh di Sulawesi Tengah dan menghabiskan kariernya sebagai software engineer dengan spesialisasi di mobile engineering, platform, dan digital product development. Sejak awal, ia tertarik pada bagaimana sistem yang besar bekerja dari dalam—bukan sekadar membuat fitur yang diminta, tetapi memahami arsitektur, tradeoff, dan dampak jangka panjang dari setiap keputusan teknis.',
+      'Perjalanan karier Ryan membawanya ke lingkungan product engineering yang jarang diakses oleh engineer dari daerah: GoTo Financial sebagai ekosistem fintech terbesar di Asia Tenggara, Reku dan Stockbit/Bibit sebagai platform investasi consumer yang melayani jutaan pengguna, hingga kolaborasi produk internasional yang menyasar pasar global. Di sisi lain, ia juga mengerjakan sistem digital publik—aplikasi layanan pajak dan retribusi daerah yang membutuhkan tingkat kepercayaan dan kejelasan yang berbeda dari produk consumer biasa.',
+      'Banua Coder lahir dari keinginan untuk membawa standar engineering dan product thinking itu ke konteks lokal—bisnis dan organisasi di daerah yang membutuhkan partner teknologi yang benar-benar bisa diandalkan, bukan hanya vendor yang bisa ngoding. Ryan mendirikan Banua Coder pada 2019 dengan satu keyakinan: kualitas solusi digital tidak seharusnya bergantung pada di mana bisnis itu berada.',
+      'Pendekatan Ryan dalam memimpin Banua Coder adalah menggabungkan engineering depth dengan product thinking—dua hal yang seringkali dipisahkan di software house konvensional. Hasilnya adalah tim yang tidak hanya bisa membangun apa yang diminta, tetapi juga membantu klien berpikir lebih jernih tentang apa yang sebenarnya perlu dibangun.',
+    ],
+    crossH: 'Eksekusi lintas konteks',
+    cross: [
+      'Banyak engineer bagus hanya pernah bekerja dalam satu konteks: startup consumer, atau enterprise internal, atau agency. Ketika masalah yang dihadapi berbeda dari yang biasa mereka kerjakan, ada risiko nyata bahwa solusi yang dihasilkan tidak tepat—bukan karena kurang pintar, tetapi karena referensinya terbatas.',
+      'Ryan membawa pengalaman di tiga konteks yang sangat berbeda: produk consumer yang digunakan jutaan orang dan menuntut performance, reliability, serta UX yang sangat baik; sistem publik yang membutuhkan kepercayaan data, auditability, dan kejelasan alur; dan engineering platform yang memprioritaskan maintainability dan developer experience. Setiap konteks mengajarkan sesuatu yang berbeda tentang tradeoff dan prioritas.',
+      'Hasilnya adalah pendekatan yang adaptif: kami tidak membawa template solusi yang sama untuk setiap klien. Kami membaca konteksnya—apakah ini produk F&B yang butuh membership system simpel dan cepat jalan, atau sistem workflow pemerintah daerah yang butuh struktur data yang jelas dan audit trail—dan menyesuaikan arsitektur serta pendekatan delivery-nya.',
+    ],
+    philH: 'Prinsip engineering kami',
+    phil: [
+      ['Sistem di atas fitur', 'Fitur yang banyak tidak selalu berarti produk yang baik. Banua Coder membangun dengan mempertimbangkan bagaimana sistem akan berkembang—bukan hanya bagaimana ia bekerja saat peluncuran. Ini berarti keputusan arsitektur yang sadar, bukan sekadar mengikuti permintaan satu per satu.'],
+      ['Berpikir tentang produk, bukan hanya kode', 'Engineering yang baik tidak dimulai dari "bagaimana cara membuat ini" tetapi dari "apakah ini yang harus dibuat." Kami mendekati setiap proyek dengan pemahaman terhadap tujuan bisnis di baliknya—sehingga keputusan teknis diarahkan oleh outcomes, bukan preferensi teknis semata.'],
+      ['Craft dan disiplin sebagai standar', 'Code review, testing, performance, dan aksesibilitas bukan pilihan tambahan—mereka adalah bagian dari cara kami bekerja secara default. Bukan karena sempurnisme, tetapi karena sistem yang tidak dibangun dengan disiplin ini akan menjadi beban teknis yang mahal di masa depan.'],
+    ],
+    workH: 'Karya terpilih',
+    workD: 'Cuplikan tampilan dari aplikasi yang sudah kami kerjakan — mulai dari layanan publik daerah, aplikasi konsumen di Indonesia, hingga produk fintech skala jutaan pengguna dari pengalaman sebelumnya. Beberapa tampilan kami sembunyikan brandingnya untuk menjaga kerahasiaan klien.',
+    workLabel: 'Cuplikan tampilan aplikasi', workNote: 'Mencakup produk Banua Coder dan pengalaman sebelumnya · Geser untuk melihat semua',
+    expH: 'Pengalaman Terpilih',
+    expD: 'Mencakup pengalaman dan exposure pada lingkungan seperti GoTo Financial, Reku, Stockbit/Bibit, sistem digital sektor publik, serta kolaborasi produk internasional.',
+    exp: [
+      ['GoTo Financial', 'Mobile platform engineering — ekosistem fintech skala besar'],
+      ['Reku', 'Mobile engineering — aplikasi crypto dan investasi digital'],
+      ['Stockbit / Bibit', 'Mobile platform — komunitas investasi dan reksa dana'],
+      ['Sektor Publik', 'Sistem digital publik — aplikasi layanan dan pembayaran daerah'],
+      ['Banua Coder', 'Founder & Director — sejak 2019'],
+    ],
+    credH: 'Sorotan Kredibilitas',
+    cred: [
+      'Latar belakang di software engineering dan pengembangan produk digital',
+      'Fokus kuat pada mobile engineering, platform, dan performance',
+      'Pengalaman pada sistem bisnis, workflow publik, dan produk digital lintas konteks',
+      'Pendekatan praktis yang menghubungkan kebutuhan bisnis dengan eksekusi teknis',
+      'Aktif dalam knowledge sharing dan komunitas engineering',
+    ],
+    leadH: 'Saat Ini Memimpin',
+    lead: 'Ryan memimpin Banua Coder bersama tim yang solid—mencakup engineering, design, dan delivery. Setiap project yang Anda percayakan kepada Banua Coder mendapat perhatian langsung dari Ryan pada tahap discovery dan arsitektur solusi.',
+    leadLink: 'Kenali seluruh tim →',
+    connH: 'Ikuti atau terhubung',
+    conn: 'Ryan aktif berbagi tentang engineering, product, dan pengalaman membangun software. Tersedia di platform berikut.',
+    ctaH: 'Jadwalkan percakapan', ctaSub: 'Diskusikan langsung kebutuhan Anda dengan Ryan dan tim Banua Coder.', ctaBtn: 'Mulai Diskusi',
+  },
+  en: {
+    title: 'Fajrian Aidil Pratama — Founder, Banua Coder',
+    desc: 'Fajrian Aidil Pratama is the Founder & Director of Banua Coder. Software engineer with experience in mobile engineering, platform, and digital product development.',
+    og: ogUrl('en-founder'),
+    schemaDesc: 'Software engineer with experience in mobile engineering, platform, and digital product development.',
+    crumbHome: 'Home',
+    folio: '№ 06 / Founder', folioRight: 'Palu',
+    role: 'Founder & Director, Banua Coder',
+    lede: 'Led by engineering experience across product, platform, and operational systems',
+    photoLabel: 'Photo of Fajrian Aidil Pratama — to be replaced with professional headshot', photoCap: 'Founder photo to come',
+    aboutH: 'About Ryan',
+    about: [
+      'Ryan grew up in Central Sulawesi and built his career as a software engineer specializing in mobile engineering, platform systems, and digital product development. From early on, he was drawn to how large systems work from the inside — not just building requested features, but understanding architecture, tradeoffs, and the long-term implications of every technical decision.',
+      "His career took him into product engineering environments rarely reached by engineers from regional Indonesia: GoTo Financial as Southeast Asia's largest fintech ecosystem, Reku and Stockbit/Bibit as consumer investment platforms serving millions of users, and international product collaboration targeting a global market. He also worked on public-sector digital systems — regional tax and retribution service applications that demand a different kind of rigor around data trust and workflow clarity than typical consumer apps.",
+      'Banua Coder was founded in 2019 from a desire to bring those engineering and product-thinking standards to a local context — businesses and organizations in regional Indonesia that need a technology partner they can genuinely rely on, not just a vendor that codes. Ryan founded Banua Coder on one conviction: the quality of digital solutions should not depend on where a business is located.',
+      "His approach to leading Banua Coder is to combine engineering depth with product thinking — two things that are often separated in conventional software houses. The result is a team that doesn't just build what's asked, but helps clients think more clearly about what actually needs to be built.",
+    ],
+    crossH: 'Cross-context execution',
+    cross: [
+      "Many skilled engineers have only ever worked in one context: consumer startup, or enterprise internal systems, or an agency. When the problem in front of them is different from what they've usually handled, there's a real risk the solution won't fit — not from lack of ability, but from limited reference points.",
+      'Ryan brings experience across three very different contexts: consumer products used by millions of people that demand high performance, reliability, and strong UX; public systems that require data trust, auditability, and clear workflows; and platform engineering that prioritizes maintainability and developer experience. Each context teaches something different about tradeoffs and priorities.',
+      "The result is an adaptive approach: we don't bring the same solution template to every client. We read the context — whether this is an F&B brand that needs a simple membership system up and running fast, or a regional government workflow system that needs clean data structures and an audit trail — and adjust the architecture and delivery approach accordingly.",
+    ],
+    philH: 'Our engineering principles',
+    phil: [
+      ['System over feature', "More features don't always mean a better product. Banua Coder builds with an eye on how the system will evolve — not just how it works at launch. This means conscious architectural decisions, not just responding to requests one by one."],
+      ['Product thinking, not just code', 'Good engineering doesn\'t start from "how do I build this" but from "is this what should be built." We approach every project with an understanding of the business goals behind it — so technical decisions are directed by outcomes, not technical preference alone.'],
+      ['Craft and discipline as defaults', "Code reviews, testing, performance, and accessibility aren't optional add-ons — they're part of how we work by default. Not from perfectionism, but because systems not built with this discipline will become expensive technical debt in the future."],
+    ],
+    workH: 'Selected work',
+    workD: 'Interface snapshots from apps Banua Coder has shipped — regional public services, Indonesian consumer apps, and earlier fintech work at multi-million-user scale. Some shots have client branding hidden to respect confidentiality.',
+    workLabel: 'App interface snapshots', workNote: 'Mix of Banua Coder products and prior engagements · Drag to view all',
+    expH: 'Selected Experience',
+    expD: 'Includes experience and exposure in environments such as GoTo Financial, Reku, Stockbit/Bibit, public sector digital systems, and international product collaboration.',
+    exp: [
+      ['GoTo Financial', 'Mobile platform engineering — large-scale fintech ecosystem'],
+      ['Reku', 'Mobile engineering — crypto and digital investment application'],
+      ['Stockbit / Bibit', 'Mobile platform — investment community and mutual fund application'],
+      ['Public Sector', 'Public digital systems — regional service and payment applications'],
+      ['Banua Coder', 'Founder & Director — since 2019'],
+    ],
+    credH: 'Credibility Highlights',
+    cred: [
+      'Background in software engineering and digital product development',
+      'Strong focus on mobile engineering, platform, and performance',
+      'Experience across business systems, public workflows, and digital products in diverse contexts',
+      'Practical approach that connects business needs to technical execution',
+      'Active in knowledge sharing and engineering communities',
+    ],
+    leadH: 'Currently Leading',
+    lead: "Ryan leads Banua Coder together with a solid team — spanning engineering, design, and delivery. Every project you entrust to Banua Coder receives Ryan's direct attention during the discovery and solution architecture phases.",
+    leadLink: 'Meet the full team →',
+    connH: 'Follow or connect',
+    conn: 'Ryan actively shares thoughts on engineering, product, and building software. Find him on these platforms.',
+    ctaH: 'Schedule a conversation', ctaSub: 'Discuss your needs directly with Ryan and the Banua Coder team.', ctaBtn: 'Start a Discussion',
+  },
+}[locale]
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://banuacoder.com/founder/#person',
+  name: 'Fajrian Aidil Pratama',
+  jobTitle: 'Founder & Director',
+  worksFor: { '@type': 'Organization', '@id': 'https://banuacoder.com/#organization', name: 'Banua Coder', url: 'https://banuacoder.com' },
+  url: `https://banuacoder.com${prefix}/founder/`,
+  sameAs: ['https://linkedin.com/in/ryanaidilp', 'https://twitter.com/ryanaidilp_', 'https://github.com/ryanaidilp', 'https://youtube.com/@banuacoder'],
+  description: copy.schemaDesc,
+  knowsAbout: ['Mobile Engineering', 'Flutter', 'Platform Engineering', 'Product Development', 'Digital Systems', 'Laravel', 'Public Sector Digitalization'],
+  nationality: 'Indonesia',
+}
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: copy.crumbHome, item: `https://banuacoder.com${en ? '/en/' : '/'}` },
+    { '@type': 'ListItem', position: 2, name: 'Founder', item: `https://banuacoder.com${prefix}/founder/` },
+  ],
+}
+const link = 'folio underline underline-offset-4 decoration-1 hover:decoration-2 focus-visible:decoration-2'
+const body = 'flex flex-col gap-6 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300'
+const socials = [['LinkedIn', 'https://linkedin.com/in/ryanaidilp'], ['GitHub', 'https://github.com/ryanaidilp'], ['X / Twitter', 'https://twitter.com/ryanaidilp_']]
+---
+
+<BaseLayout title={copy.title} description={copy.desc} ogImage={copy.og}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <Skip />
+  <Nav />
+
+  <main id="main-content">
+    <PlateHead folio={copy.folio} folioRight={copy.folioRight} title="Fajrian Aidil Pratama" titleId="founder-hero-heading" size="lg" lede={copy.lede}>
+      <p class="folio mute mt-8">{copy.role}</p>
+      <p class="mt-4 flex flex-wrap gap-6 m-0">
+        <a class={link} href="https://linkedin.com/in/ryanaidilp" target="_blank" rel="noopener noreferrer">LinkedIn →</a>
+        <a class={link} href="https://twitter.com/ryanaidilp_" target="_blank" rel="noopener noreferrer">X / Twitter →</a>
+      </p>
+      <!-- Portrait slot: real photo not supplied yet, shows the brand mark on a tonal plate -->
+      <div class="mt-12 lg:mt-0 lg:absolute lg:right-8 lg:top-0 lg:w-[22rem]" role="img" aria-label={copy.photoLabel}>
+        <div class="aspect-[3/4] flex items-center justify-center bg-bnc-plate-lift border border-current/25">
+          <Image src={iconImage} alt="" width={120} height={120} class="w-28 h-28 brightness-0 invert opacity-90" aria-hidden="true" loading="eager" decoding="async" />
+        </div>
+        <p class="folio mute mt-2">{copy.photoCap}</p>
+      </div>
+    </PlateHead>
+
+    <!-- Letter -->
+    <section aria-labelledby="narrative-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10 border-t border-current/25 pt-6">
+          <h2 id="narrative-heading" class="display lg:col-span-4" style="font-size: var(--fs-48)" data-reveal>{copy.aboutH}</h2>
+          <div class:list={[body, 'lg:col-span-7 lg:col-start-6']} style="font-size: var(--fs-17)">
+            {copy.about.map((p, i) => (
+              <p class:list={[i === 0 && 'text-bnc-ink dark:text-bnc-paper font-medium']} style={i === 0 ? 'font-size: var(--fs-20)' : undefined}>{p}</p>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Cross-context -->
+    <section aria-labelledby="cross-context-heading" class="plate relative overflow-hidden" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10 border-t border-current/25 pt-6">
+          <h2 id="cross-context-heading" class="display text-balance lg:col-span-6" style="font-size: var(--fs-64)" data-reveal>{copy.crossH}</h2>
+          <div class="lg:col-span-5 lg:col-start-8 flex flex-col gap-6 leading-relaxed mute" style="font-size: var(--fs-17)">
+            {copy.cross.map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Principles -->
+    <section aria-labelledby="philosophy-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <h2 id="philosophy-heading" class="display" style="font-size: var(--fs-48)">{copy.philH}</h2>
+        <ol class="m-0 mt-12 p-0 list-none grid grid-cols-1 md:grid-cols-3 border-t border-current/25">
+          {copy.phil.map(([title, desc], i) => (
+            <li class="py-8 md:px-6 md:border-l border-current/25 first:md:border-l-0 first:md:pl-0 border-b md:border-b-0">
+              <span aria-hidden="true" class="numeral block !text-bnc-stone-200 dark:!text-bnc-stone-800" style="font-size: clamp(5rem, 9vw, 8rem)">{pad(i + 1)}</span>
+              <h3 class="display mt-6" style="font-size: var(--fs-28)">{title}</h3>
+              <p class="mt-3 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300">{desc}</p>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </section>
+
+    <!-- Work -->
+    <section aria-labelledby="work-product-heading" class="plate relative overflow-hidden" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 border-t border-current/25 pt-6">
+          <h2 id="work-product-heading" class="display lg:col-span-6" style="font-size: var(--fs-64)">{copy.workH}</h2>
+          <p class="mute lg:col-span-5 lg:col-start-8" style="font-size: var(--fs-17)">{copy.workD}</p>
+        </div>
+        <div class="prior-work-marquee relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 mt-12" aria-roledescription="carousel" aria-label={copy.workLabel}>
+          <div class="prior-work-track flex items-stretch gap-5 px-4 sm:px-6 lg:px-8 will-change-transform">
+            {shots.map(({ src, alt, label }) => (
+              <figure class="prior-work-slide shrink-0 m-0">
+                <Image src={src} alt={alt[locale]} width={280} class="block w-full h-auto border border-white/25" loading="lazy" decoding="async" />
+                <figcaption class="folio mute mt-2">{label}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+        <p class="folio mute mt-6">{copy.workNote}</p>
+      </Container>
+    </section>
+
+    <!-- Record -->
+    <section aria-labelledby="selected-exp-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-12">
+          <div class="lg:col-span-7">
+            <h2 id="selected-exp-heading" class="display" style="font-size: var(--fs-48)">{copy.expH}</h2>
+            <p class="mt-4 text-bnc-stone-600 dark:text-bnc-stone-300" style="max-width: 52ch">{copy.expD}</p>
+            <ol class="m-0 mt-10 p-0 list-none border-b border-current/25">
+              {copy.exp.map(([company, context], i) => (
+                <li class="grid grid-cols-12 gap-x-4 gap-y-1 border-t border-current/25 py-5">
+                  <span class="col-span-2 folio text-bnc-accent-ink dark:text-bnc-accent pt-1">{pad(i + 1)}</span>
+                  <span class="col-span-10 md:col-span-4 display" style="font-size: var(--fs-20)">{company}</span>
+                  <span class="col-span-10 col-start-3 md:col-span-6 md:col-start-auto text-bnc-stone-600 dark:text-bnc-stone-300">{context}</span>
+                </li>
+              ))}
+            </ol>
+            <div class="mt-8"><FounderExperienceStrip /></div>
+          </div>
+          <div class="lg:col-span-4 lg:col-start-9">
+            <h2 class="display" style="font-size: var(--fs-28)">{copy.credH}</h2>
+            <ul class="m-0 mt-6 p-0 list-none border-b border-current/25">
+              {copy.cred.map((b) => <li class="border-t border-current/25 py-3 text-bnc-stone-700 dark:text-bnc-stone-300">{b}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 mt-20 border-t border-current/25 pt-6">
+          <div class="lg:col-span-6">
+            <h2 class="display" style="font-size: var(--fs-28)">{copy.leadH}</h2>
+            <p class="mt-4 text-bnc-stone-700 dark:text-bnc-stone-300" style="max-width: 60ch">{copy.lead}</p>
+            <a href={`${prefix}/about/`} class={`${link} mt-4 inline-block text-bnc-plate dark:text-bnc-accent`}>{copy.leadLink}</a>
+          </div>
+          <div class="lg:col-span-5 lg:col-start-8">
+            <h2 class="display" style="font-size: var(--fs-28)">{copy.connH}</h2>
+            <p class="mt-4 text-bnc-stone-700 dark:text-bnc-stone-300">{copy.conn}</p>
+            <p class="mt-4 flex flex-wrap gap-6 m-0">
+              {socials.map(([n, h]) => <a class={`${link} text-bnc-plate dark:text-bnc-accent`} href={h} target="_blank" rel="noopener noreferrer">{n} →</a>)}
+            </p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <CTA headline={copy.ctaH} sub={copy.ctaSub} primaryCta={copy.ctaBtn} primaryHref={`${prefix}/contact/`} inverted={true} />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .prior-work-marquee {
+    mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 6%, black 94%, transparent 100%);
+  }
+  .prior-work-track { animation: prior-work-scroll 60s linear infinite; }
+  .prior-work-marquee:hover .prior-work-track,
+  .prior-work-marquee:focus-within .prior-work-track { animation-play-state: paused; }
+  .prior-work-slide { width: clamp(180px, 24vw, 280px); }
+  @keyframes prior-work-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .prior-work-track { animation: none; flex-wrap: wrap; justify-content: center; }
+    .prior-work-marquee { mask-image: none; -webkit-mask-image: none; overflow: visible; }
+  }
+</style>
+
+<script>
+  /* Duplicate the track so the -50% keyframe loops seamlessly. */
+  document.querySelectorAll<HTMLElement>('.prior-work-track').forEach((track) => {
+    if (track.dataset.looped) return
+    track.dataset.looped = '1'
+    track.innerHTML += track.innerHTML
+  })
+</script>

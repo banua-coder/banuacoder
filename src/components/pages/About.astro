@@ -1,0 +1,290 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Testimonial from '../cards/Testimonial.astro'
+import CTA from '../sections/CTA.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+import { team } from '../../data/team'
+import iconImage from '../../assets/brand/banuacoder-icon.png'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+
+let testimonials: Awaited<ReturnType<typeof getCollection<'testimonials'>>> = []
+try {
+  testimonials = (await getCollection('testimonials'))
+    .filter((x) => x.data.locale === locale)
+    .sort((a, b) => a.data.order - b.data.order)
+} catch {
+  // none yet
+}
+
+const founder = team.find((m) => m.highlight === 'founder')!
+const others = team.filter((m) => m.highlight !== 'founder')
+const pad = (n: number) => String(n).padStart(2, '0')
+
+const copy = {
+  id: {
+    title: 'Tentang Banua Coder — Software House Engineering-Led di Sulawesi Tengah',
+    desc: 'Banua Coder adalah partner teknologi yang membantu bisnis dan organisasi membangun solusi digital yang relevan, terstruktur, dan siap berkembang.',
+    og: ogUrl('about'),
+    crumbHome: 'Beranda', crumbAbout: 'Tentang Kami',
+    folio: '№ 05 / Tentang', folioRight: 'Palu · sejak 2019',
+    h1: 'Tentang Banua Coder',
+    lede: 'Partner teknologi untuk bisnis dan organisasi yang ingin membangun solusi digital dengan engineering depth dan pemahaman bisnis yang nyata.',
+    narrativeH: 'Kami membantu bisnis membangun solusi digital yang benar-benar berguna',
+    narrative: [
+      'Banua Coder berdiri sejak 2019 dari Sulawesi Tengah, dengan satu keyakinan sederhana: teknologi harus membantu bisnis bekerja lebih baik, bukan sekadar membuat mereka terlihat modern. Sejak awal, kami memposisikan diri bukan sebagai vendor pembuat aplikasi, melainkan sebagai partner yang membantu klien memetakan problem dan membangun solusi yang benar-benar relevan dengan konteks mereka.',
+      'Cara kerja kami dibentuk oleh engineering—bukan sekadar dalam arti teknis, tetapi dalam cara berpikir. Engineer yang baik tidak langsung ngoding; ia bertanya dulu, memahami sistem yang ada, mengidentifikasi akar masalah, lalu menyusun solusi yang tepat. Itulah pendekatan yang kami bawa ke setiap proyek, dari discovery hingga delivery.',
+      'Klien kami mencakup brand F&B, kafe, dan retail yang ingin tampil lebih profesional dan membangun loyalitas pelanggan; brand kecantikan dan skincare yang memperkuat kehadiran digital; pemerintah daerah dan instansi publik yang membutuhkan aplikasi layanan masyarakat; serta UMKM berkembang dan founder yang ingin membangun produk digital pertama atau sistem operasional mereka.',
+      'Ketika kami bilang "partner, bukan vendor," itu bukan slogan. Ini tercermin dari cara kami bekerja: kami ikut memikirkan solusinya, bukan hanya mengeksekusi brief yang diberikan. Kami akan bertanya kalau ada sesuatu yang tidak jelas. Kami akan memberitahu kalau ada pendekatan yang lebih baik. Dan kami tetap ada setelah produk diluncurkan.',
+      'Akar kami di Sulawesi Tengah memberi kami pemahaman kontekstual tentang bisnis dan kebutuhan daerah yang tidak dimiliki banyak agency dari kota besar. Tapi standar berpikir dan engineering yang kami bawa tidak lebih rendah dari mereka—justru itulah yang kami jaga.',
+    ],
+    facts: [['Didirikan', '2019'], ['Berbasis di', 'Sulawesi Tengah'], ['Bidang', 'Mobile · Web · Dashboard · Sistem Operasional'], ['Studio', 'Design · Social Media']],
+    pillarsH: 'Cara Kami Berpikir',
+    pillarsD: 'Lima prinsip yang mendasari bagaimana Banua Coder bekerja dan memberikan nilai bagi klien.',
+    pillars: [
+      ['Pemahaman Bisnis', 'Banua Coder tidak hanya menjual coding, tapi membantu memetakan problem bisnis menjadi solusi digital yang realistis.'],
+      ['Kredibilitas Teknis', 'Kami punya engineering capability yang kuat, bukan sekadar level pembuatan website company profile atau app sederhana.'],
+      ['Eksekusi Praktis', 'Kami menekankan delivery yang terstruktur, bertahap, dan jelas sehingga terasa low-risk bagi client.'],
+      ['Akar Regional, Kapabilitas Modern', 'Banua Coder berbasis dari Sulawesi Tengah, tetapi kualitas berpikir, engineering, dan delivery-nya terasa setara dengan company yang lebih besar.'],
+      ['Founder-Led Trust', 'Founder memiliki track record kuat di software engineering, mobile platform, dan product thinking—sehingga Banua Coder mendapat trust tambahan dari sosok di belakangnya.'],
+    ],
+    howH: 'Proses yang jelas, dari awal hingga support',
+    how: [
+      ['Discovery', 'Memahami konteks bisnis, memetakan problem, dan mengidentifikasi prioritas. Tidak ada asumsi—semua dimulai dari percakapan yang jujur.'],
+      ['Solution Mapping', 'Mendefinisikan scope, menyusun struktur solusi, dan memilah mana yang harus dibangun sekarang dan mana yang bisa ditunda.'],
+      ['Build', 'Engineering yang terstruktur dan iteratif—client dilibatkan di setiap siklus, bukan hanya menerima hasil di akhir.'],
+      ['Support', 'Partnership jangka panjang, bukan sekadar hand-off. Kami tetap ada untuk maintenance, iterasi, dan pertumbuhan produk.'],
+    ],
+    teamH: 'Tim Kami',
+    teamD: 'Banua Coder digerakkan oleh tim kecil yang solid—dengan keahlian in-house yang saling melengkapi di engineering, design, social media, dan delivery.',
+    founderLabel: 'Founder', full: 'Profil lengkap →', photoLabel: 'Foto Fajrian — akan diganti dengan foto profesional', expertise: 'Keahlian',
+    testH: 'Apa Kata Klien',
+    whyH: 'Apa yang membedakan kami',
+    why: [
+      'Banyak agency bisa membuat website atau aplikasi. Yang lebih sulit ditemukan adalah partner yang benar-benar memahami bisnis Anda sebelum menyentuh keyboard—yang mau bertanya, mendebat dengan hormat jika ada yang tidak tepat, dan memastikan solusi yang dibangun relevan dengan masalah nyata, bukan hanya dengan brief yang ditulis. Itulah yang kami coba jadi untuk setiap klien.',
+      'Founder Banua Coder membawa pengalaman lintas konteks yang jarang dimiliki software house lokal: dari platform fintech skala besar, produk consumer untuk pasar internasional, hingga sistem publik daerah. Pengalaman ini bukan untuk dipamerkan—melainkan untuk memastikan bahwa standar berpikir yang kami bawa ke project Anda sudah teruji di lingkungan yang lebih kompleks. Akar kami di Sulawesi Tengah memberi kami kedekatan kontekstual dengan kebutuhan bisnis dan organisasi daerah, sementara pengalaman engineering yang lebih luas memastikan kualitas kerja tidak tergantung lokasi.',
+    ],
+    whyLink: 'Mulai diskusi dengan kami →',
+    ctaH: 'Ingin bekerja bersama tim kami?', ctaSub: 'Jadwalkan diskusi dan ceritakan tentang kebutuhan bisnis Anda.', ctaBtn: 'Mulai Diskusi',
+  },
+  en: {
+    title: 'About Banua Coder — Engineering-Led Software House in Central Sulawesi',
+    desc: 'Banua Coder is a technology partner that helps businesses and organizations build relevant, structured, and growth-ready digital solutions.',
+    og: ogUrl('en-about'),
+    crumbHome: 'Home', crumbAbout: 'About',
+    folio: '№ 05 / About', folioRight: 'Palu · since 2019',
+    h1: 'About Banua Coder',
+    lede: 'A technology partner for businesses and organizations that want to build digital solutions with real engineering depth and business understanding.',
+    narrativeH: 'We help businesses build digital solutions that actually work',
+    narrative: [
+      'Banua Coder was founded in 2019 from Central Sulawesi with one straightforward belief: technology should help businesses work better, not just look modern. From the start, we positioned ourselves not as a vendor that makes applications, but as a partner that helps clients map problems and build solutions genuinely relevant to their context.',
+      "Our way of working is shaped by engineering — not just in the technical sense, but in how we think. A good engineer doesn't jump straight to code; they ask questions first, understand the existing system, identify the root cause, then design the right solution. That's the approach we bring to every project, from discovery through delivery.",
+      'Our clients include F&B, café, and retail brands wanting to present more professionally and build customer loyalty; beauty and skincare brands strengthening their digital presence; regional governments and public institutions needing citizen-facing applications or internal system modernization; and growing SMEs and founders building their first digital product or operational system.',
+      'When we say "partner, not vendor," that\'s not a slogan. It shows in how we work: we think about the solution together, not just execute a given brief. We ask when something is unclear. We\'ll flag a better approach when we see one. And we stay available after the product launches.',
+      "Our roots in Central Sulawesi give us contextual understanding of regional business and organizational needs that many agencies from larger cities don't have. But the engineering and thinking standards we apply are no lower — and that's exactly what we protect.",
+    ],
+    facts: [['Founded', '2019'], ['Based in', 'Central Sulawesi'], ['Practice', 'Mobile · Web · Dashboard · Operational Systems'], ['Studio', 'Design · Social Media']],
+    pillarsH: 'How We Think',
+    pillarsD: 'Five principles that underpin how Banua Coder works and delivers value to clients.',
+    pillars: [
+      ['Business Understanding', 'Banua Coder does not just sell coding — we help map business problems into realistic digital solutions.'],
+      ['Technical Credibility', 'We have strong engineering capability, well beyond simple company profile websites or basic apps.'],
+      ['Practical Execution', 'We emphasize structured, incremental, and clear delivery so it feels low-risk for clients.'],
+      ['Regional Roots, Modern Capability', 'Banua Coder is based in Central Sulawesi, but our quality of thinking, engineering, and delivery matches companies far larger.'],
+      ['Founder-Led Trust', 'The founder has a strong track record in software engineering, mobile platforms, and product thinking — giving Banua Coder additional trust through the person behind it.'],
+    ],
+    howH: 'A clear process, from start to support',
+    how: [
+      ['Discovery', 'Understanding business context, mapping problems, and identifying priorities. No assumptions — everything starts from an honest conversation.'],
+      ['Solution Mapping', 'Defining scope, structuring the solution, and deciding what must be built now versus what can wait.'],
+      ['Build', 'Structured, iterative engineering — clients are involved at every cycle, not just handed results at the end.'],
+      ['Support', 'Long-term partnership, not just a hand-off. We stay available for maintenance, iteration, and product growth.'],
+    ],
+    teamH: 'Our Team',
+    teamD: 'Banua Coder is driven by a tight, solid team — with in-house expertise spanning engineering, design, social media, and delivery.',
+    founderLabel: 'Founder', full: 'Full profile →', photoLabel: 'Photo of Fajrian — to be replaced with professional headshot', expertise: 'Expertise',
+    testH: 'What Clients Say',
+    whyH: 'What sets us apart',
+    why: [
+      "Many agencies can build a website or application. What's harder to find is a partner that genuinely understands your business before touching a keyboard — one that asks questions, respectfully pushes back when something doesn't feel right, and makes sure the solution being built is relevant to the real problem, not just the brief that was written. That's what we try to be for every client.",
+      "Banua Coder's founder brings cross-context experience rarely found in local software houses: from large-scale fintech platforms, to consumer products for international markets, to regional public sector systems. That experience isn't something we display for show — it's what ensures the thinking standards we bring to your project have been tested in more complex environments. Our Central Sulawesi roots give us contextual closeness to regional business and organizational needs, while the broader engineering experience ensures work quality doesn't depend on geography.",
+    ],
+    whyLink: 'Start a conversation with us →',
+    ctaH: 'Want to work with our team?', ctaSub: 'Schedule a discussion and tell us about your business needs.', ctaBtn: 'Start a Discussion',
+  },
+}[locale]
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: copy.crumbHome, item: `https://banuacoder.com${en ? '/en/' : '/'}` },
+    { '@type': 'ListItem', position: 2, name: copy.crumbAbout, item: `https://banuacoder.com${prefix}/about/` },
+  ],
+}
+const link = 'folio underline underline-offset-4 decoration-1 hover:decoration-2 focus-visible:decoration-2'
+---
+
+<BaseLayout title={copy.title} description={copy.desc} ogImage={copy.og}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <Skip />
+  <Nav />
+
+  <main id="main-content">
+    <PlateHead folio={copy.folio} folioRight={copy.folioRight} title={copy.h1} lede={copy.lede} numeral="05" titleId="about-hero-heading" />
+
+    <!-- Letter: narrative -->
+    <section aria-labelledby="narrative-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-12">
+          <div class="lg:col-span-5">
+            <h2 id="narrative-heading" class="display text-balance" style="font-size: var(--fs-48)" data-reveal>{copy.narrativeH}</h2>
+            <dl class="mt-12 m-0 border-b border-current/25">
+              {copy.facts.map(([k, v]) => (
+                <div class="grid grid-cols-3 gap-4 border-t border-current/25 py-3">
+                  <dt class="folio text-bnc-accent-ink dark:text-bnc-accent">{k}</dt>
+                  <dd class="col-span-2 m-0 text-bnc-stone-800 dark:text-bnc-stone-200">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div class="lg:col-span-6 lg:col-start-7 flex flex-col gap-6 text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed" style="font-size: var(--fs-17)">
+            {copy.narrative.map((p, i) => (
+              <p class:list={[i === 0 && 'text-bnc-ink dark:text-bnc-paper font-medium']} style={i === 0 ? 'font-size: var(--fs-20)' : undefined}>{p}</p>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Principles -->
+    <section aria-labelledby="pillars-heading" class="plate relative overflow-hidden" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 mb-12">
+          <p class="folio lg:col-span-3 text-bnc-accent border-t border-current/25 pt-3">№ 06 / {en ? 'Approach' : 'Pendekatan'}</p>
+          <div class="lg:col-span-9">
+            <h2 id="pillars-heading" class="display" style="font-size: var(--fs-64)">{copy.pillarsH}</h2>
+            <p class="mute mt-6" style="font-size: var(--fs-20); max-width: 52ch">{copy.pillarsD}</p>
+          </div>
+        </div>
+        <ol class="m-0 p-0 list-none border-b border-current/25">
+          {copy.pillars.map(([title, body], i) => (
+            <li class="grid grid-cols-12 gap-x-4 gap-y-3 border-t border-current/25 py-8">
+              <span class="col-span-3 lg:col-span-1 display text-bnc-plate-mute" style="font-size: var(--fs-36)">{pad(i + 1)}</span>
+              <h3 class="col-span-9 lg:col-span-4 display" style="font-size: var(--fs-28)">{title}</h3>
+              <p class="col-span-12 lg:col-span-6 lg:col-start-7 mute leading-relaxed" style="font-size: var(--fs-17)">{body}</p>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </section>
+
+    <!-- Process -->
+    <section aria-labelledby="how-we-work-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <p class="folio text-bnc-accent-ink dark:text-bnc-accent border-t border-current/25 pt-3">№ 07 / {en ? 'Process' : 'Cara Kerja'}</p>
+        <h2 id="how-we-work-heading" class="display mt-8 text-balance" style="font-size: var(--fs-64); max-width: 18ch" data-reveal>{copy.howH}</h2>
+        <ol class="m-0 mt-16 p-0 list-none grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-current/25">
+          {copy.how.map(([title, desc], i) => (
+            <li class="relative py-8 md:px-6 md:border-l border-current/25 first:md:border-l-0 first:md:pl-0 border-b md:border-b-0">
+              <span aria-hidden="true" class="numeral block !text-bnc-stone-200 dark:!text-bnc-stone-800" style="font-size: clamp(6rem, 11vw, 10rem)">{pad(i + 1)}</span>
+              <h3 class="display mt-6" style="font-size: var(--fs-28)">{title}</h3>
+              <p class="mt-3 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-17)">{desc}</p>
+            </li>
+          ))}
+        </ol>
+      </Container>
+    </section>
+
+    <!-- Team -->
+    <section aria-labelledby="team-heading" class="plate relative overflow-hidden" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 mb-12">
+          <p class="folio lg:col-span-3 text-bnc-accent border-t border-current/25 pt-3">№ 08 / {en ? 'Team' : 'Tim'}</p>
+          <div class="lg:col-span-9">
+            <h2 id="team-heading" class="display" style="font-size: var(--fs-64)">{copy.teamH}</h2>
+            <p class="mute mt-6" style="font-size: var(--fs-20); max-width: 56ch">{copy.teamD}</p>
+          </div>
+        </div>
+
+        <!-- Founder -->
+        <div class="grid grid-cols-12 gap-x-6 gap-y-8 border-t border-current/25 py-10">
+          <div class="col-span-12 sm:col-span-4 lg:col-span-3" role="img" aria-label={copy.photoLabel}>
+            <div class="aspect-[4/5] flex items-center justify-center bg-bnc-plate-lift">
+              <Image src={iconImage} alt="" width={96} height={96} class="w-24 h-24 brightness-0 invert opacity-90" aria-hidden="true" loading="lazy" decoding="async" />
+            </div>
+          </div>
+          <div class="col-span-12 sm:col-span-8 lg:col-span-9 flex flex-col gap-5">
+            <p class="folio text-bnc-accent">{copy.founderLabel} · {founder.role}</p>
+            <h3 class="display" style="font-size: var(--fs-48)">{founder.name}</h3>
+            {founder.bio && <p class="mute leading-relaxed" style="font-size: var(--fs-17); max-width: 60ch">{founder.bio}</p>}
+            <ul class="m-0 p-0 list-none flex flex-wrap gap-x-5 gap-y-1 folio" aria-label={copy.expertise}>
+              {founder.expertise.map((tag) => <li>{tag}</li>)}
+            </ul>
+            <p class="flex flex-wrap gap-6 m-0">
+              {founder.links.linkedin && <a class={link} href={founder.links.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn →</a>}
+              {founder.links.twitter && <a class={link} href={founder.links.twitter} target="_blank" rel="noopener noreferrer">X →</a>}
+              <a class={link} href={`${prefix}/founder/`}>{copy.full}</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Others: ruled rows -->
+        <ul class="m-0 p-0 list-none border-b border-current/25">
+          {others.map((m) => (
+            <li class="grid grid-cols-12 gap-x-4 gap-y-2 border-t border-current/25 py-6 items-baseline">
+              <p class="col-span-12 md:col-span-4 display m-0" style="font-size: var(--fs-28)">{m.name}</p>
+              <p class="col-span-12 md:col-span-3 folio mute m-0">{m.role}</p>
+              <p class="col-span-9 md:col-span-4 folio m-0">{m.expertise.join(' · ')}</p>
+              <p class="col-span-3 md:col-span-1 m-0 text-right">
+                {m.links.linkedin && <a class={link} href={m.links.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`LinkedIn ${m.name}`}>in →</a>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+
+    {testimonials.length > 0 && (
+      <section aria-labelledby="testimonials-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+        <Container>
+          <h2 id="testimonials-heading" class="display mb-12" style="font-size: var(--fs-64)">{copy.testH}</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testimonials.map((x) => (
+              <Testimonial quote={x.data.quote} author={x.data.author} role={x.data.role} company={x.data.company} />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <!-- Why -->
+    <section aria-labelledby="why-us-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-8 border-t border-current/25 pt-6">
+          <h2 id="why-us-heading" class="display text-balance lg:col-span-5" style="font-size: var(--fs-48)">{copy.whyH}</h2>
+          <div class="lg:col-span-6 lg:col-start-7 flex flex-col gap-6 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-17)">
+            {copy.why.map((p) => <p>{p}</p>)}
+            <a href={`${prefix}/contact/`} class={`${link} text-bnc-plate dark:text-bnc-accent self-start`}>{copy.whyLink}</a>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <CTA headline={copy.ctaH} sub={copy.ctaSub} primaryCta={copy.ctaBtn} primaryHref={`${prefix}/contact/`} inverted={true} />
+  </main>
+
+  <Footer />
+</BaseLayout>

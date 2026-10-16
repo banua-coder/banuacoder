@@ -1,0 +1,79 @@
+---
+/**
+ * Plate: one printed page of the prospectus.
+ * tone "plate" = ultramarine, "chalk" = chalk (navy ink in dark mode).
+ * Optional folio ("№ 02 / Layanan") sits on a hairline rule; optional giant tonal numeral
+ * floats behind the content and drifts slowly via data-parallax.
+ */
+import Container from './Container.astro'
+
+interface Props {
+  tone?: 'plate' | 'chalk'
+  /** Folio text, e.g. "№ 02 / Layanan" */
+  folio?: string
+  /** Right-aligned folio text */
+  folioEnd?: string
+  /** Giant tonal numeral, e.g. "02" */
+  numeral?: string
+  id?: string
+  labelledby?: string
+  label?: string
+  class?: string
+  /** Container class (e.g. to narrow the measure) */
+  innerClass?: string
+  tight?: boolean
+  reveal?: boolean
+}
+
+const {
+  tone = 'chalk',
+  folio,
+  folioEnd,
+  numeral,
+  id,
+  labelledby,
+  label,
+  class: cls = '',
+  innerClass = '',
+  tight = false,
+  reveal = true,
+} = Astro.props
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledby}
+  aria-label={labelledby ? undefined : label}
+  class:list={[tone === 'plate' ? 'plate' : 'plate-chalk', 'pl relative overflow-hidden', cls]}
+  style={`padding-block: var(${tight ? '--spacing-section-y-sm' : '--spacing-section-y'})`}
+  data-reveal={reveal ? '' : undefined}
+>
+  {numeral && (
+    <span
+      class="pl-numeral numeral absolute z-0 right-[-1vw] top-[4rem]"
+      aria-hidden="true"
+      data-parallax="0.12"
+    >{numeral}</span>
+  )}
+  <Container class:list={['relative z-10', innerClass]}>
+    {(folio || folioEnd) && (
+      <div class="pl-folio folio flex items-baseline justify-between gap-6 border-b pb-3 mb-10 lg:mb-16">
+        <span>{folio}</span>
+        {folioEnd && <span class="text-right">{folioEnd}</span>}
+      </div>
+    )}
+    <slot />
+  </Container>
+</section>
+
+<style>
+  .pl-folio { border-color: var(--pl-line); }
+  .pl { --pl-line: color-mix(in srgb, currentColor 28%, transparent); }
+  .pl-folio { color: var(--color-bnc-stone-600); }
+  :global(html.dark) .plate-chalk .pl-folio { color: var(--color-bnc-stone-400); }
+  .plate .pl-folio { color: var(--color-bnc-plate-mute); }
+  .plate-chalk .pl-numeral { color: var(--color-bnc-stone-200); }
+  :global(html.dark) .plate-chalk .pl-numeral { color: var(--color-bnc-stone-900); }
+  .pl-numeral { font-size: clamp(9rem, 4rem + 24vw, 30rem); }
+  @media (max-width: 640px) { .pl-numeral { top: 3rem; } }
+</style>

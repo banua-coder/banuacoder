@@ -1,0 +1,90 @@
+---
+/**
+ * ArchipelagoPromo: Banua Coder's own product, set as a full ultramarine plate.
+ * Facts: portfolio/archipelago mdx + Archipelago docs (CLI: create / generate, 39 bricks).
+ */
+import Plate from '../layout/Plate.astro'
+
+interface Props {
+  locale?: 'id' | 'en'
+}
+const { locale = 'id' } = Astro.props
+
+const copy = {
+  id: {
+    eyebrow: 'Produk Banua Coder',
+    title: 'Archipelago: starter kit monorepo Flutter',
+    body: 'Berbasis Mason bricks dan Melos. Generate fondasi Flutter yang konsisten, lengkap dengan core, UI kit, navigasi, network layer, dan state management, dalam hitungan menit, bukan minggu.',
+    points: [
+      'Mason bricks untuk package yang seragam',
+      'Melos untuk versioning dan workflow lintas package',
+      'Code generation, setup test, lint, dan template CI/CD',
+    ],
+    cta: 'Lihat Archipelago',
+    caseStudy: 'Baca studi kasus',
+    caseHref: '/portfolio/archipelago/',
+    termLabel: 'Contoh alur perintah Archipelago di terminal',
+    done: 'Monorepo siap dipakai.',
+  },
+  en: {
+    eyebrow: 'A Banua Coder product',
+    title: 'Archipelago: the Flutter monorepo starter kit',
+    body: 'Built on Mason bricks and Melos. Generate a consistent Flutter foundation with core, UI kit, navigation, network layer, and state management in minutes, not weeks.',
+    points: [
+      'Mason bricks for consistent packages',
+      'Melos for cross-package versioning and workflows',
+      'Code generation, test setup, lint rules, and CI/CD templates',
+    ],
+    cta: 'Explore Archipelago',
+    caseStudy: 'Read the case study',
+    caseHref: '/en/portfolio/archipelago/',
+    termLabel: 'Example Archipelago command flow in a terminal',
+    done: 'Monorepo ready.',
+  },
+}[locale]
+---
+
+<Plate tone="plate" folio={`№ 08 / ${copy.eyebrow}`} labelledby="archipelago-heading">
+  <div class="grid gap-14 lg:grid-cols-12 lg:items-start">
+    <div class="lg:col-span-7">
+      <h2 id="archipelago-heading" class="display text-balance" style="font-size: var(--fs-64)">{copy.title}</h2>
+      <p class="mute mt-8 leading-relaxed" style="font-size: var(--fs-20); max-width: 56ch">{copy.body}</p>
+      <ul class="list-none m-0 mt-10 p-0 border-b border-[var(--color-bnc-plate-line)]" role="list">
+        {copy.points.map((p, i) => (
+          <li class="flex gap-5 border-t border-[var(--color-bnc-plate-line)] py-4">
+            <span class="folio mute w-6 shrink-0 pt-1">{String(i + 1).padStart(2, '0')}</span>
+            <span style="font-size: var(--fs-17)">{p}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+        <a
+          href="https://archipelago.banuacoder.com"
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 bg-white px-7 py-4 text-base font-semibold text-bnc-plate hover:bg-bnc-accent hover:text-bnc-ink transition-colors"
+        >
+          {copy.cta} <span aria-hidden="true">→</span>
+        </a>
+        <a href={copy.caseHref} class="font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2">
+          {copy.caseStudy} →
+        </a>
+      </div>
+    </div>
+
+    <div role="img" aria-label={copy.termLabel} class="lg:col-span-5 border border-[var(--color-bnc-plate-line)] bg-bnc-ink">
+      <div class="folio mute border-b border-[var(--color-bnc-plate-line)] px-5 py-3" aria-hidden="true">archipelago</div>
+      <pre class="m-0 px-5 py-6 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto text-white" aria-hidden="true"><span class="text-bnc-accent">$</span> dart pub global activate archipelago_cli
+<span class="text-bnc-accent">$</span> archipelago create
+<span class="mute">  project name, package name, flavors, features…</span>
+<span class="text-bnc-accent">$</span> archipelago generate auth_sdk
+<span class="text-bnc-accent">✓</span> {copy.done}<span class="arch-caret"> ▍</span></pre>
+    </div>
+  </div>
+</Plate>
+
+<style>
+  .arch-caret { animation: arch-blink 1s steps(2, start) infinite; }
+  @keyframes arch-blink { to { visibility: hidden; } }
+  @media (prefers-reduced-motion: reduce) { .arch-caret { animation: none; } }
+</style>

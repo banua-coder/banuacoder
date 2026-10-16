@@ -1,0 +1,54 @@
+---
+title: "Satu Login untuk Banyak Aplikasi Internal Instansi"
+slug: "sso-internal-instansi-satu-login-banyak-aplikasi"
+description: "SSO untuk banyak aplikasi internal: kenapa login cukup ditulis sekali, dan kenapa Chrome Custom Tabs lebih aman daripada WebView."
+publishedAt: 2026-10-13
+author: fajrian
+tags: ["flutter", "engineering", "open-source"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: id
+---
+
+Bayangkan sebuah instansi punya lima aplikasi. Kalau masing-masing menulis login sendiri, hasilnya lima layar login, lima cara menyimpan token, dan lima tempat untuk bug yang sama. Tulisan ini membahas kenapa login lebih baik diperlakukan sebagai infrastruktur bersama, dengan contoh dari SDK SSO yang kami bangun untuk ekosistem aplikasi Flutter internal Badan Pusat Statistik (BPS).
+
+## Lima aplikasi, lima cara gagal
+
+Masalah duplikasi login bukan hanya soal kode. Ada biaya operasional yang jarang dihitung: saat seorang pegawai pindah tugas atau keluar, akses harus dicabut di setiap aplikasi. Semakin banyak aplikasi punya sistem login sendiri, semakin besar peluang ada yang terlewat. Setiap implementasi juga punya peluang sendiri untuk salah menangani token, sesi, atau penyegaran akses.
+
+## Login adalah infrastruktur, bukan fitur
+
+Fitur dibuat untuk satu aplikasi. Infrastruktur dibuat sekali dan dipakai oleh semua aplikasi. Cara berpikir ini menggeser pertanyaannya dari "bagaimana login aplikasi ini" menjadi "bagaimana semua aplikasi kami mengenali orang yang sama dengan cara yang sama".
+
+Itu sebabnya yang kami buat untuk BPS adalah SDK, bukan dokumen panduan. Dokumen bisa ditafsirkan berbeda oleh tiap tim. SDK memberi satu implementasi yang sama.
+
+## Kesalahan yang paling sering: WebView di dalam aplikasi
+
+Cara tercepat menampilkan halaman login adalah membukanya di WebView buatan sendiri di dalam aplikasi. Masalahnya, pengguna tidak punya cara memastikan halaman yang sedang ia ketik kata sandinya benar-benar halaman resmi. Aplikasi yang membungkusnya juga bisa, secara teknis, melihat apa yang diketik. Ini membuka celah phishing.
+
+## Kenapa kami memilih Chrome Custom Tabs
+
+BPS SSO Flutter SDK mengimplementasikan OAuth2/OIDC dan memakai Chrome Custom Tabs untuk alur login. Halaman login dijalankan oleh browser bawaan perangkat, bukan WebView kustom, sehingga menghindari risiko phishing yang ada pada WebView. Pengguna mendapat pengalaman login yang aman dan terasa native.
+
+## Token dan refresh: bagian yang tidak perlu diurus ulang tiap tim
+
+SDK ini juga mengelola access token dan refresh token secara otomatis. Tim aplikasi tidak perlu menulis sendiri urusan masa berlaku token atau penyegarannya. Ini bagian yang paling sering salah kalau ditulis ulang, dan paling nyaman kalau cukup dipanggil dari satu library.
+
+## Dari berhari-hari menjadi hitungan jam
+
+Dengan SDK ini, aplikasi baru di ekosistem BPS dapat mengimplementasikan SSO dalam hitungan jam, bukan hari, dengan konfigurasi minimal. SDK dipakai di seluruh ekosistem aplikasi Flutter internal BPS dan diterbitkan di pub.dev sebagai [`bps_sso_sdk`](https://pub.dev/packages/bps_sso_sdk), dengan kode sumber di [GitHub](https://github.com/IPDS-59/bps_sso_flutter_sdk).
+
+## Yang sebaiknya Anda minta dari setiap vendor
+
+Kalau instansi Anda menjalankan lebih dari satu aplikasi, ajukan pertanyaan ini ke setiap vendor:
+
+- Apakah aplikasi akan memakai identitas bersama yang sudah ada, atau membuat sistem login sendiri?
+- Apakah alur login memakai browser sistem, atau WebView di dalam aplikasi?
+- Siapa yang mengelola penyegaran token, dan di mana kodenya?
+- Bagaimana akses dicabut saat pegawai berpindah tugas?
+
+Soal identitas hanyalah satu dari beberapa hal teknis yang perlu masuk dokumen kebutuhan. Daftar lainnya ada di tulisan kami tentang [realitas teknis aplikasi pemerintah daerah](/blog/realitas-teknis-aplikasi-pemerintah-daerah/).
+
+---
+
+Kalau instansi Anda menjalankan beberapa aplikasi dan ingin merapikan identitasnya, [hubungi kami](/contact/). Studi kasusnya ada di [BPS SSO Flutter SDK](/portfolio/bps-sso-sdk/).

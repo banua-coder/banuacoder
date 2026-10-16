@@ -1,0 +1,38 @@
+---
+/**
+ * Real API usage, ported from bps_sso_sdk README "Usage" + lib/src/bps_sso_client.dart, config/bps_sso_config.dart.
+ * Names are the SDK's own (BPSSsoConfig.create, BPSSsoClient.instance.initialize/login, BPSRealmType, BPSOAuthScope).
+ * Placeholders `myapp` / `your-internal-client-id` are the README's own placeholders, not real credentials.
+ * Package version 1.7.0 from pubspec.yaml.
+ */
+import Code from './_Code.astro'
+const lines = [
+  '<em class="k">import</em> <em class="s">\'package:bps_sso_sdk/bps_sso_sdk.dart\'</em>;',
+  '',
+  '<em class="k">final</em> config = <em class="y">BPSSsoConfig</em>.<em class="f">create</em>(',
+  '  appName: <em class="s">\'myapp\'</em>,',
+  '  internalClientId: <em class="s">\'your-internal-client-id\'</em>,',
+  '  externalClientId: <em class="s">\'your-external-client-id\'</em>,',
+  '  scopes: [',
+  '    <em class="y">BPSOAuthScope</em>.openid,',
+  '    <em class="y">BPSOAuthScope</em>.profile,',
+  '    <em class="y">BPSOAuthScope</em>.email,',
+  '  ],',
+  '  codeChallengeMethod: <em class="y">BPSCodeChallengeMethod</em>.s256,',
+  ');',
+  '',
+  '<em class="y">BPSSsoClient</em>.instance.<em class="f">initialize</em>(',
+  '  config: config,',
+  '  linkStream: appLinks.stringLinkStream,',
+  ');',
+  '',
+  '<em class="k">final</em> user = <em class="k">await</em> <em class="y">BPSSsoClient</em>.instance.<em class="f">login</em>(',
+  '  context: context,',
+  '  realmType: <em class="y">BPSRealmType</em>.internal,',
+  ');',
+]
+---
+<div class="mk-s mk-w mk-term" style="--mk-brand:#374151">
+  <div class="mk-r" style="gap:0;border-bottom:1px solid var(--mk-line);flex:none"><span class="mk-tab on">main.dart</span><span class="mk-tab">login_page.dart</span><span class="mk-tab">pubspec.yaml</span></div>
+  <Code lines={lines} numbered />
+</div>

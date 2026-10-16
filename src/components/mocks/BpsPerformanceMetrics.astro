@@ -1,0 +1,162 @@
+---
+/**
+ * Port of the BPS staff-performance web app admin dashboard (Laravel 13 + Vue 3 + Inertia, Tailwind v4, shadcn-vue).
+ * Source (read, not copied): ~/Documents/Projects/Web/performance_matrix/resources/
+ *  - js/Layouts/AppLayout.vue: sidebar w-64 bg #1B4B8A, logo row h-16, nav items text-sm py-2 px-3 gap-3 icon 18, active bg white/15 + 2px bar,
+ *    section titles 11px uppercase tracking-wider white/55; header h-16 white border-b, h1 text-lg semibold, bell 36px + red 16px badge; main p-6 on gray-50
+ *  - js/Pages/Dashboard.vue: period filters (Select w-40 month, w-28 year, h-9) above the role dashboard
+ *  - js/Components/Dashboard/AdminDashboard.vue, DashboardAdminSummary.vue, DashboardTeamRanking.vue (grid gap-6 cols-5: chart 3 / rank 2,
+ *    h-64 chart, row px-4 py-3, progress h-1.5), useAchievementColor.ts (>=80 green, >=50 yellow, else red), css/app.css (primary hsl 213 67% 32%)
+ * Scale: 1em = 20px (stage = a 1280px-wide window; mk-w is container/64). All lengths below are Tailwind px / 20.
+ * CLIENT-PRIVATE system: structure and tokens are ported; every name, team, number is synthetic. The agency logo is not used (drawn mark).
+ * Chart is an SVG re-draw of the Unovis grouped bar chart (colours from DashboardTeamRanking.vue barColor). Not yet measured against a capture.
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const t: any = {
+  id: { nav: ['Beranda', 'Matriks'], secs: [['Kegiatan', ['Rencana Minggu Ini', 'Kegiatan kipApp']], ['Rekap Tim', ['Review Bersama', 'Mingguan', 'Bulanan', 'Triwulanan (FRA)']], ['Laporan', ['Laporan Pegawai']], ['Data Master', ['Tim Kerja', 'Pegawai', 'Proyek', 'IKU']]],
+    title: 'Beranda — Mei 2026', org: 'BPS Provinsi Sulawesi Tengah', month: 'Mei', sum: ['Rata-rata Organisasi', 'Tim Aktif', 'Tim Capaian ≥ 80%'], sub: ['tim dengan laporan', 'dari 6 tim'],
+    chart: 'Capaian Tim — Mei', rank: 'Peringkat Tim', user: 'Pengguna Contoh', role: 'Admin', profile: 'Profil', out: 'Keluar', team: 'Tim Contoh', trend: 'Tren Capaian 12 Bulan — 2026' },
+  en: { nav: ['Home', 'Matrix'], secs: [['Activities', ['Plan This Week', 'kipApp Activities']], ['Team Recap', ['Joint Review', 'Weekly', 'Monthly', 'Quarterly (FRA)']], ['Reports', ['Staff Report']], ['Master Data', ['Work Teams', 'Staff', 'Projects', 'KPIs']]],
+    title: 'Home — May 2026', org: 'BPS Central Sulawesi Province', month: 'May', sum: ['Organisation Average', 'Active Teams', 'Teams Achieving ≥ 80%'], sub: ['teams with reports', 'of 6 teams'],
+    chart: 'Team Achievement — May', rank: 'Team Ranking', user: 'Sample User', role: 'Admin', profile: 'Profile', out: 'Log out', team: 'Sample Team', trend: '12-Month Achievement Trend — 2026' },
+}[locale as 'id']
+const col = (v: number) => (v >= 80 ? '#22c55e' : v >= 50 ? '#eab308' : '#ef4444')
+const txt = (v: number) => (v >= 80 ? '#16a34a' : v >= 50 ? '#eab308' : '#ef4444')
+const teams = [['A', 91.2], ['B', 86.4], ['C', 78.5], ['D', 72.1], ['E', 64.8], ['F', 47.5]] as [string, number][]
+// 24x24 stroke glyphs (own drawing, lucide-like weight)
+const ic = {
+  house: 'M3 11l9-8 9 8M5 10v10h14V10',
+  grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+  clock: 'M8 2v4M16 2v4M3 8h18M5 4h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2zM12 12v3l2 1',
+  list: 'M9 6h12M9 12h12M9 18h12M3 6l1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2',
+  rows: 'M3 4h18v6H3zM3 14h18v6H3z',
+  cal: 'M8 2v4M16 2v4M3 8h18M5 4h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z',
+  file: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h6',
+  users: 'M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM22 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8',
+  user: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',
+  folder: 'M3 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z',
+  target: 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 17a5 5 0 100-10 5 5 0 000 10zM12 13a1 1 0 100-2 1 1 0 000 2z',
+  bell: 'M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-5-5.9V4a1 1 0 10-2 0v1.1A6 6 0 006 11v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9',
+  down: 'M6 9l6 6 6-6',
+}
+const secIcons = [[ic.clock, ic.list], [ic.rows, ic.cal, ic.cal, ic.file], [ic.file], [ic.users, ic.user, ic.folder, ic.target]]
+const trend = [58, 62, 66, 64, 70, 72] // Jan..Jun synthetic; later months empty like the real chart before data exists
+const tx = (i: number) => 44 + i * (484 / 11)
+const ty = (v: number) => 8 + (1 - v / 100) * 190
+const path = trend.map((v, i) => `${i ? 'L' : 'M'}${tx(i).toFixed(1)} ${ty(v).toFixed(1)}`).join(' ')
+---
+<div class="mk-s mk-w bp">
+  <aside class="bp-side">
+    <div class="bp-logo"><span class="bp-mark"></span><b>Kinetik</b></div>
+    <nav>
+      <a class="bp-it on"><i></i><svg viewBox="0 0 24 24"><path d={ic.house}/></svg>{t.nav[0]}</a>
+      <a class="bp-it"><svg viewBox="0 0 24 24"><path d={ic.grid}/></svg>{t.nav[1]}</a>
+      {t.secs.map(([title, items]: any, si: number) => (
+        <div class="bp-sec">
+          <p>{title}</p>
+          {(items as string[]).map((l, ii) => <a class="bp-it"><svg viewBox="0 0 24 24"><path d={secIcons[si][ii]}/></svg>{l}</a>)}
+        </div>
+      ))}
+    </nav>
+    <div class="bp-user"><span class="bp-ua">P</span><div><b>{t.user}</b><span>{t.role}</span></div></div>
+  </aside>
+
+  <div class="bp-main">
+    <header>
+      <h1>{t.title}</h1>
+      <span class="bp-org">{t.org}</span>
+      <span class="bp-bell"><svg viewBox="0 0 24 24"><path d={ic.bell}/></svg><em>3</em></span>
+    </header>
+    <main>
+      <div class="bp-filters">
+        <span class="bp-sel" style="width:8em">{t.month}<svg viewBox="0 0 24 24"><path d={ic.down}/></svg></span>
+        <span class="bp-sel" style="width:5.6em">2026<svg viewBox="0 0 24 24"><path d={ic.down}/></svg></span>
+      </div>
+
+      <div class="bp-sum">
+        <div class="bp-card"><p class="bp-ct">{t.sum[0]}</p><p class="bp-big" style="color:#eab308">72.4%</p><div class="bp-pg"><i style="width:72.4%;background:#eab308"></i></div></div>
+        <div class="bp-card"><p class="bp-ct">{t.sum[1]}</p><p class="bp-big" style="color:#1f2937">6</p><p class="bp-sub">{t.sub[0]}</p></div>
+        <div class="bp-card"><p class="bp-ct">{t.sum[2]}</p><p class="bp-big" style="color:#16a34a">2</p><p class="bp-sub">{t.sub[1]}</p></div>
+      </div>
+
+      <div class="bp-grid">
+        <div class="bp-card bp-chart">
+          <h2>{t.chart}</h2>
+          <svg viewBox="0 0 528 256">
+            {[0, 20, 40, 60, 80, 100].map((v) => <g><line x1="40" x2="528" y1={ty(v)} y2={ty(v)} stroke="#e5e7eb" stroke-width="1"/><text x="34" y={ty(v) + 4} text-anchor="end" font-size="11" fill="#6b7280">{v}%</text></g>)}
+            {teams.map(([n, v], i) => {
+              const w = 52; const cx = 40 + (i + .5) * (488 / 6); const h = (v / 100) * 190
+              return <g><path d={`M${cx - w / 2} ${198} V${198 - h + 6} a6 6 0 0 1 6 -6 h${w - 12} a6 6 0 0 1 6 6 V198 Z`} fill={col(v)} opacity=".75"/><text x={cx} y="218" text-anchor="middle" font-size="11" fill="#6b7280">{t.team.split(' ')[0]} {n}</text></g>
+            })}
+          </svg>
+        </div>
+        <div class="bp-card bp-rank">
+          <h2>{t.rank}</h2>
+          {teams.slice(0, 4).map(([n, v], i) => (
+            <div class="bp-row"><span class="bp-n">{i + 1}</span><div class="bp-rg"><p>{t.team} {n}</p><div class="bp-pg"><i style={`width:${v}%;background:${col(v)}`}></i></div></div><b style={`color:${txt(v)}`}>{v.toFixed(1)}%</b><svg viewBox="0 0 24 24"><path d={ic.down}/></svg></div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bp-card bp-trend">
+        <h2>{t.trend}</h2>
+        <svg viewBox="0 0 528 256">
+          <path d={`${path} L${tx(5)} 198 L${tx(0)} 198 Z`} fill="rgba(27,75,138,0.08)"/>
+          <path d={path} fill="none" style="stroke:#1B4B8A;stroke-width:2"/>
+        </svg>
+      </div>
+    </main>
+  </div>
+</div>
+
+<style>
+  .bp { flex-direction: row; font-family: Figtree, Inter, var(--font-sans, system-ui, sans-serif); background: #f9fafb; color: #0a0a0a; font-weight: 400; }
+  .bp svg { width: .9em; height: .9em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .bp-side { width: 12.8em; flex: none; background: #1B4B8A; color: #fff; display: flex; flex-direction: column; }
+  .bp-logo { height: 3.2em; display: flex; align-items: center; gap: .4em; padding: 0 .8em; font-size: .7em; }
+  .bp-logo b { font-weight: 600; font-size: 1em; }
+  .bp-mark { width: 2.857em; height: 2.857em; border-radius: .286em; background: #fff; flex: none; position: relative; }
+  .bp-mark::after { content: ''; position: absolute; inset: .55em; border-radius: 50%; border: .3em solid #0093dd; }
+  .bp-side nav { flex: 1; min-height: 0; overflow: hidden; padding: .05em .4em; font-size: .7em; }
+  .bp-it { position: relative; display: flex; align-items: center; gap: .857em; border-radius: .43em; padding: .57em .857em; font-weight: 500; color: rgba(255,255,255,.8); white-space: nowrap; line-height: 1.43; }
+  .bp-it svg { width: 1.286em; height: 1.286em; }
+  .bp-it.on { background: rgba(255,255,255,.15); color: #fff; }
+  .bp-it.on i { position: absolute; left: 0; top: .43em; bottom: .43em; width: .14em; border-radius: 1em; background: #fff; }
+  .bp-sec { margin-top: 1.43em; }
+  .bp-sec p { margin: 0 0 .36em !important; padding: 0 1.09em; font-size: .786em; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: rgba(255,255,255,.55); }
+  .bp-user { border-top: 1px solid rgba(255,255,255,.15); padding: .6em; display: flex; align-items: center; gap: .6em; font-size: .7em; }
+  .bp-ua { width: 2.286em; height: 2.286em; border-radius: 50%; background: rgba(255,255,255,.2); display: grid; place-items: center; font-weight: 600; font-size: .857em; flex: none; }
+  .bp-user div { min-width: 0; display: flex; flex-direction: column; line-height: 1.43; }
+  .bp-user b { font-weight: 500; font-size: 1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bp-user span:not(.bp-ua) { font-size: .857em; color: rgba(255,255,255,.65); }
+  .bp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+  .bp-main header { height: 3.2em; flex: none; display: flex; align-items: center; gap: .6em; padding: 0 1.2em; background: #fff; border-bottom: 1px solid #e5e7eb; }
+  .bp-main h1 { margin: 0; flex: 1; min-width: 0; font-size: .9em; font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bp-org { font-size: .7em; color: #6b7280; white-space: nowrap; }
+  .bp-bell { position: relative; width: 1.8em; height: 1.8em; border-radius: 50%; display: grid; place-items: center; color: #6b7280; }
+  .bp-bell svg { width: 1em; height: 1em; }
+  .bp-bell em { position: absolute; top: -.025em; right: -.025em; width: .8em; height: .8em; border-radius: 50%; background: #ef4444; color: #fff; font: 700 .45em/1 Figtree, Inter, sans-serif; display: grid; place-items: center; }
+  .bp-main main { flex: 1; min-height: 0; overflow: hidden; padding: 1.2em; }
+  .bp-filters { display: flex; gap: .6em; margin-bottom: 1.2em; }
+  .bp-sel { height: 1.8em; border: 1px solid #e5e5e5; border-radius: .4em; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 .6em; font-size: .7em; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .bp-sel svg { opacity: .5; width: 1.143em; height: 1.143em; }
+  .bp-card { background: #fff; border: 1px solid #e5e5e5; border-radius: .4em; box-shadow: 0 1px 2px rgba(0,0,0,.05); min-width: 0; }
+  .bp-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8em; margin-bottom: 1.2em; }
+  .bp-sum .bp-card { padding: 1.2em; }
+  .bp-ct { margin: 0 0 .6em !important; font-size: .6em; font-weight: 500; text-transform: uppercase; letter-spacing: .025em; color: #6b7280; line-height: 1; }
+  .bp-big { font-size: 1.5em; font-weight: 700; line-height: 1.2; }
+  .bp-sub { margin-top: .4em !important; font-size: .6em; color: #9ca3af; }
+  .bp-pg { height: .3em; border-radius: 1em; background: #f3f4f6; overflow: hidden; margin-top: .4em; }
+  .bp-pg i { display: block; height: 100%; border-radius: 1em; }
+  .bp-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.2em; }
+  .bp-card h2 { margin: 0; padding: 1.2em 1.2em .4em; font-size: .8em; font-weight: 600; line-height: 1; letter-spacing: -.01em; }
+  .bp-chart svg, .bp-trend svg { stroke: none; stroke-width: 1; display: block; width: calc(100% - 2.4em); height: 12.8em; margin: .4em 1.2em 1.2em; }
+  .bp-rank { padding-bottom: .1em; overflow: hidden; }
+  .bp-row { display: flex; align-items: center; gap: .6em; padding: .6em .8em; border-top: 1px solid #f3f4f6; }
+  .bp-n { width: 1em; text-align: right; font-size: .6em; font-weight: 700; color: #9ca3af; }
+  .bp-rg { flex: 1; min-width: 0; } .bp-rg p { margin: 0; font-size: .7em; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.43; }
+  .bp-row b { font-size: .7em; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bp-row svg { color: #9ca3af; width: .8em; height: .8em; }
+  .bp-trend { margin-top: 1.2em; }
+</style>

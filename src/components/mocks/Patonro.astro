@@ -1,0 +1,117 @@
+---
+/**
+ * Port of the Patonro Flutter app home screen:
+ *   features/home/lib/src/presentation/ui/pages/home_page.dart, shared_widgets/home/{home_header_section,home_menu_section}.dart,
+ *   shared_widgets/activities/recent_activities.dart, pages/dashboard_page.dart (bottom nav)
+ * with patonro_ui_kit tokens: PNColorToken (primary #B62C23, gray 25..900), PNTypography (Poppins; bodyXs 10, bodySm 12, body 14,
+ * headingXs 16/600), PNMenuCard (circle = 12 pad + 32 icon, gradient menuCircle #E7BA4F > #CD5724, label 10/500), PNCard (r12, 1px #E9EAF2,
+ * shadow card), PNActivityCard (pad 16, 36 circle, headingXs title), PNBadge, PNShadow.modal, l10n ids/en from shared/l10n.
+ * ScreenUtil design size 375x812 -> fixed 375x812 px stage scaled by container width (px = dp).
+ * Layout facts (dp): header red 0..120 then white r24 panel; 4-col grid, 16 inset, 12 gap, tile 76.75 square, row pitch 88.75;
+ * activity cards max 318.75 (0.85 sw) with 12 gap; bottom nav 56 + inset, icons 24, labels 10.
+ * Synthetic: greeting name, activity row (NOP 00..., taxpayer name, date) are sample values. The header illustration
+ * (a regional landmark in the shipped SVG) is redrawn as a generic stilt-house silhouette. The promo banner below the list is omitted.
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const I = {
+  file: ['0 0 35 34', 'M7.035 7.564c-.586 0-1.06.477-1.06 1.063v20.92c0 .586.474 1.062 1.06 1.062h16.733c.586 0 1.06-.476 1.06-1.062l.117-16.344c.005-.586-5.363-5.639-5.949-5.639zm3.049 3.364h4.28c.43 0 .775.345.775.775 0 .43-.346.776-.776.776h-4.279a.773.773 0 01-.775-.776c0-.43.345-.775.775-.775zm-.018 4.2h8.518a.777.777 0 110 1.554h-8.518a.777.777 0 110-1.553zm7.9 5.245c.43 0 .778.346.778.775v2.323h2.244c.43 0 .776.345.776.775 0 .43-.346.775-.776.775h-2.244v2.22c0 .43-.347.775-.777.775a.773.773 0 01-.776-.776v-2.219h-2.295a.773.773 0 01-.775-.775c0-.43.346-.775.775-.775h2.295v-2.323c0-.43.346-.775.776-.775z'],
+  warehouse: ['0 0 35 34', 'M32.375 24.438h-1.063V7.69l1.285-.276a1.063 1.063 0 10-.445-2.078l-29.75 6.375a1.062 1.062 0 00.447 2.078l.838-.18v10.829H2.625a1.062 1.062 0 100 2.125h29.75a1.063 1.063 0 000-2.125zm-7.438 0H10.063v-2.125h14.876v2.125zm0-4.25H10.063v-2.125h14.876v2.125z'],
+  building: ['0 0 35 34', 'M32.34 27.625h-2.09V12.75a2.125 2.125 0 00-2.125-2.125h-5.843a.53.53 0 00-.532.531v16.47h-2.125V4.304a2.182 2.182 0 00-.818-1.727 2.125 2.125 0 00-2.486-.092L5.696 9.563a2.125 2.125 0 00-.946 1.771v16.291H2.661a1.086 1.086 0 00-1.098.992 1.062 1.062 0 001.062 1.133h29.75a1.062 1.062 0 001.063-1.133 1.086 1.086 0 00-1.099-.992zm-21.746-3.187A1.062 1.062 0 019.461 25.5a1.087 1.087 0 01-.992-1.1V22.35a1.088 1.088 0 01.992-1.099 1.063 1.063 0 011.133 1.063v2.125zm0-7.438a1.062 1.062 0 01-1.133 1.063 1.088 1.088 0 01-.992-1.1v-2.052a1.088 1.088 0 01.992-1.098 1.063 1.063 0 011.133 1.062V17zm5.313 7.438a1.062 1.062 0 01-1.133 1.062 1.086 1.086 0 01-.992-1.097V22.35a1.088 1.088 0 01.992-1.098 1.063 1.063 0 011.133 1.063v2.124zm0-7.438a1.062 1.062 0 01-1.133 1.063 1.088 1.088 0 01-.992-1.097V14.91a1.088 1.088 0 01.992-1.097 1.063 1.063 0 011.133 1.063V17z'],
+  garage: ['0 0 35 34', 'M32.375 25.5h-1.063V13.105a2.126 2.126 0 00-.945-1.768L18.679 3.545a2.125 2.125 0 00-2.357 0L4.634 11.337a2.124 2.124 0 00-.947 1.768V25.5H2.625a1.062 1.062 0 100 2.125h29.75a1.062 1.062 0 100-2.125zM18.562 17H26v3.188h-7.438V17zm-2.125 3.188H9V17h7.438v3.188zM9 22.313h7.438V25.5H9v-3.187zm9.563 0H26V25.5h-7.438v-3.187z'],
+  book: ['0 0 35 35', 'M28.829 5.93L11.53 2.877A2.125 2.125 0 009.07 4.6L5.117 27.045a2.125 2.125 0 001.727 2.461l17.298 3.055a2.122 2.122 0 002.463-1.727l3.95-22.445a2.125 2.125 0 00-1.727-2.458zm-9.998 12.26a1.063 1.063 0 01-1.231.862l-5.512-.973a1.063 1.063 0 01.37-2.088l5.51.968a1.061 1.061 0 01.863 1.232zm6.242-3.21a1.062 1.062 0 01-1.231.86l-11.023-1.946a1.063 1.063 0 11.37-2.093l11.023 1.947a1.065 1.065 0 01.865 1.231h-.004zm.737-4.187a1.063 1.063 0 01-1.231.862L13.556 9.708a1.062 1.062 0 11.369-2.092l11.023 1.946a1.062 1.062 0 01.866 1.23h-.004z'],
+  folder: ['0 0 34 34', 'M32.54 14.694a2.125 2.125 0 00-1.727-.882h-2.125v-2.124a2.125 2.125 0 00-2.125-2.126h-9.208L13.672 6.8a2.143 2.143 0 00-1.275-.425H5.312A2.125 2.125 0 003.188 8.5v19.125a1.063 1.063 0 001.063 1.063h23.787a1.063 1.063 0 001.008-.727l3.784-11.351a2.132 2.132 0 00-.29-1.916zM12.396 8.5l3.683 2.762c.368.275.815.424 1.275.425h9.207v2.126h-7.114c-.42 0-.83.124-1.18.357l-2.656 1.768H9.22a2.117 2.117 0 00-1.974 1.336l-1.934 4.834V8.5h7.085z'],
+  filedown: ['0 0 34 34', 'M28.377 10.936l-7.438-7.438a1.062 1.062 0 00-.752-.31H7.438a2.125 2.125 0 00-2.125 2.124v23.375a2.125 2.125 0 002.125 2.125h19.125a2.125 2.125 0 002.125-2.125v-17a1.063 1.063 0 00-.31-.751zm-7.438 11.066l-3.187 3.187a1.061 1.061 0 01-1.504 0l-3.187-3.187a1.063 1.063 0 111.503-1.504l1.373 1.375v-5.936a1.062 1.062 0 112.126 0v5.936l1.373-1.375a1.063 1.063 0 111.503 1.504zm-.752-10.314V5.843l5.844 5.843h-5.843z'],
+  wallet: ['0 0 34 34', 'M28.688 9.563H7.438a1.062 1.062 0 010-2.126H25.5a1.063 1.063 0 000-2.125H7.437A3.187 3.187 0 004.25 8.5v17a3.188 3.188 0 003.188 3.188h21.25a2.125 2.125 0 002.125-2.125V11.688a2.125 2.125 0 00-2.125-2.126zm-4.782 10.624a1.594 1.594 0 110-3.187 1.594 1.594 0 010 3.188z'],
+}
+const menu: [string, string, keyof typeof I][] = [
+  ['Buat Pajak Baru', 'Create New Tax', 'file'], ['Pelayanan PBB', 'L&B Tax Service', 'building'], ['E-SPTPD', 'E-SPTPD', 'book'], ['E-SPPT', 'E-SPPT', 'filedown'],
+  ['Cek Pajak PBB', 'Check L&B Tax', 'warehouse'], ['Cek BPHTB', 'Check BPHTB', 'garage'], ['Cek Pajak Lainnya', 'Check Others', 'folder'], ['Pembayaran', 'Payment', 'wallet'],
+]
+---
+<div class="pn" data-l={locale}>
+  <div class="pn-hd">
+    <svg class="pn-pat" viewBox="0 0 375 220" aria-hidden="true">
+      <g fill="#fff" fill-opacity=".05"><circle cx="201" cy="145" r="192"/><circle cx="201" cy="145" r="154"/><circle cx="201" cy="145" r="113"/></g>
+      <g fill="#9B2119">
+        <path d="M-10 118 L40 70 L96 118Z M-6 118h104v26H-6z"/><path d="M118 100 L168 52 L224 100Z M114 100h114v44H114z"/><path d="M250 118 L300 70 L356 118Z M246 118h114v26H246z"/>
+        <rect x="14" y="144" width="5" height="26"/><rect x="60" y="144" width="5" height="26"/><rect x="134" y="144" width="5" height="26"/><rect x="200" y="144" width="5" height="26"/><rect x="270" y="144" width="5" height="26"/><rect x="330" y="144" width="5" height="26"/>
+      </g>
+      <g fill="#7C150F"><path d="M128 100 L168 62 L214 100Z"/><rect x="150" y="104" width="38" height="40"/></g>
+    </svg>
+    <div class="pn-sb"><span>09:41</span><span class="pn-bat"></span></div>
+    <div class="pn-who">
+      <span class="pn-av"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="#EC6446" d="M12 2C9.38 2 7.25 4.13 7.25 6.75c0 2.57 2.01 4.65 4.63 4.74.08-.01.16-.01.22 0h.07a4.738 4.738 0 004.58-4.74C16.75 4.13 14.62 2 12 2zM17.08 14.15c-2.79-1.86-7.34-1.86-10.15 0-1.27.85-1.97 2-1.97 3.23s.7 2.37 1.96 3.21C8.32 21.53 10.16 22 12 22c1.84 0 3.68-.47 5.08-1.41 1.26-.85 1.96-1.99 1.96-3.23-.01-1.23-.7-2.37-1.96-3.21z"/></svg></span>
+      <span class="pn-hai"><span data-t="id">Hai, </span><span data-t="en">Hello, </span><b>Budi</b></span>
+    </div>
+    <div class="pn-panel"></div>
+  </div>
+
+  <div class="pn-grid">
+    {menu.map(([id, en, ic]) => (
+      <div class="pn-mc"><span class="pn-ci"><svg viewBox={I[ic][0]} width="32" height="32"><path fill="#fff" d={I[ic][1]} /></svg></span><span class="pn-ml"><span data-t="id">{id}</span><span data-t="en">{en}</span></span></div>
+    ))}
+  </div>
+
+  <div class="pn-act">
+    <hr />
+    <div class="pn-ah"><b data-t="id">Aktivitas Terakhir</b><b data-t="en">Latest Activities</b><i data-t="id">Lihat Semua</i><i data-t="en">See All</i></div>
+    <div class="pn-cards">
+      <div class="pn-card">
+        <div class="pn-cr"><span class="pn-ac g-green"><svg viewBox="0 0 34 34" width="24" height="24"><path fill="#fff" d={I.wallet[1]} /></svg></span><span class="pn-cl"><span data-t="id">Pembayaran PBB</span><span data-t="en">PBB Payment</span></span><span class="pn-badge"><span data-t="id">Dibayar</span><span data-t="en">Paid</span></span></div>
+        <p class="pn-ct">NOP: 00.00.000.000.000.0000.0</p>
+        <p class="pn-cn"><span data-t="id">Nama Wajib Pajak</span><span data-t="en">Taxpayer Name</span></p>
+        <p class="pn-dl"><span data-t="id">Tanggal Bayar</span><span data-t="en">Paid Date</span></p>
+        <p class="pn-dv"><span data-t="id">10 Agustus 2025</span><span data-t="en">10 August 2025</span></p>
+      </div>
+      <div class="pn-card">
+        <div class="pn-cr"><span class="pn-ac g-orange"><svg viewBox="0 0 35 35" width="24" height="24"><path fill="#fff" d={I.book[1]} /></svg></span><span class="pn-cl">E-SPTPD</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pn-nav">
+    <span class="on"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M20.83 8.01l-6.55-5.24C13 1.75 11 1.74 9.73 2.76L3.18 8.01c-.94.75-1.51 2.25-1.31 3.43l1.26 7.54C3.42 20.67 4.99 22 6.7 22h10.6c1.69 0 3.29-1.36 3.58-3.03l1.26-7.54c.18-1.17-.39-2.67-1.31-3.42zM12.75 18c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-3c0-.41.34-.75.75-.75s.75.34.75.75v3z"/></svg><span data-t="id">Beranda</span><span data-t="en">Home</span></span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22h6c5 0 7-2 7-7V9c0-5-2-7-7-7H9C4 2 2 4 2 9v6c0 5 2 7 7 7z"/><path d="M7.33 14.49l2.38-3.09c.34-.44.97-.52 1.41-.18l1.83 1.44c.44.34 1.07.26 1.41-.17l2.31-2.98"/></svg><span data-t="id">Aktivitas</span><span data-t="en">Activities</span></span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12.2h7M8 16.2h4.38M10 6h4c2 0 2-1 2-2 0-2-1-2-2-2h-4C9 2 8 2 8 4s1 2 2 2z"/><path d="M16 4.02c3.33.18 5 1.41 5 5.98v6c0 4-1 6-6 6H9c-5 0-6-2-6-6v-6c0-4.56 1.67-5.8 5-5.98"/></svg><span data-t="id">Kelola</span><span data-t="en">Manage</span></span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.16 10.87c-.1-.01-.22-.01-.33 0a4.42 4.42 0 01-4.27-4.43C7.56 3.99 9.54 2 12 2a4.435 4.435 0 01.16 8.87zM7.16 14.56c-2.42 1.62-2.42 4.26 0 5.87 2.75 1.84 7.26 1.84 10.01 0 2.42-1.62 2.42-4.26 0-5.87-2.74-1.83-7.25-1.83-10.01 0z"/></svg><span data-t="id">Profil</span><span data-t="en">Profile</span></span>
+  </div>
+</div>
+
+<style>
+  .pn { position: absolute; left: 0; top: 0; width: 375px; height: 812px; overflow: hidden; background: #fff; color: #191931; transform-origin: 0 0; transform: scale(tan(atan2(100cqw, 375px)));
+    font-family: Poppins, Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5; font-weight: 400; }
+  .pn, .pn * { box-sizing: border-box; }
+  .pn p { margin: 0; }
+  .pn[data-l='id'] [data-t='en'], .pn[data-l='en'] [data-t='id'] { display: none; }
+  .pn-hd { position: absolute; left: 0; top: 0; right: 0; height: 144px; background: #B62C23; overflow: hidden; }
+  .pn-pat { position: absolute; left: 0; top: 0; width: 375px; height: 220px; }
+  .pn-sb { position: absolute; left: 0; right: 0; top: 0; height: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #fff; }
+  .pn-bat { width: 20px; height: 10px; border: 1.5px solid #fff; border-radius: 3px; }
+  .pn-who { position: absolute; left: 16px; top: 48px; display: flex; align-items: center; gap: 12px; }
+  .pn-av { width: 40px; height: 40px; border-radius: 50%; background: #F5F5F5; display: grid; place-items: center; }
+  .pn-hai { color: #fff; } .pn-hai b { font-size: 16px; font-weight: 600; }
+  .pn-panel { position: absolute; left: 0; right: 0; top: 120px; height: 60px; background: #fff; border-radius: 24px 24px 0 0; }
+  .pn-grid { position: absolute; left: 16px; right: 16px; top: 144px; display: grid; grid-template-columns: repeat(4, 1fr); column-gap: 12px; row-gap: 12px; }
+  .pn-mc { height: 76.75px; display: flex; flex-direction: column; align-items: center; padding-top: 8px; }
+  .pn-ci { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; flex: none; background: linear-gradient(135deg, #E7BA4F, #CD5724); }
+  .pn-ml { margin-top: 8px; font-size: 10px; font-weight: 500; line-height: 1.5; text-align: center; color: #191931; white-space: nowrap; }
+  .pn-act { position: absolute; left: 0; right: 0; top: 330px; }
+  .pn-act hr { border: 0; border-top: 1px solid #E9EAF2; margin: 8px 16px 16px; }
+  .pn-ah { display: flex; justify-content: space-between; align-items: baseline; padding: 0 16px; }
+  .pn-ah b { font-size: 14px; font-weight: 600; color: #191931; } .pn-ah i { font-style: normal; font-size: 12px; font-weight: 600; color: #B62C23; }
+  .pn-cards { display: flex; gap: 12px; padding: 16px; }
+  .pn-card { flex: none; width: 318.75px; padding: 16px; background: #fff; border: 1px solid #E9EAF2; border-radius: 12px; box-shadow: 0 2px 8px -4px #35405024, 0 20px 24px -4px #3540500A; }
+  .pn-cr { display: flex; align-items: center; gap: 8px; }
+  .pn-ac { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .g-green { background: linear-gradient(135deg, #03CEA4, #03A9CE7F), #fff; } .g-orange { background: linear-gradient(135deg, #FB4D3D, #FBA33D7F), #fff; }
+  .pn-cl { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pn-badge { padding: 2px 8px; border-radius: 8px; background: #219E901A; color: #1A877E; font-size: 12px; font-weight: 500; }
+  .pn-ct { margin-top: 16px !important; font-size: 16px; font-weight: 600; }
+  .pn-cn { margin-top: 4px !important; color: #545560; }
+  .pn-dl { margin-top: 16px !important; font-size: 12px; color: #797990; }
+  .pn-dv { font-weight: 500; }
+  .pn-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 76px; padding-bottom: 20px; background: #fff; border-top: 1px solid #E9EAF2; display: flex; }
+  .pn-nav > span { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 10px; color: #ABABBB; line-height: 1.2; }
+  .pn-nav > span > svg { color: #797990; } .pn-nav .on, .pn-nav .on > svg { color: #B62C23; } .pn-nav .on { font-weight: 600; }
+</style>

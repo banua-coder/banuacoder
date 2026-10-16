@@ -1,0 +1,129 @@
+---
+/**
+ * Port of the Caretaker mobile app home screen (Flutter, GetX).
+ * Sources (read, not copied):
+ *  - ~/Documents/Projects/Flutter/caretaker-mobile-app/lib/app/modules/main/views/home_view.dart (+ main_view.dart nav,
+ *    widgets/quick_access_card.dart, widgets/service_card.dart, widgets/tab_indicator.dart, global_widgets/search_field.dart)
+ *  - lib/app/core/values/color_schemes.dart, custom_colors.dart (tokens), assets/locales/{id_ID,en_US}.json (copy)
+ *  - ~/Documents/Projects/Flutter/caretaker-design-system (CTColors, Inter via google_fonts)
+ * Scale: 1em = 16 logical px (phone stage = 24em wide ~ a 384dp screen). All px below are source dp / 16.
+ * Layout facts: SliverAppBar 56dp; page padding 16; search radius 10 (fill blueGrey50 @60%); banner 0.9w x 0.18h radius 10;
+ * expanding dots 6dp (active 24dp); quick cards 0.25w, radius 10, pad 8; tab pill = 32dp avatar + 8 + label, pad 8;
+ * service card radius 12, pad 16, thumb 120x180 radius 10; bottom nav 5 items, 10dp captions, 1px neutral40 border.
+ * Not copied: logo, banners, service photos (client assets) are drawn; service names/prices are sample data.
+ * Drawn from source only; not yet measured against a device render (the app is not public).
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const t = {
+  id: { search: 'Cari layanan, perawat, atau artikel', quick: 'Akses Cepat', quickItems: ['Ambulans', 'Tes Covid', 'Konsultasi'],
+    tabs: ['Perawatan', 'Covid-19', 'Layanan Dokter'], start: 'Mulai', nav: ['Beranda', 'Perawat', 'Layananku', 'Pesan', 'Artikel'],
+    svc: 'Nama layanan', desc: 'Deskripsi singkat layanan kesehatan di rumah. Teks contoh.', banner: 'Banner promo' },
+  en: { search: 'Search for services, nurses or articles', quick: 'Quick Access', quickItems: ['Ambulance', 'Covid Test', 'Consultation'],
+    tabs: ['Treatments', 'Covid-19', 'Doctor Services'], start: 'Start', nav: ['Home', 'Nurses', 'My Services', 'Messages', 'Articles'],
+    svc: 'Service name', desc: 'Short description of a home health service. Sample text.', banner: 'Promo banner' },
+}[locale]
+// 24x24 stroke glyphs standing in for the app's png/Eva icons
+const ic = {
+  sale: 'M20 12l-8 8-9-9V3h8l9 9zM7.5 7.5h.01',
+  bell: 'M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0',
+  search: 'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3',
+  mic: 'M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v3',
+  amb: 'M2 17V7h12v10M14 10h4l4 4v3h-3M7 10v4M5 12h4M6 19.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM17 19.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z',
+  test: 'M9 2h6M10 2v8L5 19a2 2 0 001.8 3h10.4A2 2 0 0019 19l-5-9V2M8 15h8',
+  chat: 'M21 12a9 9 0 01-13.3 7.9L3 21l1.2-4.5A9 9 0 1121 12z',
+  pulse: 'M3 12h4l3-8 4 16 3-8h4',
+  virus: 'M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2',
+  steth: 'M6 3v6a4 4 0 008 0V3M10 13v2a5 5 0 0010 0v-1M20 11a2 2 0 100 4 2 2 0 000-4z',
+  home: 'M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6',
+  medics: 'M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3zM12 8v6M9 11h6',
+  list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
+  book: 'M2 4h7a3 3 0 013 3v14a2 2 0 00-2-2H2zM22 4h-7a3 3 0 00-3 3v14a2 2 0 012-2h8z',
+}
+const quick = [ic.amb, ic.test, ic.chat]
+const tabIcons = [ic.pulse, ic.virus, ic.steth]
+const nav = [ic.home, ic.medics, ic.list, ic.chat, ic.book]
+---
+<div class="mk-s mk-p ct">
+  <div class="ct-st"><span>09:41</span><span class="mk-bat"></span></div>
+
+  <div class="ct-bar">
+    <span class="ct-logo"><b>Care</b><i>taker</i></span>
+    <span class="ct-g"></span>
+    <span class="ct-ib"><svg viewBox="0 0 24 24"><path d={ic.sale}/></svg><em class="ct-badge" style="background:#B91D1C">3</em></span>
+    <span class="ct-ib"><svg viewBox="0 0 24 24"><path d={ic.bell}/></svg><em class="ct-badge" style="background:#BA1A1A">8</em></span>
+    <span class="ct-ib"><span class="ct-ava"></span></span>
+  </div>
+
+  <div class="ct-search"><svg viewBox="0 0 24 24"><path d={ic.search}/></svg><span>{t.search}</span><svg viewBox="0 0 24 24"><path d={ic.mic}/></svg></div>
+
+  <div class="ct-banner"><span>{t.banner}</span></div>
+  <div class="ct-dots"><i class="on"></i><i></i><i></i></div>
+
+  <p class="ct-h">{t.quick}</p>
+  <div class="ct-quick">
+    {t.quickItems.map((l, i) => (
+      <div class="ct-q"><svg viewBox="0 0 24 24"><path d={quick[i]}/></svg><span>{l}</span></div>
+    ))}
+  </div>
+
+  <div class="ct-tabs">
+    {t.tabs.map((l, i) => (
+      <span class:list={['ct-tab', i === 0 && 'on']}><span class="ct-tav"><svg viewBox="0 0 24 24"><path d={tabIcons[i]}/></svg></span>{l}</span>
+    ))}
+  </div>
+
+  <div class="ct-svc">
+    <div class="ct-thumb"></div>
+    <div class="ct-sb">
+      <p class="ct-sn">{t.svc}</p>
+      <p class="ct-sd">{t.desc}</p>
+      <p class="ct-sp">{t.start} <em>Rp 000.000</em></p>
+    </div>
+  </div>
+
+  <div class="ct-nav">
+    {t.nav.map((l, i) => (
+      <span class:list={[i === 0 && 'on']}><svg viewBox="0 0 24 24"><path d={nav[i]}/></svg>{l}</span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ct { background: #F6FEFF; color: #001F24; font-family: Inter, var(--font-sans, system-ui, sans-serif); --p: #08C6C2; --n40: #E3E5E5; --n60: #979C9E; --n70: #72777A; --n90: #404446; --sec: #054A80; }
+  .ct svg { width: 1.5em; height: 1.5em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .ct-st { display: flex; justify-content: space-between; align-items: center; padding: .55em 1.4em .15em; font-size: .75em; font-weight: 700; flex: none; }
+  .ct-bar { display: flex; align-items: center; height: 3.5em; padding: 0 .25em 0 1em; flex: none; }
+  .ct-g { flex: 1; }
+  /* logo drawn (client mark not copied): two-tone wordmark */
+  .ct-logo { font-size: 1.15em; font-weight: 900; font-style: italic; letter-spacing: -.04em; line-height: 1; }
+  .ct-logo b { color: var(--p); font-weight: 900; } .ct-logo i { color: #090A0A; font-weight: 900; }
+  .ct-ib { position: relative; width: 3em; height: 3em; display: grid; place-items: center; color: #001F24; }
+  .ct-badge { position: absolute; top: .25em; right: .35em; min-width: .95em; height: .95em; border-radius: 1em; color: #F6FEFF; font: 600 .55em/1.1 Inter, sans-serif; display: grid; place-items: center; font-style: normal; border: .08em solid #F6FEFF; padding: 0 .2em; box-sizing: content-box; }
+  .ct-ava { width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--sec); }
+  .ct-search { margin: .5em 1em 0; height: 2.75em; border-radius: .625em; background: rgba(236,239,241,.6); display: flex; align-items: center; gap: .55em; padding: 0 .75em; color: var(--n70); font-size: .875em; flex: none; }
+  .ct-search span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #404446; font-size: 1em; }
+  .ct-banner { margin: .5em auto 0; width: 21.56em; height: 9.5em; border-radius: .625em; background: linear-gradient(135deg, #EBF9F9, #CAEFF0); display: grid; place-items: center; color: #01A3A8; font-size: .8em; font-weight: 600; flex: none; }
+  .ct-dots { display: flex; justify-content: center; gap: .25em; margin-top: 1em; height: .375em; flex: none; }
+  .ct-dots i { width: .375em; height: .375em; border-radius: .2em; background: var(--n40); }
+  .ct-dots i.on { width: 1.5em; background: var(--p); }
+  .ct-h { margin: 1.5em 1em 0; font-size: .875em; font-weight: 500; flex: none; }
+  .ct-quick { display: flex; gap: 1em; padding: 1em 1em; flex: none; }
+  .ct-q { width: 6.09em; padding: .5em; border-radius: .625em; background: #F6FEFF; box-shadow: 0 0 .375em .25em rgba(0,0,0,.04); display: flex; flex-direction: column; align-items: center; gap: .5em; color: var(--p); flex: none; }
+  .ct-q span { color: #001F24; font-size: .75em; line-height: 1.33; white-space: nowrap; }
+  .ct-tabs { display: flex; gap: .5em; padding: 1em; overflow: hidden; flex: none; }
+  .ct-tab { display: flex; align-items: center; gap: .5em; padding: .5em; border-radius: 1.25em; background: #F7F9FA; color: var(--n90); font-size: 1em; font-weight: 500; white-space: nowrap; flex: none; }
+  .ct-tab.on { background: var(--p); color: #fff; }
+  .ct-tav { width: 2em; height: 2em; border-radius: 50%; background: #F6FEFF; display: grid; place-items: center; color: var(--p); }
+  .ct-svc { margin: 0 1em; padding: 1em; border-radius: .75em; background: #F6FEFF; box-shadow: 0 0 .625em .125em rgba(0,0,0,.1); display: flex; gap: 1em; align-items: flex-start; flex: none; }
+  .ct-thumb { width: 7.5em; height: 11.25em; border-radius: .625em; background: linear-gradient(160deg, #CAEFF0, #EBF9F9); flex: none; }
+  .ct-sb { min-width: 0; flex: 1; display: flex; flex-direction: column; }
+  .ct-sn { font-size: 1.25em; font-weight: 600; line-height: 1.2; }
+  .ct-sd { margin-top: .5em; font-size: .875em; line-height: 1.4; color: #3F4948; }
+  .ct-sp { margin-top: 1em; font-size: .875em; color: #3F4948; }
+  .ct-sp em { font-style: normal; color: #FF9400; }
+  .ct-nav { position: absolute; left: 0; right: 0; bottom: 0; display: flex; background: #F6FEFF; border-top: 1px solid var(--n40); border-bottom: 1px solid var(--n40); padding: .5em 0 1em; }
+  .ct-nav span { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .2em; font-size: .625em; color: var(--n60); white-space: nowrap; }
+  .ct-nav span svg { width: 2.4em; height: 2.4em; }
+  .ct-nav span.on { color: var(--p); }
+</style>

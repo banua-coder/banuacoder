@@ -1,0 +1,382 @@
+---
+/**
+ * CaseStudyDetail — shared detail page for /portfolio/[slug] (id) and /en/portfolio/[slug] (en).
+ * Narrative: hero → impact → problem/solution → device-framed screens → MDX story → stack/links → next project → CTA.
+ */
+import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+import { portfolioOgUrl } from '../../lib/og/url'
+import { getScreens, clientLabel, isOwnProduct } from '../../lib/portfolio-screens'
+import { renderInlineMd } from '../../lib/inline-md'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import TechStack from '../atoms/TechStack.astro'
+import Button from '../atoms/Button.astro'
+import Prose from '../typography/Prose.astro'
+import CTA from '../sections/CTA.astro'
+import DeviceFrame from '../interactive/DeviceFrame.astro'
+import Mock from '../mocks/Mock.astro'
+import { hasMock } from '../mocks'
+
+interface Props {
+  entry: CollectionEntry<'portfolio'>
+  locale: 'id' | 'en'
+}
+const { entry, locale } = Astro.props
+const { data } = entry
+const en = locale === 'en'
+const base = en ? '/en' : ''
+const { Content } = await render(entry)
+
+const t = en
+  ? {
+      home: 'Home', skip: 'Skip to main content', summary: 'Project summary', detail: 'Project detail',
+      problemH: 'The Challenge', solutionH: 'What We Built', impactH: 'Impact & Results',
+      showcase: 'In the product', showcaseSub: 'Real screens from the shipped product.',
+      stack: 'Tech Stack', links: 'Links', linksAria: 'External links', testimonial: 'Testimonial',
+      next: 'Next project', view: 'View project →', all: 'All projects',
+      play: 'Get it on Google Play', playImg: '/badges/get-on-google-play.png',
+      status: { live: 'Live', maintained: 'Maintained', archived: 'Archived' },
+      ctaH: 'Need something like this?', ctaSub: 'Tell us about your product or system. We reply with scope, timeline and a realistic estimate.',
+      screenAlt: (n: number) => `${data.title} screenshot ${n}`,
+      visit: 'Visit product →',
+      facts: { origin: 'Origin', client: 'Client', year: 'Year', bucket: 'Category', status: 'Status', stack: 'Stack' },
+      fig: 'Fig.',
+    }
+  : {
+      home: 'Beranda', skip: 'Lewati ke konten utama', summary: 'Ringkasan proyek', detail: 'Detail proyek',
+      problemH: 'Tantangan', solutionH: 'Yang Kami Bangun', impactH: 'Dampak & Hasil',
+      showcase: 'Di dalam produk', showcaseSub: 'Tampilan nyata dari produk yang sudah berjalan.',
+      stack: 'Tech Stack', links: 'Tautan', linksAria: 'Tautan eksternal', testimonial: 'Testimoni',
+      next: 'Proyek berikutnya', view: 'Lihat Proyek →', all: 'Semua proyek',
+      play: 'Dapatkan di Google Play', playImg: '/badges/dapatkan-di-google-play.png',
+      status: { live: 'Live', maintained: 'Dipelihara', archived: 'Diarsipkan' },
+      ctaH: 'Butuh sistem seperti ini?', ctaSub: 'Ceritakan produk atau sistem Anda. Kami balas dengan cakupan, jadwal, dan estimasi yang realistis.',
+      screenAlt: (n: number) => `Tangkapan layar ${data.title} ${n}`,
+      visit: 'Kunjungi produk →',
+      facts: { origin: 'Asal', client: 'Klien', year: 'Tahun', bucket: 'Kategori', status: 'Status', stack: 'Stack' },
+      fig: 'Gbr.',
+    }
+
+const all = (await getCollection('portfolio', ({ data: d }) => !d.draft && d.locale === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+)
+// Next: same bucket, cycling by order; fall back to the next project overall
+const cycle = (list: typeof all) => {
+  const i = list.findIndex((p) => p.data.slug === data.slug)
+  return list.length > 1 ? list[(i + 1) % list.length] : null
+}
+const nextProject = cycle(all.filter((p) => p.data.bucket === data.bucket)) ?? cycle(all)
+
+let linkedTestimonial
+try {
+  linkedTestimonial = (await getCollection('testimonials')).find(
+    (x) => x.data.locale === locale && x.data.project?.id === entry.id,
+  )
+} catch {
+  // collection may be empty
+}
+
+const bucketLabel = {
+  consumer: 'Consumer',
+  'public-sector': en ? 'Public Sector' : 'Sektor Publik',
+  operational: en ? 'Operational' : 'Operasional',
+  'open-source': 'Open Source',
+}[data.bucket]
+
+const screens = getScreens(data.slug)
+const phones = screens.filter((s) => s.kind === 'phone')
+const desktops = screens.filter((s) => s.kind === 'desktop')
+const heroScreen = screens[0]
+const orderNo = String(all.findIndex((p) => p.data.slug === data.slug) + 1).padStart(2, '0')
+const webHost = data.links?.web?.replace(/^https?:\/\//, '').replace(/\/$/, '') ?? ''
+const href = (slug: string) => `${base}/portfolio/${slug}/`
+
+const creativeWorkSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: data.title,
+  description: data.summary,
+  creator: { '@type': 'Organization', name: 'Banua Coder', url: 'https://banuacoder.com' },
+  dateCreated: String(data.year),
+  keywords: data.stack.join(', '),
+  inLanguage: locale,
+}
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.home, item: `https://banuacoder.com${base}/` },
+    { '@type': 'ListItem', position: 2, name: 'Portfolio', item: `https://banuacoder.com${base}/portfolio/` },
+    { '@type': 'ListItem', position: 3, name: data.title, item: `https://banuacoder.com${href(data.slug)}` },
+  ],
+}
+
+const plateNum = 'display tabular-nums select-none leading-[0.8]'
+const numStyle = 'font-size: clamp(5rem, 11vw, 11rem); letter-spacing: -0.06em; font-weight: 800'
+const chalkMute = 'text-bnc-stone-600 dark:text-bnc-stone-400'
+const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
+---
+
+<BaseLayout
+  title={`${data.title} — Portfolio · Banua Coder`}
+  description={data.summary}
+  ogImage={portfolioOgUrl(data.slug, locale)}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(creativeWorkSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white"
+  >
+    {t.skip}
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Spread opener: ultramarine plate, folio, giant title, facts column + framed screen -->
+    <section aria-labelledby="project-title" class="plate relative overflow-hidden" style="padding-top: calc(var(--spacing-section-y-sm) + 4rem); padding-bottom: var(--spacing-section-y-sm)">
+      <p class="numeral absolute -right-6 -bottom-4 tabular-nums" aria-hidden="true" data-parallax="0.12">{orderNo}</p>
+      <Container class="relative">
+        <nav aria-label="Breadcrumb" class="mb-6">
+          <ol class="folio flex items-center gap-2 flex-wrap mute">
+            <li><a href={`${base}/` || '/'} class="hover:text-white underline-offset-4 hover:underline">{t.home}</a></li>
+            <li aria-hidden="true">/</li>
+            <li><a href={`${base}/portfolio/`} class="hover:text-white underline-offset-4 hover:underline">Portfolio</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" class="text-white">{data.title}</li>
+          </ol>
+        </nav>
+        <div class="folio flex justify-between gap-4 border-b rule pb-3 mb-10 lg:mb-14" data-rule>
+          <span>№ {orderNo} / Portfolio</span>
+          <span class="tabular-nums">{clientLabel(data.client, locale)} — {data.year}</span>
+        </div>
+
+        <h1 id="project-title" class="display mb-10 lg:mb-14 max-w-[16ch] [text-wrap:balance]" style="font-size: var(--fs-84); overflow-wrap: anywhere" data-split>{data.title}</h1>
+
+        <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+          <div class="lg:col-span-4 order-2 lg:order-1" data-reveal>
+            <dl class="border-t rule" data-rule style="font-size: var(--fs-14)">
+              <div class={factRow} data-rule><dt class="folio mute">{isOwnProduct(data.client) ? t.facts.origin : t.facts.client}</dt><dd>{clientLabel(data.client, locale)}</dd></div>
+              <div class={factRow} data-rule><dt class="folio mute">{t.facts.year}</dt><dd class="tabular-nums">{data.year}</dd></div>
+              <div class={factRow} data-rule><dt class="folio mute">{t.facts.bucket}</dt><dd>{bucketLabel}</dd></div>
+              <div class={factRow} data-rule><dt class="folio mute">{t.facts.status}</dt><dd>{t.status[data.status]}</dd></div>
+              <div class={factRow} data-rule><dt class="folio mute">{t.facts.stack}</dt><dd>{data.stack.join(', ')}</dd></div>
+            </dl>
+            <p class="mt-8 leading-relaxed" style="font-size: var(--fs-17)" set:html={renderInlineMd(data.summary)} />
+            {data.links?.web && (
+              <a href={data.links.web} target="_blank" rel="noopener noreferrer" class="mt-8 inline-flex items-center gap-2 bg-white text-bnc-plate font-semibold px-7 py-3.5 hover:bg-bnc-accent hover:text-bnc-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">{t.visit}</a>
+            )}
+          </div>
+
+          <div class="lg:col-span-8 order-1 lg:order-2 flex justify-center lg:justify-end" data-reveal>
+            {hasMock(data.slug) && <Mock slug={data.slug} title={data.title} locale={locale} class="[&[data-frame=phone]]:!max-w-[280px]" />}
+            {!hasMock(data.slug) && heroScreen?.kind === 'phone' && (
+              <DeviceFrame variant="phone" class="!max-w-[280px]">
+                <Image src={heroScreen.src} alt={t.screenAlt(1)} width={520} loading="eager" fetchpriority="high" />
+              </DeviceFrame>
+            )}
+            {!hasMock(data.slug) && heroScreen?.kind === 'desktop' && (
+              <DeviceFrame variant="desktop" url={webHost} class="!max-w-none">
+                <Image src={heroScreen.src} alt={t.screenAlt(1)} width={1200} loading="eager" fetchpriority="high" />
+              </DeviceFrame>
+            )}
+            {!hasMock(data.slug) && !heroScreen && (
+              <DeviceFrame variant="desktop" url={webHost} class="!max-w-none">
+                <Image src={data.cover as ImageMetadata} alt={`${data.title} cover`} width={1200} loading="eager" fetchpriority="high" />
+              </DeviceFrame>
+            )}
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- № 01 Problem: chalk -->
+    <section aria-labelledby="problem-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+      <Container>
+        <div class="grid gap-6 lg:grid-cols-12 lg:gap-14 border-t border-bnc-ink dark:border-bnc-paper pt-6" data-reveal>
+          <div class="lg:col-span-3">
+            <p class="folio mb-4">№ 01 / {t.problemH}</p>
+            <p class={`${plateNum} text-bnc-stone-200 dark:text-bnc-stone-800`} style={numStyle} aria-hidden="true">01</p>
+          </div>
+          <div class="lg:col-span-8 lg:col-start-5">
+            <h2 id="problem-heading" class="display mb-6" style="font-size: var(--fs-48)">{t.problemH}</h2>
+            <p class="leading-relaxed max-w-[62ch]" style="font-size: var(--fs-20)" set:html={renderInlineMd(data.problem)} />
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- № 02 Solution: ultramarine -->
+    <section aria-labelledby="solution-heading" class="plate" style="padding-block: var(--spacing-section-y-sm)">
+      <Container>
+        <div class="grid gap-6 lg:grid-cols-12 lg:gap-14 border-t rule pt-6" data-rule data-reveal>
+          <div class="lg:col-span-3">
+            <p class="folio mb-4 mute">№ 02 / {t.solutionH}</p>
+            <p class={`${plateNum} text-bnc-plate-lift`} style={numStyle} aria-hidden="true">02</p>
+          </div>
+          <div class="lg:col-span-8 lg:col-start-5">
+            <h2 id="solution-heading" class="display mb-6" style="font-size: var(--fs-48)">{t.solutionH}</h2>
+            <p class="leading-relaxed max-w-[62ch]" style="font-size: var(--fs-20)" set:html={renderInlineMd(data.solution)} />
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- № 03 Impact: chalk, ruled numbered rows -->
+    <section aria-labelledby="impact-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+      <Container>
+        <div class="grid gap-6 lg:grid-cols-12 lg:gap-14 border-t border-bnc-ink dark:border-bnc-paper pt-6">
+          <div class="lg:col-span-3">
+            <p class="folio mb-4">№ 03 / {t.impactH}</p>
+            <p class={`${plateNum} text-bnc-stone-200 dark:text-bnc-stone-800`} style={numStyle} aria-hidden="true">03</p>
+          </div>
+          <div class="lg:col-span-8 lg:col-start-5">
+            <h2 id="impact-heading" class="display mb-8" style="font-size: var(--fs-48)">{t.impactH}</h2>
+            <ol class="border-t border-bnc-ink/30 dark:border-bnc-paper/30" data-reveal-stagger>
+              {data.impact.map((item, i) => (
+                <li class="grid grid-cols-[3rem_1fr] gap-4 py-5 border-b border-bnc-ink/30 dark:border-bnc-paper/30">
+                  <span class="folio tabular-nums pt-1.5 text-bnc-primary dark:text-bnc-accent">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="font-display font-semibold leading-snug" style="font-size: var(--fs-28); letter-spacing: -0.025em" set:html={renderInlineMd(item)} />
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Screens: ultramarine plate gallery -->
+    {screens.length > 0 && (
+      <section aria-labelledby="showcase-heading" class="plate" style="padding-block: var(--spacing-section-y-sm)">
+        <Container>
+          <div class="folio flex justify-between gap-4 border-b rule pb-3 mb-10" data-rule>
+            <span>№ 04 / {t.showcase}</span>
+            <span class="tabular-nums">{String(screens.length).padStart(2, '0')} {t.fig}</span>
+          </div>
+          <h2 id="showcase-heading" class="display mb-3" style="font-size: var(--fs-48)">{t.showcase}</h2>
+          <p class="mb-10 mute">{t.showcaseSub}</p>
+
+          {phones.length > 0 && (
+            <ul
+              class="flex gap-6 lg:gap-8 overflow-x-auto snap-x snap-mandatory pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible"
+              data-reveal-stagger
+            >
+              {phones.map((s, i) => (
+                <li class="shrink-0 snap-center w-[220px] sm:w-[200px] lg:w-[220px]">
+                  <DeviceFrame variant="phone">
+                    <Image src={s.src} alt={t.screenAlt(i + 1)} width={440} loading="lazy" />
+                  </DeviceFrame>
+                  <p class="folio mute mt-3 tabular-nums">{t.fig} {String(i + 1).padStart(2, '0')}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {desktops.length > 0 && (
+            <ul class="mt-8 flex flex-col gap-12" data-reveal-stagger>
+              {desktops.map((s, i) => (
+                <li class="w-full max-w-5xl">
+                  <DeviceFrame variant="desktop" url={webHost} class="!max-w-none">
+                    <Image src={s.src} alt={t.screenAlt(phones.length + i + 1)} width={1200} loading="lazy" />
+                  </DeviceFrame>
+                  <p class="folio mute mt-3 tabular-nums">{t.fig} {String(phones.length + i + 1).padStart(2, '0')}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Container>
+      </section>
+    )}
+
+    <!-- Story (MDX) -->
+    <section aria-label={t.detail} class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+      <Container>
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-14 border-t border-bnc-ink dark:border-bnc-paper pt-6">
+          <p class="folio lg:col-span-3">№ 05 / {t.detail}</p>
+          <div class="lg:col-span-8 lg:col-start-5"><Prose><Content /></Prose></div>
+        </div>
+      </Container>
+    </section>
+
+    <!-- Stack + links + testimonial -->
+    <section aria-label={t.stack} class="plate-chalk" style="padding-bottom: var(--spacing-section-y-sm)">
+      <Container>
+        <div class="grid gap-10 md:grid-cols-2 border-t border-bnc-ink dark:border-bnc-paper pt-6">
+          <div>
+            <p class="folio mb-5">{t.stack}</p>
+            <TechStack items={data.stack} size="md" />
+          </div>
+          {data.links && (
+            <div aria-label={t.linksAria}>
+              <p class="folio mb-5">{t.links}</p>
+              <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+                {data.links.playStore && (
+                  <a href={data.links.playStore} target="_blank" rel="noopener noreferrer" aria-label={t.play} class="inline-block transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">
+                    <img src={t.playImg} alt={t.play} width={194} height={75} loading="lazy" decoding="async" class="h-[60px] w-auto" />
+                  </a>
+                )}
+                {[
+                  [data.links.appStore, 'App Store'],
+                  [data.links.web, 'Website'],
+                  [data.links.github, 'GitHub'],
+                  [data.links.pubDev, 'pub.dev'],
+                ].filter(([u]) => u).map(([u, label]) => (
+                  <a href={u} target="_blank" rel="noopener noreferrer" class="font-semibold underline underline-offset-4 decoration-1 hover:text-bnc-primary dark:hover:text-bnc-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">{label} →</a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        {linkedTestimonial && (
+          <blockquote class="mt-14 border-t border-bnc-ink/30 dark:border-bnc-paper/30 pt-8 max-w-3xl" aria-label={t.testimonial}>
+            <p class="display" style="font-size: var(--fs-36); line-height: 1.1">“{linkedTestimonial.data.quote}”</p>
+            <footer class="folio mt-5 text-bnc-stone-600 dark:text-bnc-stone-400">
+              {linkedTestimonial.data.author} / {linkedTestimonial.data.role}, {linkedTestimonial.data.company}
+            </footer>
+          </blockquote>
+        )}
+      </Container>
+    </section>
+
+    <!-- Next project plate -->
+    {nextProject && (
+      <section aria-label={t.next} class="plate-chalk" style="padding-bottom: var(--spacing-section-y-sm)">
+        <Container>
+          <a
+            href={href(nextProject.data.slug)}
+            class="next-plate plate group grid items-end gap-6 lg:grid-cols-12 p-6 sm:p-10 transition-colors hover:bg-bnc-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent"
+          >
+            <div class="lg:col-span-8 flex flex-col gap-4">
+              <p class="folio mute">{t.next} / {clientLabel(nextProject.data.client, locale)} — {nextProject.data.year}</p>
+              <p class="display" style="font-size: var(--fs-64)">{nextProject.data.title}</p>
+              <p class="folio group-hover:translate-x-1 transition-transform">{t.view}</p>
+            </div>
+            <div class="lg:col-span-4 overflow-hidden border border-white/40">
+              <Image
+                src={nextProject.data.thumbnail as ImageMetadata}
+                alt=""
+                width={520}
+                loading="lazy"
+                class="w-full aspect-[16/9] object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-500"
+              />
+            </div>
+          </a>
+          <p class="mt-6">
+            <a href={`${base}/portfolio/`} class="folio underline underline-offset-4 hover:text-bnc-primary dark:hover:text-bnc-accent">← {t.all}</a>
+          </p>
+        </Container>
+      </section>
+    )}
+
+    <CTA headline={t.ctaH} sub={t.ctaSub} />
+  </main>
+
+  <Footer />
+</BaseLayout>

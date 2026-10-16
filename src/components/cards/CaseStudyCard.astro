@@ -1,121 +1,120 @@
 ---
 /**
- * CaseStudyCard — portfolio case study card.
- * Shows cover image, bucket tag, client + year, title, summary (2-line clamp), impact stat.
- * Hover: cover image lifts with slight scale.
+ * CaseStudyCard — one entry of the "index of works".
+ * variant="row" (default for the portfolio index): ruled table-like row, giant numeral, year, bucket,
+ *   stack and impact; the thumbnail is revealed (clip-path wipe) on hover/focus at lg+, always shown below lg.
+ * variant="card": sharp, flat, hairline-ruled tile (used on the home page).
  */
 import { Image } from 'astro:assets'
-import Tag from '../atoms/Tag.astro'
 import { renderInlineMd } from '../../lib/inline-md'
-
-type BucketVariant = 'bucket-consumer' | 'bucket-public' | 'bucket-operational' | 'bucket-open-source'
+import { clientLabel } from '../../lib/portfolio-screens'
+import Mock from '../mocks/Mock.astro'
+import { hasMock } from '../mocks'
 
 interface Props {
   title: string
+  /** portfolio slug: when a recreated mock exists it replaces the cover image */
+  slug?: string
   client: string
   year: number
   bucket: 'consumer' | 'public-sector' | 'operational' | 'open-source'
   summary: string
   impactStat?: string
+  stack?: string[]
   coverSrc?: ImageMetadata
   coverAlt?: string
   href?: string
+  /** 1-based position in the index; rendered as 01, 02 ... */
+  index?: number
+  variant?: 'row' | 'card'
   class?: string
 }
 
 const {
-  title,
-  client,
-  year,
-  bucket,
-  summary,
-  impactStat,
-  coverSrc,
-  coverAlt = '',
-  href = '#',
-  class: cls = '',
+  title, slug, client, year, bucket, summary, impactStat, stack = [], coverSrc, coverAlt = '',
+  href = '#', index, variant = 'row', class: cls = '',
 } = Astro.props
 
+const en = (Astro.currentLocale ?? 'id') === 'en'
 const bucketLabel = {
   consumer: 'Consumer',
-  'public-sector': 'Public Sector',
-  operational: 'Operational',
+  'public-sector': en ? 'Public Sector' : 'Sektor Publik',
+  operational: en ? 'Operational' : 'Operasional',
   'open-source': 'Open Source',
 }[bucket]
-
-const bucketVariantMap: Record<string, BucketVariant> = {
-  consumer: 'bucket-consumer',
-  'public-sector': 'bucket-public',
-  operational: 'bucket-operational',
-  'open-source': 'bucket-open-source',
-}
-const bucketVariant: BucketVariant = bucketVariantMap[bucket] ?? 'bucket-consumer'
+const clientText = clientLabel(client, en ? 'en' : 'id')
+const mock = slug ? hasMock(slug) : false
+const num = index ? String(index).padStart(2, '0') : ''
 ---
 
-<article
-  class:list={[
-    'group flex flex-col overflow-hidden rounded-[var(--radius-md)]',
-    'bg-bnc-paper dark:bg-bnc-stone-900',
-    'border border-bnc-stone-200 dark:border-bnc-stone-800',
-    'shadow-[var(--shadow-subtle)]',
-    'transition-all duration-[var(--duration-base)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)]',
-    cls,
-  ]}
-  data-bucket={bucket}
->
-  <!-- Cover image -->
-  <a href={href} class="overflow-hidden block relative aspect-[16/9] bg-bnc-stone-100 dark:bg-bnc-stone-800" tabindex="-1" aria-hidden="true">
-    {coverSrc ? (
-      <Image
-        src={coverSrc}
-        alt={coverAlt}
-        width={640}
-        height={360}
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        loading="lazy"
-      />
-    ) : (
-      <!-- Placeholder if no cover -->
-      <div class="w-full h-full flex items-center justify-center">
-        <span class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest">
-          // {client}
-        </span>
+{variant === 'row' ? (
+  <article class:list={['work-row group relative border-t border-bnc-ink/80 dark:border-bnc-paper/40', cls]} data-bucket={bucket}>
+    <div class="grid grid-cols-12 gap-x-4 lg:gap-x-6 px-0 lg:px-4 py-6 lg:py-8 items-start">
+      <p class="work-num display col-span-3 lg:col-span-2 text-bnc-stone-300 dark:text-bnc-stone-700 tabular-nums" style="font-size: var(--fs-64); line-height: 0.85" aria-hidden="true">{num}</p>
+
+      <div class="col-span-9 lg:col-span-5 flex flex-col gap-3">
+        <p class="folio work-mute">{clientText}</p>
+        <h3 class="display" style="font-size: var(--fs-36); line-height: 1.02">
+          <a href={href} class="work-link after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">{title}</a>
+        </h3>
+        <p class="work-mute leading-relaxed max-w-[56ch]" style="font-size: var(--fs-17); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden" set:html={renderInlineMd(summary)} />
+        {impactStat && (
+          <p class="font-medium leading-snug max-w-[56ch]" style="font-size: var(--fs-17)" set:html={renderInlineMd(impactStat)} />
+        )}
+        {stack.length > 0 && (
+          <p class="folio work-mute" aria-label="Stack">{stack.slice(0, 4).join(' / ')}{stack.length > 4 ? ` +${stack.length - 4}` : ''}</p>
+        )}
       </div>
-    )}
-  </a>
 
-  <!-- Content -->
-  <div class="flex flex-col gap-3 p-5 flex-1">
-    <!-- Meta row -->
-    <div class="flex items-center gap-2 flex-wrap">
-      <Tag variant={bucketVariant}>{bucketLabel}</Tag>
-      <span class="font-mono text-xs text-bnc-stone-400">
-        {client} · {year}
-      </span>
+      <div class="col-span-9 col-start-4 lg:col-span-2 lg:col-start-8 max-lg:mt-4 flex lg:flex-col gap-x-6 gap-y-1">
+        <p class="display tabular-nums" style="font-size: var(--fs-28)">{year}</p>
+        <p class="folio work-mute self-center lg:self-auto">{bucketLabel}</p>
+      </div>
+
+      <div class="work-thumb col-span-9 col-start-4 lg:col-span-3 lg:col-start-10 max-lg:mt-4">
+        {mock ? (
+          <div class="mock-crop border border-current/40" aria-hidden="true"><Mock slug={slug!} title={title} locale={en ? 'en' : 'id'} /></div>
+        ) : coverSrc ? (
+          <Image src={coverSrc} alt={coverAlt} width={480} height={270} class="w-full aspect-[16/9] object-cover" loading="lazy" />
+        ) : (
+          <div class="w-full aspect-[16/9] border border-current opacity-40"></div>
+        )}
+      </div>
     </div>
+  </article>
+) : (
+  <article class:list={['work-card group relative flex flex-col border border-bnc-ink/80 dark:border-bnc-paper/40', cls]} data-bucket={bucket}>
+    <div class="relative aspect-[16/9] overflow-hidden bg-bnc-stone-100 dark:bg-bnc-stone-800 border-b border-bnc-ink/80 dark:border-bnc-paper/40" aria-hidden="true">
+      {mock ? <Mock slug={slug!} title={title} locale={en ? 'en' : 'id'} class="mock-crop-in" /> : coverSrc && <Image src={coverSrc} alt={coverAlt} width={640} height={360} class="w-full h-full object-cover" loading="lazy" />}
+    </div>
+    <div class="flex flex-col gap-3 p-5 flex-1">
+      <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400">{bucketLabel} / {clientText} / {year}</p>
+      <h3 class="display" style="font-size: var(--fs-28); line-height: 1.05">
+        <a href={href} class="after:absolute after:inset-0 after:content-[''] hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">{title}</a>
+      </h3>
+      <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1" style="font-size: var(--fs-17); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden" set:html={renderInlineMd(summary)} />
+      {impactStat && (
+        <p class="pt-3 border-t border-bnc-ink/30 dark:border-bnc-paper/30 font-medium leading-snug" style="font-size: var(--fs-14)" set:html={renderInlineMd(impactStat)} />
+      )}
+    </div>
+  </article>
+)}
 
-    <!-- Title -->
-    <a
-      href={href}
-      class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
-      style="font-size: var(--fs-20)"
-    >
-      {title}
-    </a>
+<style>
+  .work-mute { color: var(--color-bnc-stone-600); }
+  :global(html.dark) .work-mute { color: var(--color-bnc-stone-400); }
+  .work-row { transition: background-color var(--duration-base) ease, color var(--duration-base) ease; }
+  .work-row:hover, .work-row:focus-within { background: var(--color-bnc-plate); color: #fff; }
+  .work-row:hover .work-mute, .work-row:focus-within .work-mute { color: var(--color-bnc-plate-mute); }
+  .work-row:hover .work-num, .work-row:focus-within .work-num { color: var(--color-bnc-plate-lift); }
+  .work-row:hover a:focus-visible, .work-row:focus-within a:focus-visible { outline-color: var(--color-bnc-accent); }
 
-    <!-- Summary — 2-line clamp -->
-    <p
-      class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1"
-      style="font-size: var(--fs-17); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden"
-      set:html={renderInlineMd(summary)}
-    />
-
-    <!-- Impact stat -->
-    {impactStat && (
-      <p
-        class="font-mono text-xs text-bnc-accent pt-2 border-t border-bnc-stone-200 dark:border-bnc-stone-800"
-        set:html={renderInlineMd(impactStat)}
-      />
-    )}
-  </div>
-</article>
+  @media (min-width: 1024px) {
+    .work-thumb { clip-path: inset(0 0 100% 0); transition: clip-path 500ms cubic-bezier(0.16, 1, 0.3, 1); }
+    .work-row:hover .work-thumb, .work-row:focus-within .work-thumb { clip-path: inset(0 0 0 0); }
+    .work-row:not(:hover):not(:focus-within) .work-thumb :global(img), .work-row:not(:hover):not(:focus-within) .work-thumb :global(.mock-fig) { filter: grayscale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .work-thumb { transition: none; }
+  }
+</style>

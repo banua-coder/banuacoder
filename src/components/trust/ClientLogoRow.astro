@@ -54,7 +54,7 @@ const { class: cls = '' } = Astro.props
         {client.name}
       </span>
     )
-    const itemClasses = 'client-logo-item flex items-center justify-center px-4 py-2 rounded-[var(--radius-sm)] border border-bnc-stone-200 dark:border-bnc-stone-800 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]'
+    const itemClasses = 'client-logo-item flex items-center justify-center px-4 py-2 border border-bnc-ink/20 dark:border-bnc-paper/20 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-[var(--duration-base)]'
     return (
       <li>
         {client.url ? (

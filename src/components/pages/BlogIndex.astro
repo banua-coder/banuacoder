@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
+import { readingTime } from '../../lib/reading-time'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+import { buildWhatsAppUrl } from '../../data/contact'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.locale === locale && !p.data.draft)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString(en ? 'en-US' : 'id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+const pad = (n: number) => String(n).padStart(2, '0')
+
+const t = en
+  ? {
+      title: 'Engineering & Product Blog — Banua Coder',
+      desc: 'Insights on engineering, product, and digital transformation from the Banua Coder team.',
+      og: ogUrl('en-blog'),
+      folio: '№ 04 / Blog',
+      right: `${posts.length} articles`,
+      h1: 'Notes from the work.',
+      lede: 'Engineering, product, and digital-transformation lessons from systems we have shipped.',
+      list: 'Article list',
+      min: 'min read',
+      empty: 'Our first article is being prepared. Reach out via WhatsApp to be notified when it drops.',
+      wa: 'Contact via WhatsApp →',
+    }
+  : {
+      title: 'Blog Engineering & Product — Banua Coder',
+      desc: 'Insights seputar engineering, product, dan transformasi digital dari tim Banua Coder.',
+      og: ogUrl('blog'),
+      folio: '№ 04 / Blog',
+      right: `${posts.length} artikel`,
+      h1: 'Catatan dari lapangan.',
+      lede: 'Pelajaran engineering, product, dan transformasi digital dari sistem yang sudah kami bangun.',
+      list: 'Daftar artikel',
+      min: 'menit baca',
+      empty: 'Artikel pertama sedang dalam persiapan. Hubungi kami via WhatsApp untuk mendapat notifikasi saat artikel pertama tayang.',
+      wa: 'Hubungi via WhatsApp →',
+    }
+---
+
+<BaseLayout title={t.title} description={t.desc} ogImage={t.og}>
+  <Skip />
+  <Nav />
+  <main id="main-content">
+    <PlateHead folio={t.folio} folioRight={t.right} title={t.h1} lede={t.lede} numeral="04" titleId="blog-heading" />
+
+    <section aria-label={t.list} class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        {posts.length === 0 ? (
+          <div class="border-t border-current/25 pt-8">
+            <p class="text-bnc-stone-600 dark:text-bnc-stone-300 leading-relaxed" style="font-size: var(--fs-20); max-width: 48ch">{t.empty}</p>
+            <a href={buildWhatsAppUrl(locale)} target="_blank" rel="noopener noreferrer" class="mt-6 inline-block bg-bnc-plate text-white font-semibold px-7 py-3.5 hover:bg-bnc-ink focus-visible:outline-bnc-plate">{t.wa}</a>
+          </div>
+        ) : (
+          <ol class="m-0 p-0 list-none border-b border-current/25">
+            {posts.map((post, i) => (
+              <li class="border-t border-current/25">
+                <a
+                  href={`${prefix}/blog/${post.data.slug}/`}
+                  class="group grid grid-cols-12 gap-x-4 gap-y-3 py-8 md:py-10 px-0 transition-colors duration-200 hover:bg-bnc-plate hover:text-white focus-visible:bg-bnc-plate focus-visible:text-white md:hover:px-4 md:focus-visible:px-4 focus-visible:outline-bnc-plate"
+                >
+                  <span class="col-span-3 md:col-span-1 folio text-bnc-accent-ink group-hover:text-bnc-accent group-focus-visible:text-bnc-accent dark:text-bnc-accent pt-2">{pad(i + 1)}</span>
+                  <span class="col-span-9 md:col-span-2 folio text-bnc-stone-600 dark:text-bnc-stone-300 group-hover:text-bnc-plate-mute pt-2 md:text-left text-right">
+                    <time datetime={post.data.publishedAt.toISOString()}>{fmt(post.data.publishedAt)}</time>
+                  </span>
+                  <span class="col-span-12 md:col-span-6 flex flex-col gap-3">
+                    <span class="display text-balance" style="font-size: var(--fs-36)">{post.data.title}</span>
+                    <span class="leading-relaxed text-bnc-stone-600 dark:text-bnc-stone-300 group-hover:text-bnc-plate-mute line-clamp-2" style="font-size: var(--fs-17)">{post.data.description}</span>
+                  </span>
+                  <span class="col-span-12 md:col-span-3 flex md:flex-col md:items-end gap-x-4 gap-y-2 flex-wrap pt-1">
+                    <span class="folio text-bnc-stone-600 dark:text-bnc-stone-300 group-hover:text-bnc-plate-mute">{readingTime(post.body ?? post.data.description)} {t.min}</span>
+                    {post.data.tags.length > 0 && (
+                      <span class="folio text-bnc-stone-500 dark:text-bnc-stone-400 group-hover:text-bnc-plate-mute md:text-right">{post.data.tags.slice(0, 3).join(' · ')}</span>
+                    )}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        )}
+      </Container>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

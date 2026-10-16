@@ -1,101 +1,130 @@
 ---
 /**
- * Hero — full-width hero section with asymmetric type layout.
- * Includes dot-grid backdrop, eyebrow, title, subtitle, dual CTAs, and optional media slot.
+ * Hero: the cover plate of the prospectus. Full ultramarine, giant headline,
+ * oversized tonal numeral, hairline stats strip along the bottom.
+ * Props stay backward compatible; new optional props drive folio, numeral and stats.
  */
-import DotGridBackdrop from './DotGridBackdrop.astro'
+import Container from '../layout/Container.astro'
 import Button from '../atoms/Button.astro'
-import MonoLabel from '../typography/MonoLabel.astro'
+
+interface Stat {
+  value: string | number
+  label: string
+}
 
 interface Props {
-  /** Mono eyebrow label */
   eyebrow?: string
-  /** Main headline */
   title: string
-  /** Supporting subtitle */
   subtitle?: string
-  /** Primary CTA text */
   primaryCta?: string
-  /** Primary CTA href */
   primaryHref?: string
-  /** Secondary CTA text */
+  primaryExternal?: boolean
   secondaryCta?: string
-  /** Secondary CTA href */
   secondaryHref?: string
+  /** Left folio text (cover label) */
+  folio?: string
+  /** Right folio text, e.g. "Laporan Kerja 2019—2026 / Palu" */
+  folioEnd?: string
+  /** Giant tonal numeral */
+  numeral?: string
+  stats?: Stat[]
   class?: string
 }
 
 const {
-  eyebrow,
   title,
   subtitle,
   primaryCta,
   primaryHref = '#',
+  primaryExternal = false,
   secondaryCta,
   secondaryHref = '#',
+  folio,
+  folioEnd,
+  numeral,
+  stats = [],
   class: cls = '',
 } = Astro.props
 ---
 
 <section
-  class:list={['relative overflow-hidden', cls]}
-  style="padding-block: var(--spacing-section-y)"
+  class:list={['plate hero relative overflow-hidden flex flex-col', cls]}
+  style="min-height: 100svh; padding-top: 4rem"
   aria-label="Hero"
 >
-  <DotGridBackdrop />
+  {numeral && (
+    <span class="hero-numeral numeral absolute z-0" aria-hidden="true" data-parallax="0.1">{numeral}</span>
+  )}
 
-  <!-- Cyan hairline accent divider -->
-  <div
-    class="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-bnc-accent to-transparent opacity-60"
-    aria-hidden="true"
-  ></div>
-
-  <div
-    class="relative z-10 mx-auto px-4 sm:px-6 lg:px-8"
-    style="max-width: var(--container-max)"
-  >
-    <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-12 items-center">
-      <!-- Text column: left on lg+, full width below -->
-      <div class="lg:col-span-7">
-        {eyebrow && <MonoLabel class="mb-4 block">{eyebrow}</MonoLabel>}
-
-        <h1
-          class="font-display font-bold text-bnc-ink dark:text-bnc-paper leading-[1.1] mb-6 text-balance"
-          style="font-size: var(--fs-64)"
-        >
-          {title}
-        </h1>
-
-        {subtitle && (
-          <p
-            class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed mb-10"
-            style="font-size: var(--fs-20); max-width: 52ch"
-          >
-            {subtitle}
-          </p>
-        )}
-
-        <!-- CTAs -->
-        {(primaryCta || secondaryCta) && (
-          <div class="flex flex-wrap gap-4 items-center">
-            {primaryCta && (
-              <Button href={primaryHref} size="lg" variant="primary">
-                {primaryCta}
-              </Button>
-            )}
-            {secondaryCta && (
-              <Button href={secondaryHref} size="lg" variant="ghost">
-                {secondaryCta} →
-              </Button>
-            )}
-          </div>
-        )}
+  <Container class="relative z-10 flex flex-1 flex-col">
+    {(folio || folioEnd) && (
+      <div class="folio mute flex items-baseline justify-between gap-6 border-b border-[var(--color-bnc-plate-line)] py-3">
+        <span>{folio}</span>
+        <span class="text-right">{folioEnd}</span>
       </div>
+    )}
 
-      <!-- Media column: right on lg+, below on smaller -->
-      <div class="lg:col-span-5 mt-12 lg:mt-0">
-        <slot name="media" />
-      </div>
+    <div class="flex flex-1 flex-col justify-center py-10 lg:py-12">
+      <h1
+        data-split
+        data-split-delay="0.1"
+        class="display text-balance max-w-[14ch] lg:max-w-[16ch]"
+        style="font-size: clamp(2.75rem, 1.2rem + 5.2vw, 6.25rem)"
+      >
+        {title}
+      </h1>
+
+      {subtitle && (
+        <p data-hero-in class="mute mt-6 leading-relaxed" style="font-size: var(--fs-20); max-width: 52ch">
+          {subtitle}
+        </p>
+      )}
+
+      {(primaryCta || secondaryCta) && (
+        <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4" data-hero-in>
+          {primaryCta && (
+            <Button href={primaryHref} external={primaryExternal} size="lg" variant="primary">
+              {primaryCta}
+            </Button>
+          )}
+          {secondaryCta && (
+            <Button href={secondaryHref} size="lg" variant="ghost">
+              {secondaryCta} →
+            </Button>
+          )}
+        </div>
+      )}
+      <slot name="media" />
     </div>
-  </div>
+
+    {stats.length > 0 && (
+      <dl class="hero-stats relative z-10 m-0 grid grid-cols-2 lg:grid-cols-4 border-t">
+        {stats.map((s, i) => (
+          <div
+            class:list={[
+              'py-5 pr-4 lg:py-6',
+              i % 2 === 1 && 'border-l pl-5',
+              i > 1 && 'border-t lg:border-t-0',
+              i > 0 && 'lg:border-l lg:pl-5',
+            ]}
+          >
+            <dd class="display m-0 tabular-nums" style="font-size: var(--fs-36); line-height: 1">{s.value}</dd>
+            <dt class="mute mt-2 text-sm">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
+    )}
+  </Container>
 </section>
+
+<style>
+  .hero-stats, .hero-stats > div { border-color: var(--color-bnc-plate-line); }
+  .hero-numeral {
+    right: -2vw;
+    bottom: 5rem;
+    font-size: clamp(11rem, 5rem + 34vw, 36rem);
+  }
+  @media (max-width: 640px) {
+    .hero-numeral { bottom: 11rem; right: -4vw; }
+  }
+</style>

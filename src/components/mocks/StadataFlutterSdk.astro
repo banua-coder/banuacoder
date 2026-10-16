@@ -1,0 +1,83 @@
+---
+/**
+ * Port of the live pub.dev package page (https://pub.dev/packages/stadata_flutter_sdk), measured at a 1280x800 capture.
+ * Stage = 1280x720 real px scaled by --u (container width / 1280). Measured values:
+ *   header 50px #1c2834 | title 36px at x92,y114 | tag row y215 h27, 12px #1967d2 on #e7f8ff
+ *   tab bar x80 w788 y267 h52 #f5f5f7, active tab #1967d2 500 + 2px underline | readme column x92 w776, text 16px #4a4a4a
+ *   h1 36px, rule #eaecef | sidebar x988 w190 | pre 13.6px on #f5f5f7.
+ * Copy: README (packages/.. README.md "Quick Example") and the pub.dev metadata line. Font: pub.dev uses Google Sans, drawn here in the site's sans.
+ * Left out on purpose: version, likes/points/downloads counters, badges, third-party banner art (BPS's, not ours).
+ */
+import Code from './_Code.astro'
+const { locale = 'id' } = Astro.props
+const lines = [
+  '<em class="k">import</em> <em class="s">\'package:stadata_flutter_sdk/stadata_flutter_sdk.dart\'</em>;',
+  '&#8203;',
+  '<em class="k">final</em> stadata = StadataFlutter.instance;',
+  '<em class="k">await</em> stadata.init(apiKey: <em class="s">\'your_api_key_here\'</em>);',
+  '&#8203;',
+  '<em class="k">final</em> domains = <em class="k">await</em> stadata.list.domains(',
+  '  type: DomainType.all,',
+  ');',
+  '<em class="k">final</em> publications = <em class="k">await</em> stadata.list.publications(',
+  '  lang: DataLanguage.en,',
+  '  domain: <em class="s">\'0000\'</em>,',
+  ');',
+]
+const tabs = ['Readme', 'Changelog', 'Installing', 'Versions', 'Scores']
+const plat = ['Android', 'iOS', 'Linux', 'macOS', 'Web', 'Windows']
+---
+<div class="mk-s mk-w pd">
+  <div class="pd-hd"><i></i><span>pub.dev</span></div>
+  <h2 class="pd-title">stadata_flutter_sdk</h2>
+  <p class="pd-meta">Published • <b>banuacoders.com</b></p>
+  <div class="pd-tags">
+    <span class="pd-tag"><u>SDK</u><s>FLUTTER</s></span>
+    <span class="pd-tag"><u>PLATFORM</u><s>{plat.map((p) => <em>{p.toUpperCase()}</em>)}</s></span>
+  </div>
+  <div class="pd-tabs">{tabs.map((t, i) => <span class:list={{ on: i === 0 }}>{t}</span>)}</div>
+  <div class="pd-main">
+    <h1>STADATA Flutter SDK - Simplified Access to <a>WebAPI</a> BPS</h1>
+    <p>{locale === 'en'
+      ? 'A Flutter SDK for the official BPS WebAPI: publications, press releases, static and dynamic tables.'
+      : 'SDK Flutter untuk WebAPI resmi BPS: publikasi, rilis berita, tabel statis dan tabel dinamis.'}</p>
+    <div class="pd-pre mk-term"><Code lines={lines} /></div>
+  </div>
+  <aside class="pd-side">
+    <h4>Documentation</h4><a>API reference</a><hr />
+    <h4>Publisher</h4><a>banuacoders.com</a><hr />
+    <h4>Metadata</h4><p>Streamline BPS Statistics API integration in Flutter. Easily fetch, analyze, and visualize data.</p>
+  </aside>
+</div>
+<style>
+.pd{--u:calc(100cqw / 1280);background:#fff;color:#4a4a4a;font-family:var(--font-sans,system-ui,sans-serif);font-size:calc(16 * var(--u))}
+.pd *{margin:0}
+.pd-hd{height:calc(50 * var(--u));background:#1c2834;color:#f8f9fa;display:flex;align-items:center;gap:calc(10 * var(--u));padding-left:calc(50 * var(--u));font-size:calc(28 * var(--u));font-weight:500;letter-spacing:-.01em}
+.pd-hd i{width:calc(22 * var(--u));height:calc(22 * var(--u));background:#027df0;transform:rotate(45deg) scale(.8);border-radius:calc(3 * var(--u))}
+.pd-title{position:absolute;left:calc(92 * var(--u));top:calc(114 * var(--u));font-size:calc(36 * var(--u));font-weight:400;line-height:calc(54 * var(--u));white-space:nowrap}
+.pd-meta{position:absolute;left:calc(92 * var(--u));top:calc(182 * var(--u));font-size:calc(16 * var(--u));line-height:calc(24 * var(--u))}
+.pd-meta b{color:#1967d2;font-weight:400}
+.pd-tags{position:absolute;left:calc(92 * var(--u));top:calc(215 * var(--u));display:flex;gap:calc(15 * var(--u));font-size:calc(12 * var(--u))}
+.pd-tag{display:inline-flex;height:calc(27 * var(--u));align-items:center;border-radius:calc(4 * var(--u));background:#e7f8ff;color:#1967d2;padding:0 calc(8 * var(--u));gap:calc(8 * var(--u));text-transform:uppercase}
+.pd-tag u{text-decoration:none;font-weight:700;padding-right:calc(8 * var(--u));border-right:1px solid #fff}
+.pd-tag s{text-decoration:none;display:flex;gap:calc(14 * var(--u))}
+.pd-tag em{font-style:normal}
+.pd-tabs{position:absolute;left:calc(80 * var(--u));top:calc(267 * var(--u));width:calc(788 * var(--u));height:calc(52 * var(--u));background:#f5f5f7;display:flex;align-items:center;gap:calc(30 * var(--u));padding-left:calc(12 * var(--u));font-size:calc(16 * var(--u))}
+.pd-tabs span{height:100%;display:flex;align-items:center}
+.pd-tabs .on{color:#1967d2;font-weight:500;box-shadow:inset 0 -calc(3 * var(--u)) #1967d2}
+.pd-main{position:absolute;left:calc(92 * var(--u));top:calc(342 * var(--u));width:calc(776 * var(--u))}
+.pd-main h1{font-size:calc(36 * var(--u));font-weight:400;line-height:calc(45 * var(--u));padding-bottom:calc(12 * var(--u));border-bottom:1px solid #eaecef}
+.pd-main h1 a{color:#1967d2}
+.pd-main>p{font-size:calc(16 * var(--u));line-height:calc(27 * var(--u));margin:calc(16 * var(--u)) 0}
+.pd-pre{border-radius:calc(6 * var(--u));height:calc(236 * var(--u));display:flex;background:#f5f5f7;overflow:hidden}
+.pd-pre :global(.mk-code){font-size:calc(13.6 * var(--u));padding:calc(12 * var(--u)) calc(16 * var(--u));line-height:calc(18 * var(--u));color:#4a4a4a;background:#f5f5f7}
+.pd-pre :global(.mk-code p){flex:none}
+.pd-pre :global(.mk-code .k){color:#a626a4}
+.pd-pre :global(.mk-code .s){color:#50a14f}
+.pd-pre :global(.mk-code .c){color:#8a8f98}
+.pd-side{position:absolute;left:calc(988 * var(--u));top:calc(342 * var(--u));width:calc(190 * var(--u));font-size:calc(16 * var(--u))}
+.pd-side h4{font-weight:400;font-size:calc(16 * var(--u));line-height:calc(24 * var(--u));margin-bottom:calc(8 * var(--u))}
+.pd-side a{color:#1967d2;display:block;line-height:calc(24 * var(--u))}
+.pd-side p{line-height:calc(24 * var(--u))}
+.pd-side hr{border:0;border-top:1px solid #eaecef;margin:calc(16 * var(--u)) 0}
+</style>

@@ -1,0 +1,85 @@
+---
+/**
+ * Port of the SE Merchant Scraper Chrome extension popup/tab UI (~/Documents/Projects/VsCode/se-merchant-scraper,
+ * React + Tailwind v4 + shadcn): src/App.tsx, components/sidebar.tsx, tabs/scraper-tab.tsx, components/platform-grid.tsx,
+ * lib/constants.ts (PLATFORMS colours), index.css (se-orange / se-dark tokens). Idle state of the Scraper tab, 1280x800.
+ * Client work for BPS: generic structure only, no scraped, respondent or business data. The product's Sensus Ekonomi
+ * logo is a government mark and is NOT copied: a neutral drawn glyph stands in. UI copy is the product's own (Indonesian)
+ * in both locales; Stage size: 1em = 1 design px (font-size = 100cqw/1280), leaf text sets its own size.
+ */
+interface Props { locale?: 'id' | 'en' }
+const plats = [['Tokopedia', '#42b549', 1], ['Shopee', '#ee4d2d', 1], ['GrabFood', '#00b14f', 0], ['GoFood', '#00aa13', 1], ['Lazada', '#0f146d', 0], ['Blibli', '#0095da', 0]] as const
+const regions = [['Provinsi', 'Pilih Provinsi'], ['Kabupaten / Kota', 'Pilih Kab/Kota'], ['Kecamatan', 'Pilih Kecamatan']]
+---
+<div class="se">
+  <aside class="sd">
+    <div class="br">
+      <span class="lgo"><svg viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="30" rx="8" fill="none" stroke="#E8852E" stroke-width="3"/><path d="M14 16c0-3 8-3 8 0s-8 4-8 7 8 3 8 0M26 14v12m0-6h5" fill="none" stroke="#F5B731" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      <p><b class="t11">Sensus Ekonomi</b><b class="t10 or4">2026</b></p>
+    </div>
+    <nav>
+      <p class="nv on"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><i class="t14">Scraper</i></p>
+      <p class="nv"><svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg><i class="t14">Data</i></p>
+      <p class="nv"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1m0-14.2L17 7M7 17l-2.1 2.1"/></svg><i class="t14">Pengaturan</i></p>
+    </nav>
+    <div class="stt"><span class="dt"></span><i class="t12">Siap</i></div>
+  </aside>
+  <main>
+    <p class="t18 h1">Merchant Scraper</p>
+    <p class="t14 sub">Kumpulkan data merchant dari platform e-commerce Indonesia</p>
+    <section class="cd c1">
+      <p class="t14 sb ct">Wilayah</p>
+      <div class="g3">
+        {regions.map(([l, ph]) => (
+          <div><p class="t12 md lbl">{l}</p><div class="cb"><i class="t14 mut">{ph}</i><svg viewBox="0 0 24 24"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></div></div>
+        ))}
+      </div>
+    </section>
+    <section class="cd c2">
+      <div class="ph"><p class="t14 sb g7">Platform</p><i class="t12 md or5">Pilih Semua</i></div>
+      <div class="pg">
+        {plats.map(([n, c, on]) => (
+          <p class:list={['pt', { on }]}><span class="pd" style={`background:${c}`}></span><i class="t14 md">{n}</i></p>
+        ))}
+      </div>
+    </section>
+    <p class="go"><svg viewBox="0 0 24 24"><path d="M6 3l14 9-14 9z"/></svg><i class="t14 sb">Mulai Scraping</i></p>
+  </main>
+</div>
+
+<style>
+  .se { --u: calc(100cqw / 1280); font-size: var(--u); position: absolute; inset: 0; display: flex; background: #f9fafb; color: #111827;
+    font-family: 'Plus Jakarta Sans', var(--font-sans, ui-sans-serif), system-ui, sans-serif; line-height: 1.5; overflow: hidden; }
+  .se * { box-sizing: border-box; margin: 0; }
+  .se i, .se b { font-style: normal; }
+  .se .t10 { font-size: 10em; line-height: 1.5; } .se .t11 { font-size: 11em; line-height: 1.35; } .se .t12 { font-size: 12em; line-height: 1.333; }
+  .se .t14 { font-size: 14em; line-height: 1.4286; } .se .t18 { font-size: 18em; line-height: 1.5556; }
+  .se .sb { font-weight: 600; } .se .md { font-weight: 500; } .se b { font-weight: 700; }
+  .se .or4 { color: #F09843; display: block; } .se .or5 { color: #E8852E; } .se .g7 { color: #374151; } .se .mut { color: #737373; }
+  .sd { width: 200em; flex: none; background: #1A1A1A; color: #fff; border-right: 1em solid rgba(255,255,255,.1); display: flex; flex-direction: column; }
+  .br { height: 73em; padding: 0 16em; display: flex; align-items: center; gap: 10em; border-bottom: 1em solid rgba(255,255,255,.1); }
+  .br b { display: block; color: rgba(255,255,255,.9); letter-spacing: .025em; } .br .or4 { letter-spacing: 0; }
+  .lgo svg { width: 40em; height: 40em; display: block; }
+  nav { flex: 1; padding: 12em 8em; display: grid; gap: 4em; align-content: start; }
+  .nv { height: 36em; padding: 0 12em; border-radius: 8em; display: flex; align-items: center; gap: 10em; color: rgba(255,255,255,.5); font-weight: 500; }
+  .nv.on { background: rgba(232,133,46,.15); color: #F09843; }
+  .nv svg { width: 18em; height: 18em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .stt { height: 41em; padding: 0 16em; border-top: 1em solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 8em; color: rgba(255,255,255,.5); }
+  .dt { width: 8em; height: 8em; border-radius: 50%; background: #9ca3af; }
+  main { flex: 1; min-width: 0; padding: 20em; }
+  .h1 { font-weight: 700; color: #111827; } .sub { color: #6b7280; }
+  .cd { background: #fff; border: 1em solid #e5e7eb; border-radius: 14em; box-shadow: 0 1em 3em rgba(0,0,0,.1), 0 1em 2em rgba(0,0,0,.06); padding: 24em; }
+  .se .c1 { margin-top: 16em; height: 174em; padding-top: 24em; display: flex; flex-direction: column; gap: 49em; } .se .c2 { margin-top: 16em; height: 182em; padding-top: 41em; }
+  .g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12em; }
+  .g3 > div { display: grid; gap: 4em; align-content: start; }
+  .lbl { color: #374151; }
+  .cb { height: 36em; border: 1em solid #e5e7eb; border-radius: 8em; padding: 0 12em; display: flex; align-items: center; justify-content: space-between; }
+  .cb svg { width: 16em; height: 16em; fill: none; stroke: #737373; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: .6; }
+  .se .ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12em; }
+  .pg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8em; }
+  .pt { height: 38em; padding: 0 12em; border: 1em solid #e5e7eb; border-radius: 8em; background: #fff; color: #6b7280; display: flex; align-items: center; gap: 8em; }
+  .pt.on { border-color: #F09843; background: #FFF5EB; color: #111827; }
+  .pd { width: 10em; height: 10em; border-radius: 50%; flex: none; }
+  .se .go { margin-top: 16em; height: 40em; border-radius: 8em; background: rgba(232,133,46,.5); color: #fff; display: flex; align-items: center; justify-content: center; gap: 8em; }
+  .go svg { width: 16em; height: 16em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+</style>

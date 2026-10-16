@@ -1,23 +1,15 @@
 ---
 /**
- * MonoLabel — small uppercase mono text with leading // or > prefix.
- * Used as eyebrow/category tag above section headers.
+ * MonoLabel: folio-style label (mono, tracked, uppercase). Prefix is optional and empty by default.
  */
 interface Props {
-  /** Prefix character — defaults to // */
   prefix?: '//' | '>' | ''
-  /** Extra CSS classes */
   class?: string
 }
 
-const { prefix = '//', class: cls = '' } = Astro.props
+const { prefix = '', class: cls = '' } = Astro.props
 ---
 
-<span
-  class:list={[
-    'font-mono text-xs tracking-widest uppercase text-bnc-stone-500 dark:text-bnc-stone-400',
-    cls,
-  ]}
->
+<span class:list={['folio text-bnc-stone-600 dark:text-bnc-stone-400', cls]}>
   {prefix && <span aria-hidden="true">{prefix}&nbsp;</span>}<slot />
 </span>

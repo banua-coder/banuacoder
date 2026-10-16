@@ -1,0 +1,239 @@
+---
+/**
+ * ServicesIndex — shared body of /services/ (id) and /en/services/ (en).
+ * A numbered contents page: masthead, two plates (Build & Engineer / Brand & Grow) of ruled rows,
+ * engagement models as hairline columns, then the booking CTA.
+ */
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import ServiceCard from '../cards/ServiceCard.astro'
+import CTA from '../sections/CTA.astro'
+import buildImg from '../../assets/stock/workspace-code-monitor.jpg'
+import brandImg from '../../assets/stock/designer-sketch-tools.jpg'
+{/* buildImg — unsplash: https://unsplash.com/photos/black-laptop-computer-1517694712202-14dd9538aa97 */}
+{/* brandImg — unsplash: https://unsplash.com/photos/person-holding-pencil-and-stick-note-beside-table-1541462608143-67571c6738dd */}
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const base = en ? '/en' : ''
+
+const services = (await getCollection('services', ({ data }) => data.locale === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+)
+// continuous numbering across the whole contents page, in reading order
+const reading = ['customer-facing', 'internal-ops', 'product-engineering', 'design', 'social-media'] as const
+const byCategory = Object.fromEntries(reading.map((c) => [c, services.filter((s) => s.data.category === c)])) as Record<
+  (typeof reading)[number],
+  typeof services
+>
+const numberOf = new Map<string, number>()
+reading.forEach((c) => byCategory[c].forEach((s) => numberOf.set(s.data.slug, numberOf.size + 1)))
+
+const t = en
+  ? {
+      title: 'App & Website Development Services — Banua Coder',
+      description: 'Banua Coder helps businesses build websites, mobile apps, operational systems, brand design, and social media management.',
+      skip: 'Skip to main content',
+      folio: 'Contents',
+      h1: 'Services',
+      intro: 'From customer-facing digital products to internal operational systems, brand design, and social media — Banua Coder helps businesses build relevant, growth-ready solutions.',
+      build: [
+        "Behind every growing business is a digital system that actually works. A website that loads fast. An app that doesn't disappoint users when it matters. A dashboard that gives data visibility without requiring manual reports. These aren't luxuries — they're the operational foundation modern businesses need.",
+        "Banua Coder builds digital products and systems with genuine engineering discipline: structures built to evolve, code that can be maintained, and delivery that's clear step by step. Our founder brings experience from complex product engineering environments — large-scale fintech, international consumer platforms, and public systems — so those standards of thinking show up in every project we take on, regardless of its size.",
+      ],
+      buildImgAlt: 'Engineer at workstation — Banua Coder engineering approach',
+      cats: {
+        'customer-facing': ['Customer-Facing Products', 'Websites, mobile apps, portals, and membership experiences for businesses wanting a more professional digital presence.'],
+        'internal-ops': ['Internal Operational Systems', 'Dashboards, admin panels, approval workflows, and internal tools that streamline business operations.'],
+        'product-engineering': ['Product Engineering & Support', 'Discovery, MVP, modernization, and long-term engineering support for digital products built to grow.'],
+        design: ['Design', 'UI/UX design, logos, brand identity, and marketing collateral — all with a consistent, purposeful visual approach.'],
+        'social-media': ['Social Media', 'Strategy, content, and community management to build a relevant and measurable audience.'],
+      },
+      grow: [
+        'A great product without a strong brand rarely lasts. For F&B, beauty, and SME businesses, visual and digital presence is the primary entry point for new customers. A careless logo, an inconsistent Instagram feed, or no presence at all — these send the wrong signal before your product has a chance to speak for itself.',
+        'Banua Coder helps businesses build a strong visual identity and a social media presence that actually works. Not just active posting — but structured, consistent, and aligned with brand character. Our design team combines experience in brand identity, product design, and digital content to ensure every customer touchpoint builds trust.',
+      ],
+      growImgAlt: 'Designer working on brand identity — Banua Coder brand and grow',
+      engH: 'How to work with us',
+      engSub: 'We adapt the engagement model to your needs and business stage — not one size for all.',
+      engFolio: 'Engagement models',
+      engCta: 'Discuss this engagement →',
+      models: [
+        { title: 'Project-Based', tagline: 'Fixed scope, clear timeline, defined price.', bullets: ['Clearly defined deliverables and milestones', 'Ideal for websites, apps, or new systems', 'Works best when requirements are reasonably clear upfront'] },
+        { title: 'Discovery Sprint', tagline: 'Validate and define scope in 1–2 weeks.', bullets: ['Focused sessions to map problem and solution', 'Produces documented scope ready for build', 'Reduce risk before committing to full development'] },
+        { title: 'Monthly Retainer', tagline: 'Engineering capacity available every month.', bullets: ['Regular developer or designer without full-time hiring', 'Suited for product iteration or ongoing marketing work', 'Flexible to changing needs month to month'] },
+        { title: 'Managed Services', tagline: 'Long-term partnership from build to support.', bullets: ['End-to-end from scoping, delivery, to maintenance', 'Ideal for organizations without an internal technical team', 'One partner for all long-term digital needs'] },
+      ],
+      est: 'Not sure about the cost?',
+      estLink: 'Try the estimate calculator →',
+      ctaH: 'Ready to discuss your needs?',
+      ctaSub: 'Let us map the most realistic solution for your business right now.',
+      ctaLink: 'Schedule a Discussion',
+    }
+  : {
+      title: 'Layanan Pengembangan Aplikasi & Website — Banua Coder',
+      description: 'Banua Coder membantu bisnis membangun website, aplikasi mobile, sistem operasional, desain brand, dan social media management.',
+      skip: 'Lewati ke konten utama',
+      folio: 'Daftar isi',
+      h1: 'Layanan',
+      intro: 'Dari produk digital customer-facing hingga sistem operasional internal, desain brand, dan social media—Banua Coder membantu bisnis membangun solusi yang relevan dan siap tumbuh.',
+      build: [
+        'Di balik setiap bisnis yang tumbuh ada sistem digital yang bekerja dengan benar. Website yang memuat cepat. Aplikasi yang tidak mengecewakan pengguna saat dipakai. Dashboard yang memberi visibilitas data tanpa perlu meminta laporan manual. Ini bukan fitur mewah—ini adalah fondasi operasional yang bisnis modern butuhkan.',
+        'Banua Coder membangun produk dan sistem digital dengan engineering discipline yang sesungguhnya: struktur yang siap dikembangkan, kode yang bisa di-maintain, dan delivery yang jelas tahap demi tahap. Founder kami membawa pengalaman dari lingkungan product engineering yang kompleks—fintech skala besar, platform consumer internasional, dan sistem publik—sehingga standar berpikir itu tercermin di setiap proyek yang kami kerjakan, terlepas dari ukurannya.',
+      ],
+      buildImgAlt: 'Engineer at workstation — Banua Coder engineering approach',
+      cats: {
+        'customer-facing': ['Customer-Facing Products', 'Website, aplikasi mobile, portal, dan membership experience untuk bisnis yang ingin hadir lebih profesional secara digital.'],
+        'internal-ops': ['Internal Operational Systems', 'Dashboard, admin panel, approval workflow, dan sistem internal yang merapikan operasional bisnis.'],
+        'product-engineering': ['Product Engineering & Support', 'Discovery, MVP, modernisasi, dan dukungan engineering jangka panjang untuk produk digital yang siap berkembang.'],
+        design: ['Design', 'UI/UX design, logo, brand identity, dan materi marketing—semuanya dengan pendekatan visual yang konsisten dan purposeful.'],
+        'social-media': ['Social Media', 'Strategi, konten, dan community management untuk membangun audiens yang relevan dan terukur.'],
+      },
+      grow: [
+        'Produk yang baik tanpa brand yang kuat jarang bertahan lama. Untuk bisnis F&B, kecantikan, dan UMKM, kehadiran visual dan digital adalah pintu masuk utama bagi pelanggan baru. Logo yang asal-asalan, feed Instagram yang tidak konsisten, atau tidak ada presence sama sekali—semua ini memberi sinyal yang salah sebelum produk Anda sempat berbicara sendiri.',
+        'Banua Coder membantu bisnis membangun identitas visual yang kuat dan kehadiran media sosial yang benar-benar bekerja. Bukan sekadar aktif posting—tetapi terstruktur, konsisten, dan selaras dengan karakter brand. Tim desain kami menggabungkan pengalaman di brand identity, product design, dan konten digital untuk memastikan setiap touchpoint memperkuat kepercayaan pelanggan.',
+      ],
+      growImgAlt: 'Designer working on brand identity — Banua Coder brand and grow',
+      engH: 'Cara bekerja sama dengan kami',
+      engSub: 'Kami menyesuaikan model keterlibatan dengan kebutuhan dan tahap bisnis Anda—bukan satu ukuran untuk semua.',
+      engFolio: 'Model kerja sama',
+      engCta: 'Diskusikan model ini →',
+      models: [
+        { title: 'Project-Based', tagline: 'Scope tetap, timeline jelas, harga pasti.', bullets: ['Deliverables dan milestone yang terdefinisi dengan jelas', 'Cocok untuk website, aplikasi, atau sistem baru', 'Ideal jika requirement sudah cukup jelas di awal'] },
+        { title: 'Discovery Sprint', tagline: 'Validasi dan definisi scope dalam 1–2 minggu.', bullets: ['Sesi terfokus untuk memetakan problem dan solusi', 'Menghasilkan scope yang terdokumentasi dan siap build', 'Reduce risk sebelum komitmen ke development penuh'] },
+        { title: 'Retainer Bulanan', tagline: 'Kapasitas engineering tersedia setiap bulan.', bullets: ['Developer atau designer reguler tanpa hire full-time', 'Cocok untuk iterasi produk atau marketing rutin', 'Fleksibel untuk kebutuhan yang berubah dari bulan ke bulan'] },
+        { title: 'Managed Services', tagline: 'Long-term partnership dari build sampai support.', bullets: ['End-to-end dari scoping, delivery, hingga maintenance', 'Cocok untuk organisasi tanpa tim teknis internal', 'Satu partner untuk semua kebutuhan digital jangka panjang'] },
+      ],
+      est: 'Tidak yakin biayanya?',
+      estLink: 'Coba kalkulator estimasi →',
+      ctaH: 'Siap mendiskusikan kebutuhan Anda?',
+      ctaSub: 'Mari petakan solusi yang paling realistis untuk bisnis Anda saat ini.',
+      ctaLink: 'Jadwalkan Diskusi',
+    }
+
+const sections = [
+  { id: 'build', tone: 'chalk' as const, n: '01', title: 'Build & Engineer', paras: t.build, img: buildImg, alt: t.buildImgAlt, cats: reading.slice(0, 3), imgFirst: false },
+  { id: 'grow', tone: 'plate' as const, n: '02', title: 'Brand & Grow', paras: t.grow, img: brandImg, alt: t.growImgAlt, cats: reading.slice(3), imgFirst: true },
+]
+---
+
+<BaseLayout title={t.title} description={t.description} ogImage={ogUrl(en ? 'en-services' : 'services')}>
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white"
+  >
+    {t.skip}
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Masthead -->
+    <section aria-labelledby="services-hero-heading" class="plate-chalk relative overflow-hidden" style="padding-top: calc(var(--spacing-section-y-sm) + 4rem); padding-bottom: var(--spacing-section-y-sm)">
+      <p class="numeral absolute -right-4 bottom-0 !text-bnc-stone-200 dark:!text-bnc-stone-800 tabular-nums" aria-hidden="true" data-parallax="0.1">{String(services.length).padStart(2, '0')}</p>
+      <Container class="relative">
+        <div class="folio flex justify-between gap-4 border-b border-bnc-ink dark:border-bnc-paper pb-3 mb-10 lg:mb-16">
+          <span>{t.folio}</span>
+          <span class="tabular-nums">Palu — 2019</span>
+        </div>
+        <div class="grid lg:grid-cols-12 gap-8">
+          <h1 id="services-hero-heading" class="display lg:col-span-9" style="font-size: var(--fs-84)" data-split>{t.h1}</h1>
+          <p class="lg:col-span-5 text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed" style="font-size: var(--fs-20)">{t.intro}</p>
+        </div>
+      </Container>
+    </section>
+
+    {sections.map((sec) => (
+      <section
+        id={sec.id}
+        aria-labelledby={`${sec.id}-heading`}
+        class={sec.tone === 'plate' ? 'plate' : 'plate-chalk'}
+        style="padding-block: var(--spacing-section-y)"
+      >
+        <Container>
+          <div
+            class:list={['folio flex justify-between gap-4 border-b pb-3 mb-10', sec.tone === 'plate' ? 'rule' : 'border-bnc-ink dark:border-bnc-paper']}
+            data-rule
+          >
+            <span>№ {sec.n} / {sec.title}</span>
+          </div>
+          <h2 id={`${sec.id}-heading`} class="display mb-10" style="font-size: var(--fs-64)">{sec.title}</h2>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
+            <div
+              class:list={['lg:col-span-6 flex flex-col gap-4 leading-relaxed', sec.tone === 'plate' ? 'text-white' : 'text-bnc-stone-700 dark:text-bnc-stone-300', sec.imgFirst ? 'lg:order-2 lg:col-start-7' : '']}
+              style="font-size: var(--fs-17)"
+            >
+              {sec.paras.map((p) => <p>{p}</p>)}
+            </div>
+            <div class:list={['lg:col-span-5 border', sec.tone === 'plate' ? 'border-white/40' : 'border-bnc-ink dark:border-bnc-paper/40', sec.imgFirst ? 'lg:order-1' : 'lg:col-start-8']}>
+              <Image src={sec.img} alt={sec.alt} width={700} class="w-full object-cover" style="max-height: 300px" loading="lazy" decoding="async" />
+            </div>
+          </div>
+
+          {sec.cats.map((cat) => byCategory[cat].length > 0 && (
+            <div class="mb-14 last:mb-0">
+              <div class="grid lg:grid-cols-12 gap-x-6 mb-6">
+                <h3 class="folio lg:col-span-4">{t.cats[cat][0]}</h3>
+                <p class:list={['lg:col-span-6 mt-2 lg:mt-0', sec.tone === 'plate' ? 'mute' : 'text-bnc-stone-600 dark:text-bnc-stone-400']} style="font-size: var(--fs-17)">{t.cats[cat][1]}</p>
+              </div>
+              <div class:list={['border-b', sec.tone === 'plate' ? 'border-white/25' : 'border-bnc-ink/80 dark:border-bnc-paper/40']}>
+                {byCategory[cat].map((svc) => (
+                  <ServiceCard
+                    title={svc.data.title}
+                    tagline={svc.data.tagline}
+                    deliverables={svc.data.deliverables}
+                    href={`${base}/services/${svc.data.slug}/`}
+                    index={numberOf.get(svc.data.slug)}
+                    tone={sec.tone}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </Container>
+      </section>
+    ))}
+
+    <!-- Engagement models -->
+    <section aria-labelledby="engagement-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="folio border-b border-bnc-ink dark:border-bnc-paper pb-3 mb-10">№ 03 / {t.engFolio}</div>
+        <div class="grid lg:grid-cols-12 gap-6 mb-12">
+          <h2 id="engagement-heading" class="display lg:col-span-7" style="font-size: var(--fs-64)">{t.engH}</h2>
+          <p class="lg:col-span-4 lg:col-start-9 text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">{t.engSub}</p>
+        </div>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-bnc-ink dark:border-bnc-paper">
+          {t.models.map((model, i) => (
+            <li class="flex flex-col gap-4 py-6 sm:px-6 border-b border-bnc-ink/30 dark:border-bnc-paper/30 lg:border-b-0 lg:border-l lg:first:border-l-0 lg:first:pl-0">
+              <span class="display text-bnc-stone-300 dark:text-bnc-stone-700 tabular-nums" style="font-size: var(--fs-48); line-height: 0.85" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="display" style="font-size: var(--fs-28)">{model.title}</h3>
+              <p class="font-medium" style="font-size: var(--fs-17)">{model.tagline}</p>
+              <ul class="flex flex-col flex-1 text-bnc-stone-600 dark:text-bnc-stone-400" style="font-size: var(--fs-14)">
+                {model.bullets.map((b) => (
+                  <li class="py-2 border-t border-bnc-ink/20 dark:border-bnc-paper/20">{b}</li>
+                ))}
+              </ul>
+              <a href={`${base}/contact/`} class="folio underline underline-offset-4 hover:text-bnc-primary dark:hover:text-bnc-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">{t.engCta}</a>
+            </li>
+          ))}
+        </ol>
+        <p class="folio mt-14 text-bnc-stone-600 dark:text-bnc-stone-400">
+          {t.est}{' '}
+          <a href={`${base}/estimate/`} class="text-bnc-accent-ink dark:text-bnc-accent underline underline-offset-4">{t.estLink}</a>
+        </p>
+      </Container>
+    </section>
+
+    <CTA headline={t.ctaH} sub={t.ctaSub} primaryCta={t.ctaLink} primaryHref={`${base}/contact/`} />
+  </main>
+
+  <Footer />
+</BaseLayout>

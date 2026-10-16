@@ -1,0 +1,128 @@
+---
+/**
+ * Port of sikerja-app (Flutter/GetX) Home tab. Sources:
+ *  app/modules/main/views/home_view.dart, main_view.dart, global_widgets/{main_menu_button,news_card,line_divider,app_chip}.dart,
+ *  core/values/{colors,style,size}.dart, core/themes/light_theme.dart, assets/locales/{id_ID,en_US}.json.
+ * Layout facts (dp, 390dp wide = 100cqw): status 24 + AppBar 56 (primary #303F9F, logo h28, search + support_agent icons);
+ * 80dp primary strip behind a 150dp banner (padding H16, radius 20); expanding dots 6dp; menu grid 210dp high,
+ * 2 rows x horizontal scroll, padding 8, cell 97dp, white tile r18 pad16 icon 24 shadow black@6% blur 8, label Oxygen 10 #717171,
+ * "Segera" badge #E81A1A; LineDivider 8dp #F7F8FF margin 8; section row "Blog" Red Hat Display 17/700 + "Lihat Semua" Open Sans 14/600 #0023C4;
+ * NewsCard viewport 0.6 (234dp), margin H16 V8, r12, shadow black@8% blur 10 y4, image 140, title RHD 14/700 #3F3F3F.
+ * Bottom bar: PersistentTabView, Open Sans 10/600, active #303F9F, inactive #A9A9A9.
+ * Not from source: banner photo (remote), article text and avatar (CMS data) are synthetic; menu icons are redrawn
+ * (two-tone #0033CC/#FFC519 like the app's PNG set); wordmark is drawn, not the client logo.
+ */
+interface Props { locale?: 'id' | 'en' }
+const en = Astro.props.locale === 'en'
+const items: [string, string, string, boolean][] = [
+  ['search', en ? 'Vacancy' : 'Lowongan', '', false],
+  ['cert', en ? 'Certification' : 'Sertifikasi', '', true],
+  ['user', en ? 'Worker' : 'Pekerja', '', true],
+  ['book', en ? 'Training' : 'Pelatihan', '', true],
+  ['tool', en ? 'Job Fair' : 'Bursa Kerja', '', true],
+  ['shop', 'E-Commerce', '', true],
+  ['grow', en ? 'Job Funding' : 'Pendanaan Kerja', '', true],
+  ['more', en ? 'Others' : 'Lainnya', '', true],
+]
+const soon = en ? 'Soon' : 'Segera'
+const tabs = [en ? 'Home' : 'Beranda', en ? 'History' : 'Riwayat', en ? 'Notifications' : 'Notifikasi', en ? 'Profile' : 'Profil']
+---
+<div class="sk">
+  <div class="sk-sb"><span>09:41</span><span class="sk-bat"></span></div>
+  <div class="sk-ab">
+    <span class="sk-logo">sikerja</span>
+    <svg viewBox="0 0 24 24" class="sk-ai"><circle cx="10" cy="10" r="6" fill="none" stroke="#fff" stroke-width="2"/><path d="M15 15l6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+    <svg viewBox="0 0 24 24" class="sk-ai"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="#fff" stroke-width="2"/><rect x="3" y="13" width="4" height="6" rx="1.5" fill="#fff"/><rect x="17" y="13" width="4" height="6" rx="1.5" fill="#fff"/><path d="M19 19c0 2-2 3-5 3" fill="none" stroke="#fff" stroke-width="2"/></svg>
+  </div>
+  <div class="sk-scroll">
+    <div class="sk-ban"><i></i><div class="sk-img"><span class="sk-ph"></span></div></div>
+    <div class="sk-dots"><b></b><b class="on"></b><b></b></div>
+    <div class="sk-grid">
+      {items.map(([ic, label, _x, cs]) => (
+        <div class="sk-it">
+          <div class="sk-tile">
+            <svg viewBox="0 0 24 24" class="sk-ic">
+              {ic === 'search' && <Fragment><circle cx="10" cy="10" r="6.5" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><path d="M15 15l6 6" stroke="#03C" stroke-width="2.4" stroke-linecap="round"/></Fragment>}
+              {ic === 'cert' && <Fragment><rect x="3" y="3" width="18" height="14" rx="3" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><path d="M7 8h6M7 12h4" stroke="#03C" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="13" r="3" fill="#FFC519"/><path d="M14.5 16v5l1.5-1 1.500 1v-5" fill="#FFC519"/></Fragment>}
+              {ic === 'user' && <Fragment><circle cx="12" cy="8" r="5" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><path d="M4 22c0-5 3-7 8-7s8 2 8 7z" fill="#FFC519"/></Fragment>}
+              {ic === 'book' && <Fragment><path d="M3 5c4-1.500 7-1 9 1 2-2 5-2.500 9-1v14c-4-1.500-7-1-9 1-2-2-5-2.500-9-1z" fill="#CEE1F2" stroke="#03C" stroke-width="2" stroke-linejoin="round"/><path d="M12 6v14" stroke="#03C" stroke-width="2"/><path d="M6 9h3M6 12h3M15 9h3" stroke="#FFC519" stroke-width="2" stroke-linecap="round"/></Fragment>}
+              {ic === 'tool' && <Fragment><path d="M9 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="#FFC519" stroke-width="2"/><rect x="2" y="7" width="20" height="13" rx="3" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><path d="M2 13h20" stroke="#03C" stroke-width="2"/><rect x="10" y="11" width="4" height="4" rx="1" fill="#FFC519"/></Fragment>}
+              {ic === 'shop' && <Fragment><path d="M3 9l2-6h14l2 6" fill="#CEE1F2" stroke="#03C" stroke-width="2" stroke-linejoin="round"/><path d="M4 9v12h16V9" fill="none" stroke="#03C" stroke-width="2"/><rect x="13" y="12" width="5" height="5" fill="#FFC519"/><path d="M7 21v-9h3v9" stroke="#03C" stroke-width="2" fill="none"/></Fragment>}
+              {ic === 'grow' && <Fragment><circle cx="12" cy="8" r="5" fill="#FFC519" stroke="#03C" stroke-width="2"/><path d="M12 13v8M12 17c-3 0-5-1-5-4M12 18c3 0 5-1 5-4" fill="none" stroke="#03C" stroke-width="2" stroke-linecap="round"/></Fragment>}
+              {ic === 'more' && <Fragment><rect x="9" y="3" width="13" height="4" rx="2" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><rect x="9" y="10" width="13" height="4" rx="2" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><rect x="9" y="17" width="13" height="4" rx="2" fill="#CEE1F2" stroke="#03C" stroke-width="2"/><circle cx="4" cy="5" r="1.500" fill="#03C"/><circle cx="4" cy="12" r="1.500" fill="#FFC519"/><circle cx="4" cy="19" r="1.500" fill="#03C"/></Fragment>}
+            </svg>
+          </div>
+          {cs && <span class="sk-badge">{soon}</span>}
+          <span class="sk-lb">{label}</span>
+        </div>
+      ))}
+    </div>
+    <div class="sk-div"></div>
+    <div class="sk-sec"><span class="sk-h">Blog</span><span class="sk-lk">{en ? 'See All' : 'Lihat Semua'}</span></div>
+    <div class="sk-news">
+      {[0, 1].map(() => (
+        <div class="sk-card">
+          <div class="sk-ci"></div>
+          <p class="sk-ct">{en ? 'Sample article title shown here' : 'Contoh judul artikel ditampilkan di sini'}</p>
+          <p class="sk-cd">{en ? 'Monday, 01 Jan 2024' : 'Senin, 01 Jan 2024'}</p>
+          <p class="sk-cx">{en ? 'Sample excerpt text for the article preview, two lines at most.' : 'Contoh ringkasan teks pratinjau artikel, maksimal dua baris.'}</p>
+          <div class="sk-au"><span class="sk-av"></span><b>{en ? 'Author' : 'Penulis'}</b><em>{en ? '3 min read' : '3 menit baca'}</em></div>
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="sk-nav">
+    {tabs.map((t, i) => (
+      <span class:list={[i === 0 && 'on']}>
+        <svg viewBox="0 0 24 24">
+          {i === 0 && <path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z" fill="currentColor"/>}
+          {i === 1 && <path d="M4 8h16v11H4zM9 8V5h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>}
+          {i === 2 && <path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>}
+          {i === 3 && <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3-6 8-6s8 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>}
+        </svg>{t}
+      </span>
+    ))}
+  </div>
+</div>
+<style>
+  .sk { --d: calc(100cqw / 390); position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: #fff; color: #212121; font: 400 calc(14 * var(--d))/1.3 'Open Sans', var(--font-sans, system-ui, sans-serif); }
+  .sk * { box-sizing: border-box; }
+  .sk p { margin: 0; }
+  .sk-sb { height: calc(24 * var(--d)); background: #303F9F; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 calc(16 * var(--d)); font-size: calc(11 * var(--d)); font-weight: 600; flex: none; }
+  .sk-bat { width: calc(16 * var(--d)); height: calc(8 * var(--d)); border: calc(1.2 * var(--d)) solid #fff; border-radius: calc(2 * var(--d)); }
+  .sk-ab { height: calc(56 * var(--d)); background: #303F9F; display: flex; align-items: center; gap: calc(24 * var(--d)); padding: 0 calc(16 * var(--d)); flex: none; box-shadow: 0 calc(2 * var(--d)) calc(4 * var(--d)) #3F51B5; position: relative; z-index: 2; }
+  .sk-logo { flex: 1; font: 800 calc(24 * var(--d))/1 'Red Hat Display', var(--font-sans, system-ui, sans-serif); letter-spacing: -.02em; color: #FFC107; }
+  .sk-ai { width: calc(24 * var(--d)); height: calc(24 * var(--d)); flex: none; }
+  .sk-scroll { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .sk-ban { position: relative; height: calc(150 * var(--d)); flex: none; padding: 0 calc(16 * var(--d)); }
+  .sk-ban > i { position: absolute; left: 0; right: 0; top: 0; height: calc(80 * var(--d)); background: #303F9F; }
+  .sk-img { position: relative; height: 100%; border-radius: calc(20 * var(--d)); background: linear-gradient(135deg, #6675D1, #FFC107 160%); overflow: hidden; }
+  .sk-ph { position: absolute; right: calc(24 * var(--d)); bottom: calc(18 * var(--d)); width: calc(90 * var(--d)); height: calc(90 * var(--d)); border-radius: 50%; background: rgba(255,255,255,.22); }
+  .sk-dots { display: flex; justify-content: center; align-items: center; gap: calc(6 * var(--d)); height: calc(6 * var(--d)); margin-top: calc(14 * var(--d)); flex: none; }
+  .sk-dots b { width: calc(6 * var(--d)); height: calc(6 * var(--d)); border-radius: calc(6 * var(--d)); background: #EDEDED; }
+  .sk-dots b.on { width: calc(18 * var(--d)); background: #303F9F; }
+  .sk-grid { height: calc(210 * var(--d)); padding: calc(8 * var(--d)); display: grid; grid-template-rows: 1fr 1fr; grid-auto-flow: column; grid-auto-columns: calc(97 * var(--d)); flex: none; overflow: hidden; }
+  .sk-it { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 calc(8 * var(--d)); }
+  .sk-tile { width: calc(58 * var(--d)); height: calc(58 * var(--d)); padding: calc(16 * var(--d)); border-radius: calc(18 * var(--d)); background: #fff; box-shadow: 0 0 calc(8 * var(--d)) rgba(0,0,0,.06); }
+  .sk-ic { width: 100%; height: 100%; display: block; }
+  .sk-badge { position: absolute; top: calc(14 * var(--d)); right: calc(15 * var(--d)); background: #E81A1A; color: #fff; font: 700 calc(6 * var(--d))/1.3 Oxygen, var(--font-sans, system-ui, sans-serif); padding: calc(2 * var(--d)) calc(4 * var(--d)); border-radius: calc(18 * var(--d)); }
+  .sk-lb { margin-top: calc(8 * var(--d)); font: 400 calc(10 * var(--d))/1.3 Oxygen, var(--font-sans, system-ui, sans-serif); color: #717171; text-align: center; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .sk-div { height: calc(8 * var(--d)); margin: calc(8 * var(--d)) 0; background: #F7F8FF; flex: none; }
+  .sk-sec { display: flex; justify-content: space-between; align-items: center; height: calc(48 * var(--d)); padding: 0 calc(16 * var(--d)) 0 calc(16 * var(--d)); flex: none; }
+  .sk-h { font: 700 calc(17 * var(--d))/1.2 'Red Hat Display', var(--font-sans, system-ui, sans-serif); }
+  .sk-lk { font-weight: 600; font-size: calc(14 * var(--d)); color: #0023C4; padding: 0 calc(8 * var(--d)); }
+  .sk-news { display: flex; flex: none; overflow: hidden; }
+  .sk-card { position: relative; width: calc(234 * var(--d)); flex: none; height: calc(345 * var(--d)); margin: calc(8 * var(--d)) calc(16 * var(--d)); padding: 0; }
+  .sk-card { box-shadow: 0 calc(4 * var(--d)) calc(10 * var(--d)) rgba(0,0,0,.08); border-radius: calc(12 * var(--d)); background: #fff; width: calc(202 * var(--d)); margin-right: calc(16 * var(--d)); margin-left: calc(16 * var(--d)); }
+  .sk-ci { height: calc(140 * var(--d)); border-radius: calc(8 * var(--d)); background: linear-gradient(135deg, #D1D7FF, #C5CAE9); }
+  .sk-ct { position: absolute; top: calc(160 * var(--d)); left: calc(8 * var(--d)); right: calc(8 * var(--d)); font: 700 calc(14 * var(--d))/1.3 'Red Hat Display', var(--font-sans, system-ui, sans-serif); color: #3F3F3F; }
+  .sk-cd { position: absolute; top: calc(208 * var(--d)); left: calc(8 * var(--d)); font-size: calc(11 * var(--d)); font-style: italic; color: #909090; }
+  .sk-cx { position: absolute; top: calc(236 * var(--d)); left: calc(8 * var(--d)); right: calc(8 * var(--d)); font-size: calc(11 * var(--d)); line-height: 1.5; color: #212121; }
+  .sk-au { position: absolute; bottom: calc(8 * var(--d)); left: calc(8 * var(--d)); right: calc(8 * var(--d)); display: flex; align-items: center; gap: calc(8 * var(--d)); font-size: calc(12 * var(--d)); }
+  .sk-au b { flex: 1; font-weight: 700; } .sk-au em { font-style: normal; color: #A9A9A9; }
+  .sk-av { width: calc(32 * var(--d)); height: calc(32 * var(--d)); border-radius: 50%; background: #C5CAE9; }
+  .sk-nav { height: calc(76 * var(--d)); flex: none; display: flex; padding: calc(8 * var(--d)); background: #fff; box-shadow: 0 0 calc(4 * var(--d)) calc(4 * var(--d)) rgba(219,219,219,.4); position: relative; z-index: 2; }
+  .sk-nav span { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(2 * var(--d)); font: 600 calc(10 * var(--d))/1.2 'Open Sans', var(--font-sans, system-ui, sans-serif); color: #A9A9A9; }
+  .sk-nav span.on { color: #303F9F; }
+  .sk-nav svg { width: calc(24 * var(--d)); height: calc(24 * var(--d)); }
+</style>

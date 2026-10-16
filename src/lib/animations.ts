@@ -77,6 +77,96 @@ export function initAnimations(): () => void {
       )
     })
 
+    // ── Split-text masked reveal (zero-one-group style) ──────────────────────
+    // [data-split="words"] — each word is wrapped in an overflow-clip mask and
+    // slides up from below (transform only). Plain-text elements only.
+    // [data-split-delay="0.2"] optional delay (s). Fires once at top 95%.
+    gsap.utils.toArray<HTMLElement>('[data-split]').forEach((el) => {
+      const text = (el.textContent ?? '').trim()
+      if (!text) return
+      el.setAttribute('aria-label', text)
+      el.textContent = ''
+      const frag = document.createDocumentFragment()
+      text.split(/\s+/).forEach((w, i, arr) => {
+        const mask = document.createElement('span')
+        mask.className = 'split-mask'
+        mask.setAttribute('aria-hidden', 'true')
+        const word = document.createElement('span')
+        word.className = 'split-word'
+        word.textContent = w
+        mask.appendChild(word)
+        frag.appendChild(mask)
+        if (i < arr.length - 1) frag.appendChild(document.createTextNode(' '))
+      })
+      el.appendChild(frag)
+      el.classList.add('is-split')
+      gsap.fromTo(
+        el.querySelectorAll('.split-word'),
+        { yPercent: 110, rotation: 4 },
+        {
+          yPercent: 0,
+          rotation: 0,
+          duration: 0.9,
+          ease: 'expo.out',
+          stagger: 0.06,
+          delay: parseFloat(el.dataset.splitDelay ?? '0'),
+          scrollTrigger: { trigger: el, start: 'top 95%', once: true },
+        },
+      )
+    })
+
+    // ── Hero intro: eyebrow / subtitle / CTAs rise in after the headline ─────
+    const heroIn = gsap.utils.toArray<HTMLElement>('[data-hero-in]')
+    if (heroIn.length) {
+      gsap.fromTo(
+        heroIn,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.12, delay: 0.35 },
+      )
+    }
+
+    // ── Marquee ticker: [data-marquee] (+ data-marquee-speed px/s, default 60) ─
+    // Children are wrapped in a track, cloned once, and looped with xPercent.
+    // Hover slows the track; direction="right" reverses.
+    gsap.utils.toArray<HTMLElement>('[data-marquee]').forEach((el) => {
+      const kids = Array.from(el.children) as HTMLElement[]
+      if (!kids.length) return
+      const track = document.createElement('div')
+      track.style.cssText = 'display:flex;width:max-content;flex-wrap:nowrap;will-change:transform'
+      kids.forEach((k) => track.appendChild(k))
+      kids.forEach((k) => {
+        const c = k.cloneNode(true) as HTMLElement
+        c.setAttribute('aria-hidden', 'true')
+        track.appendChild(c)
+      })
+      el.appendChild(track)
+      el.style.overflow = 'hidden'
+      const speed = parseFloat(el.dataset.marqueeSpeed ?? '60')
+      const dir = el.dataset.marqueeDirection === 'right' ? 1 : -1
+      const half = track.scrollWidth / 2 // one read, before animating
+      const tween = gsap.fromTo(
+        track,
+        { x: dir === -1 ? 0 : -half },
+        { x: dir === -1 ? -half : 0, duration: half / speed, ease: 'none', repeat: -1 },
+      )
+      el.addEventListener('pointerenter', () => gsap.to(tween, { timeScale: 0.25, duration: 0.4 }))
+      el.addEventListener('pointerleave', () => gsap.to(tween, { timeScale: 1, duration: 0.4 }))
+    })
+
+    // ── Parallax: [data-parallax="0.2"] (fraction of own height, +/- ) ───────
+    gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+      const s = parseFloat(el.dataset.parallax ?? '0.15') * 50
+      gsap.fromTo(
+        el,
+        { yPercent: s },
+        {
+          yPercent: -s,
+          ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
+        },
+      )
+    })
+
     // ── Magnetic CTA (fine-pointer devices only) ──────────────────────────────
     if (window.matchMedia('(pointer: fine) and (hover: hover)').matches) {
       gsap.utils.toArray<HTMLElement>('[data-magnetic]').forEach((btn) => {

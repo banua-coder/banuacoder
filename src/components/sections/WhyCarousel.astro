@@ -1,16 +1,9 @@
 ---
 /**
- * WhyCarousel — pinned split-screen scroll-driven differentiator carousel.
- *
- * Section is h-[400vh]; inner pin is sticky top-0 h-screen.
- * Left column: eyebrow + display headline, always visible.
- * Right column: 4 tiles cycle through on scroll.
- * Each tile: large faded numeral + title + body paragraph.
- * Below active tile: progress dots (● ○ ○ ○ → ○ ● ○ ○ → …).
- *
- * GSAP timelines live in src/lib/animations.ts (`.why-carousel` selector).
- * Reduced-motion fallback: CSS collapses to a 4-card static grid.
+ * WhyCarousel: differentiators as a hairline-ruled list with tonal numerals.
+ * (Replaces the old pinned scroll carousel; the name is kept for backward compatibility.)
  */
+import Plate from '../layout/Plate.astro'
 
 interface WhyItem {
   title: string
@@ -24,130 +17,38 @@ interface Props {
   subhead?: string
   items: WhyItem[]
   lang?: 'id' | 'en'
+  tone?: 'plate' | 'chalk'
+  /** Override the folio text; defaults to "№ NN / eyebrow" from marker */
+  folio?: string
 }
 
-const { eyebrow, marker, title, items, lang = 'id' } = Astro.props
-
-const prefixLine =
-  lang === 'en' ? 'What sets us apart…' : 'Cara kami berbeda…'
+const { eyebrow, marker, title, items, tone = 'plate', folio } = Astro.props
+const num = marker.match(/\d+/)?.[0]
+const folioText = folio ?? `${num ? `№ ${num} / ` : ''}${eyebrow}`
 ---
 
-<section
-  class="why-carousel relative h-[400vh] bg-bnc-stone-50 dark:bg-bnc-stone-900"
-  aria-labelledby="why-carousel-heading"
->
-  <div class="why-carousel-pin sticky top-0 h-screen flex items-center overflow-hidden">
-    <div class="w-full max-w-[var(--container-max)] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-
-        <!-- Left: always-visible headline -->
-        <div class="flex flex-col gap-4">
-          <p class="font-mono text-xs uppercase tracking-widest text-bnc-stone-500 dark:text-bnc-stone-400">
-            // {eyebrow}
-          </p>
-          <div class="flex items-center gap-3">
-            <span class="font-mono text-xs tracking-widest text-bnc-accent shrink-0" aria-hidden="true">
-              {marker}
-            </span>
-            <h2
-              id="why-carousel-heading"
-              class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-tight"
-              style="font-size: var(--fs-36)"
-            >
-              {title}
-            </h2>
+<Plate tone={tone} folio={folioText} labelledby="why-carousel-heading" class="why-carousel">
+  <div class="grid gap-12 lg:grid-cols-12">
+    <h2 id="why-carousel-heading" class="display text-balance lg:col-span-5 lg:sticky lg:top-28 lg:self-start" style="font-size: var(--fs-64)">
+      {title}
+    </h2>
+    <ol class="list-none m-0 p-0 lg:col-span-7 border-b border-current/25" role="list">
+      {items.map((item, i) => (
+        <li class="why-row grid grid-cols-[4rem_1fr] sm:grid-cols-[6rem_1fr] gap-x-4 border-t border-current/25 py-8">
+          <span class="why-num display tabular-nums" style="font-size: var(--fs-48); line-height: 0.9" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <h3 class="display" style="font-size: var(--fs-28); line-height: 1.05">{item.title}</h3>
+            <p class="why-body mt-3 leading-relaxed" style="font-size: var(--fs-17); max-width: 50ch">{item.body}</p>
           </div>
-          <p class="font-mono text-sm text-bnc-stone-500 dark:text-bnc-stone-400 mt-2">
-            {prefixLine}
-          </p>
-
-          <!-- Progress dots: driven by GSAP opacity toggles -->
-          <div class="flex items-center gap-3 mt-6" aria-hidden="true">
-            {items.map((_, i) => (
-              <span
-                class="why-dot w-2 h-2 rounded-full bg-bnc-accent"
-                data-index={i}
-              />
-            ))}
-          </div>
-        </div>
-
-        <!-- Right: cycling tiles (stacked, GSAP controls visibility) -->
-        <div class="relative" style="min-height: 320px;">
-          {items.map((item, i) => (
-            <div
-              class="why-tile absolute inset-0 flex flex-col justify-center gap-5"
-              data-index={i}
-              aria-hidden={i !== 0}
-            >
-              <!-- Large faded numeral -->
-              <span
-                class="font-display font-bold text-bnc-stone-200 dark:text-bnc-stone-800 select-none leading-none"
-                style="font-size: var(--fs-84); line-height: 1;"
-                aria-hidden="true"
-              >
-                {String(i + 1).padStart(2, '0')}
-              </span>
-
-              <!-- Title + body -->
-              <div class="flex flex-col gap-3 -mt-6">
-                <div class="w-8 h-px bg-bnc-accent" aria-hidden="true" />
-                <h3
-                  class="font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug"
-                  style="font-size: var(--fs-28)"
-                >
-                  {item.title}
-                </h3>
-                <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-                  {item.body}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-    </div>
+        </li>
+      ))}
+    </ol>
   </div>
-</section>
+</Plate>
 
 <style>
-  /* Reduced-motion: collapse 400vh scroll space and show all tiles as a grid */
-  @media (prefers-reduced-motion: reduce) {
-    .why-carousel {
-      height: auto;
-    }
-    .why-carousel-pin {
-      position: static;
-      height: auto;
-      padding-block: var(--spacing-section-y);
-    }
-    /* Show all tiles as a 2-col static grid */
-    .why-carousel-pin > div > div {
-      display: block;
-    }
-    .why-carousel-pin .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    /* Right column: static list */
-    .why-carousel-pin .relative {
-      position: static;
-      min-height: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
-    }
-    .why-tile {
-      position: static !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      transform: none !important;
-    }
-    /* Hide progress dots in static mode */
-    .why-dot {
-      display: none;
-    }
-  }
+  .why-num { color: color-mix(in srgb, currentColor 38%, transparent); }
+  .why-body { color: color-mix(in srgb, currentColor 76%, transparent); }
 </style>

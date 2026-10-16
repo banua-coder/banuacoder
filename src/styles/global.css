@@ -7,65 +7,80 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* neutral foundation — dominates the page */
-  --color-bnc-ink: #0A0E14;
-  --color-bnc-paper: #F7F7F4;
+  /* THE PROSPECTUS — ultramarine plates alternate with chalk plates. */
+  --color-bnc-ink: #060B2E;          /* deep navy ink: dark-mode ground, body text */
+  --color-bnc-paper: #F1F3F9;        /* chalk: cool white plate */
+  --color-bnc-plate: #0B1FD0;        /* ultramarine plate: drenched sections */
+  --color-bnc-plate-lift: #1634F0;   /* tonal lift on a plate (giant numerals) */
+  --color-bnc-plate-line: rgba(255, 255, 255, 0.25);
+  --color-bnc-plate-mute: #A9B6FF;   /* secondary text on a plate (AA on plate) */
 
-  /* brand colors — used as accent only, sourced from the official logo */
-  --color-bnc-primary: #12398C;
+  /* legacy names kept so existing components repaint: primary = plate, accent = cyan */
+  --color-bnc-primary: #0B1FD0;
   --color-bnc-primary-fg: #FFFFFF;
-  --color-bnc-accent: #1D9CD4;
-  --color-bnc-accent-fg: #FFFFFF;
+  --color-bnc-accent: #3DE0F2;       /* cyan signal: on plates and dark only */
+  --color-bnc-accent-fg: #060B2E;
+  --color-bnc-accent-ink: #0A5C8A;   /* cyan, darkened for text on chalk (AA) */
 
-  /* warm stone scale (warm gray) */
-  --color-bnc-stone-50: #FAFAF9;
-  --color-bnc-stone-100: #F5F5F4;
-  --color-bnc-stone-200: #E7E5E4;
-  --color-bnc-stone-300: #D6D3D1;
-  --color-bnc-stone-400: #A8A29E;
-  --color-bnc-stone-500: #78716C;
-  --color-bnc-stone-600: #57534E;
-  --color-bnc-stone-700: #44403C;
-  --color-bnc-stone-800: #292524;
-  --color-bnc-stone-900: #1C1917;
+  /* cool slate scale replaces warm stone */
+  --color-bnc-stone-50: #F7F8FC;
+  --color-bnc-stone-100: #ECEFF8;
+  --color-bnc-stone-200: #D9DEEE;
+  --color-bnc-stone-300: #B9C1DB;
+  --color-bnc-stone-400: #8A93B5;
+  --color-bnc-stone-500: #5E6788;
+  --color-bnc-stone-600: #454D6E;
+  --color-bnc-stone-700: #2F3656;
+  --color-bnc-stone-800: #1A2040;
+  --color-bnc-stone-900: #0E1330;
 
-  /* fonts */
+  /* fonts: one grotesk family, mono only for folio labels */
   --font-display: 'Geist Variable', system-ui, sans-serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  /* spacing rhythm */
-  --spacing-section-y: clamp(6rem, 10vw, 10rem);
+  /* spacing rhythm: plates are generous */
+  --spacing-section-y: clamp(5rem, 9vw, 9rem);
   --spacing-section-y-sm: clamp(3rem, 5vw, 5rem);
 
-  /* layout */
-  --container-max: 80rem;
+  /* layout: strict 12-col, wider measure */
+  --container-max: 88rem;
   --prose-max: 68ch;
 
-  /* border radius scale */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 24px;
+  /* sharp: printed plates have no rounded corners */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
 
-  /* shadow tokens */
-  --shadow-subtle: 0 1px 2px rgba(10, 14, 20, 0.04), 0 2px 8px rgba(10, 14, 20, 0.04);
-  --shadow-elevated: 0 4px 6px rgba(10, 14, 20, 0.06), 0 8px 24px rgba(10, 14, 20, 0.08);
+  /* flat: hairlines instead of shadows */
+  --shadow-subtle: none;
+  --shadow-elevated: 0 0 0 1px var(--color-bnc-stone-200);
 
-  /* animation durations */
   --duration-quick: 150ms;
   --duration-base: 250ms;
 
-  /* fluid type scale — fluid via clamp() */
-  --fs-12: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem);
-  --fs-14: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-  --fs-17: clamp(0.9375rem, 0.875rem + 0.3125vw, 1.0625rem);
-  --fs-20: clamp(1.1rem, 1rem + 0.5vw, 1.25rem);
-  --fs-28: clamp(1.5rem, 1.25rem + 1.25vw, 1.75rem);
-  --fs-36: clamp(1.75rem, 1.375rem + 1.875vw, 2.25rem);
-  --fs-48: clamp(2.25rem, 1.75rem + 2.5vw, 3rem);
-  --fs-64: clamp(3rem, 2.25rem + 3.75vw, 4rem);
-  --fs-84: clamp(3.5rem, 2.5rem + 5vw, 5.25rem);
+  /* fluid type scale, display is tight and very large */
+  --fs-12: clamp(0.6875rem, 0.65rem + 0.125vw, 0.75rem);
+  --fs-14: clamp(0.8125rem, 0.78rem + 0.2vw, 0.9375rem);
+  --fs-17: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --fs-20: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+  --fs-28: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --fs-36: clamp(1.875rem, 1.5rem + 1.8vw, 2.75rem);
+  --fs-48: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+  --fs-64: clamp(3rem, 2rem + 5vw, 6rem);
+  --fs-84: clamp(3.5rem, 2rem + 7.5vw, 8.5rem);
+  --fs-numeral: clamp(10rem, 6rem + 30vw, 38rem);
 }
+
+/* Plate utilities: the two surfaces the whole site alternates between */
+.plate { background: var(--color-bnc-plate); color: #fff; }
+.plate .mute { color: var(--color-bnc-plate-mute); }
+.plate .rule, .plate [data-rule] { border-color: var(--color-bnc-plate-line); }
+.plate-chalk { background: var(--color-bnc-paper); color: var(--color-bnc-ink); }
+:root.dark .plate-chalk { background: var(--color-bnc-ink); color: var(--color-bnc-paper); }
+.folio { font-family: var(--font-mono); font-size: var(--fs-12); letter-spacing: 0.14em; text-transform: uppercase; }
+.display { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.045em; line-height: 0.98; }
+.numeral { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.06em; line-height: 0.8; font-size: var(--fs-numeral); color: var(--color-bnc-plate-lift); user-select: none; pointer-events: none; }
 
 /* ── Smooth scroll (respects reduced-motion) ── */
 /* Lenis handles smooth scroll when JS runs; this CSS fallback is for no-JS only */
@@ -100,6 +115,31 @@
   }
 }
 
+
+/* ── Motion language (zero-one-group inspired) ── */
+/* Split-text masks: word slides up from an overflow-clip mask. */
+.split-mask { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.split-word { display: inline-block; will-change: transform; transform-origin: 0 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hide until JS splits; failsafe reveals after 2s if JS never runs. */
+  [data-split]:not(.is-split) { visibility: hidden; animation: split-failsafe 0s 2s forwards; }
+  [data-hero-in] { opacity: 0; animation: split-failsafe-op 0s 2.5s forwards; }
+  @keyframes split-failsafe { to { visibility: visible; } }
+  @keyframes split-failsafe-op { to { opacity: 1; } }
+
+  /* Page transition feel (ClientRouter / View Transitions API). */
+  ::view-transition-old(root) { animation: 280ms cubic-bezier(0.7, 0, 0.84, 0) both vt-out; }
+  ::view-transition-new(root) { animation: 520ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both vt-in; }
+  @keyframes vt-out { to { opacity: 0; transform: translateY(-12px); } }
+  @keyframes vt-in { from { opacity: 0; transform: translateY(24px); } }
+
+  /* Hover lift for cards / steps. */
+  [data-hover-lift] { transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+  [data-hover-lift]:hover { transform: translateY(-4px); }
+  [data-process-step] [data-process-dot] { transition: background-color 250ms ease; }
+  [data-process-step]:hover [data-process-dot] { background-color: color-mix(in srgb, var(--color-bnc-accent) 15%, transparent); }
+}
 
 /* ── Link underline reveal (cyan accent) ── */
 .bnc-link-underline {

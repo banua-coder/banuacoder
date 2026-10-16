@@ -1,0 +1,68 @@
+---
+/**
+ * Port of the FormGear web engine as it renders inside the Flutter SDK WebView (form_gear_engine_sdk loads the
+ * engine in a WebView). Source of truth: IPDS-59 form-gear (Solid + Tailwind v4, ~/Documents/Projects/Web/form-gear),
+ * rendered via its own UMD build (form-gear-builder/public/form-gear.umd.js + form-gear.css) at a 390x844 viewport.
+ * Layout facts measured from that render (390 design px wide, 1em = 1 design px via --u):
+ *   header 89 high (title 16/500 at 28,24; description 14/300 at 28,48; dark-mode switch 44x24 at 265,31; menu icon),
+ *   fields: label 14/300 (required star pink-600), input 286x42 at x28, round 40px comment button at x322 (2px gray-200 ring),
+ *   rows separated by a 1px gray-200 rule, radios 16px at x44, label x68, section pill 180x56 at y772 (bg gray-200/80).
+ * Sample form content is synthetic (builder default option labels). The Flutter app chrome is not drawn.
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const id = locale === 'id'
+const t = { title: id ? 'Survei Contoh' : 'Sample Survey', desc: id ? 'Contoh formulir' : 'Example form', a: id ? 'Nama responden' : 'Respondent name', b: id ? 'Jenis usaha' : 'Business type', c: id ? 'Jumlah pekerja' : 'Worker count' }
+const chat = 'M7 8h10M7 12h6m-9 8l3.5-3H18a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v14z'
+const rows = [[t.a, 119, 1, 'in'], [t.b, 266, 1, 'sel'], ['Status', 414, 0, 'rad'], [t.c, 603, 0, 'in']] as const
+const seps = [235, 383, 572, 719]
+---
+<div class="fe">
+  <div class="a hd" style="--x:0;--y:0;--w:390;--h:88">
+    <p class="a t16 ttl" style="--x:28;--y:24;--w:229;--h:24">{t.title}</p>
+    <p class="a t14 lt dsc" style="--x:28;--y:48;--w:229;--h:20">{t.desc}</p>
+    <span class="a sw" style="--x:265;--y:31;--w:44;--h:24"><span class="a th" style="--x:2;--y:2;--w:20;--h:20"><svg viewBox="0 0 24 24" class="a" style="--x:4;--y:4;--w:12;--h:12"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M19 5l-1.5 1.5m-11 11L5 19"/></svg></span></span>
+    <svg viewBox="0 0 24 24" class="a mn" style="--x:335;--y:31;--w:24;--h:24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </div>
+  {seps.map((y) => <span class="a sp" style={`--x:12;--y:${y};--w:366;--h:1`}></span>)}
+  {rows.map(([l, y, req, k]) => (
+    <>
+      <p class="a t14 lt lb" style={`--x:28;--y:${y};--w:300;--h:20`}>{l}{req ? <b class="st"> &nbsp;*</b> : null}</p>
+      {k === 'in' && <span class="a ip" style={`--x:28;--y:${y + 56};--w:286;--h:42`}></span>}
+      {k === 'sel' && <span class="a ip sl" style={`--x:28;--y:${y + 56};--w:286;--h:43`}></span>}
+      {k === 'rad' && <>
+        <span class="a rd" style={`--x:44;--y:${y + 71};--w:16;--h:16`}></span><p class="a t14 lt" style={`--x:68;--y:${y + 66};--w:240;--h:20`}>Option 1</p>
+        <span class="a rd" style={`--x:44;--y:${y + 113};--w:16;--h:16`}></span><p class="a t14 lt" style={`--x:68;--y:${y + 108};--w:240;--h:20`}>Option 2</p>
+      </>}
+      <span class="a cm" style={`--x:322;--y:${k === 'rad' ? y + 56 : y + 56};--w:40;--h:40`}><svg viewBox="0 0 24 24"><path d={chat}/></svg></span>
+    </>
+  ))}
+  <div class="a pill" style="--x:105;--y:772;--w:180;--h:56">
+    <span class="a bt" style="--x:0;--y:8;--w:40;--h:40"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
+    <p class="a t14 lt pn" style="--x:46;--y:8;--w:88;--h:40">Section A</p>
+    <span class="a bt" style="--x:140;--y:8;--w:40;--h:40"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+  </div>
+</div>
+
+<style>
+  .fe { --u: calc(100cqw / 390); font-size: var(--u); position: absolute; inset: 0; overflow: hidden; background: #fff; color: #4a5565;
+    font-family: Montserrat, var(--font-sans, ui-sans-serif), system-ui, sans-serif; }
+  .fe * { box-sizing: border-box; margin: 0; }
+  .fe .a { position: absolute; left: calc(var(--x) * var(--u)); top: calc(var(--y) * var(--u)); width: calc(var(--w) * var(--u)); height: calc(var(--h) * var(--u)); }
+  .fe .t14 { font-size: 14em; line-height: 1.4286; } .fe .t16 { font-size: 16em; line-height: 1.5; font-weight: 500; }
+  .fe .lt { font-weight: 300; } .fe .ttl { color: #101828; }
+  .fe b { font-weight: 300; } .fe .st { color: #e60076; }
+  .fe .hd { background: #fff; border-bottom: 1px solid #e5e7eb; }
+  .fe .sw { background: #e5e7eb; border: 2px solid #e5e7eb; border-radius: 99px; }
+  .fe .th { background: #fff; border-radius: 50%; } .fe .th svg { fill: none; stroke: #6366f1; stroke-width: 2; stroke-linecap: round; }
+  .fe .mn { fill: none; stroke: #364153; stroke-width: 1.8; stroke-linecap: round; }
+  .fe .sp { background: #e5e7eb; height: 1px; }
+  .fe .ip { background: #fff; border: 1px solid #e5e7eb; border-radius: calc(4 * var(--u)); } .fe .sl { border-color: #d1d5db; }
+  .fe .rd { border: 1px solid #6a7282; border-radius: 50%; background: #fff; }
+  .fe .cm { background: #fff; border: 2px solid #e5e7eb; border-radius: 50%; display: grid; place-items: center; }
+  .fe .cm svg { width: 50%; height: 50%; fill: none; stroke: #6a7282; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .fe .pill { background: rgba(229,231,235,.8); border-radius: 99px; }
+  .fe .bt { background: #1447e6; border-radius: 99px; display: grid; place-items: center; }
+  .fe .bt svg { width: 40%; height: 40%; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .fe .pn { display: grid; place-items: center; text-align: center; }
+</style>

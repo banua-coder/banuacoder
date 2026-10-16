@@ -1,0 +1,65 @@
+---
+title: "62.8 ms: Anatomy of a Flutter Performance Audit"
+slug: "audit-performa-flutter-62-8-ms"
+description: "How to fix a laggy Flutter app: a real performance audit from 62.8 ms to under 16 ms using Performance Overlay and Rebuild Rainbow."
+publishedAt: 2026-10-02
+author: fajrian
+tags: ["flutter", "engineering", "performance"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: en
+---
+
+"The app feels heavy." It is easy to hear and hard to act on, because it points nowhere. This post follows one real case down to a single widget, to show what an audit looks like when it runs on measurements instead of guesses.
+
+## We inherited a codebase we did not write
+
+Masjid Sejuta Pemuda (MSP) is a Flutter app for prayer times, dzikir, the Quran, donation programs, and community event information. It was already live with active users. The previous contractor had built it fast: many widgets without `const`, and `setState` called too high in the widget tree.
+
+Users on low-end devices complained about choppy scrolling, a stuttering dawn-prayer countdown, and a slow home screen on first open. The client team could see something was wrong in the code but could not pinpoint what to fix. They asked us to audit and repair it without tearing out features that already worked.
+
+## Rule one: measure first, do not guess
+
+Before changing a single line, we turned on two tools that ship with Flutter.
+
+- **Performance Overlay** shows a live graph of per-frame render time. A red bar is a late frame, and that is what users experience as stutter.
+- **Rebuild Rainbow** draws a colored outline on every widget that rebuilds. It shows how much of the screen is being redone.
+
+## What the numbers showed: 62.8 ms for one frame
+
+To feel smooth at 60 fps, a frame must finish in about 16 ms. On our test device the maximum frame time reached 62.8 ms, with many red frames. "Feels heavy" turned out to be explainable: the app was using nearly four times its time budget.
+
+## The cause: one countdown
+
+Rebuild Rainbow showed something unexpected. Almost the whole home screen lit up every second. The cause was the dawn-prayer countdown. Every second it did not just update its own number. It triggered a rebuild of the entire widget tree above it, including the program list, statistics, and shortcut buttons that had not changed at all.
+
+## Iteration 1: a `const` audit, and why it was not enough
+
+The first step was the most basic one: add `const` to every static widget that could take it. A `const` widget is reused between frames instead of being rebuilt. The overlay showed the result. Jank dropped sharply and frame time came down to the 16 ms target.
+
+But Rebuild Rainbow still showed a wide rebuild area. The symptom had improved and the cause was still there. Had we stopped here, the numbers would have looked good and the problem would still exist.
+
+## Iteration 2: splitting each section into its own widget
+
+We moved each home screen section (prayer-time header, community statistics, program list, shortcuts) into its own widget, so a `setState` in one section would not drag the others along. The rebuild area narrowed, but the countdown inside the header still rebuilt the whole header section, static parts included.
+
+## Iteration 3: rewriting the countdown and the text rotator
+
+The remaining problem sat in the text-rotator and countdown packages the previous contractor had used. Both called `setState` in a parent that was too high, so every second the parent was forced to rebuild.
+
+We rewrote both widgets from scratch, with internal state isolated from the tree above. We then ran the app with the same overlay and rebuild rainbow as at the start. Only the countdown widget flickered each second. The rest of the home screen stayed still. Frame time held under 16 ms.
+
+The principle is simple: **isolate the part that changes**. Something that updates every second should be one small widget, not one screen.
+
+## If you are not an engineer
+
+An app that is slow on low-end devices is not a case of users being "unlucky". It is a product problem. Two things from this case are worth bringing to your technical team or vendor:
+
+1. Ask for before-and-after evidence from the same measuring tool. A claim that the app is "optimized" without numbers cannot be checked.
+2. A good fix does not rewrite the app. On MSP we did not replace features, redesign the UI, or change the backend architecture. We read what was already there, found the source of the jank precisely, and fixed it with the smallest intervention we could.
+
+The client also received documentation of the audit process, which they can use as a checklist when adding features or reviewing other contractors' work. The full details are in the [Masjid Sejuta Pemuda case study](/en/portfolio/msp-performance-audit/).
+
+---
+
+If your app feels heavy and nobody has measured it yet, a technical audit can be done as a standalone engagement. [Tell us what you are seeing](/en/contact/).

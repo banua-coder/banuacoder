@@ -19,6 +19,7 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: (page) => !page.includes('/dev/'),
+      lastmod: new Date(),
       i18n: {
         defaultLocale: 'id',
         locales: {

@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content'
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+import EstimatorWizard from '../sections/EstimatorWizard.astro'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+
+// Prefer the page locale, fall back to the other one per slug.
+const all = await getCollection('portfolio', ({ data }) => !data.draft)
+const ordered = [...all.filter((p) => p.data.locale === locale), ...all.filter((p) => p.data.locale !== locale)]
+const portfolioMap: Record<string, { title: string; client: string; year: number; bucket: string; summary: string }> = {}
+for (const { data } of ordered) {
+  if (portfolioMap[data.slug]) continue
+  portfolioMap[data.slug] = { title: data.title, client: data.client, year: data.year, bucket: data.bucket, summary: data.summary }
+}
+const portfolioJson = JSON.stringify(portfolioMap)
+
+const copy = {
+  id: {
+    title: 'Estimasi Biaya Proyek — Aplikasi Mobile, Web, Sistem Internal · Banua Coder',
+    desc: 'Dapatkan kisaran biaya awal untuk proyek digital Anda dalam 1 menit. Gratis, tanpa komitmen.',
+    og: ogUrl('estimate'),
+    folio: '№ 08 / Estimasi', folioRight: '7 langkah · 1 menit',
+    h1: 'Estimasi proyek',
+    lede: 'Dapatkan kisaran biaya awal dalam 1 menit. Estimasi ini bukan quotation final — diskusi discovery akan menentukan scope dan harga aktual.',
+    note: 'Mencari estimasi untuk design atau social media handling?', noteLink: 'Hubungi kami →',
+    howName: 'Kalkulator Estimasi Biaya Proyek Digital — Banua Coder',
+    howDesc: 'Dapatkan kisaran biaya awal untuk proyek aplikasi mobile, web dashboard, website, atau sistem internal Anda dalam 7 langkah.',
+    steps: [
+      ['Pilih tipe proyek', 'Mobile App, Web Dashboard, Website, Sistem Internal, atau Hybrid.'],
+      ['Tentukan skala', 'MVP, Standard, atau Platform.'],
+      ['Tentukan pengguna', 'Internal, publik, atau campuran.'],
+      ['Pilih fitur kritis', 'Auth, pembayaran, realtime, push, dan lainnya.'],
+      ['Pilih tingkat desain', 'Template, custom UX/UI, atau design system.'],
+      ['Tentukan timeline', 'Standar atau rush.'],
+      ['Pilih model maintenance', 'Satu kali atau kerjasama berkelanjutan.'],
+    ],
+  },
+  en: {
+    title: 'Project Cost Estimate — Mobile App, Web, Internal Systems · Banua Coder',
+    desc: 'Get an initial cost range for your digital project in 1 minute. Free, no commitment.',
+    og: ogUrl('en-estimate'),
+    folio: '№ 08 / Estimate', folioRight: '7 steps · 1 minute',
+    h1: 'Project estimate',
+    lede: 'Get an initial cost range in 1 minute. This estimate is not a final quotation — a discovery session will determine the actual scope and price.',
+    note: 'Looking for an estimate on design or social media?', noteLink: 'Talk to us →',
+    howName: 'Project Cost Estimator — Banua Coder',
+    howDesc: 'Get an initial cost range for your mobile app, web dashboard, website, or internal system in 7 steps.',
+    steps: [
+      ['Choose project type', 'Mobile App, Web Dashboard, Website, Internal System, or Hybrid.'],
+      ['Choose scale', 'MVP, Standard, or Platform.'],
+      ['Define users', 'Internal, public, or mixed.'],
+      ['Select critical features', 'Auth, payments, realtime, push, and more.'],
+      ['Choose design level', 'Template, custom UX/UI, or design system.'],
+      ['Choose timeline', 'Standard or rush.'],
+      ['Choose maintenance model', 'One-time or ongoing engagement.'],
+    ],
+  },
+}[locale]
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: copy.howName,
+  description: copy.howDesc,
+  step: copy.steps.map(([name, text]) => ({ '@type': 'HowToStep', name, text })),
+}
+---
+
+<BaseLayout title={copy.title} description={copy.desc} ogImage={copy.og}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
+  <Skip />
+  <Nav />
+
+  <main id="main-content">
+    <PlateHead folio={copy.folio} folioRight={copy.folioRight} title={copy.h1} lede={copy.lede} numeral="08" titleId="estimate-heading">
+      <p class="mute mt-8 text-sm">
+        {copy.note}{' '}
+        <a href={`${prefix}/contact/`} class="text-white underline underline-offset-4 decoration-1 hover:decoration-2">{copy.noteLink}</a>
+      </p>
+    </PlateHead>
+
+    <section aria-label={copy.h1} class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="mx-auto max-w-4xl border border-current/25 bg-bnc-stone-50 dark:bg-bnc-stone-900 p-5 sm:p-8 md:p-12">
+          <EstimatorWizard locale={locale} portfolioJson={portfolioJson} />
+        </div>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

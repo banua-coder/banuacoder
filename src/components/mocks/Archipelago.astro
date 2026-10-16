@@ -1,0 +1,45 @@
+---
+/**
+ * Port of the real `archipelago create` terminal output.
+ * Source: Archipelago/cli/lib/src/utils/branding.dart (printBanner, _mark glyphs, BrandColors),
+ *         commands/create_command.dart (_logStep "[n/5]", "Project created.", "Next steps:").
+ * Colours: mark #6366F1 (BrandColors.mark), success #0F766E, step counter ANSI darkGray, cyan = lightCyan.
+ * Data: app name `my_app` is sample; the progress spinner timings are omitted on purpose.
+ */
+import Code from './_Code.astro'
+const { locale = 'id' } = Astro.props
+const m = ['   ▄█▄   ', '  ▀▀▀▀▀  ', ' ▄██ ██▄ ', ' ██   ██ ']
+const mk = (s: string) => `<em class="ar-m">${s}</em>`
+const lines = [
+  '<em class="p">$</em> archipelago create --output ./my_app',
+  '&#8203;',
+  `  ${mk(m[0])}   <b>archipelago</b>`,
+  `  ${mk(m[1])}   v2.9.0`,
+  `  ${mk(m[2])}   <em class="ar-d">Ship your Flutter app in days, not weeks.</em>`,
+  `  ${mk(m[3])}   <em class="ar-d">https://pub.dev/packages/archipelago_cli</em>`,
+  '&#8203;',
+  '<b>Creating new Archipelago project...</b>',
+  '&#8203;',
+  '<em class="ar-d">[1/5]</em> Preparing configuration...',
+  '<em class="ar-d">[2/5]</em> Loading brick...',
+  '<em class="ar-ok">✓</em> Loaded flutter_modular_monorepo brick',
+  '<em class="ar-d">[3/5]</em> Generating project...',
+  '<em class="ar-d">[4/5]</em> Running post-generation hooks...',
+  '<em class="ar-d">[5/5]</em> Finalizing...',
+  '&#8203;',
+  '<em class="ar-ok">Project created.</em>',
+  '&#8203;',
+  '<b>Next steps:</b>',
+  '  <em class="ar-c">cd</em> my_app',
+  '  <em class="ar-c">dart pub get</em>',
+  '  <em class="ar-c">melos bootstrap</em>',
+]
+---
+<div class="mk-s mk-w mk-term" style="--mk-brand:#6366F1"><Code lines={lines} /></div>
+<style is:global>
+  .mk-code .ar-m { color: #6366F1; font-weight: 700; }
+  .mk-code .ar-d { color: #8C96C8; }
+  .mk-code .ar-ok { color: #2DD4BF; }
+  .mk-code .ar-c { color: #67E8F9; }
+  .mk-code b { color: #fff; font-weight: 700; }
+</style>

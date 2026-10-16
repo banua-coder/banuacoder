@@ -1,0 +1,115 @@
+---
+/**
+ * Port of the SiAP Donggala Flutter app home tab (siap_donggala_app, Play id com.banuacoders.donggala.siap):
+ *   lib/app/modules/home/screens/home_screen.dart (AppBar + device-state row + user info + employee card + next-presence section),
+ *   global_widgets/{next_presence_card,line_divider}.dart, modules/home/widgets/office_name_section.dart,
+ *   home_controller.dart buildBottomNavBarItems (PersistentTabView style8), core/values/{colors,style}.dart, assets/locales/{id_ID,en_US}.json.
+ * Tokens: primary Colors.blueAccent, success green.shade500 #4CAF50, text #121212, subtext #AAAAAA, blueGrey #607D8B,
+ * kTextStyleHeading5 18/700, Heading6 14/700, Label 14/600, Body 14/400 (Material default font, Roboto here), cards r10, margin 16.
+ * Sizes using .sp/.wp scale with device width (Get.width); a 375 dp wide device is assumed: fixed 375x812 px stage scaled to the frame.
+ * Synthetic data: every name, position, office, date and time is sample text (the app gets them from its API); no real employees.
+ * Not exact: line_icons/iconsax glyphs are redrawn as generic Material-style strokes; employee photos are neutral silhouettes;
+ * the style8 nav indicator is not modelled (active = black icon + label as coded).
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const ps = 'M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z'
+---
+<div class="sp" data-l={locale}>
+  <div class="sp-sb"><span>09:41</span><span class="sp-bat"></span></div>
+  <div class="sp-bar">
+    <div class="sp-tt"><b>SiAP Donggala</b><span data-t="id">Sistem Absensi Pegawai</span><span data-t="en">Employee Attendance System</span></div>
+    <div class="sp-bell"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#121212" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 004 0"/></svg><i>0</i></div>
+  </div>
+  <div class="sp-dev">
+    <span><svg viewBox="0 0 24 24" width="24" height="24"><path fill="#4CAF50" d="M12 2C8.13 2 5 5.13 5 9c0 4.17 4.42 9.92 6.24 12.11.4.48 1.13.48 1.52 0C14.58 18.92 19 13.17 19 9c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>GPS</span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4CAF50" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>0.1 KM</span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"><path d="M2.5 9a14 14 0 0119 0M5.5 12.5a9.5 9.5 0 0113 0M8.7 15.8a5 5 0 016.6 0"/><circle cx="12" cy="19" r="1" fill="#4CAF50"/></svg>WIFI</span>
+    <span><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-t="id">WAKTU</span><span data-t="en">TIME</span></span>
+  </div>
+
+  <div class="sp-body">
+    <div class="sp-div" style="height:5.6px"></div>
+    <div class="sp-user">
+      <div class="sp-ut">
+        <p class="sp-lb"><span data-t="id">Nama Pegawai</span><span data-t="en">Employee Name</span></p>
+        <p><span data-t="id">Jabatan - Bagian</span><span data-t="en">Position - Department</span></p>
+        <p><span data-t="id">Pangkat - Golongan</span><span data-t="en">Rank - Group</span></p>
+        <p class="sp-lb" style="margin-top:10px"><span data-t="id">Nama Kantor</span><span data-t="en">Office Name</span></p>
+        <p><span data-t="id">Bagian</span><span data-t="en">Department</span></p>
+      </div>
+      <span class="sp-pa"><svg viewBox="0 0 24 24" width="40" height="40"><path fill="#9E9E9E" d={ps}/></svg></span>
+    </div>
+    <div class="sp-div" style="height:5.6px"></div>
+    <p class="sp-h6" style="padding:8px 16px"><span data-t="id">Daftar Pegawai</span><span data-t="en">Employee List</span></p>
+    <div class="sp-emp">
+      <div class="sp-of"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#121212" stroke-width="1.5" stroke-linejoin="round"><path d="M4 21V4h10v17M14 9h6v12M2 21h20M7.5 8h3M7.5 12h3M7.5 16h3"/></svg><span class="sp-lb"><span data-t="id">Nama Kantor</span><span data-t="en">Office Name</span></span></div>
+      <div class="sp-stack">
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => <span class="sp-sa" style={`margin-left:${i ? -14 : 0}px`}><svg viewBox="0 0 24 24" width="30" height="30"><path fill="#9E9E9E" d={ps}/></svg></span>)}
+        <span class="sp-sa sp-more" style="margin-left:-14px">+1</span>
+      </div>
+      <p class="sp-cnt">8 <span data-t="id">Pegawai</span><span data-t="en">Employee</span></p>
+    </div>
+    <div class="sp-div" style="height:5.6px;margin-top:24px"></div>
+    <p class="sp-h6" style="padding:8px 16px 16px"><span data-t="id">Presensi Selanjutnya</span><span data-t="en">Next Presence</span></p>
+    <div class="sp-npc">
+      <div class="sp-nd"><b><span data-t="id">Senin</span><span data-t="en">Monday</span></b><i>|</i><span>Jan 5, 2026</span><i>|</i><span>07:30</span></div>
+      <hr />
+      <div class="sp-nb">
+        <div class="sp-nl">
+          <p class="sp-lb"><span data-t="id">SKEMA PRESENSI</span><span data-t="en">ATTENDANCE SCHEME</span> :</p><p><span data-t="id">Presensi Masuk</span><span data-t="en">Check-in</span></p>
+          <p class="sp-lb"><span data-t="id">JADWAL PRESENSI</span><span data-t="en">ATTENDANCE SCHEDULE</span> :</p><p>07:00 - 08:00</p>
+          <p class="sp-lb"><span data-t="id">STATUS KEHADIRAN</span><span data-t="en">ATTENDANCE STATUS</span> :</p><p><span data-t="id">Hadir</span><span data-t="en">Present</span></p>
+          <p class="sp-lb"><span data-t="id">SELESAI DALAM</span><span data-t="en">FINISHED IN</span> :</p><p class="sp-sm">00 : 00 : 00</p>
+        </div>
+        <div class="sp-nr">
+          <svg viewBox="0 0 24 24" width="62" height="62" fill="none" stroke="#121212" stroke-width="1.2" stroke-linejoin="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM5.5 5.5h2v2h-2zM16.5 5.5h2v2h-2zM5.5 16.5h2v2h-2zM14 14h3v3h-3zM19 14h2v2h-2zM17 18h4v3h-4z"/></svg>
+          <p class="sp-lb" style="color:#607D8B"><span data-t="id">MULAI ABSEN</span><span data-t="en">RECORD ATTENDANCE</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sp-nav">
+    <span class="on"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="#121212" d="M12 3l9 8h-2.5v9h-5v-6h-3v6h-5v-9H3z"/></svg><span data-t="id">BERANDA</span><span data-t="en">HOME</span></span>
+    <span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5l1.6 2.4 2.8-.6.7 2.8 2.8.7-.6 2.8 2.4 1.6-2.4 1.6.6 2.8-2.8.7-.7 2.8-2.8-.6L12 21.5l-1.6-2.4-2.8.6-.7-2.8-2.8-.7.6-2.8L2.3 12l2.4-1.6-.6-2.8 2.8-.7.7-2.8 2.8.6z"/></svg><span data-t="id">APLIKASI</span><span data-t="en">APPLICATION</span></span>
+    <span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 5h16v11H11l-4 3.5V16H4z"/></svg><span data-t="id">OBROLAN</span><span data-t="en">CHAT</span></span>
+    <span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" stroke-linecap="round"/></svg><span data-t="id">PROFIL</span><span data-t="en">PROFILE</span></span>
+  </div>
+</div>
+
+<style>
+  .sp { position: absolute; left: 0; top: 0; width: 375px; height: 812px; overflow: hidden; background: #fff; color: #121212; transform-origin: 0 0; transform: scale(tan(atan2(100cqw, 375px)));
+    font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.3; font-weight: 400; }
+  .sp, .sp * { box-sizing: border-box; }
+  .sp p { margin: 0; }
+  .sp[data-l='id'] [data-t='en'], .sp[data-l='en'] [data-t='id'] { display: none; }
+  .sp-sb { height: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; }
+  .sp-bat { width: 20px; height: 10px; border: 1.5px solid #121212; border-radius: 3px; }
+  .sp-bar { height: 56px; display: flex; align-items: center; padding: 0 4px 0 16px; }
+  .sp-tt { flex: 1; display: flex; flex-direction: column; } .sp-tt b { font-size: 18px; font-weight: 700; } .sp-tt span { color: #AAA; }
+  .sp-bell { position: relative; width: 48px; height: 48px; display: grid; place-items: center; }
+  .sp-bell i { position: absolute; right: 6px; top: 2px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: #F44336; color: #fff; font: 600 14px/20px Roboto, system-ui, sans-serif; text-align: center; }
+  .sp-dev { height: 40.6px; display: flex; }
+  .sp-dev > span { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 12px; font-weight: 600; color: #4CAF50; line-height: 1.1; }
+  .sp-div { background: #607D8B1A; margin: 8px 0; }
+  .sp-user { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px 0; gap: 12px; }
+  .sp-ut { flex: 1; min-width: 0; } .sp-ut p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-lb { font-weight: 600; } .sp-h6 { font-size: 14px; font-weight: 700; }
+  .sp-pa { width: 67.5px; height: 67.5px; border-radius: 50%; background: #EEE; display: grid; place-items: center; flex: none; margin-bottom: 8px; }
+  .sp-emp { margin: 8px 16px 0; padding: 8px; background: #fff; border-radius: 10px; box-shadow: 0 4px 25px #607D8B66; display: flex; flex-direction: column; align-items: flex-end; }
+  .sp-of { align-self: stretch; display: flex; align-items: center; gap: 8px; padding-left: 4px; margin-bottom: 4px; }
+  .sp-stack { align-self: center; display: flex; padding: 8px; }
+  .sp-sa { width: 40px; height: 40px; border-radius: 50%; background: #EEE; border: 1px solid #0000001A; display: grid; place-items: center; overflow: hidden; flex: none; }
+  .sp-more { background: #E0E0E0; font-size: 13px; font-weight: 600; }
+  .sp-cnt { font-weight: 600; }
+  .sp-npc { margin: 0 16px; padding: 8px; border-radius: 10px; background: #fff; box-shadow: 0 10px 15px 5px #607D8B33; }
+  .sp-nd { display: flex; justify-content: center; gap: 5px; } .sp-nd b { font-weight: 600; }
+  .sp-npc hr { border: 0; border-top: 1px solid #0000003A; margin: 8px 0; }
+  .sp-nb { display: flex; gap: 8px; } .sp-nl { flex: 1; } .sp-nl .sp-lb:not(:first-child) { margin-top: 10px; } .sp-nl .sp-lb + p { margin-top: 2px; }
+  .sp-sm { font-size: 12px; }
+  .sp-nr { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+  .sp-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 60px; padding-bottom: 8px; background: #fff; box-shadow: 0 0 20px 10px #607D8B33; display: flex; }
+  .sp-nav > span { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 7.5px; font-weight: 700; color: #607D8B; line-height: 1.2; }
+  .sp-nav .on { color: #121212; }
+</style>

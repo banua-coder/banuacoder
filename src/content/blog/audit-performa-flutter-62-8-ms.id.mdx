@@ -1,0 +1,65 @@
+---
+title: "62,8 ms: Anatomi Audit Performa Aplikasi Flutter"
+slug: "audit-performa-flutter-62-8-ms"
+description: "Cara mengatasi aplikasi Flutter lag: audit performa nyata dari 62,8 ms ke di bawah 16 ms dengan Performance Overlay dan Rebuild Rainbow."
+publishedAt: 2026-10-02
+author: fajrian
+tags: ["flutter", "engineering", "performance"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: id
+---
+
+"Aplikasinya terasa berat." Keluhan ini gampang didengar dan sulit ditindaklanjuti, karena tidak menunjuk ke mana pun. Tulisan ini menelusuri satu kasus nyata sampai ke satu widget, supaya kelihatan seperti apa proses audit yang dikerjakan dengan alat ukur, bukan dengan tebakan.
+
+## Kami masuk ke codebase yang tidak kami tulis
+
+Masjid Sejuta Pemuda (MSP) adalah aplikasi Flutter untuk jadwal shalat, dzikir, Al-Quran, program donasi, dan informasi event komunitas. Aplikasinya sudah live dan punya pengguna aktif. Kontraktor sebelumnya membangunnya dengan cepat: banyak widget tanpa `const`, dan `setState` dipanggil di tempat yang terlalu tinggi di widget tree.
+
+Pengguna di perangkat low-end mengeluh: scroll patah-patah, animasi countdown subuh tersendat, home screen lambat saat baru dibuka. Tim klien bisa melihat ada yang salah di kodenya, tapi sulit menunjuk bagian mana yang perlu diperbaiki. Mereka meminta kami mengaudit dan memperbaiki tanpa membongkar fitur yang sudah jalan.
+
+## Aturan pertama: ukur dulu, jangan menebak
+
+Sebelum mengubah satu baris kode, kami menyalakan dua alat bawaan Flutter.
+
+- **Performance Overlay** menampilkan grafik waktu render tiap frame secara langsung. Bar merah artinya frame yang terlambat, dan itulah yang dilihat pengguna sebagai patah-patah.
+- **Rebuild Rainbow** menggambar garis berwarna di setiap widget yang di-rebuild. Dari sini kelihatan seberapa luas area layar yang dikerjakan ulang.
+
+## Yang ditunjukkan angkanya: 62,8 ms untuk satu frame
+
+Agar terasa mulus di 60 fps, satu frame harus selesai dalam sekitar 16 ms. Di perangkat uji kami, frame time maksimum mencapai 62,8 ms, dengan banyak frame merah. "Terasa berat" ternyata bisa dijelaskan: aplikasi memakai hampir empat kali anggaran waktu yang tersedia.
+
+## Penyebabnya: satu hitung mundur
+
+Rebuild Rainbow menunjukkan hal yang tidak terduga. Hampir seluruh home screen menyala setiap detik. Penyebabnya countdown waktu subuh. Setiap detik, countdown itu tidak hanya memperbarui angkanya sendiri, tetapi memicu rebuild seluruh widget tree di atasnya, termasuk daftar program, statistik, dan tombol pintasan yang tidak berubah sama sekali.
+
+## Iterasi 1: audit `const`, dan kenapa itu belum cukup
+
+Langkah pertama paling mendasar: menambahkan `const` pada semua widget statis yang bisa memakainya. Widget `const` dipakai ulang antar frame tanpa dibangun lagi. Hasilnya terlihat di overlay, jank berkurang banyak dan frame time turun ke target 16 ms.
+
+Tapi Rebuild Rainbow masih menunjukkan area rebuild yang luas. Gejalanya membaik, penyebabnya belum hilang. Kalau kami berhenti di sini, angkanya bagus dan masalahnya masih ada.
+
+## Iterasi 2: memisahkan tiap bagian menjadi widget sendiri
+
+Kami memisahkan setiap section home screen (header jadwal shalat, statistik komunitas, daftar program, pintasan) menjadi widget tersendiri, supaya `setState` di satu section tidak menyeret section lain. Area rebuild menyempit, tapi countdown di dalam header masih memicu rebuild seluruh section header, termasuk bagian yang statis.
+
+## Iterasi 3: menulis ulang countdown dan text-rotator
+
+Sumber masalah yang tersisa ada di paket text-rotator dan countdown yang dipakai kontraktor sebelumnya. Keduanya memanggil `setState` di parent yang terlalu tinggi, jadi setiap detik parent dipaksa rebuild.
+
+Kami menulis ulang kedua widget itu dari nol, dengan state internal yang terisolasi dari tree di atasnya. Hasil akhirnya, saat dijalankan dengan overlay dan rebuild rainbow yang sama persis seperti di awal, hanya widget countdown yang berkedip setiap detik. Sisa home screen diam. Frame time stabil di bawah 16 ms.
+
+Prinsipnya sederhana: **isolasi bagian yang berubah**. Yang berubah tiap detik cukup menjadi satu widget kecil, bukan satu layar.
+
+## Kalau Anda bukan engineer
+
+Aplikasi yang lambat di perangkat low-end bukan masalah pengguna yang "kurang beruntung". Itu masalah produk. Dua hal dari kasus ini layak dibawa ke pembicaraan dengan tim teknis atau vendor Anda:
+
+1. Minta bukti sebelum dan sesudah dari alat ukur yang sama. Klaim "sudah dioptimasi" tanpa angka tidak bisa diperiksa.
+2. Perbaikan yang baik tidak menulis ulang aplikasi. Dalam kasus MSP kami tidak mengganti fitur, tidak mendesain ulang UI, dan tidak mengubah arsitektur backend. Kami hanya membaca apa yang sudah ada, menemukan sumber jank dengan presisi, dan memperbaikinya dengan intervensi sekecil mungkin.
+
+Klien juga mendapat dokumentasi proses audit yang bisa dipakai sebagai checklist saat menambah fitur baru atau memeriksa pekerjaan kontraktor lain. Detail lengkapnya ada di [studi kasus Masjid Sejuta Pemuda](/portfolio/msp-performance-audit/).
+
+---
+
+Kalau aplikasi Anda terasa berat tapi belum ada yang mengukurnya, audit teknis bisa dikerjakan sebagai pekerjaan tersendiri. [Ceritakan kondisinya ke kami](/contact/).

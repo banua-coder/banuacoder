@@ -1,0 +1,66 @@
+---
+/**
+ * PlateHead — the opening plate of a Prospectus page.
+ * Folio row on a hairline, giant display title, lede, giant tonal numeral.
+ * Slot: actions / extra content under the lede.
+ */
+interface Props {
+  folio: string
+  folioRight?: string
+  title: string
+  titleId?: string
+  lede?: string
+  numeral?: string
+  tone?: 'plate' | 'chalk'
+  /** xl = home-scale display, lg = long titles */
+  size?: 'xl' | 'lg'
+  class?: string
+}
+const {
+  folio,
+  folioRight,
+  title,
+  titleId = 'page-title',
+  lede,
+  numeral,
+  tone = 'plate',
+  size = 'xl',
+  class: cls = '',
+} = Astro.props
+const plate = tone === 'plate'
+---
+
+<section
+  aria-labelledby={titleId}
+  class:list={['relative overflow-hidden', plate ? 'plate' : 'plate-chalk', cls]}
+  style="padding-top: clamp(7rem, 12vw, 10rem); padding-bottom: var(--spacing-section-y-sm)"
+>
+  {numeral && (
+    <div
+      aria-hidden="true"
+      data-parallax="0.12"
+      class:list={['numeral absolute right-[-3vw] bottom-[-4vw] select-none', !plate && '!text-bnc-stone-200 dark:!text-bnc-stone-800']}
+    >
+      {numeral}
+    </div>
+  )}
+  <div class="relative mx-auto w-full px-4 sm:px-6 lg:px-8" style="max-width: var(--container-max)">
+    <div class="flex items-center justify-between gap-4 border-t border-current/25 pt-3 folio">
+      <span class={plate ? 'text-bnc-accent' : 'text-bnc-accent-ink dark:text-bnc-accent'}>{folio}</span>
+      {folioRight && <span class:list={[plate ? 'mute' : 'text-bnc-stone-600 dark:text-bnc-stone-300', 'text-right']}>{folioRight}</span>}
+    </div>
+    <h1
+      id={titleId}
+      data-split
+      class="display mt-10 md:mt-16 max-w-[16ch] sm:max-w-[18ch] lg:max-w-[20ch] text-balance"
+      style={size === 'xl' ? 'font-size: var(--fs-84)' : 'font-size: var(--fs-64)'}
+    >{title}</h1>
+    {lede && (
+      <p
+        class:list={['mt-8 leading-relaxed', plate ? 'mute' : 'text-bnc-stone-600 dark:text-bnc-stone-300']}
+        style="font-size: var(--fs-20); max-width: 56ch"
+      >{lede}</p>
+    )}
+    <slot />
+  </div>
+</section>

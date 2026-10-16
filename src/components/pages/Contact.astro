@@ -1,0 +1,148 @@
+---
+import { ogUrl } from '../../lib/og/url'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+import { contact, buildWhatsAppUrl, bookingLabel } from '../../data/contact'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+const whatsappUrl = buildWhatsAppUrl(locale)
+const emailUrl = `mailto:${contact.email}`
+
+const copy = {
+  id: {
+    title: 'Kontak Banua Coder — Software House Palu, Sulawesi Tengah',
+    desc: 'Punya ide, kebutuhan sistem, atau proses bisnis yang ingin dirapikan? Mari diskusikan kebutuhan Anda bersama Banua Coder.',
+    og: ogUrl('contact'),
+    folio: '№ 07 / Kontak', folioRight: 'Palu · Sulawesi Tengah',
+    h1: 'Mari diskusikan kebutuhan Anda',
+    lede: 'Punya ide, kebutuhan sistem, atau proses bisnis yang ingin dirapikan? Ceritakan kepada kami dan kami bantu petakan solusi yang realistis.',
+    waBtn: 'Chat WhatsApp', waNote: 'Cara tercepat memulai. Kami biasanya merespons dalam 1–2 jam di hari kerja.',
+    callNote: 'Pilih slot 30 menit langsung di kalender kami.',
+    office: 'Kantor', loc: 'Lokasi', hours: 'Jam Kerja', mail: 'Email', follow: 'Ikuti kami',
+    map: 'Peta', mapTitle: 'Lokasi Banua Coder — Palu, Sulawesi Tengah', mapLabel: 'Peta lokasi Palu, Sulawesi Tengah',
+    estH: 'Ingin gambaran estimasi proyek?', estD: 'Coba kalkulator estimasi kami untuk gambaran awal anggaran dan timeline.', estLink: 'Kalkulator estimasi →',
+    faq: [
+      ['Berapa lama Banua Coder merespons pesan WhatsApp?', 'Kami biasanya merespons dalam 1–2 jam di hari kerja (Senin–Jumat, 09:00–17:00 WITA).'],
+      ['Apakah Banua Coder menerima proyek dari luar Sulawesi Tengah?', 'Ya. Kami mengerjakan proyek dari seluruh Indonesia dan klien internasional. Semua diskusi awal dapat dilakukan melalui WhatsApp atau email.'],
+      ['Bagaimana cara memulai proyek dengan Banua Coder?', 'Hubungi kami melalui WhatsApp atau email untuk memulai diskusi awal. Kami akan membantu memetakan kebutuhan dan memberikan gambaran solusi yang realistis.'],
+    ],
+  },
+  en: {
+    title: 'Contact Banua Coder — Software House, Palu, Central Sulawesi',
+    desc: "Got an idea, a system need, or a business process you want to streamline? Let's discuss what you need with Banua Coder.",
+    og: ogUrl('en-contact'),
+    folio: '№ 07 / Contact', folioRight: 'Palu · Central Sulawesi',
+    h1: "Let's discuss what you need",
+    lede: "Got an idea, a system need, or a business process you want to streamline? Tell us about it and we'll help map the most realistic solution.",
+    waBtn: 'Chat on WhatsApp', waNote: 'The fastest way to start. We typically respond within 1–2 hours on business days.',
+    callNote: 'Pick a 30-minute window directly in our calendar.',
+    office: 'Office', loc: 'Location', hours: 'Working Hours', mail: 'Email', follow: 'Follow us',
+    map: 'Map', mapTitle: 'Banua Coder location — Palu, Central Sulawesi', mapLabel: 'Map of Palu, Central Sulawesi, Indonesia',
+    estH: 'Want a rough project estimate?', estD: 'Try our estimate calculator for an initial view of budget and timeline.', estLink: 'Estimate calculator →',
+    faq: [
+      ['How fast does Banua Coder reply to WhatsApp messages?', 'We usually reply within 1–2 hours on business days (Monday–Friday, 09:00–17:00 WITA).'],
+      ['Does Banua Coder take projects from outside Central Sulawesi?', 'Yes. We work with clients across Indonesia and internationally. All initial discussions can happen over WhatsApp or email.'],
+      ['How do I start a project with Banua Coder?', 'Reach out via WhatsApp or email to begin an initial conversation. We will help map your needs and outline a realistic solution.'],
+    ],
+  },
+}[locale]
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': 'https://banuacoder.com/contact/#local-business',
+  name: 'Banua Coder',
+  url: 'https://banuacoder.com',
+  telephone: `+${contact.whatsappNumber}`,
+  email: contact.email,
+  address: { '@type': 'PostalAddress', addressLocality: contact.office.city, addressRegion: contact.office.region, postalCode: '94111', addressCountry: 'ID' },
+  geo: { '@type': 'GeoCoordinates', latitude: contact.office.coords.lat, longitude: contact.office.coords.lng },
+  openingHours: 'Mo-Fr 09:00-17:00',
+  priceRange: '$$',
+  sameAs: [contact.socials.linkedin, contact.socials.instagram, contact.socials.github, contact.socials.youtube],
+}
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: copy.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+}
+const socials = [['LinkedIn', contact.socials.linkedin], ['Instagram', contact.socials.instagram], ['GitHub', contact.socials.github], ['YouTube', contact.socials.youtube]]
+const btnPrimary = 'inline-flex items-center gap-2 bg-white text-bnc-plate font-semibold px-7 py-3.5 hover:bg-bnc-accent hover:text-bnc-ink transition-colors duration-150'
+const btnSecondary = 'inline-flex items-center gap-2 border border-white text-white font-medium px-7 py-3.5 hover:bg-white hover:text-bnc-plate transition-colors duration-150'
+const link = 'underline underline-offset-4 decoration-1 hover:decoration-2 focus-visible:decoration-2'
+---
+
+<BaseLayout title={copy.title} description={copy.desc} ogImage={copy.og}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(localBusinessSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+  <Skip />
+  <Nav />
+
+  <main id="main-content">
+    <PlateHead folio={copy.folio} folioRight={copy.folioRight} title={copy.h1} lede={copy.lede} numeral="07" titleId="contact-heading" size="lg" class="!pb-0">
+      <div class="mt-12 flex flex-wrap items-center gap-4">
+        <a href={contact.bookingUrl} target="_blank" rel="noopener noreferrer" class={btnPrimary}>{bookingLabel[locale]} <span aria-hidden="true">→</span></a>
+        <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" class={btnSecondary}>{copy.waBtn}</a>
+        <a href={emailUrl} class={`${link} px-2 py-3.5`}>{contact.email}</a>
+      </div>
+      <p class="mute mt-4 text-sm">{copy.callNote} {copy.waNote}</p>
+
+      <dl class="relative m-0 mt-20 grid grid-cols-1 md:grid-cols-3 border-t border-current/25">
+        <div class="py-6 md:pr-6">
+          <dt class="folio text-bnc-accent">{copy.loc}</dt>
+          <dd class="m-0 mt-3" style="font-size: var(--fs-20)">{contact.office.city}, {contact.office.region}<br /><span class="mute">{contact.office.country}</span></dd>
+        </div>
+        <div class="py-6 md:px-6 md:border-l border-t md:border-t-0 border-current/25">
+          <dt class="folio text-bnc-accent">{copy.hours}</dt>
+          <dd class="m-0 mt-3" style="font-size: var(--fs-20)">{contact.hours[locale]}</dd>
+        </div>
+        <div class="py-6 md:pl-6 md:border-l border-t md:border-t-0 border-current/25">
+          <dt class="folio text-bnc-accent">{copy.follow}</dt>
+          <dd class="m-0 mt-3 flex flex-wrap gap-x-5 gap-y-2">
+            {socials.map(([n, h]) => <a href={h} target="_blank" rel="noopener noreferrer" class={link}>{n} →</a>)}
+          </dd>
+        </div>
+      </dl>
+    </PlateHead>
+
+    <section aria-label={copy.map} class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6">
+          <div class="lg:col-span-4">
+            <p class="folio text-bnc-accent-ink dark:text-bnc-accent border-t border-current/25 pt-3">{copy.map} · {contact.office.city}</p>
+            <p class="display mt-6" style="font-size: var(--fs-28)">{contact.office.city}, {contact.office.region}, {contact.office.country}</p>
+          </div>
+          <div class="lg:col-span-8 border border-current/25 h-[300px] md:h-[380px]">
+            <iframe
+              title={copy.mapTitle}
+              src="https://www.openstreetmap.org/export/embed.html?bbox=119.8207%2C-0.9417%2C119.9207%2C-0.8417&layer=mapnik&marker=-0.8917%2C119.8707"
+              width="100%"
+              height="100%"
+              loading="lazy"
+              referrerpolicy="no-referrer"
+              class="w-full h-full border-0 grayscale"
+              aria-label={copy.mapLabel}
+            ></iframe>
+          </div>
+        </div>
+
+        <div class="mt-20 grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-4 border-t border-current/25 pt-6 items-baseline">
+          <h2 class="display lg:col-span-6" style="font-size: var(--fs-36)">{copy.estH}</h2>
+          <p class="lg:col-span-4 text-bnc-stone-600 dark:text-bnc-stone-300">{copy.estD}</p>
+          <a href={`${prefix}/estimate/`} class={`${link} folio lg:col-span-2 lg:text-right text-bnc-plate dark:text-bnc-accent`}>{copy.estLink}</a>
+        </div>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

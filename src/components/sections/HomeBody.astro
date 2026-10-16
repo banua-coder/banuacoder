@@ -1,0 +1,289 @@
+---
+/**
+ * HomeBody: the whole home page body, shared by / (id) and /en/ (en).
+ * Alternates ultramarine plates and chalk plates; every figure comes from real collections.
+ * Pages keep ownership of <head>, JSON-LD, Nav and Footer.
+ */
+import { getCollection } from 'astro:content'
+import Plate from '../layout/Plate.astro'
+import Hero from './Hero.astro'
+import TrustStrip from './TrustStrip.astro'
+import ClientLogoCycle from './ClientLogoCycle.astro'
+import WhyCarousel from './WhyCarousel.astro'
+import ProcessStep from './ProcessStep.astro'
+import ArchipelagoPromo from './ArchipelagoPromo.astro'
+import CTA from './CTA.astro'
+import Mock from '../mocks/Mock.astro'
+import { renderInlineMd } from '../../lib/inline-md'
+import { clientLabel } from '../../lib/portfolio-screens'
+import Testimonial from '../cards/Testimonial.astro'
+import FounderCard from '../founder/FounderCard.astro'
+import FounderExperienceStrip from '../founder/FounderExperienceStrip.astro'
+import { contact } from '../../data/contact'
+
+interface Props {
+  locale: 'id' | 'en'
+  // frontmatter of src/content/pages/home.{locale}.mdx
+  data: any
+}
+
+const { locale, data } = Astro.props
+const en = locale === 'en'
+const p = en ? '/en' : ''
+const { hero, trustClaims, about, services, why, process, portfolio, founder, cta, idealClients, publicSector } = data
+
+// ── Real figures ────────────────────────────────────────────────────────────
+const all = (await getCollection('portfolio', ({ data }) => !data.draft)).filter((e) => e.data.locale === locale)
+const caseCount = all.length
+const publicCount = all.filter((e) => e.data.bucket === 'public-sector').length
+const stackFreq = new Map<string, number>()
+for (const e of all) for (const s of e.data.stack) stackFreq.set(s, (stackFreq.get(s) ?? 0) + 1)
+const topStack = [...stackFreq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([s]) => s).join(' · ')
+const FOUNDED = 2019
+const yearNow = new Date().getFullYear()
+
+const stats = en
+  ? [
+      { value: caseCount, label: 'Published case studies' },
+      { value: publicCount, label: 'Public-sector systems' },
+      { value: topStack, label: 'Core stack' },
+      { value: FOUNDED, label: 'Year founded, Palu' },
+    ]
+  : [
+      { value: caseCount, label: 'Studi kasus dipublikasikan' },
+      { value: publicCount, label: 'Sistem sektor publik' },
+      { value: topStack, label: 'Stack utama' },
+      { value: FOUNDED, label: 'Tahun berdiri, Palu' },
+    ]
+
+const featured = all.filter((e) => e.data.featured).sort((a, b) => a.data.order - b.data.order).slice(0, 3)
+const testimonial = (await getCollection('testimonials')).find((t) => t.data.featured && t.data.locale === locale)
+
+// The hero strip already states the case-study count from the collection; drop the stale static claim.
+const claims = (trustClaims ?? []).filter((c: { label: string }) => !/(studi kasus|case stud)/i.test(c.label))
+
+const t = en
+  ? {
+      h1: 'Digital systems built to last.',
+      cover: '№ 00 / Cover',
+      report: `Work Report ${FOUNDED}—${yearNow} / Palu`,
+      aboutLink: 'More about us',
+      viewServices: 'View services',
+      svcTitle: [['Digital Products & Systems', 'Websites, mobile apps, dashboards, and operational systems built with real engineering depth and genuine business understanding.', ['Customer-Facing', 'Internal Ops', 'Product Engineering'], '#build'], ['Design & Growth', 'Visual identity, UI/UX, and social media management to build a consistent brand and strong digital presence.', ['Design', 'Social Media'], '#grow']],
+      estimateQ: 'Not sure about the cost?',
+      estimateCta: 'Try the estimate calculator',
+      background: 'Selected background',
+      viewCase: 'View case study',
+    }
+  : {
+      h1: 'Sistem digital yang dibangun untuk bertahan.',
+      cover: '№ 00 / Sampul',
+      report: `Laporan Kerja ${FOUNDED}—${yearNow} / Palu`,
+      aboutLink: 'Selengkapnya tentang kami',
+      viewServices: 'Lihat layanan',
+      svcTitle: [['Produk Digital & Sistem', 'Website, aplikasi mobile, dashboard, dan sistem operasional yang dibangun dengan engineering depth dan pemahaman bisnis nyata.', ['Customer-Facing', 'Internal Ops', 'Product Engineering'], '#build'], ['Desain & Pertumbuhan', 'Identitas visual, UI/UX, dan pengelolaan media sosial untuk membangun brand yang konsisten dan presense digital yang kuat.', ['Design', 'Social Media'], '#grow']],
+      estimateQ: 'Tidak yakin biayanya?',
+      estimateCta: 'Coba kalkulator estimasi',
+      background: 'Latar belakang terpilih',
+      viewCase: 'Lihat studi kasus',
+    }
+---
+
+<!-- 00 Cover -->
+{hero && (
+  <Hero
+    title={t.h1}
+    subtitle={hero.subheadline}
+    primaryCta={hero.primaryCta}
+    primaryHref={contact.bookingUrl}
+    primaryExternal
+    secondaryCta={hero.secondaryCta}
+    secondaryHref={`${p}${hero.secondaryHref.replace(/^\/en/, '')}`}
+    folio={t.cover}
+    folioEnd={t.report}
+    numeral="19"
+    stats={stats}
+  />
+)}
+
+<!-- 01 Clients -->
+{claims.length > 0 && <TrustStrip claims={claims} />}
+<ClientLogoCycle lang={locale} />
+
+<!-- 02 Services -->
+{services && (
+  <Plate tone="plate" folio={`№ 02 / ${services.eyebrow}`} numeral="02" labelledby="services-heading">
+    <div class="grid gap-6 lg:grid-cols-12 mb-12 lg:mb-16">
+      <h2 id="services-heading" class="display text-balance lg:col-span-7" style="font-size: var(--fs-64)">{services.title}</h2>
+      <p class="mute leading-relaxed lg:col-span-5 lg:self-end" style="font-size: var(--fs-20); max-width: 44ch">{services.description}</p>
+    </div>
+    <div class="border-b border-[var(--color-bnc-plate-line)]" data-tell-services>
+      {t.svcTitle.map(([title, body, tags, anchor], i) => (
+        <a
+          href={`${p}/services/${anchor}`}
+          class="svc group grid gap-6 lg:grid-cols-12 border-t border-[var(--color-bnc-plate-line)] py-10 lg:py-12 px-0 transition-colors hover:bg-white/5"
+          data-tell-services-card
+        >
+          <span class="folio mute lg:col-span-1 pt-3">{String(i + 1).padStart(2, '0')}</span>
+          <h3 class="display lg:col-span-6" style="font-size: var(--fs-48)">{title}</h3>
+          <div class="lg:col-span-5 flex flex-col gap-5">
+            <p class="leading-relaxed" style="font-size: var(--fs-17)">{body}</p>
+            <p class="folio mute">{(tags as string[]).join(' / ')}</p>
+            <span class="font-semibold underline underline-offset-[6px] decoration-1 group-hover:decoration-2 w-fit">{t.viewServices} →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </Plate>
+)}
+
+<!-- 03 Portfolio -->
+{portfolio && featured.length > 0 && (
+  <Plate tone="chalk" folio={`№ 03 / ${portfolio.eyebrow}`} numeral="03" labelledby="portfolio-heading">
+    <div class="grid gap-6 lg:grid-cols-12 mb-12 lg:mb-16">
+      <h2 id="portfolio-heading" class="display text-balance lg:col-span-7" style="font-size: var(--fs-64)">{portfolio.title}</h2>
+      <div class="lg:col-span-5 lg:self-end flex flex-col gap-6">
+        <p class="leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-20); max-width: 44ch">{portfolio.description}</p>
+        <a href={`${p}/portfolio/`} class="font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2 w-fit">{portfolio.viewAllLabel} →</a>
+      </div>
+    </div>
+    <div class="border-b border-current/25">
+      {featured.map((project, i) => (
+        <article class="grid gap-8 lg:gap-14 lg:grid-cols-12 items-center border-t border-current/25 py-10 lg:py-14" data-reveal>
+          <div class:list={['lg:col-span-6', i % 2 === 1 && 'lg:order-2']}>
+            <Mock slug={project.data.slug} title={project.data.title} locale={locale} class="[&[data-frame=phone]]:!max-w-[280px]" />
+          </div>
+          <div class:list={['lg:col-span-6 flex flex-col gap-5 min-w-0', i % 2 === 1 && 'lg:order-1']}>
+            <p class="folio flex flex-wrap gap-x-4 gap-y-1 text-bnc-stone-600 dark:text-bnc-stone-400">
+              <span class="tabular-nums">{String(i + 1).padStart(2, '0')}</span>
+              <span>{clientLabel(project.data.client, locale)}</span>
+              <span class="tabular-nums">{project.data.year}</span>
+            </p>
+            <h3 class="display text-balance" style="font-size: var(--fs-48); line-height: 1">
+              <a href={`${p}/portfolio/${project.data.slug}/`} class="hover:underline underline-offset-4 decoration-2">{project.data.title}</a>
+            </h3>
+            <p class="leading-relaxed max-w-[56ch] text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-17)" set:html={renderInlineMd(project.data.summary)} />
+            {project.data.impact[0] && (
+              <p class="font-medium leading-snug max-w-[56ch] border-t border-current/25 pt-4" style="font-size: var(--fs-17)" set:html={renderInlineMd(project.data.impact[0])} />
+            )}
+            <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400" aria-label="Stack">{project.data.stack.slice(0, 5).join(' / ')}</p>
+            <a href={`${p}/portfolio/${project.data.slug}/`} class="font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2 w-fit">{t.viewCase} →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </Plate>
+)}
+
+<!-- 04 Why -->
+{why && <WhyCarousel eyebrow={why.eyebrow} marker="[ 04 ]" title={why.title} items={why.items} lang={locale} tone="plate" />}
+
+<!-- 05 Process -->
+{process && (
+  <Plate tone="chalk" folio={`№ 05 / ${process.eyebrow}`} numeral="05" labelledby="process-heading">
+    <div class="grid gap-6 lg:grid-cols-12 mb-12 lg:mb-16">
+      <h2 id="process-heading" class="display text-balance lg:col-span-7" style="font-size: var(--fs-64)">{process.title}</h2>
+      <p class="leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300 lg:col-span-5 lg:self-end" style="font-size: var(--fs-20); max-width: 44ch">{process.description}</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-16 border-b border-current/25">
+      {process.steps.map((step: { title: string; body: string }, i: number) => (
+        <ProcessStep step={i + 1} title={step.title} body={step.body} />
+      ))}
+    </div>
+  </Plate>
+)}
+
+<!-- 06 Fit + public sector -->
+{idealClients && (
+  <Plate tone="plate" folio={`№ 06 / ${idealClients.eyebrow}`} numeral="06" labelledby="ideal-clients-heading">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <h2 id="ideal-clients-heading" class="display text-balance lg:col-span-5 lg:sticky lg:top-28 lg:self-start" style="font-size: var(--fs-64)">{idealClients.title}</h2>
+      <ul class="list-none m-0 p-0 lg:col-span-7 border-b border-[var(--color-bnc-plate-line)]" role="list">
+        {idealClients.items.map((item: { title: string; body: string }) => (
+          <li class="border-t border-[var(--color-bnc-plate-line)] py-7">
+            <h3 class="display" style="font-size: var(--fs-28); line-height: 1.05">{item.title}</h3>
+            <p class="mute mt-3 leading-relaxed" style="font-size: var(--fs-17); max-width: 50ch">{item.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {publicSector && (
+      <div class="mt-20 lg:mt-28 pt-10 border-t border-[var(--color-bnc-plate-line)] grid gap-10 lg:grid-cols-12" data-tell-public-bullets>
+        <div class="lg:col-span-5">
+          <p class="folio mute mb-4">{publicSector.eyebrow}</p>
+          <h3 class="display text-balance" style="font-size: var(--fs-36)">{publicSector.title}</h3>
+        </div>
+        <div class="lg:col-span-7">
+          <ul class="list-none m-0 p-0 border-b border-[var(--color-bnc-plate-line)]" role="list">
+            {publicSector.bullets.map((bullet: string) => (
+              <li class="border-t border-[var(--color-bnc-plate-line)] py-4 leading-relaxed" style="font-size: var(--fs-17)" data-tell-public-bullet>{bullet}</li>
+            ))}
+          </ul>
+          <a href={publicSector.ctaHref} class="mt-6 inline-block font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2">{publicSector.ctaLabel} →</a>
+        </div>
+      </div>
+    )}
+  </Plate>
+)}
+
+<!-- 07 Founder + about -->
+{founder && (
+  <Plate tone="chalk" folio={`№ 07 / ${founder.eyebrow}`} numeral="07" labelledby="founder-heading">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
+        <h2 id="founder-heading" class="display text-balance" style="font-size: var(--fs-64)">{founder.sectionTitle}</h2>
+        {about && (
+          <>
+            <p class="mt-8 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300" style="font-size: var(--fs-17); max-width: 50ch">{about.body}</p>
+            <a href={`${p}/about/`} class="mt-6 inline-block font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2">{t.aboutLink} →</a>
+          </>
+        )}
+      </div>
+      <div class="lg:col-span-7">
+        <FounderCard
+          name="Fajrian Aidil Pratama"
+          role="Founder & Director"
+          headline={founder.headline}
+          narrative={founder.narrative}
+          variant="compact"
+          href={`${p}/founder/`}
+          socials={{
+            linkedin: 'https://linkedin.com/in/fajrianaidilpratama',
+            github: 'https://github.com/fajrianaidilpratama',
+          }}
+        />
+        <div class="mt-10 pt-8 border-t border-current/25" data-tell-founder-experience>
+          <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400 mb-4">{t.background}</p>
+          <FounderExperienceStrip />
+        </div>
+        <a href={`${p}/founder/`} class="mt-8 inline-block font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2">{founder.readMoreLabel} →</a>
+      </div>
+    </div>
+  </Plate>
+)}
+
+<!-- 08 Archipelago -->
+<ArchipelagoPromo locale={locale} />
+
+<!-- Testimonial (only when one exists) -->
+{testimonial && (
+  <Plate tone="chalk" tight label={en ? 'Testimonial' : 'Testimoni'} innerClass="max-w-4xl" reveal={false}>
+    <div data-tell-testimonial>
+      <Testimonial quote={testimonial.data.quote} author={testimonial.data.author} role={testimonial.data.role} company={testimonial.data.company} />
+    </div>
+  </Plate>
+)}
+
+<!-- Estimate callout + final CTA -->
+{cta && (
+  <>
+    <div class="plate-chalk border-y border-current/25 py-6">
+      <div class="mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2" style="max-width: var(--container-max)">
+        <p class="display" style="font-size: var(--fs-28)">{t.estimateQ}</p>
+        <a href={`${p}/estimate/`} class="font-semibold underline underline-offset-[6px] decoration-1 hover:decoration-2">{t.estimateCta} →</a>
+      </div>
+    </div>
+    <CTA headline={cta.headline} sub={cta.sub} primaryCta={cta.primaryCta} primaryHref={`${p}${cta.primaryHref.replace(/^\/en/, '')}`} />
+  </>
+)}
