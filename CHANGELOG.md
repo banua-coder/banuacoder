@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.5.0 — 2026-10-16
+
+### ✨ Features
+
+- feat(portfolio): Lumbung case study, portfolio videos, branded video player; unbranded Palu reel (d8bc457)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.5.0 (e9ff4aa)
+
+### 📌 Other
+
+- Merge pull request #16 from banua-coder/chore/back-merge-v1.4.0 (6d845f0)
+- Merge pull request #15 from banua-coder/chore/bump-dev-version-v1.5.0 (152aada)
+
+
+
 ## v1.4.0 — 2026-10-16
 
 ### 🐛 Bug Fixes
