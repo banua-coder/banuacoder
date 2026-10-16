@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.4.0 — 2026-10-16
+
+### 🐛 Bug Fixes
+
+- fix(services): use the unbranded Palu anniversary reel in the showcase (ec85e9d)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.4.0 (2c95f5a)
+
+### 📌 Other
+
+- Merge pull request #13 from banua-coder/chore/back-merge-v1.3.0 (c383199)
+- Merge pull request #12 from banua-coder/chore/bump-dev-version-v1.4.0 (b7ccf49)
+
+
+
 ## v1.3.0 — 2026-10-16
 
 ### ✨ Features
