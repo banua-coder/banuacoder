@@ -1,0 +1,68 @@
+---
+/**
+ * MotionShowcase: real videos made by Banua Coder, shown on the motion-video service page.
+ * Plain <video> (no autoplay, preload none) so the page stays light. Files live in public/work/motion/.
+ */
+interface Props { locale: 'id' | 'en' }
+const { locale } = Astro.props
+const en = locale === 'en'
+
+const t = en
+  ? { folio: '№ 02 / Showcase', title: 'Our motion work', lede: 'Videos we planned, scripted and rendered in-house with Remotion. Press play to watch.', play: 'Play video' }
+  : { folio: '№ 02 / Karya', title: 'Karya video kami', lede: 'Video yang kami rancang, tulis naskahnya, dan render sendiri dengan Remotion. Tekan play untuk menonton.', play: 'Putar video' }
+
+const items = [
+  {
+    src: '/work/motion/motion-service.mp4', poster: '/work/motion/motion-service.webp', ratio: '9 / 16',
+    kind: en ? 'App promo · 9:16 · 42 s' : 'Promo aplikasi · 9:16 · 42 dtk',
+    title: en ? 'Banua Coder app promo' : 'Promo aplikasi Banua Coder',
+    note: en ? 'Our own service promo: app screens, captions and voice-over.' : 'Promo layanan kami sendiri: layar aplikasi, teks, dan narasi.',
+  },
+  {
+    src: '/work/motion/msp-case-study.mp4', poster: '/work/motion/msp-case-study.webp', ratio: '9 / 16',
+    kind: en ? 'Case study · 9:16 · 88 s' : 'Studi kasus · 9:16 · 88 dtk',
+    title: en ? 'Flutter performance audit' : 'Audit performa Flutter',
+    note: en ? 'How we found and fixed a jank problem, told as a short explainer.' : 'Cara kami menemukan dan memperbaiki masalah jank, dikemas sebagai penjelasan singkat.',
+  },
+  {
+    src: '/work/motion/hut-palu-48.mp4', poster: '/work/motion/hut-palu-48.webp', ratio: '9 / 16',
+    kind: en ? 'City anniversary · 9:16 · 29 s' : 'Ucapan HUT kota · 9:16 · 29 dtk',
+    title: en ? '48th anniversary of Palu' : 'HUT ke-48 Kota Palu',
+    note: en ? 'A greeting reel for the city of Palu, showing our work for Palu and Central Sulawesi.' : 'Reel ucapan untuk Kota Palu, menampilkan karya kami untuk Palu dan Sulawesi Tengah.',
+  },
+  {
+    src: '/work/motion/cektrans-launch.mp4', poster: '/work/motion/cektrans-launch.webp', ratio: '16 / 9',
+    kind: en ? 'Product launch · 16:9 · 61 s' : 'Peluncuran produk · 16:9 · 61 dtk',
+    title: 'cektrans',
+    note: en ? 'The product launch film for our open-source bus tracker, with the UI rebuilt from source.' : 'Film peluncuran pelacak bus open source kami, dengan UI yang dibangun ulang dari kode sumber.',
+  },
+]
+---
+
+<section aria-labelledby="showcase-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y); --showcase-h: 30rem">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8" style="max-width: var(--container-max)">
+    <div class="folio flex justify-between gap-4 border-b border-bnc-stone-300 dark:border-bnc-stone-700 pb-3 mb-10"><span>{t.folio}</span></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+      <h2 id="showcase-heading" class="display lg:col-span-6" style="font-size: var(--fs-64)">{t.title}</h2>
+      <p class="lg:col-span-5 lg:col-start-8 text-bnc-stone-600 dark:text-bnc-stone-300 self-end" style="font-size: var(--fs-20)">{t.lede}</p>
+    </div>
+    <div class="flex flex-wrap gap-x-10 gap-y-14 items-start">
+      {items.map((v) => (
+        <figure class="m-0" style={`width: min(100%, calc(var(--showcase-h) * ${v.ratio === '16 / 9' ? '16 / 9' : '9 / 16'}))`} data-reveal>
+          <video
+            class="w-full bg-bnc-ink block border border-bnc-stone-300 dark:border-bnc-stone-700"
+            style={`aspect-ratio: ${v.ratio}`}
+            controls playsinline preload="none" poster={v.poster} aria-label={`${t.play}: ${v.title}`}
+          >
+            <source src={v.src} type="video/mp4" />
+          </video>
+          <figcaption class="mt-4 border-t border-bnc-stone-300 dark:border-bnc-stone-700 pt-3">
+            <p class="folio text-bnc-stone-500 dark:text-bnc-stone-400">{v.kind}</p>
+            <p class="display mt-1" style="font-size: var(--fs-28)">{v.title}</p>
+            <p class="mt-1 text-bnc-stone-600 dark:text-bnc-stone-300" style="font-size: var(--fs-14)">{v.note}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
