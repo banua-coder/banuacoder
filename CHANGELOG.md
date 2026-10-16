@@ -2,6 +2,24 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.2.0 — 2026-10-16
+
+### ✨ Features
+
+- feat: Prospectus redesign, mock UI portfolio, new blog posts, motion-video service, SEO and OG (d29cee8)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.2.0 (127f4f2)
+
+### 📌 Other
+
+- Merge pull request #7 from banua-coder/chore/back-merge-v1.1.0 (cf9a80d)
+- Merge pull request #6 from banua-coder/chore/bump-dev-version-v1.2.0 (0bc85df)
+- bd: update sync.remote (10debb8)
+
+
+
 ## v1.1.0 — 2026-07-26
 
 ### 🐛 Bug Fixes
