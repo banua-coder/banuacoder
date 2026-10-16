@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.8.0 — 2026-10-16
+
+### ✨ Features
+
+- feat: process-cut 3D simulation, six more portfolio videos (35dd10d)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.8.0 (624828c)
+
+### 📌 Other
+
+- Merge pull request #25 from banua-coder/chore/back-merge-v1.7.0 (6e176cc)
+- Merge pull request #24 from banua-coder/chore/bump-dev-version-v1.8.0 (99402c2)
+
+
+
 ## v1.7.0 — 2026-10-16
 
 ### 🐛 Bug Fixes
