@@ -21,6 +21,8 @@ import CTA from '../sections/CTA.astro'
 import DeviceFrame from '../interactive/DeviceFrame.astro'
 import Mock from '../mocks/Mock.astro'
 import { hasMock } from '../mocks'
+import MotionPlayer from '../services/MotionPlayer.astro'
+import { portfolioVideos } from '../../data/portfolio-videos'
 
 interface Props {
   entry: CollectionEntry<'portfolio'>
@@ -40,12 +42,14 @@ const t = en
       stack: 'Tech Stack', links: 'Links', linksAria: 'External links', testimonial: 'Testimonial',
       next: 'Next project', view: 'View project →', all: 'All projects',
       play: 'Get it on Google Play', playImg: '/badges/get-on-google-play.png',
-      status: { live: 'Live', maintained: 'Maintained', archived: 'Archived' },
+      status: { live: 'Live', maintained: 'Maintained', archived: 'Archived', development: 'In active development' },
       ctaH: 'Need something like this?', ctaSub: 'Tell us about your product or system. We reply with scope, timeline and a realistic estimate.',
       screenAlt: (n: number) => `${data.title} screenshot ${n}`,
       visit: 'Visit product →',
       facts: { origin: 'Origin', client: 'Client', year: 'Year', bucket: 'Category', status: 'Status', stack: 'Stack' },
       fig: 'Fig.',
+      video: 'Video', videoSub: 'Watch it in motion. Press play; nothing loads until you do.',
+      labels: { play: 'Play', pause: 'Pause', mute: 'Mute', unmute: 'Unmute', fullscreen: 'Fullscreen', seek: 'Seek' },
     }
   : {
       home: 'Beranda', skip: 'Lewati ke konten utama', summary: 'Ringkasan proyek', detail: 'Detail proyek',
@@ -54,12 +58,14 @@ const t = en
       stack: 'Tech Stack', links: 'Tautan', linksAria: 'Tautan eksternal', testimonial: 'Testimoni',
       next: 'Proyek berikutnya', view: 'Lihat Proyek →', all: 'Semua proyek',
       play: 'Dapatkan di Google Play', playImg: '/badges/dapatkan-di-google-play.png',
-      status: { live: 'Live', maintained: 'Dipelihara', archived: 'Diarsipkan' },
+      status: { live: 'Live', maintained: 'Dipelihara', archived: 'Diarsipkan', development: 'Sedang dikembangkan' },
       ctaH: 'Butuh sistem seperti ini?', ctaSub: 'Ceritakan produk atau sistem Anda. Kami balas dengan cakupan, jadwal, dan estimasi yang realistis.',
       screenAlt: (n: number) => `Tangkapan layar ${data.title} ${n}`,
       visit: 'Kunjungi produk →',
       facts: { origin: 'Asal', client: 'Klien', year: 'Tahun', bucket: 'Kategori', status: 'Status', stack: 'Stack' },
       fig: 'Gbr.',
+      video: 'Video', videoSub: 'Lihat versi bergeraknya. Tekan play; tidak ada yang dimuat sebelum Anda menekannya.',
+      labels: { play: 'Putar', pause: 'Jeda', mute: 'Bisukan', unmute: 'Nyalakan suara', fullscreen: 'Layar penuh', seek: 'Geser posisi video' },
     }
 
 const all = (await getCollection('portfolio', ({ data: d }) => !d.draft && d.locale === locale)).sort(
@@ -89,6 +95,7 @@ const bucketLabel = {
 }[data.bucket]
 
 const screens = getScreens(data.slug)
+const videos = portfolioVideos[data.slug] ?? []
 const phones = screens.filter((s) => s.kind === 'phone')
 const desktops = screens.filter((s) => s.kind === 'desktop')
 const heroScreen = screens[0]
@@ -252,12 +259,39 @@ const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
       </Container>
     </section>
 
+    <!-- Video: chalk plate, only when the project has videos -->
+    {videos.length > 0 && (
+      <section aria-labelledby="video-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+        <Container>
+          <div class="folio flex justify-between gap-4 border-b border-bnc-ink dark:border-bnc-paper pb-3 mb-10">
+            <span>№ 04 / {t.video}</span>
+            <span class="tabular-nums">{String(videos.length).padStart(2, '0')} {t.video}</span>
+          </div>
+          <div class="grid gap-6 lg:grid-cols-12 lg:gap-14 mb-10">
+            <h2 id="video-heading" class="display lg:col-span-6" style="font-size: var(--fs-48)">{t.video}</h2>
+            <p class="lg:col-span-5 lg:col-start-8 self-end text-bnc-stone-600 dark:text-bnc-stone-300" style="font-size: var(--fs-17)">{t.videoSub}</p>
+          </div>
+          <div class="flex flex-wrap gap-x-10 gap-y-12 items-start">
+            {videos.map((vd) => (
+              <figure class="m-0" style={`width: min(100%, ${vd.ratio === '16 / 9' ? '56rem' : '22rem'})`} data-reveal>
+                <MotionPlayer src={vd.src} poster={vd.poster} ratio={vd.ratio} title={vd.title[locale]} labels={t.labels} />
+                <figcaption class="mt-4 border-t border-bnc-stone-300 dark:border-bnc-stone-700 pt-3">
+                  <p class="folio text-bnc-stone-500 dark:text-bnc-stone-400">{vd.kind[locale]}</p>
+                  <p class="display mt-1" style="font-size: var(--fs-28)">{vd.title[locale]}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
     <!-- Screens: ultramarine plate gallery -->
     {screens.length > 0 && (
       <section aria-labelledby="showcase-heading" class="plate" style="padding-block: var(--spacing-section-y-sm)">
         <Container>
           <div class="folio flex justify-between gap-4 border-b rule pb-3 mb-10" data-rule>
-            <span>№ 04 / {t.showcase}</span>
+            <span>№ {videos.length > 0 ? '05' : '04'} / {t.showcase}</span>
             <span class="tabular-nums">{String(screens.length).padStart(2, '0')} {t.fig}</span>
           </div>
           <h2 id="showcase-heading" class="display mb-3" style="font-size: var(--fs-48)">{t.showcase}</h2>
@@ -299,7 +333,7 @@ const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
     <section aria-label={t.detail} class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
       <Container>
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-14 border-t border-bnc-ink dark:border-bnc-paper pt-6">
-          <p class="folio lg:col-span-3">№ 05 / {t.detail}</p>
+          <p class="folio lg:col-span-3">№ {String(4 + (videos.length > 0 ? 1 : 0) + (screens.length > 0 ? 1 : 0)).padStart(2, '0')} / {t.detail}</p>
           <div class="lg:col-span-8 lg:col-start-5"><Prose><Content /></Prose></div>
         </div>
       </Container>

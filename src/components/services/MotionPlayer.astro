@@ -1,0 +1,131 @@
+---
+/**
+ * MotionPlayer: branded video player (no native controls). Prospectus language: sharp, hairline,
+ * ultramarine plate with a cyan progress line. Behaviour is in the script below and works for
+ * every [data-mp] on the page, including after ClientRouter navigations.
+ */
+interface Props {
+  src: string
+  poster: string
+  ratio: '9 / 16' | '16 / 9'
+  title: string
+  labels: { play: string; pause: string; mute: string; unmute: string; fullscreen: string; seek: string }
+}
+const { src, poster, ratio, title, labels } = Astro.props
+---
+
+<div class="mp relative bg-bnc-ink text-white overflow-hidden select-none" style={`aspect-ratio: ${ratio}`} data-mp data-state="idle">
+  <video class="mp-video absolute inset-0 w-full h-full object-cover" poster={poster} preload="none" playsinline aria-label={title}>
+    <source src={src} type="video/mp4" />
+  </video>
+
+  <!-- Idle cover: big play button -->
+  <button type="button" class="mp-cover absolute inset-0 grid place-items-center focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[var(--color-bnc-accent)]" data-mp-play aria-label={`${labels.play}: ${title}`}>
+    <span class="mp-big grid place-items-center">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
+    </span>
+  </button>
+
+  <!-- Control bar -->
+  <div class="mp-bar absolute inset-x-0 bottom-0 flex items-center gap-3 px-3 pb-2 pt-8">
+    <button type="button" class="mp-btn" data-mp-toggle aria-label={labels.play} data-l-play={labels.play} data-l-pause={labels.pause}>
+      <svg class="mp-i-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
+      <svg class="mp-i-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor" /></svg>
+    </button>
+    <span class="mp-time folio tabular-nums" data-mp-time aria-hidden="true">0:00</span>
+    <input type="range" class="mp-seek flex-1" min="0" max="1000" value="0" step="1" data-mp-seek aria-label={labels.seek} />
+    <button type="button" class="mp-btn" data-mp-mute aria-label={labels.mute} data-l-mute={labels.mute} data-l-unmute={labels.unmute}>
+      <svg class="mp-i-vol" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5zM15 8.5a5 5 0 0 1 0 7M17.5 6a8.5 8.5 0 0 1 0 12" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+      <svg class="mp-i-mute" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5zM15 9.5l5 5M20 9.5l-5 5" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+    </button>
+    <button type="button" class="mp-btn" data-mp-full aria-label={labels.fullscreen}>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .mp { border: 1px solid var(--color-bnc-plate-line); }
+  .mp-big { width: 4.5rem; height: 4.5rem; background: var(--color-bnc-plate); color: #fff; border: 1px solid #fff; transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), background 150ms; }
+  .mp-cover:hover .mp-big { transform: scale(1.06); background: var(--color-bnc-plate-lift); }
+  .mp-bar { background: linear-gradient(to top, rgba(6, 11, 46, 0.92), rgba(6, 11, 46, 0)); opacity: 0; transition: opacity 200ms; }
+  .mp[data-state='idle'] .mp-bar { display: none; }
+  .mp:hover .mp-bar, .mp:focus-within .mp-bar, .mp[data-state='paused'] .mp-bar { opacity: 1; }
+  .mp[data-state='playing'] .mp-cover, .mp[data-state='paused'] .mp-cover { display: none; }
+  .mp-btn { width: 2.75rem; height: 2.75rem; display: grid; place-items: center; color: #fff; background: transparent; }
+  .mp-btn:hover { color: var(--color-bnc-accent); }
+  .mp-btn:focus-visible, .mp-seek:focus-visible { outline: 2px solid var(--color-bnc-accent); outline-offset: 2px; }
+  .mp-i-pause, .mp-i-mute { display: none; }
+  .mp[data-state='playing'] .mp-i-play { display: none; }
+  .mp[data-state='playing'] .mp-i-pause { display: block; }
+  .mp[data-muted='true'] .mp-i-vol { display: none; }
+  .mp[data-muted='true'] .mp-i-mute { display: block; }
+  .mp-time { min-width: 2.5rem; color: var(--color-bnc-plate-mute); }
+  .mp-seek { -webkit-appearance: none; appearance: none; height: 2.75rem; background: transparent; cursor: pointer; min-width: 0; --p: 0%; }
+  .mp-seek::-webkit-slider-runnable-track { height: 3px; background: linear-gradient(to right, var(--color-bnc-accent) var(--p), rgba(255,255,255,.3) var(--p)); }
+  .mp-seek::-moz-range-track { height: 3px; background: rgba(255,255,255,.3); }
+  .mp-seek::-moz-range-progress { height: 3px; background: var(--color-bnc-accent); }
+  .mp-seek::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4.5px; background: #fff; border: 0; border-radius: 0; }
+  .mp-seek::-moz-range-thumb { width: 12px; height: 12px; background: #fff; border: 0; border-radius: 0; }
+  @media (prefers-reduced-motion: reduce) { .mp-big, .mp-bar { transition: none; } }
+</style>
+
+<script>
+  const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
+
+  function initPlayers() {
+    document.querySelectorAll<HTMLElement>('[data-mp]:not([data-ready])').forEach((root) => {
+      root.dataset.ready = '1'
+      const v = root.querySelector('video')!
+      const seek = root.querySelector<HTMLInputElement>('[data-mp-seek]')!
+      const time = root.querySelector<HTMLElement>('[data-mp-time]')!
+      const toggle = root.querySelector<HTMLButtonElement>('[data-mp-toggle]')!
+      const mute = root.querySelector<HTMLButtonElement>('[data-mp-mute]')!
+      const full = root.querySelector<HTMLButtonElement>('[data-mp-full]')!
+      const cover = root.querySelector<HTMLButtonElement>('[data-mp-play]')!
+
+      const label = () => {
+        toggle.setAttribute('aria-label', v.paused ? toggle.dataset.lPlay! : toggle.dataset.lPause!)
+        mute.setAttribute('aria-label', v.muted ? mute.dataset.lUnmute! : mute.dataset.lMute!)
+        root.dataset.muted = String(v.muted)
+      }
+      const playPause = () => (v.paused ? v.play() : v.pause())
+
+      cover.addEventListener('click', () => { v.play() })
+      toggle.addEventListener('click', playPause)
+      v.addEventListener('click', playPause)
+      mute.addEventListener('click', () => { v.muted = !v.muted; label() })
+      full.addEventListener('click', () => {
+        if (document.fullscreenElement) document.exitFullscreen()
+        else if (root.requestFullscreen) root.requestFullscreen()
+        else (v as any).webkitEnterFullscreen?.()
+      })
+      v.addEventListener('play', () => {
+        document.querySelectorAll<HTMLVideoElement>('[data-mp] video').forEach((o) => { if (o !== v) o.pause() })
+        root.dataset.state = 'playing'; label()
+      })
+      v.addEventListener('pause', () => { if (!v.ended) root.dataset.state = 'paused'; label() })
+      v.addEventListener('ended', () => { root.dataset.state = 'idle'; seek.value = '0'; seek.style.setProperty('--p', '0%'); time.textContent = '0:00' })
+      v.addEventListener('timeupdate', () => {
+        if (!v.duration) return
+        const p = (v.currentTime / v.duration) * 1000
+        seek.value = String(p)
+        seek.style.setProperty('--p', `${p / 10}%`)
+        time.textContent = fmt(v.currentTime)
+      })
+      seek.addEventListener('input', () => {
+        if (v.duration) v.currentTime = (Number(seek.value) / 1000) * v.duration
+        seek.style.setProperty('--p', `${Number(seek.value) / 10}%`)
+      })
+      root.addEventListener('keydown', (e) => {
+        if ((e.target as HTMLElement).tagName === 'INPUT') return
+        if (e.key === 'k' || e.key === ' ') { e.preventDefault(); playPause() }
+        if (e.key === 'm') { v.muted = !v.muted; label() }
+        if (e.key === 'f') full.click()
+      })
+      label()
+    })
+  }
+  initPlayers()
+  document.addEventListener('astro:page-load', initPlayers)
+</script>
