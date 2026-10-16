@@ -216,8 +216,8 @@ const pad = (n: number) => String(n).padStart(2, '0')
               {s.steps.map((x, k) => (
                 <div class="pc-row" data-rm={x.rm ? '' : undefined}>
                   <div class="pc-slab">
-                    <span class="pc-n">{pad(k + 1)}</span>
-                    <span class="pc-t">{x.b}</span>
+                    <span class="pc-n" data-bn={pad(k + 1)} data-an={x.rm ? undefined : pad(kept.indexOf(x) + 1)}>{pad(k + 1)}</span>
+                    <span class="pc-t" data-bt={x.b} data-at={x.rm ? undefined : (x.a ?? x.b)}>{x.b}</span>
                   </div>
                 </div>
               ))}
@@ -288,11 +288,18 @@ const pad = (n: number) => String(n).padStart(2, '0')
       const rowsOf = (el: HTMLElement) => [...el.querySelectorAll<HTMLElement>('.pc-row')]
       const setNow = (el: HTMLElement, n: number) => { q(el, '[data-pc-now]').textContent = String(Math.round(n)) }
 
+      // the slabs that stay take their "after" wording and number, so the stage matches the two lists
+      function relabel(el: HTMLElement, after: boolean) {
+        el.querySelectorAll<HTMLElement>('.pc-n[data-an]').forEach((n) => { n.textContent = after ? n.dataset.an! : n.dataset.bn! })
+        el.querySelectorAll<HTMLElement>('.pc-t[data-at]').forEach((n) => { n.textContent = after ? n.dataset.at! : n.dataset.bt! })
+      }
+
       function reset(el: HTMLElement) {
         tl?.kill(); tl = null
         const rows = rowsOf(el)
         rows.forEach((r) => { r.removeAttribute('data-gone'); gsap.set(r, { clearProps: 'all' }); gsap.set(r.firstElementChild, { clearProps: 'all' }) })
         gsap.set(q(el, '[data-pc-fill]'), { clearProps: 'all' })
+        relabel(el, false)
         setNow(el, Number(el.dataset.before))
       }
 
@@ -300,6 +307,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
         reset(el)
         rowsOf(el).forEach((r) => r.hasAttribute('data-rm') && r.setAttribute('data-gone', ''))
         gsap.set(q(el, '[data-pc-fill]'), { scaleX: Number(el.dataset.share) })
+        relabel(el, true)
         setNow(el, Number(el.dataset.after))
       }
 
@@ -323,6 +331,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
             .call(() => { left -= 1; setNow(el, left) }, [], at + 0.6)
         })
         tl.to(fill, { scaleX: share, duration: removed.length * step, ease: 'power2.inOut' }, 0)
+        tl.call(() => relabel(el, true), [], removed.length * step + 0.3)
         tl.eventCallback('onComplete', () => removed.forEach((r) => r.setAttribute('data-gone', '')))
       }
 
