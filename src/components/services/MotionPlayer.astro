@@ -15,7 +15,7 @@ const { src, poster, ratio, title, labels } = Astro.props
 ---
 
 <div class="mp relative bg-bnc-ink text-white overflow-hidden select-none" style={`aspect-ratio: ${ratio}`} data-mp data-state="idle">
-  <video class="mp-video absolute inset-0 w-full h-full object-cover" poster={poster} preload="none" playsinline aria-label={title}>
+  <video class="mp-video absolute inset-0 w-full h-full object-contain" poster={poster} preload="none" playsinline aria-label={title}>
     <source src={src} type="video/mp4" />
   </video>
 
@@ -46,6 +46,10 @@ const { src, poster, ratio, title, labels } = Astro.props
 
 <style>
   .mp { border: 1px solid var(--color-bnc-plate-line); }
+  /* Fullscreen: fill the screen, letterbox the video at its own aspect ratio */
+  .mp:fullscreen, .mp:-webkit-full-screen { aspect-ratio: auto !important; width: 100vw; height: 100vh; border: 0; background: #000; }
+  .mp:fullscreen .mp-video, .mp:-webkit-full-screen .mp-video { object-fit: contain; }
+  .mp:fullscreen .mp-bar { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
   .mp-big { width: 4.5rem; height: 4.5rem; background: var(--color-bnc-plate); color: #fff; border: 1px solid #fff; transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), background 150ms; }
   .mp-cover:hover .mp-big { transform: scale(1.06); background: var(--color-bnc-plate-lift); }
   .mp-bar { background: linear-gradient(to top, rgba(6, 11, 46, 0.92), rgba(6, 11, 46, 0)); opacity: 0; transition: opacity 200ms; }
