@@ -68,7 +68,7 @@ const hreflang = en
 ---
 
 <BaseLayout
-  title={`${data.title} — Blog · Banua Coder`}
+  title={`${data.title} ${locale === 'id' ? '|' : '—'} Blog · Banua Coder`}
   description={data.description}
   ogImage={blogOgUrl(data.slug, locale)}
   type="article"

@@ -10,6 +10,6 @@ links:
   youtube: "https://youtube.com/@ryanaidilp"
 ---
 
-Fajrian Aidil Pratama adalah Founder & Director Banua Coder. Dengan latar belakang sebagai software engineer yang pernah berkontribusi di berbagai produk digital dan platform engineering, ia membawa kombinasi antara engineering depth, product thinking, dan pemahaman operasional bisnis ke dalam setiap solusi yang dibangun Banua Coder.
+Ryan adalah Founder & Director Banua Coder. Sebagai software engineer yang pernah mengerjakan berbagai produk digital dan platform, ia membawa kedalaman engineering, cara berpikir produk, dan pemahaman operasional bisnis ke setiap solusi yang dibangun Banua Coder.
 
-Pengalaman lintas konteks — mulai dari sektor publik, bisnis operasional, hingga produk digital consumer-facing dan kolaborasi internasional — membentuk cara berpikir yang tidak hanya teknis, tetapi juga berorientasi pada kebutuhan nyata bisnis.
+Pengalaman lintas konteks, dari sektor publik dan bisnis operasional sampai produk digital untuk konsumen dan kolaborasi internasional, membentuk cara berpikir yang teknis sekaligus berangkat dari kebutuhan nyata bisnis.

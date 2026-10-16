@@ -31,21 +31,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   // ── Static pages ─────────────────────────────────────────────────────────
   const staticPages: RouteEntry[] = [
-    { slug: 'home',     title: 'Banua Coder — Software House Engineering-Led, Palu, Sulawesi Tengah', pageType: 'home' },
+    { slug: 'home',     title: 'Banua Coder: Software House Engineering-Led, Palu, Sulawesi Tengah', pageType: 'home' },
     { slug: 'en-home',  title: 'Banua Coder — Engineering-Led Technology Partner, Palu, Indonesia', pageType: 'home' },
-    { slug: 'about',    title: 'Tentang Banua Coder — Software House Engineering-Led di Sulawesi Tengah', pageType: 'about' },
+    { slug: 'about',    title: 'Tentang Banua Coder: Software House Engineering-Led di Sulawesi Tengah', pageType: 'about' },
     { slug: 'en-about', title: 'About Banua Coder — Engineering-Led Software House in Central Sulawesi', pageType: 'about' },
-    { slug: 'founder',  title: 'Fajrian Aidil Pratama — Founder, Banua Coder', pageType: 'founder' },
+    { slug: 'founder',  title: 'Fajrian Aidil Pratama: Founder, Banua Coder', pageType: 'founder' },
     { slug: 'en-founder', title: 'Fajrian Aidil Pratama — Founder, Banua Coder', pageType: 'founder' },
-    { slug: 'contact',  title: 'Kontak Banua Coder — Software House Palu, Sulawesi Tengah', pageType: 'contact' },
+    { slug: 'contact',  title: 'Kontak Banua Coder: Software House Palu, Sulawesi Tengah', pageType: 'contact' },
     { slug: 'en-contact', title: 'Contact Banua Coder — Software House Palu, Indonesia', pageType: 'contact' },
-    { slug: 'estimate', title: 'Estimasi Biaya Proyek — Aplikasi Mobile, Web, Sistem Internal', pageType: 'estimate' },
+    { slug: 'estimate', title: 'Estimasi Biaya Proyek: Aplikasi Mobile, Web, Sistem Internal', pageType: 'estimate' },
     { slug: 'en-estimate', title: 'Project Cost Estimate — Mobile App, Web, Internal Systems', pageType: 'estimate' },
-    { slug: 'portfolio', title: 'Portofolio Aplikasi Mobile, Web, & Sistem Pemerintah — Banua Coder', pageType: 'portfolio' },
+    { slug: 'portfolio', title: 'Portofolio Aplikasi Mobile, Web, & Sistem Pemerintah | Banua Coder', pageType: 'portfolio' },
     { slug: 'en-portfolio', title: 'Portfolio — Mobile Apps, Web & Government Systems · Banua Coder', pageType: 'portfolio' },
-    { slug: 'services', title: 'Layanan Pengembangan Aplikasi & Website — Banua Coder', pageType: 'services' },
+    { slug: 'services', title: 'Layanan Pengembangan Aplikasi & Website | Banua Coder', pageType: 'services' },
     { slug: 'en-services', title: 'Development Services — Apps, Web & Digital Systems · Banua Coder', pageType: 'services' },
-    { slug: 'blog',     title: 'Blog Engineering & Product — Banua Coder', pageType: 'blog' },
+    { slug: 'blog',     title: 'Blog Engineering & Product | Banua Coder', pageType: 'blog' },
     { slug: 'en-blog',  title: 'Engineering & Product Blog — Banua Coder', pageType: 'blog' },
   ]
   routes.push(...staticPages)

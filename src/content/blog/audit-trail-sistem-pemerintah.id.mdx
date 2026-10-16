@@ -18,12 +18,12 @@ Catatan: ini penjelasan praktik engineering, bukan nasihat hukum atau kepatuhan 
 
 Audit trail menjawab: **siapa melakukan apa, kapan, dan atas dasar apa**. Setiap tindakan penting di sistem meninggalkan catatan yang tidak bisa diubah diam-diam: surat diterima, disposisi diteruskan, dokumen ditandatangani, hak akses diubah.
 
-## Kenapa ini bukan sekadar log
+## Audit trail berbeda dari log
 
 Banyak dokumen kebutuhan menyamakan keduanya. Padahal tujuannya berbeda.
 
 - **Log** dibuat untuk engineer yang mencari penyebab error. Isinya teknis, boleh dibuang setelah beberapa waktu, dan tidak dibaca orang di luar tim teknis.
-- **Audit trail** dibuat sebagai bukti untuk manusia, saat ada perselisihan atau pemeriksaan. Isinya harus bisa dipahami orang non-teknis dan harus bertahan selama sistemnya dipakai.
+- **Audit trail** dibuat sebagai bukti untuk manusia, saat ada perselisihan atau pemeriksaan. Isinya harus bisa dipahami orang nonteknis dan harus bertahan selama sistemnya dipakai.
 
 Kalau yang dibangun hanya log, pertanyaan "surat ini berhenti di meja siapa" tetap tidak bisa dijawab.
 
@@ -44,7 +44,7 @@ Semakin sensitif datanya, semakin penting memutuskan batas ini secara sengaja.
 
 ## Audit trail yang tidak bisa dicari sama dengan tidak ada
 
-Catatan yang hanya bisa dibaca dengan membuka database tidak berguna bagi orang yang perlu menjawab pertanyaan. Syarat yang membedakan audit trail sungguhan dari sekadar centang kepatuhan adalah kemampuan **mencari dan menyaring**: berdasarkan surat, pelaku, rentang waktu, atau jenis tindakan.
+Catatan yang hanya bisa dibaca dengan membuka database tidak berguna bagi orang yang perlu menjawab pertanyaan. Syarat yang membedakan audit trail sungguhan dari centang kepatuhan belaka adalah kemampuan **mencari dan menyaring**: berdasarkan surat, pelaku, rentang waktu, atau jenis tindakan.
 
 ## Biaya di awal versus menambal belakangan
 
@@ -63,4 +63,4 @@ Audit trail adalah salah satu dari beberapa hal yang sering terlewat dalam proye
 
 ---
 
-Kalau sistem Anda sudah berjalan tapi belum bisa membuktikan apa pun, [ceritakan kondisinya ke kami](/contact/).
+Kalau sistem Anda sudah berjalan tetapi belum bisa membuktikan apa pun, [ceritakan kondisinya ke kami](/contact/).

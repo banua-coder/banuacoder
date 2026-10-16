@@ -32,7 +32,7 @@ const logoUrls: Record<string, string> = Object.fromEntries(
         type="button"
         class="flex items-center justify-center px-4 py-2 border border-current/25 hover:border-bnc-plate dark:hover:border-bnc-accent transition-colors group"
         aria-describedby={`exp-tip-${exp.company.replace(/\W+/g, '-')}`}
-        aria-label={`${exp.company} — ${exp.context}`}
+        aria-label={`${exp.company}: ${exp.context}`}
       >
         {logoUrls[exp.logo] ? (
           <img
