@@ -1,0 +1,96 @@
+---
+/**
+ * Port of the Lumbung home ledger (shared workspace) from the Flutter app.
+ * Source: ~/Documents/Projects/Kirana app (HomeLedgerHeader, KPeriodSummaryBar, KLedgerRow, HomeLedgerDaySeparator,
+ * KOfflineBanner, ShellBottomNavBar + ShellFab), via the source-traced rebuild in
+ * education_content_remotion/src/compositions/lumbung-promo/ui (Screen.tsx + screen.css.ts). Cross-checked with the live
+ * mock on https://lumbung.banuacoder.com ("Rumah Budi & Sinta": Income Rp12.400.000, Spending Rp6.553.000).
+ * Tokens (lumbung_ui_kit): bg #FCFCFB, fg #1E293B, fg-subtle #475569, outline-subtle #E2E8F0, primary #146B5C,
+ *   income #0B7A57, expense #E02424, harvest #E9A93B, member accents #5A6AC0 / #0891B2.
+ * Layout: design screen 384 wide (dp map 1:1, calc(1 * var(--u)) = 1dp at 384px), status 36, header 12/16/8 padding, ledger row 68, nav 66, FAB 56.
+ * Icons: Harvest set from app/packages/lumbung_asset. People, rows and amounts are sample data (personas, not customers).
+ * Font: the app uses Manrope 800 for amounts and titles; this site does not load Manrope, so the site sans is used.
+ */
+interface Props { locale?: 'id' | 'en' }
+const en = Astro.props.locale === 'en'
+const t = en
+  ? { ws: 'Rumah Budi & Sinta', list: 'List', cal: 'Calendar', inc: 'Income', exp: 'Spending', tot: 'Total', today: 'Today · 16 Jul', yday: 'Yesterday · 15 Jul', off: 'Offline · changes saved locally, will sync.', nav: ['Home', 'Insights', 'Money', 'More'], mon: 'July 2026', food: 'Food', bills: 'Bills' }
+  : { ws: 'Rumah Budi & Sinta', list: 'Daftar', cal: 'Kalender', inc: 'Pemasukan', exp: 'Pengeluaran', tot: 'Total', today: 'Hari ini · 16 Jul', yday: 'Kemarin · 15 Jul', off: 'Offline · perubahan tersimpan lokal, akan disinkronkan.', nav: ['Home', 'Wawasan', 'Uang', 'Lainnya'], mon: 'Juli 2026', food: 'Belanja', bills: 'Tagihan' }
+const I: Record<string, string> = {"arrows/chevron-down":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M6 9L12 15L18 9\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>","navigation/home_active":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linejoin=\"round\" fill-rule=\"evenodd\" d=\"M3.7 8.85Q4.45 9.6 5.2 9.2L10.8 3.9a1.7 1.7 0 0 1 2.4 0L18.8 9.2Q19.55 9.6 20.3 8.85Q19.4 10.4 17.75 10.4V18.25a2 2 0 0 1-2 2h-7.5a2 2 0 0 1-2-2V10.4Q4.6 10.4 3.7 8.85ZM13.98 11.46C15.37 14.33 13.19 18.11 10.02 18.34C8.63 15.47 10.81 11.69 13.98 11.46Z\"/><path class=\"grain\" fill=\"#E9A93B\" d=\"M13.68 12C14.67 14.31 12.82 17.5 10.32 17.8C9.33 15.49 11.18 12.3 13.68 12Z\"/></svg>","navigation/insights":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M11.25 4.75A7.75 7.75 0 1 0 19 12.5H11.25Z\"/><path class=\"grain\" fill=\"#E9A93B\" d=\"M17.73 4.85C18.71 7.16 16.87 10.35 14.37 10.65C13.39 8.34 15.23 5.15 17.73 4.85Z\"/></svg>","navigation/money":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.25 6.5H18.75A2 2 0 0 1 20.75 8.5V17.75A2 2 0 0 1 18.75 19.75H5.25A2 2 0 0 1 3.25 17.75V8.5A2 2 0 0 1 5.25 6.5Z\"/><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.5 6.5L14.9 3.55A1.5 1.5 0 0 1 16.85 4.98V6.5\"/><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M20.75 9.5H15.25A2 2 0 0 0 13.25 11.5V14.75A2 2 0 0 0 15.25 16.75H20.75\"/><path class=\"grain\" fill=\"#E9A93B\" d=\"M18.24 11.06C18.94 12.7 17.63 14.96 15.86 15.18C15.16 13.54 16.47 11.28 18.24 11.06Z\"/></svg>","navigation/more":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.5 3.5H8.5A2 2 0 0 1 10.5 5.5V8.5A2 2 0 0 1 8.5 10.5H5.5A2 2 0 0 1 3.5 8.5V5.5A2 2 0 0 1 5.5 3.5Z\"/><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M15.5 3.5H18.5A2 2 0 0 1 20.5 5.5V8.5A2 2 0 0 1 18.5 10.5H15.5A2 2 0 0 1 13.5 8.5V5.5A2 2 0 0 1 15.5 3.5Z\"/><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.5 13.5H8.5A2 2 0 0 1 10.5 15.5V18.5A2 2 0 0 1 8.5 20.5H5.5A2 2 0 0 1 3.5 18.5V15.5A2 2 0 0 1 5.5 13.5Z\"/><path class=\"grain\" fill=\"#E9A93B\" d=\"M18.4 14.58C19.22 16.51 17.68 19.17 15.6 19.42C14.78 17.49 16.32 14.83 18.4 14.58Z\"/></svg>","navigation/add":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 5V19M5 12H19\"/></svg>","finance/groceries-cart":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M2.75 3.75h1.5a1 1 0 0 1 .98.8L7.2 14.2a1.75 1.75 0 0 0 1.72 1.42h8.3a1.75 1.75 0 0 0 1.7-1.33l1.55-6.3a1 1 0 0 0-.97-1.24H5.7\"/><circle cx=\"9.25\" cy=\"19.5\" r=\"1.25\" fill=\"currentColor\"/><circle cx=\"17\" cy=\"19.5\" r=\"1.25\" fill=\"currentColor\"/><path class=\"grain\" fill=\"#E9A93B\" d=\"M14.92 8.56C15.78 10.59 14.16 13.38 11.98 13.64C11.12 11.61 12.74 8.82 14.92 8.56Z\"/></svg>","finance/utilities-bolt":"<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M13.25 2.75 4.75 13.5H12l-1.25 7.75 8.5-10.75H12l1.25-7.75Z\"/></svg>","filter":"<svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"currentColor\"><path d=\"M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z\"/></svg>","left":"<svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"currentColor\"><path d=\"M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z\"/></svg>","right":"<svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"currentColor\"><path d=\"M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z\"/></svg>","cloudOff":"<svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"currentColor\"><path d=\"M24 15c0-2.64-2.05-4.78-4.65-4.96C18.67 6.59 15.64 4 12 4c-1.33 0-2.57.36-3.65.97l1.49 1.49C10.51 6.17 11.23 6 12 6c3.04 0 5.5 2.46 5.5 5.5v.5H19c1.66 0 3 1.34 3 3 0 .99-.48 1.85-1.21 2.4l1.41 1.41c1.09-.92 1.8-2.27 1.8-3.81zM4.41 3.86 3 5.27l2.77 2.77h-.42C2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h11.73l2 2 1.41-1.41L4.41 3.86zM6 18c-2.21 0-4-1.79-4-4s1.79-4 4-4h1.73l8 8H6z\"/></svg>"}
+const B = ['#5A6AC0', 'B'], S = ['#0891B2', 'S']
+const rows = [
+  { a: 'Rp 186.000', t: 'Superindo', s: 'Sinta · BCA', by: S, c: t.food, col: '#16A34A', tx: '#105E2E', w: '18.42' },
+  { a: 'Rp 95.000', t: 'Listrik PLN', s: 'Budi · BCA', by: B, c: t.bills, col: '#0891B2', tx: '#066880', w: '14.30' },
+  { sep: t.yday, net: '−Rp 128.400' },
+  { a: 'Rp 128.400', t: en ? 'Weekly groceries' : 'Belanja mingguan', s: 'Sinta · GoPay', by: S, c: t.food, col: '#16A34A', tx: '#105E2E', w: '10.05' },
+]
+---
+<div class="lb">
+  <div class="sb"><span>9.41</span><span style="display:flex;gap:calc(6 * var(--u))"><svg viewBox="0 0 18 12" style="width:calc(16 * var(--u));height:calc(11 * var(--u))"><rect x="0" y="8" width="3" height="4" rx=".8" fill="currentColor"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx=".8" fill="currentColor"/><rect x="15" y="0.5" width="3" height="11.5" rx=".8" fill="currentColor"/></svg><svg viewBox="0 0 26 12" style="width:calc(24 * var(--u));height:calc(11 * var(--u))"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="1.6" fill="currentColor"/></svg></span></div>
+  <div class="isl"></div>
+  <div class="hh">
+    <div class="top"><b>{t.ws}</b><span class="ic" style="font-size:calc(18 * var(--u));color:#475569" set:html={I['arrows/chevron-down']} /><span class="sp"></span><span class="pres"><span class="av" style={`background:${B[0]}`}>B</span><span class="av" style={`background:${S[0]}`}>S</span></span></div>
+    <div class="mon"><span class="ic" set:html={I.left} /><b>{t.mon}</b><span class="ic" set:html={I.right} /></div>
+    <div class="tg"><span class="on">{t.list}</span><span>{t.cal}</span></div>
+  </div>
+  <div class="psb"><div><i>{t.inc}</i><b class="inc">Rp12.400.000</b></div><div><i>{t.exp}</i><b>Rp6.553.000</b></div><div><i>{t.tot}</i><b class="inc">+Rp5.847.000</b></div></div>
+  <div class="off"><span class="ic" set:html={I.cloudOff} />{t.off}</div>
+  <div class="ds"><span>{t.today}</span><span>−Rp 281.000</span></div>
+  {rows.map((r) => r.sep ? (
+    <div class="ds"><span>{r.sep}</span><span>{r.net}</span></div>
+  ) : (
+    <div class="lr"><div class="lr-a exp">{r.a}</div><div class="lr-m"><b>{r.t}</b><span><i class="mav" style={`background:${r.by![0]}`}>{r.by![1]}</i>{r.s}</span></div><div class="lr-r"><span class="tag" style={`background:${r.col}29;color:${r.tx}`}>{r.c}</span><i>{r.w}</i></div></div>
+  ))}
+  <div class="nav">
+    <svg class="bg" viewBox="0 0 384 66" preserveAspectRatio="none"><path d="M0 1 H146 C158 1 160 1 163 8 C170 27 214 27 221 8 C224 1 226 1 238 1 H384 V66 H0 Z" fill="#FCFCFB" stroke="#94A3B8" stroke-width="1"/></svg>
+    <a class="on"><span class="ic" set:html={I['navigation/home_active']} />{t.nav[0]}</a>
+    <a><span class="ic" set:html={I['navigation/insights']} />{t.nav[1]}</a>
+    <a></a>
+    <a><span class="ic" set:html={I['navigation/money']} />{t.nav[2]}</a>
+    <a><span class="ic" set:html={I['navigation/more']} />{t.nav[3]}</a>
+  </div>
+  <div class="fab"><span class="ic" set:html={I['navigation/add']} /></div>
+</div>
+<style is:global>
+.lb{--u:calc(100cqw / 384);--bg:#FCFCFB;--bg2:#F1F5F3;--raised:#E9EFEC;--card:#fff;--fg:#1E293B;--sub:#475569;--mute:#94A3B8;--line:#E2E8F0;--pri:#146B5C;--inc:#0B7A57;--exp:#E02424;position:absolute;inset:0;background:var(--bg);color:var(--fg);overflow:hidden;line-height:1.5;font-family:var(--font-sans,Inter,system-ui,sans-serif)}
+.lb *{box-sizing:border-box;margin:0;padding:0}.lb svg{display:block}
+.lb .ic{display:flex;width:1em;height:1em;flex:none}
+.lb .grain{fill:#E9A93B}
+.lb .sb{height:calc(36 * var(--u));display:flex;align-items:center;justify-content:space-between;padding:calc(4 * var(--u)) calc(26 * var(--u)) 0;font-size:calc(13 * var(--u));font-weight:600;font-variant-numeric:tabular-nums}
+.lb .isl{position:absolute;top:calc(9 * var(--u));left:50%;margin-left:calc(-44 * var(--u));width:calc(88 * var(--u));height:calc(24 * var(--u));border-radius:calc(12 * var(--u));background:#0B0C0E}
+.lb .hh{padding:calc(12 * var(--u)) calc(16 * var(--u)) calc(8 * var(--u))}
+.lb .top{display:flex;align-items:center;height:calc(40 * var(--u));gap:calc(6 * var(--u))}
+.lb .top b{font-size:calc(20 * var(--u));font-weight:800;line-height:1.25;white-space:nowrap;letter-spacing:-.02em}
+.lb .sp{flex:1}
+.lb .pres{display:flex}
+.lb .av{width:calc(28 * var(--u));height:calc(28 * var(--u));border-radius:50%;border:calc(2 * var(--u)) solid var(--card);margin-left:calc(-7 * var(--u));display:inline-flex;align-items:center;justify-content:center;font-size:calc(12 * var(--u));font-weight:700;color:#fff}
+.lb .av:first-child{margin-left:0}
+.lb .mon{display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--u));margin-top:calc(8 * var(--u));color:var(--sub)}
+.lb .mon .ic{font-size:calc(24 * var(--u))}.lb .mon b{font-size:calc(14 * var(--u));font-weight:700;color:var(--fg)}
+.lb .tg{display:flex;width:max-content;margin:calc(4 * var(--u)) auto 0;background:var(--raised);border-radius:calc(999 * var(--u));padding:calc(2 * var(--u))}
+.lb .tg span{padding:calc(4 * var(--u)) calc(12 * var(--u));border-radius:calc(999 * var(--u));font-size:calc(10 * var(--u));font-weight:700;line-height:1.4;color:var(--sub)}
+.lb .tg .on{background:var(--bg);color:var(--fg);box-shadow:0 calc(2 * var(--u)) calc(4 * var(--u)) rgba(30,41,59,.08)}
+.lb .psb{display:flex;padding:calc(12 * var(--u)) calc(16 * var(--u));border-bottom:calc(1 * var(--u)) solid var(--line)}
+.lb .psb>div{flex:1;min-width:0}
+.lb .psb i{display:block;font-style:normal;font-size:calc(10 * var(--u));font-weight:600;color:var(--sub);line-height:1.4}
+.lb .psb b{display:block;font-size:calc(13 * var(--u));font-weight:800;line-height:1.4;margin-top:calc(2 * var(--u));white-space:nowrap;font-variant-numeric:tabular-nums}
+.lb .inc{color:var(--inc)}
+.lb .ds{height:calc(42 * var(--u));display:flex;justify-content:space-between;align-items:flex-end;padding:calc(16 * var(--u)) calc(16 * var(--u)) calc(8 * var(--u));border-bottom:calc(1 * var(--u)) solid var(--line);font-size:calc(13 * var(--u));font-weight:700;line-height:1.4;color:var(--sub)}
+.lb .lr{display:flex;align-items:flex-start;gap:calc(12 * var(--u));padding:calc(12 * var(--u)) calc(16 * var(--u));height:calc(68 * var(--u));border-bottom:calc(1 * var(--u)) solid var(--line)}
+.lb .lr-a{width:calc(96 * var(--u));flex:none;font-size:calc(16 * var(--u));font-weight:800;line-height:1.25;white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.lb .lr-a.exp{color:var(--exp)}
+.lb .lr-m{flex:1;min-width:0}
+.lb .lr-m b{display:block;font-size:calc(15 * var(--u));font-weight:600;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .lr-m span{display:flex;align-items:center;gap:calc(5 * var(--u));margin-top:calc(2 * var(--u));font-size:calc(13 * var(--u));line-height:1.4;color:var(--sub)}
+.lb .mav{width:calc(16 * var(--u));height:calc(16 * var(--u));border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:calc(9 * var(--u));font-weight:800;color:#fff;font-style:normal}
+.lb .lr-r{display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.lb .tag{font-size:calc(10 * var(--u));font-weight:700;line-height:1.4;padding:calc(2 * var(--u)) calc(8 * var(--u));border-radius:calc(4 * var(--u))}
+.lb .lr-r i{font-style:normal;font-size:calc(10 * var(--u));font-weight:500;line-height:1.4;margin-top:calc(4 * var(--u));color:var(--sub)}
+.lb .off{display:flex;align-items:center;gap:calc(8 * var(--u));padding:calc(8 * var(--u)) calc(16 * var(--u));background:var(--bg2);color:var(--mute);font-size:calc(11 * var(--u));font-weight:600;line-height:1.4}
+.lb .off .ic{font-size:calc(16 * var(--u))}
+.lb .nav{position:absolute;left:0;right:0;bottom:0;height:calc(66 * var(--u));display:flex;align-items:flex-end;padding:calc(8 * var(--u)) calc(4 * var(--u)) calc(10 * var(--u))}
+.lb .nav svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.lb .nav a{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:calc(4 * var(--u));font-size:calc(14 * var(--u));font-weight:600;line-height:1.5;color:var(--sub)}
+.lb .nav a.on{color:var(--pri);font-weight:700}.lb .nav a .ic{font-size:calc(20 * var(--u))}
+.lb .fab{position:absolute;left:calc(164 * var(--u));bottom:calc(40 * var(--u));width:calc(56 * var(--u));height:calc(56 * var(--u));border-radius:50%;background:var(--pri);color:#fff;box-shadow:0 calc(8 * var(--u)) calc(16 * var(--u)) rgba(30,41,59,.08),0 calc(4 * var(--u)) calc(12 * var(--u)) rgba(20,107,92,.3);display:flex;align-items:center;justify-content:center;font-size:calc(24 * var(--u))}
+</style>

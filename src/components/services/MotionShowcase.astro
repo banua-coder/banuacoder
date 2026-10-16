@@ -3,13 +3,14 @@
  * MotionShowcase: real videos made by Banua Coder, shown on the motion-video service page.
  * Plain <video> (no autoplay, preload none) so the page stays light. Files live in public/work/motion/.
  */
+import MotionPlayer from './MotionPlayer.astro'
 interface Props { locale: 'id' | 'en' }
 const { locale } = Astro.props
 const en = locale === 'en'
 
 const t = en
-  ? { folio: '№ 02 / Showcase', title: 'Our motion work', lede: 'Videos we planned, scripted and rendered in-house with Remotion. Press play to watch.', play: 'Play video' }
-  : { folio: '№ 02 / Karya', title: 'Karya video kami', lede: 'Video yang kami rancang, tulis naskahnya, dan render sendiri dengan Remotion. Tekan play untuk menonton.', play: 'Putar video' }
+  ? { folio: '№ 02 / Showcase', title: 'Our motion work', lede: 'Videos we planned, scripted and rendered in-house with Remotion. Press play to watch.', play: 'Play video', labels: { play: 'Play', pause: 'Pause', mute: 'Mute', unmute: 'Unmute', fullscreen: 'Fullscreen', seek: 'Seek' } }
+  : { folio: '№ 02 / Karya', title: 'Karya video kami', lede: 'Video yang kami rancang, tulis naskahnya, dan render sendiri dengan Remotion. Tekan play untuk menonton.', play: 'Putar video', labels: { play: 'Putar', pause: 'Jeda', mute: 'Bisukan', unmute: 'Nyalakan suara', fullscreen: 'Layar penuh', seek: 'Geser posisi video' } }
 
 const items = [
   {
@@ -25,7 +26,7 @@ const items = [
     note: en ? 'How we found and fixed a jank problem, told as a short explainer.' : 'Cara kami menemukan dan memperbaiki masalah jank, dikemas sebagai penjelasan singkat.',
   },
   {
-    src: '/work/motion/hut-palu-48.mp4', poster: '/work/motion/hut-palu-48.webp', ratio: '9 / 16',
+    src: '/work/motion/hut-palu-48-palette.mp4', poster: '/work/motion/hut-palu-48-palette.webp', ratio: '9 / 16',
     kind: en ? 'City anniversary · 9:16 · 29 s' : 'Ucapan HUT kota · 9:16 · 29 dtk',
     title: en ? '48th anniversary of Palu' : 'HUT ke-48 Kota Palu',
     note: en ? 'A greeting reel for the city of Palu, showing our work for Palu and Central Sulawesi.' : 'Reel ucapan untuk Kota Palu, menampilkan karya kami untuk Palu dan Sulawesi Tengah.',
@@ -49,13 +50,7 @@ const items = [
     <div class="flex flex-wrap gap-x-10 gap-y-14 items-start">
       {items.map((v) => (
         <figure class="m-0" style={`width: min(100%, calc(var(--showcase-h) * ${v.ratio === '16 / 9' ? '16 / 9' : '9 / 16'}))`} data-reveal>
-          <video
-            class="w-full bg-bnc-ink block border border-bnc-stone-300 dark:border-bnc-stone-700"
-            style={`aspect-ratio: ${v.ratio}`}
-            controls playsinline preload="none" poster={v.poster} aria-label={`${t.play}: ${v.title}`}
-          >
-            <source src={v.src} type="video/mp4" />
-          </video>
+          <MotionPlayer src={v.src} poster={v.poster} ratio={v.ratio as '9 / 16' | '16 / 9'} title={v.title} labels={t.labels} />
           <figcaption class="mt-4 border-t border-bnc-stone-300 dark:border-bnc-stone-700 pt-3">
             <p class="folio text-bnc-stone-500 dark:text-bnc-stone-400">{v.kind}</p>
             <p class="display mt-1" style="font-size: var(--fs-28)">{v.title}</p>

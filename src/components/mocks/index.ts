@@ -10,6 +10,7 @@ import Detexi from './Detexi.astro'
 import FormGearBuilder from './FormGearBuilder.astro'
 import FormGearEngine from './FormGearEngine.astro'
 import Lontara from './Lontara.astro'
+import Lumbung from './Lumbung.astro'
 import MspPerformanceAudit from './MspPerformanceAudit.astro'
 import Patonro from './Patonro.astro'
 import PicoSulteng from './PicoSulteng.astro'
@@ -33,6 +34,7 @@ export const mocks: Record<string, MockEntry> = {
   'form-gear-builder': { component: FormGearBuilder, frame: 'desktop', url: 'formgear builder' },
   'form-gear-engine': { component: FormGearEngine, frame: 'phone' },
   lontara: { component: Lontara, frame: 'phone' },
+  lumbung: { component: Lumbung, frame: 'phone' },
   'msp-performance-audit': { component: MspPerformanceAudit, frame: 'phone' },
   patonro: { component: Patonro, frame: 'phone' },
   'pico-sulteng': { component: PicoSulteng, frame: 'phone' },

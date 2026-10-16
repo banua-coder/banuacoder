@@ -10,6 +10,7 @@ import { renderInlineMd } from '../../lib/inline-md'
 import { clientLabel } from '../../lib/portfolio-screens'
 import Mock from '../mocks/Mock.astro'
 import { hasMock } from '../mocks'
+import { hasVideo } from '../../data/portfolio-videos'
 
 interface Props {
   title: string
@@ -44,6 +45,7 @@ const bucketLabel = {
 }[bucket]
 const clientText = clientLabel(client, en ? 'en' : 'id')
 const mock = slug ? hasMock(slug) : false
+const video = slug ? hasVideo(slug) : false
 const num = index ? String(index).padStart(2, '0') : ''
 ---
 
@@ -69,6 +71,7 @@ const num = index ? String(index).padStart(2, '0') : ''
       <div class="col-span-9 col-start-4 lg:col-span-2 lg:col-start-8 max-lg:mt-4 flex lg:flex-col gap-x-6 gap-y-1">
         <p class="display tabular-nums" style="font-size: var(--fs-28)">{year}</p>
         <p class="folio work-mute self-center lg:self-auto">{bucketLabel}</p>
+        {video && <p class="folio self-center lg:self-auto inline-flex items-center gap-1.5 border border-current/50 px-1.5 py-0.5 w-fit"><svg viewBox="0 0 24 24" width="10" height="10" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>Video</p>}
       </div>
 
       <div class="work-thumb col-span-9 col-start-4 lg:col-span-3 lg:col-start-10 max-lg:mt-4">
@@ -88,7 +91,7 @@ const num = index ? String(index).padStart(2, '0') : ''
       {mock ? <Mock slug={slug!} title={title} locale={en ? 'en' : 'id'} class="mock-crop-in" /> : coverSrc && <Image src={coverSrc} alt={coverAlt} width={640} height={360} class="w-full h-full object-cover" loading="lazy" />}
     </div>
     <div class="flex flex-col gap-3 p-5 flex-1">
-      <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400">{bucketLabel} / {clientText} / {year}</p>
+      <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400">{bucketLabel} / {clientText} / {year}{video ? ' / Video' : ''}</p>
       <h3 class="display" style="font-size: var(--fs-28); line-height: 1.05">
         <a href={href} class="after:absolute after:inset-0 after:content-[''] hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent">{title}</a>
       </h3>

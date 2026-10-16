@@ -1,0 +1,99 @@
+---
+title: Lumbung
+slug: lumbung
+bucket: consumer
+client: Banua Coder
+clientUrl: https://lumbung.banuacoder.com
+year: 2026
+status: development
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
+summary: >
+  A personal and shared finance app that works fully without a signal. Lumbung
+  pairs the logging speed of a money manager with shared spaces for couples,
+  families, housemates and groups. Our own product, in active development and
+  currently taking waitlist sign-ups.
+problem: >
+  Money is rarely managed alone. Couples split the household bills, families
+  keep one budget, housemates chip in for electricity. Most trackers are built
+  for one person, or need the internet before they can be shared. An entry
+  written somewhere with no signal must not be lost either. And financial data
+  is sensitive: people need to know it is encrypted and can be exported at any
+  time.
+solution: >
+  Banua Coder is building Lumbung as an offline-first finance platform. The
+  Flutter client writes every entry to a local database first, then syncs it
+  per entry across devices when the signal returns. One Workspace concept
+  holds both personal and shared ledgers, with roles (owner, admin, member,
+  viewer), and every entry shows who added it. A Go backend handles sync,
+  accounts and subscriptions, while the marketing site and admin console are
+  built separately.
+impact:
+  - "In active, open development: the site is live with a waitlist, the app is not released yet"
+  - "Core work done so far: offline-first logging, cross-device sync, and shared spaces with roles"
+  - "Features such as split bills, budgets and import from an old tracker are still on the roadmap and marked that way on the site"
+  - "One product, three parts we build ourselves: the Flutter app, the Go backend and the marketing site"
+stack:
+  - Flutter
+  - Dart
+  - Bloc
+  - Melos
+  - Go
+  - Echo
+  - PostgreSQL
+  - River
+  - Nuxt 4
+  - Tailwind v4
+links:
+  web: https://lumbung.banuacoder.com
+featured: true
+order: 10
+locale: en
+---
+
+## Context
+
+A lumbung is the Indonesian communal rice granary raised on stilts, where a
+household or village stores its harvest together. The name fits because the
+product is about storing together: one place for personal money, money shared
+by two, and each person's share of it. It is a working name and not final.
+
+This is our own product, not client work. It is in active development: the
+site is live and takes waitlist sign-ups, but the app cannot be downloaded yet.
+This page only describes what exists and marks what does not.
+
+## What we are building
+
+- **Flutter client**: a Melos workspace with clean architecture and
+  Bloc/Cubit. Every entry is written to an encrypted local database first, so
+  the app stays fully usable with no network.
+- **Shared spaces**: one Workspace concept for personal, couple, family,
+  housemate, group trip and small business use. People are invited with a
+  role, not by sharing a password.
+- **Sync**: changes sync per entry across devices with automatic conflict
+  merge, not as a single whole-file backup.
+- **Precise money**: amounts are stored as minor units, a currency code and a
+  scale, so rupiah, yen and Kuwaiti dinar are not forced into one two-decimal
+  rule.
+- **Go backend**: a modular monolith with Echo, pgx, River for background
+  jobs, and PostgreSQL. It handles sync, accounts and billing.
+- **Marketing site and admin console**: a bilingual site with a waitlist
+  (Nuxt 4, Tailwind v4), plus an admin console and a status page.
+
+## Engineering notes
+
+Offline-first here is not a fallback mode. The app writes to local storage
+first and the network only delivers the result. That means sync has to merge
+two devices that both changed data while disconnected, and that is where most
+of the backend work goes.
+
+The other principles we hold: calm language, with no gamification and no
+guilt; data encrypted on the device; no scraping of users' bank accounts; and
+data that can be exported at any time.
+
+## Where it stands
+
+Lumbung is not released and has no users yet. That is why this page carries no
+user numbers, testimonials or app store links, and why the prices on the site
+are still plans. Follow progress on the
+[Lumbung site](https://lumbung.banuacoder.com).

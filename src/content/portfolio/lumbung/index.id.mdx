@@ -1,0 +1,103 @@
+---
+title: Lumbung
+slug: lumbung
+bucket: consumer
+client: Banua Coder
+clientUrl: https://lumbung.banuacoder.com
+year: 2026
+status: development
+cover: ./cover.webp
+thumbnail: ./thumbnail.webp
+summary: >
+  Aplikasi keuangan pribadi dan bersama yang bekerja penuh tanpa sinyal.
+  Lumbung memadukan pencatatan secepat aplikasi money manager dengan ruang
+  bersama untuk pasangan, keluarga, teman serumah, dan kelompok. Produk kami
+  sendiri, sedang dikembangkan dan baru membuka daftar tunggu.
+problem: >
+  Uang jarang dikelola sendirian. Pasangan membagi tagihan rumah, keluarga
+  menjaga satu anggaran, teman serumah patungan listrik. Aplikasi pencatat yang
+  ada biasanya hanya untuk satu orang, atau butuh internet agar bisa dipakai
+  bersama. Catatan yang ditulis di tempat tanpa sinyal pun tidak boleh hilang.
+  Di sisi lain, data keuangan itu sensitif: pengguna perlu tahu datanya
+  terenkripsi dan bisa diekspor kapan saja.
+solution: >
+  Banua Coder membangun Lumbung sebagai platform keuangan offline-first. Klien
+  Flutter menulis setiap catatan lebih dulu ke basis data lokal, lalu
+  menyinkronkannya per entri antarperangkat saat sinyal kembali. Satu konsep
+  Workspace mewadahi buku kas pribadi maupun bersama, lengkap dengan peran
+  (pemilik, admin, anggota, pengamat), dan setiap catatan menunjukkan siapa yang
+  menambahkannya. Backend Go bertugas di sisi sinkronisasi, akun, dan
+  langganan, sementara situs pemasaran dan panel admin dibangun terpisah.
+impact:
+  - "Sedang dikembangkan secara terbuka: situs sudah tayang dengan daftar tunggu, aplikasi belum dirilis"
+  - "Inti yang sudah dikerjakan: pencatatan offline-first, sinkronisasi antarperangkat, dan ruang bersama berperan"
+  - "Fitur seperti patungan, anggaran, dan impor dari aplikasi lama masih di peta jalan dan ditandai demikian di situs"
+  - "Satu produk, tiga bagian yang kami bangun sendiri: aplikasi Flutter, backend Go, dan situs pemasaran"
+stack:
+  - Flutter
+  - Dart
+  - Bloc
+  - Melos
+  - Go
+  - Echo
+  - PostgreSQL
+  - River
+  - Nuxt 4
+  - Tailwind v4
+links:
+  web: https://lumbung.banuacoder.com
+featured: true
+order: 10
+locale: id
+---
+
+## Konteks
+
+Lumbung adalah kata Indonesia untuk gudang padi bersama yang didirikan di atas
+tiang, tempat satu rumah tangga atau kampung menyimpan hasil panennya. Nama itu
+dipilih karena produknya juga soal menyimpan bersama: satu tempat untuk uang
+pribadi, uang berdua, dan bagian masing-masing orang di dalamnya. Nama ini
+masih nama kerja, belum final.
+
+Ini produk kami sendiri, bukan pekerjaan klien. Statusnya sedang dikembangkan:
+situs sudah tayang dan menerima pendaftaran daftar tunggu, tetapi aplikasinya
+belum bisa diunduh. Halaman ini hanya memuat apa yang sudah ada dan memberi
+tanda pada yang belum.
+
+## Yang kami bangun
+
+- **Klien Flutter**: workspace Melos dengan arsitektur bersih dan Bloc/Cubit.
+  Setiap catatan ditulis ke basis data lokal terenkripsi lebih dulu, sehingga
+  aplikasi tetap bisa dipakai penuh tanpa jaringan.
+- **Ruang bersama**: satu konsep Workspace untuk pribadi, pasangan, keluarga,
+  teman serumah, perjalanan kelompok, dan usaha kecil. Anggota diundang dengan
+  peran, bukan dengan berbagi kata sandi.
+- **Sinkronisasi**: perubahan disinkronkan per entri antarperangkat dengan
+  penggabungan konflik otomatis, bukan cadangan satu berkas utuh.
+- **Uang yang presisi**: nominal disimpan sebagai jumlah satuan terkecil,
+  kode mata uang, dan skala, jadi rupiah, yen, dan dinar Kuwait tidak dipaksa
+  memakai dua desimal yang sama.
+- **Backend Go**: modular monolith dengan Echo, pgx, River untuk pekerjaan
+  latar belakang, dan PostgreSQL. Ia menangani sinkronisasi, akun, dan
+  penagihan.
+- **Situs pemasaran dan panel admin**: situs dwibahasa dengan daftar tunggu
+  (Nuxt 4, Tailwind v4), ditambah panel admin dan halaman status.
+
+## Catatan teknis
+
+Offline-first di sini bukan mode cadangan. Aplikasi menulis ke penyimpanan
+lokal lebih dulu, jaringan hanya mengantarkan hasilnya. Konsekuensinya,
+sinkronisasi harus bisa menggabungkan dua perangkat yang sama-sama mengubah
+data saat terputus, dan itulah bagian yang paling banyak dikerjakan di
+backend.
+
+Prinsip lain yang kami pegang: bahasa yang tenang, tanpa gamifikasi dan tanpa
+nada menyalahkan; data terenkripsi di perangkat; tidak memindai rekening bank
+pengguna; dan data bisa diekspor kapan saja.
+
+## Status saat ini
+
+Lumbung belum dirilis dan belum punya pengguna. Karena itu halaman ini tidak
+memuat angka pengguna, testimoni, atau tautan toko aplikasi. Harga di situs
+juga masih rencana. Perkembangan terbaru bisa dilihat di
+[situs Lumbung](https://lumbung.banuacoder.com).
