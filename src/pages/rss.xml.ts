@@ -11,7 +11,7 @@ export async function GET(context: APIContext) {
   const siteUrl = context.site!.toString().replace(/\/$/, '')
 
   return rss({
-    title: 'Blog — Banua Coder',
+    title: 'Blog | Banua Coder',
     description:
       'Insights seputar engineering, product, dan transformasi digital dari tim Banua Coder.',
     site: context.site!,

@@ -10,13 +10,13 @@ thumbnail: ./thumbnail.webp
 summary: >
   Flutter SDK untuk autentikasi SSO (Single Sign-On) di ekosistem aplikasi internal BPS.
   Library ini mengimplementasikan OAuth2/OIDC dengan Chrome Custom Tabs dan kepatuhan
-  keamanan enterprise — digunakan lintas aplikasi BPS sehingga konsistensi autentikasi
+  keamanan enterprise. Library ini digunakan lintas aplikasi BPS sehingga konsistensi autentikasi
   terjaga di seluruh ekosistem.
 problem: >
   Ekosistem aplikasi internal BPS terdiri dari beberapa aplikasi Flutter yang semuanya
   membutuhkan mekanisme autentikasi yang konsisten, aman, dan mudah diintegrasikan.
   Tanpa abstraksi yang tepat, setiap tim aplikasi harus mengimplementasikan ulang
-  logika SSO secara terpisah — mengakibatkan inkonsistensi, risiko keamanan, dan
+  logika SSO secara terpisah, sehingga terjadi inkonsistensi, risiko keamanan, dan
   pemborosan effort engineering. BPS membutuhkan SDK terpusat yang bisa di-reuse
   di seluruh aplikasi dalam ekosistem mereka.
 solution: >
@@ -50,8 +50,8 @@ locale: id
 BPS SSO Flutter SDK adalah library yang dibangun untuk menyederhanakan dan menstandarisasi
 autentikasi Single Sign-On di ekosistem aplikasi Flutter internal Badan Pusat Statistik.
 Ketika sebuah organisasi memiliki beberapa aplikasi mobile yang semuanya perlu terintegrasi
-dengan sistem autentikasi terpusat, membangun SDK yang tepat — bukan hanya solusi satu kali
-pakai — adalah keputusan engineering yang paling efisien secara jangka panjang.
+dengan sistem autentikasi terpusat, membangun SDK yang tepat, bukan solusi sekali
+pakai, adalah keputusan engineering yang lebih efisien dalam jangka panjang.
 
 Proyek ini mencerminkan pendekatan Banua Coder yang melampaui pengembangan aplikasi biasa:
 mengidentifikasi kebutuhan infrastruktur yang berulang dan mengatasinya dengan library yang
@@ -74,4 +74,4 @@ SDK dirancang dengan fokus pada keamanan, kemudahan integrasi, dan standar enter
 
 BPS SSO Flutter SDK kini menjadi library autentikasi standar di ekosistem aplikasi Flutter
 BPS. Dengan SDK ini, setiap aplikasi baru dalam ekosistem BPS dapat mengimplementasikan
-SSO dalam hitungan jam, bukan hari — sambil memastikan konsistensi keamanan di seluruh ekosistem.
+SSO dalam hitungan jam, bukan hari, sambil memastikan konsistensi keamanan di seluruh ekosistem.

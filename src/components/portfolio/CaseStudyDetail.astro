@@ -53,10 +53,10 @@ const t = en
     }
   : {
       home: 'Beranda', skip: 'Lewati ke konten utama', summary: 'Ringkasan proyek', detail: 'Detail proyek',
-      problemH: 'Tantangan', solutionH: 'Yang Kami Bangun', impactH: 'Dampak & Hasil',
+      problemH: 'Tantangan', solutionH: 'Yang kami bangun', impactH: 'Dampak & Hasil',
       showcase: 'Di dalam produk', showcaseSub: 'Tampilan nyata dari produk yang sudah berjalan.',
       stack: 'Tech Stack', links: 'Tautan', linksAria: 'Tautan eksternal', testimonial: 'Testimoni',
-      next: 'Proyek berikutnya', view: 'Lihat Proyek →', all: 'Semua proyek',
+      next: 'Proyek berikutnya', view: 'Lihat proyek →', all: 'Semua proyek',
       play: 'Dapatkan di Google Play', playImg: '/badges/dapatkan-di-google-play.png',
       status: { live: 'Live', maintained: 'Dipelihara', archived: 'Diarsipkan', development: 'Sedang dikembangkan' },
       ctaH: 'Butuh sistem seperti ini?', ctaSub: 'Ceritakan produk atau sistem Anda. Kami balas dengan cakupan, jadwal, dan estimasi yang realistis.',
@@ -130,7 +130,7 @@ const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
 ---
 
 <BaseLayout
-  title={`${data.title} — Portfolio · Banua Coder`}
+  title={`${data.title} ${locale === 'id' ? '|' : '—'} Portfolio · Banua Coder`}
   description={data.summary}
   ogImage={portfolioOgUrl(data.slug, locale)}
 >
@@ -162,7 +162,7 @@ const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
         </nav>
         <div class="folio flex justify-between gap-4 border-b rule pb-3 mb-10 lg:mb-14" data-rule>
           <span>№ {orderNo} / Portfolio</span>
-          <span class="tabular-nums">{clientLabel(data.client, locale)} — {data.year}</span>
+          <span class="tabular-nums">{clientLabel(data.client, locale)}{locale === 'id' ? ',' : ' —'} {data.year}</span>
         </div>
 
         <h1 id="project-title" class="display mb-10 lg:mb-14 max-w-[16ch] [text-wrap:balance]" style="font-size: var(--fs-84); overflow-wrap: anywhere" data-split>{data.title}</h1>
@@ -388,7 +388,7 @@ const factRow = 'grid grid-cols-[6.5rem_1fr] gap-4 py-3 border-b rule'
             class="next-plate plate group grid items-end gap-6 lg:grid-cols-12 p-6 sm:p-10 transition-colors hover:bg-bnc-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent"
           >
             <div class="lg:col-span-8 flex flex-col gap-4">
-              <p class="folio mute">{t.next} / {clientLabel(nextProject.data.client, locale)} — {nextProject.data.year}</p>
+              <p class="folio mute">{t.next} / {clientLabel(nextProject.data.client, locale)}{locale === 'id' ? ',' : ' —'} {nextProject.data.year}</p>
               <p class="display" style="font-size: var(--fs-64)">{nextProject.data.title}</p>
               <p class="folio group-hover:translate-x-1 transition-transform">{t.view}</p>
             </div>

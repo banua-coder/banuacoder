@@ -36,9 +36,9 @@ const t = en
     }
   : {
       home: 'Beranda', services: 'Layanan', skip: 'Lewati ke konten utama',
-      faq: 'Pertanyaan Umum', deliver: 'Yang Kami Kerjakan', ideal: 'Cocok Untuk', related: 'Layanan Terkait',
-      ctaH: 'Siap memulai?', ctaSub: 'Jadwalkan diskusi dan kami bantu petakan solusi terbaik untuk kebutuhan Anda.',
-      ctaLink: 'Jadwalkan Diskusi', category: 'Kategori',
+      faq: 'Pertanyaan umum', deliver: 'Yang kami kerjakan', ideal: 'Cocok untuk', related: 'Layanan terkait',
+      ctaH: 'Siap memulai?', ctaSub: 'Jadwalkan diskusi dan kami bantu memetakan solusi yang sesuai kebutuhan Anda.',
+      ctaLink: 'Jadwalkan diskusi', category: 'Kategori',
     }
 
 const group = category === 'design' || category === 'social-media'
@@ -87,7 +87,7 @@ const orderNo = String(order).padStart(2, '0')
 const listRow = 'py-3 border-b border-bnc-ink/25 dark:border-bnc-paper/25 grid grid-cols-[2rem_1fr] gap-2'
 ---
 
-<BaseLayout title={`${title} — Banua Coder`} description={tagline} ogImage={serviceOgUrl(entry.data.slug, locale)}>
+<BaseLayout title={`${title} ${locale === 'id' ? '|' : '—'} Banua Coder`} description={tagline} ogImage={serviceOgUrl(entry.data.slug, locale)}>
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(serviceSchema)} />
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
   {faqSchema && <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />}

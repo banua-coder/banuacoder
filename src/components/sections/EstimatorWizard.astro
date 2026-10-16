@@ -17,7 +17,7 @@ const isEn = locale === 'en'
 
 const steps = isEn
   ? ['Project Type', 'Scale', 'Users', 'Features', 'Design', 'Timeline', 'Maintenance']
-  : ['Tipe Proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Timeline', 'Maintenance']
+  : ['Tipe proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Jadwal', 'Pemeliharaan']
 ---
 
 <!-- ══════════════════════════════════════════════════════
@@ -100,7 +100,7 @@ const steps = isEn
     <div class="grid grid-cols-1 gap-3">
       {[
         { value: 'mvp', icon: '🚀', label: 'MVP', desc: isEn ? 'Core user journey only. Launch fast, learn fast.' : 'Hanya perjalanan pengguna utama. Rilis cepat, belajar cepat.' },
-        { value: 'standard', icon: '⚡', label: 'Standard', desc: isEn ? 'Full feature set, production-ready, polished UX.' : 'Fitur lengkap, siap produksi, UX yang halus.' },
+        { value: 'standard', icon: '⚡', label: 'Standard', desc: isEn ? 'Full feature set, production-ready, polished UX.' : 'Fitur lengkap, siap produksi, UX yang rapi.' },
         { value: 'platform', icon: '🏗️', label: 'Platform', desc: isEn ? 'Multi-tenant, high scalability, extensible architecture.' : 'Multi-tenant, skalabilitas tinggi, arsitektur yang dapat dikembangkan.' },
       ].map(opt => (
         <label class="wizard-option" data-step="2" data-value={opt.value} tabindex="0">
@@ -126,8 +126,8 @@ const steps = isEn
     <div class="grid grid-cols-1 gap-3">
       {[
         { value: 'internal', icon: '🏢', label: isEn ? 'Internal team only' : 'Tim internal saja', desc: isEn ? 'Employees, staff, or a closed group.' : 'Karyawan, staf, atau grup pengguna tertutup.' },
-        { value: 'public', icon: '🌍', label: isEn ? 'Public / customer-facing' : 'Publik / menghadap pelanggan', desc: isEn ? 'Open to any end-user or customer.' : 'Terbuka untuk pengguna akhir atau pelanggan mana pun.' },
-        { value: 'mixed', icon: '🔀', label: isEn ? 'Mixed (internal + public)' : 'Campuran (internal + publik)', desc: isEn ? 'Staff portal plus customer-facing interface.' : 'Portal staf dan antarmuka menghadap pelanggan.' },
+        { value: 'public', icon: '🌍', label: isEn ? 'Public / customer-facing' : 'Publik / untuk pelanggan', desc: isEn ? 'Open to any end-user or customer.' : 'Terbuka untuk pengguna akhir atau pelanggan mana pun.' },
+        { value: 'mixed', icon: '🔀', label: isEn ? 'Mixed (internal + public)' : 'Campuran (internal + publik)', desc: isEn ? 'Staff portal plus customer-facing interface.' : 'Portal staf dan antarmuka untuk pelanggan.' },
       ].map(opt => (
         <label class="wizard-option" data-step="3" data-value={opt.value} tabindex="0">
           <input type="radio" name="users" value={opt.value} class="sr-only" />
@@ -190,7 +190,7 @@ const steps = isEn
       {[
         { value: 'template', icon: '🎨', label: isEn ? 'Template-based' : 'Berbasis template', desc: isEn ? 'Adapts an existing component library. Faster and more cost-efficient.' : 'Mengadaptasi library komponen yang ada. Lebih cepat dan efisien biaya.' },
         { value: 'custom', icon: '✏️', label: isEn ? 'Custom UX/UI' : 'UX/UI kustom', desc: isEn ? 'Full design from wireframes. Unique look and feel for your product.' : 'Desain penuh dari wireframe. Tampilan unik untuk produk Anda.' },
-        { value: 'design-system', icon: '🏛️', label: isEn ? 'Full design system' : 'Design system lengkap', desc: isEn ? 'Tokens, component library, and guidelines. Scales across multiple products.' : 'Token, library komponen, dan panduan. Skala di beberapa produk.' },
+        { value: 'design-system', icon: '🏛️', label: isEn ? 'Full design system' : 'Design system lengkap', desc: isEn ? 'Tokens, component library, and guidelines. Scales across multiple products.' : 'Token, library komponen, dan panduan. Dipakai lintas beberapa produk.' },
       ].map(opt => (
         <label class="wizard-option" data-step="5" data-value={opt.value} tabindex="0">
           <input type="radio" name="design" value={opt.value} class="sr-only" />
@@ -210,11 +210,11 @@ const steps = isEn
   <!-- ── Step 6: Urgency ───────────────────────────────────── -->
   <div id="step-6" class="wizard-step hidden" role="group" aria-labelledby="step6-legend">
     <p id="step6-legend" class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-6" style="font-size: var(--fs-28)">
-      {isEn ? 'What is your timeline expectation?' : 'Apa ekspektasi timeline Anda?'}
+      {isEn ? 'What is your timeline expectation?' : 'Apa ekspektasi jadwal Anda?'}
     </p>
     <div class="grid grid-cols-1 gap-3">
       {[
-        { value: 'standard', icon: '📅', label: isEn ? 'Standard timeline' : 'Timeline standar', desc: isEn ? 'Natural pacing for quality delivery. No premium.' : 'Pacing alami untuk kualitas pengiriman. Tanpa biaya tambahan.' },
+        { value: 'standard', icon: '📅', label: isEn ? 'Standard timeline' : 'Jadwal standar', desc: isEn ? 'Natural pacing for quality delivery. No premium.' : 'Ritme kerja wajar untuk hasil berkualitas. Tanpa biaya tambahan.' },
         { value: 'rush', icon: '⚡', label: isEn ? 'Aggressive / Rush' : 'Agresif / Rush', desc: isEn ? 'Compressed schedule. Adds ~35% to estimate due to extra resourcing.' : 'Jadwal yang dipadatkan. Menambah ~35% estimasi karena sumber daya ekstra.' },
       ].map(opt => (
         <label class="wizard-option" data-step="6" data-value={opt.value} tabindex="0">
@@ -239,8 +239,8 @@ const steps = isEn
     </p>
     <div class="grid grid-cols-1 gap-3">
       {[
-        { value: 'one-time', icon: '📦', label: isEn ? 'One-time delivery' : 'Pengiriman sekali', desc: isEn ? 'Deliver the project, then it is in your hands.' : 'Selesaikan proyek, lalu diserahkan ke Anda.' },
-        { value: 'ongoing', icon: '🔄', label: isEn ? 'Ongoing engagement' : 'Kerjasama berkelanjutan', desc: isEn ? 'Monitoring, updates, and minor improvements. Annual estimate shown in output.' : 'Pemantauan, pembaruan, dan perbaikan kecil. Estimasi tahunan ditampilkan di output.' },
+        { value: 'one-time', icon: '📦', label: isEn ? 'One-time delivery' : 'Sekali serah', desc: isEn ? 'Deliver the project, then it is in your hands.' : 'Selesaikan proyek, lalu diserahkan ke Anda.' },
+        { value: 'ongoing', icon: '🔄', label: isEn ? 'Ongoing engagement' : 'Kerja sama berkelanjutan', desc: isEn ? 'Monitoring, updates, and minor improvements. Annual estimate shown in output.' : 'Pemantauan, pembaruan, dan perbaikan kecil. Estimasi tahunan ditampilkan di output.' },
       ].map(opt => (
         <label class="wizard-option" data-step="7" data-value={opt.value} tabindex="0">
           <input type="radio" name="maintenance" value={opt.value} class="sr-only" />
@@ -460,7 +460,7 @@ function stepEl(n: number): HTMLElement | null {
 
 const stepNames = isEn
   ? ['Project Type', 'Scale', 'Users', 'Features', 'Design', 'Timeline', 'Maintenance']
-  : ['Tipe Proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Timeline', 'Maintenance']
+  : ['Tipe proyek', 'Skala', 'Pengguna', 'Fitur', 'Desain', 'Jadwal', 'Pemeliharaan']
 
 // ─── Portfolio data ───────────────────────────────────────────────────────
 const portfolioEl = getEl('portfolio-data')
@@ -634,7 +634,7 @@ function buildWAMessage(s: WizardState, out: ReturnType<typeof calculate>): stri
     rush: 'Rush',
   }
   const mLabel: Record<string, string> = {
-    'one-time': isEn ? 'One-time' : 'Pengiriman sekali',
+    'one-time': isEn ? 'One-time' : 'Sekali serah',
     ongoing: isEn ? 'Ongoing' : 'Berkelanjutan',
   }
   const featureNames: Record<FeatureKey, string> = {
@@ -679,10 +679,10 @@ function buildWAMessage(s: WizardState, out: ReturnType<typeof calculate>): stri
     `- Tipe: ${tLabel[s.type ?? '']}`,
     `- Skala: ${scLabel[s.scale ?? '']}`,
     `- Pengguna: ${uLabel[s.users ?? '']}`,
-    `- Fitur kritis: ${feats.length ? feats.join(', ') : 'Tidak ada'}`,
+    `- Fitur utama: ${feats.length ? feats.join(', ') : 'Tidak ada'}`,
     `- Desain: ${dLabel[s.design ?? '']}`,
-    `- Timeline: ${urgLabel[s.urgency ?? '']}`,
-    `- Maintenance: ${mLabel[s.maintenance ?? '']}`,
+    `- Jadwal: ${urgLabel[s.urgency ?? '']}`,
+    `- Pemeliharaan: ${mLabel[s.maintenance ?? '']}`,
     '',
     `Range estimasi: ${fmtIDR(out.totalLow)} – ${fmtIDR(out.totalHigh)}`,
     `Estimasi durasi: ${durStr}`,
@@ -882,7 +882,7 @@ function buildOutputEl(s: WizardState, out: ReturnType<typeof calculate>): HTMLE
   dText.className = 'text-sm text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed'
   dText.textContent = isEn
     ? 'This is an initial estimate, not a final quotation. Actual scope, team composition, and pricing are determined during a discovery session. Complex requirements, existing system integrations, and regulatory constraints may affect the final figure significantly.'
-    : 'Estimasi ini bersifat awal — bukan quotation final. Scope aktual, komposisi tim, dan harga ditentukan melalui sesi discovery. Persyaratan yang kompleks, integrasi sistem yang ada, dan kendala regulasi dapat mempengaruhi angka akhir secara signifikan.'
+    : 'Estimasi ini bersifat awal dan bukan penawaran final. Lingkup, susunan tim, dan harga ditentukan lewat sesi discovery. Kebutuhan yang kompleks, integrasi dengan sistem yang sudah ada, dan kendala regulasi dapat memengaruhi angka akhir secara signifikan.'
   disclaimerDiv.appendChild(dEyebrow)
   disclaimerDiv.appendChild(dText)
   wrap.appendChild(disclaimerDiv)
