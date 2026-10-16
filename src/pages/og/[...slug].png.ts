@@ -89,9 +89,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }))
 }
 
-export const GET: APIRoute = async ({ props }) => {
+export const GET: APIRoute = async ({ props, params }) => {
   const { title, pageType } = props as { title: string; pageType: OGPageType }
-  const pngBuffer = await generateOGImage({ title, pageType, dark: true })
+  const { slug } = params as { slug: string }
+  const locale = slug.startsWith('en-') ? 'en' : 'id'
+  const pngBuffer = await generateOGImage({ title, pageType, locale, dark: true })
   return new Response(new Uint8Array(pngBuffer), {
     headers: {
       'Content-Type': 'image/png',

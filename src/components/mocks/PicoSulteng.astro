@@ -1,0 +1,99 @@
+---
+/**
+ * Port of PICO SulTeng Flutter home ("SulTeng Hari Ini" tab).
+ * Source: ~/Documents/Projects/Flutter/PICO_SULTENG_FLUTTER
+ *   features/home/.../home_page.dart (AppBar + ButtonsTabBar), latest_update_page.dart (banner, divider, summary),
+ *   features/statistic/.../statistic_summary_section.dart + statistic_data_list.dart,
+ *   packages/pico_ui_kit: pico_colors.dart, pico_text_style.dart (Source Sans 3), PicoTotalConfirmedCase, PicoCaseCard, PicoCard,
+ *   PicoBannerSlider (aspect 2, viewport 0.9, 12 radius, expanding dots), tokens PCSpacing/PCRadius.
+ * Copy: shared/i10n/assets/i18n/{general,statistics}_id|en.i18n.json.
+ * Tokens: primary #0B92D5, scaffold/gray50 #F9F8F6, gray100 #F3F1EE, text #41403E / subtle #737271, outline black@10%,
+ *   warning #FDBB11, success #16B364, error #F04438 (chips = shade100 @40%), gradient primary -> primary200 #BDE6FA @50%.
+ * Logo, covid illustration and icons are our own app assets (src/assets/mocks/pico-sulteng).
+ * No device capture exists (app is archived, the pico.banuacoder.com site is the open-data API portal only), so this is a
+ * widget-tree port. Numbers are placeholders. The server-supplied banner image is shown as a neutral placeholder.
+ * Stage: 390x845 dp (ScreenUtil designSize = device size, so 1dp = 1 SVG unit).
+ */
+import logo from '../../assets/mocks/pico-sulteng/logo.svg'
+import covid from '../../assets/mocks/pico-sulteng/covid.webp'
+import bed from '../../assets/mocks/pico-sulteng/hospital_bed_outline.svg'
+import iso from '../../assets/mocks/pico-sulteng/self_isolation.svg'
+import grave from '../../assets/mocks/pico-sulteng/cemetery.svg'
+import menu from '../../assets/mocks/pico-sulteng/menu.svg'
+interface Props { locale?: 'id' | 'en' }
+const en = Astro.props.locale === 'en'
+const t = en
+  ? { desc: 'COVID-19 Information Center of Central Sulawesi', tabs: ['SulTeng Today', 'COVID-19 Information'], label: 'Case Data in Central Sulawesi', upd: 'Updated At :', more: 'More', total: 'Total Confirmed Case', cases: ['Active', 'Recovered', 'Deceased'], reg: 'Daily Active cases by Regency' }
+  : { desc: 'Pusat Informasi COVID-19 Sulawesi Tengah', tabs: ['SulTeng Hari Ini', 'Informasi COVID-19'], label: 'Data Kasus Sulawesi Tengah', upd: 'Diperbarui :', more: 'Selengkapnya', total: 'Total Kasus Terkonfirmasi', cases: ['Dirawat', 'Sembuh', 'Kematian'], reg: 'Kasus Dirawat harian by Kabupaten' }
+const cards = [
+  { l: t.cases[0], v: '123', n: '(+4)', c: '#FDBB11', bg: 'rgba(254,235,184,.4)', ic: bed.src },
+  { l: t.cases[1], v: '12.000', n: '(+10)', c: '#16B364', bg: 'rgba(211,248,223,.4)', ic: iso.src },
+  { l: t.cases[2], v: '222', n: '(+0)', c: '#F04438', bg: 'rgba(254,228,226,.4)', ic: grave.src },
+]
+const W = (351 - 16 - 8 * 2) / 3
+---
+<div class="pc mk-s" role="presentation">
+  <svg viewBox="0 0 390 845" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%"><foreignObject width="390" height="845"><div class="pc-p">
+    <div class="pc-sb"><span>09:41</span><i></i></div>
+    <div class="pc-ab">
+      <img class="pc-lg" src={logo.src} alt="" width="24" height="24" />
+      <div class="pc-ti"><b>PICO SulTeng</b><span>{t.desc}</span></div>
+      <i class="pc-mn" style={`-webkit-mask-image:url(${menu.src});mask-image:url(${menu.src})`}></i>
+    </div>
+    <div class="pc-tb"><span class="pc-tab pc-on">{t.tabs[0]}</span><span class="pc-tab">{t.tabs[1]}</span></div>
+    <div class="pc-bn"><div class="pc-img"><img src={logo.src} alt="" width="56" height="56" /></div></div>
+    <div class="pc-dots"><i class="pc-a"></i><i></i><i></i></div>
+    <div class="pc-dv"></div>
+    <div class="pc-sc">
+      <div class="pc-uh"><div><b>{t.label}</b><p><s>{t.upd}</s> 12 Des 2023 12:05</p></div><u>{t.more}</u></div>
+      <div class="pc-tt"><p class="pc-l">{t.total}</p><p class="pc-v">12.345 <em>(+12)</em></p><img src={covid.src} alt="" width="58" height="58" /></div>
+      <div class="pc-gr">{cards.map((c) => (<div class="pc-cc"><div class="pc-r"><span class="pc-ci" style={`background:${c.bg}`}><i style={`background:${c.c};-webkit-mask-image:url(${c.ic});mask-image:url(${c.ic})`}></i></span><s>{c.l}</s></div><b>{c.v}</b><em>{c.n}</em></div>))}</div>
+      <div class="pc-rg"><p>{t.reg}</p></div>
+    </div>
+  </div></foreignObject></svg>
+</div>
+<style>
+  .pc.mk-s { background: #F9F8F6; }
+  .pc .pc-p { width: 390px; height: 845px; background: #F9F8F6; color: #41403E; font: 500 14px/1.25 'Source Sans 3', var(--font-sans, system-ui), sans-serif; position: relative; overflow: hidden; }
+  .pc img { max-width: none; } .pc .pc-lg { height: 24px; } .pc .pc-mn { width: 14px; height: 8px; background: #535352; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; } .pc .pc-img img { width: 56px; height: 56px; } .pc .pc-tt img { width: 58px; height: 58px; }
+  .pc .pc-p * { box-sizing: border-box; }
+  .pc .pc-sb { height: 28px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 12px; font-weight: 700; }
+  .pc .pc-sb i { width: 18px; height: 9px; border: 1.5px solid #41403E; border-radius: 3px; }
+  .pc .pc-ab { height: 56px; display: flex; align-items: center; position: relative; }
+  .pc .pc-lg { position: absolute; left: 16px; top: 16px; width: 24px; height: 24px; }
+  .pc .pc-ti { margin-left: 72px; display: flex; flex-direction: column; gap: 4px; padding-top: 2px; }
+  .pc .pc-ti b { font-size: 24px; line-height: 30px; font-weight: 700; }
+  .pc .pc-ti span { font-size: 10px; line-height: 12px; }
+  .pc .pc-mn { position: absolute; right: 17px; top: 24px; }
+  .pc .pc-tb { display: flex; gap: 0; padding: 0 8px; height: 50px; align-items: center; }
+  .pc .pc-tab { margin: 8px; height: 34px; padding: 0 16px; display: grid; place-items: center; border: 1px solid rgba(0,0,0,.25); border-radius: 10px; color: #737271; font-size: 14px; white-space: nowrap; margin-inline: 8px 0; }
+  .pc .pc-tab.pc-on { background: #0B92D5; border-color: #0B92D5; color: #fff; }
+  .pc .pc-bn { margin-top: 16px; display: flex; justify-content: center; }
+  .pc .pc-img { width: 335px; height: 169px; border-radius: 12px; background: linear-gradient(135deg, #BDE6FA, #0B92D5 120%); display: grid; place-items: center; }
+  .pc .pc-img img { opacity: .55; }
+  .pc .pc-dots { display: flex; justify-content: center; gap: 4px; margin-top: 16px; }
+  .pc .pc-dots i { width: 8px; height: 8px; border-radius: 8px; background: #EBE9E5; display: block; }
+  .pc .pc-dots i.pc-a { width: 24px; background: #17A4E0; }
+  .pc .pc-dv { height: 8px; background: #F3F1EE; margin-top: 8px; }
+  .pc .pc-sc { padding: 8px 16px; }
+  .pc .pc-uh { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; }
+  .pc .pc-uh b { font-size: 16px; font-weight: 700; display: block; }
+  .pc .pc-uh p { font-size: 12px; margin-top: 4px; font-weight: 400; }
+  .pc .pc-uh s { text-decoration: none; color: #737271; font-weight: 500; }
+  .pc .pc-uh u { text-decoration: none; color: #0B92D5; font-weight: 500; padding: 8px 12px; }
+  .pc .pc-tt { position: relative; border: 1px solid rgba(0,0,0,.1); border-radius: 8px; padding: 8px; background: linear-gradient(90deg, #0B92D5, rgba(189,230,250,.5)); box-shadow: 0 0 10px 5px rgba(127,160,237,.15); overflow: hidden; margin-bottom: 24px; }
+  .pc .pc-tt .pc-l { font-size: 12px; font-weight: 700; color: #fff; }
+  .pc .pc-tt .pc-v { font-size: 32px; line-height: 40px; font-weight: 700; color: #fff; }
+  .pc .pc-tt .pc-v em { font-style: normal; font-size: 14px; color: rgba(255,255,255,.7); margin-left: 8px; }
+  .pc .pc-tt img { position: absolute; right: 0; top: 0; bottom: 0; margin: auto; }
+  .pc .pc-gr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .pc .pc-cc { background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 8px; padding: 8px; min-width: 0; }
+  .pc .pc-cc .pc-r { display: flex; align-items: center; gap: 4px; }
+  .pc .pc-ci { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .pc .pc-ci i { width: 12px; height: 12px; display: block; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+  .pc .pc-cc s { text-decoration: none; font-size: 12px; color: #737271; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pc .pc-cc b { display: block; margin-top: 8px; font-size: 16px; font-weight: 700; }
+  .pc .pc-cc em { display: block; margin-top: 8px; font-style: normal; font-size: 10px; font-weight: 700; color: #737271; }
+  .pc .pc-rg { background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 16px; padding: 16px; height: 200px; }
+  .pc .pc-rg p { font-size: 14px; font-weight: 700; }
+</style>

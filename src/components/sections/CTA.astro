@@ -1,9 +1,12 @@
 ---
 /**
- * CTA — final-CTA block.
- * Default: paper/ink. Inverted variant: deep blue bg, white text.
+ * CTA: closing plate. Always a full ultramarine plate with a white primary button.
+ * `inverted` is accepted for backward compatibility and ignored (the CTA is always the plate).
+ * Booking + WhatsApp are always shown; primaryCta/secondaryCta render as underlined links.
  */
+import Container from '../layout/Container.astro'
 import Button from '../atoms/Button.astro'
+import { contact, bookingLabel, buildServiceWhatsAppUrl, buildWhatsAppUrl } from '../../data/contact'
 
 interface Props {
   headline: string
@@ -12,8 +15,9 @@ interface Props {
   primaryHref?: string
   secondaryCta?: string
   secondaryHref?: string
-  /** Inverted: deep blue background, white text */
+  /** Ignored: the CTA is always an ultramarine plate (kept for old callers) */
   inverted?: boolean
+  service?: string
   class?: string
 }
 
@@ -24,66 +28,50 @@ const {
   primaryHref = '#',
   secondaryCta,
   secondaryHref = '#',
-  inverted = false,
+  service,
   class: cls = '',
 } = Astro.props
+
+const loc = (Astro.currentLocale ?? 'id') as 'id' | 'en'
+const waUrl = service ? buildServiceWhatsAppUrl(loc, service) : buildWhatsAppUrl(loc)
+const waLabel = loc === 'en' ? 'Chat on WhatsApp' : 'Chat WhatsApp'
 ---
 
 <section
-  class:list={[
-    'relative overflow-hidden',
-    inverted ? 'bg-bnc-primary text-bnc-primary-fg' : 'bg-bnc-paper dark:bg-bnc-ink',
-    cls,
-  ]}
+  class:list={['plate relative overflow-hidden', cls]}
   style="padding-block: var(--spacing-section-y)"
   aria-label="Call to action"
   data-tell-cta
 >
-  <div
-    class="mx-auto px-4 sm:px-6 lg:px-8 text-center"
-    style="max-width: var(--container-max)"
-  >
+  <span class="cta-arrow numeral absolute z-0" aria-hidden="true" data-parallax="0.1">→</span>
+  <Container class="relative z-10">
+    <p class="folio mute border-b border-[var(--color-bnc-plate-line)] pb-3 mb-10 lg:mb-16">
+      {loc === 'en' ? 'Start a project' : 'Mulai proyek'}
+    </p>
     <h2
-      class:list={[
-        'font-display font-bold leading-tight mb-4',
-        inverted ? 'text-white' : 'text-bnc-ink dark:text-bnc-paper',
-      ]}
-      style="font-size: var(--fs-48)"
+      class="display text-balance max-w-[18ch]"
+      style="font-size: var(--fs-64)"
+      data-split
       data-tell-cta-headline
     >
       {headline}
     </h2>
 
     {sub && (
-      <p
-        class:list={[
-          'mb-10 leading-relaxed mx-auto',
-          inverted ? 'text-blue-200' : 'text-bnc-stone-600 dark:text-bnc-stone-400',
-        ]}
-        style="font-size: var(--fs-20); max-width: 52ch"
-        data-tell-cta-sub
-      >
+      <p class="mute mt-8 leading-relaxed" style="font-size: var(--fs-20); max-width: 52ch" data-tell-cta-sub>
         {sub}
       </p>
     )}
 
-    <div class="flex flex-wrap gap-4 justify-center" data-tell-cta-actions>
-      {primaryCta && (
-        inverted ? (
-          <Button href={primaryHref} size="lg" variant="secondary" class="!border-white !text-white hover:!bg-white hover:!text-bnc-primary">
-            {primaryCta}
-          </Button>
-        ) : (
-          <Button href={primaryHref} size="lg" variant="primary">
-            {primaryCta}
-          </Button>
-        )
-      )}
-      {secondaryCta && (
-        <Button href={secondaryHref} size="lg" variant="ghost" class={inverted ? '!text-blue-200 hover:!text-white' : ''}>
-          {secondaryCta} →
-        </Button>
-      )}
+    <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" data-tell-cta-actions>
+      <Button href={contact.bookingUrl} external size="lg" variant="primary">{bookingLabel[loc]}</Button>
+      <Button href={waUrl} external size="lg" variant="secondary">{waLabel}</Button>
+      {primaryCta && <Button href={primaryHref} size="lg" variant="ghost">{primaryCta} →</Button>}
+      {secondaryCta && <Button href={secondaryHref} size="lg" variant="ghost">{secondaryCta} →</Button>}
     </div>
-  </div>
+  </Container>
 </section>
+
+<style>
+  .cta-arrow { right: 2vw; bottom: -0.1em; font-size: clamp(10rem, 4rem + 26vw, 28rem); line-height: 1; }
+</style>

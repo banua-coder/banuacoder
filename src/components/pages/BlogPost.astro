@@ -1,0 +1,179 @@
+---
+import { getEntry, render } from 'astro:content'
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+import { blogOgUrl } from '../../lib/og/url'
+import { readingTime } from '../../lib/reading-time'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Prose from '../typography/Prose.astro'
+import CTA from '../sections/CTA.astro'
+import Skip from '../prospectus/Skip.astro'
+import PlateHead from '../prospectus/PlateHead.astro'
+
+interface Props {
+  entry: any
+  prevEntry: any | null
+  nextEntry: any | null
+  locale: 'id' | 'en'
+}
+const { entry, prevEntry, nextEntry, locale } = Astro.props
+const en = locale === 'en'
+const prefix = en ? '/en' : ''
+const { data } = entry
+const { Content } = await render(entry)
+const author = await getEntry('authors', data.author.id)
+const minutes = readingTime(entry.body ?? data.description)
+const slugOf = (e: any): string => e.data.slug ?? e.id.replace(/\.(id|en)$/, '')
+const currentSlug = slugOf(entry)
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString(en ? 'en-US' : 'id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+
+const t = en
+  ? { home: 'Home', min: 'min read', body: 'Article content', tags: 'Tags', by: 'Author', about: 'About the author',
+      more: 'Read more from Fajrian →', nav: 'Article navigation', prev: '← Previous', next: 'Next →',
+      cta: 'Have a system to build?', sub: 'Book a call and tell us what you are trying to ship.', alt: 'id', altHost: '' }
+  : { home: 'Beranda', min: 'menit baca', body: 'Isi artikel', tags: 'Tag', by: 'Penulis', about: 'Tentang penulis',
+      more: 'Baca lebih lanjut dari Ryan →', nav: 'Navigasi artikel', prev: '← Sebelumnya', next: 'Berikutnya →',
+      cta: 'Punya sistem yang ingin dibangun?', sub: 'Jadwalkan diskusi dan ceritakan apa yang ingin Anda luncurkan.', alt: 'en', altHost: '/en' }
+const authorName = author?.data.name ?? 'Fajrian Aidil Pratama'
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: data.title,
+  description: data.description,
+  datePublished: data.publishedAt.toISOString(),
+  ...(data.updatedAt ? { dateModified: data.updatedAt.toISOString() } : {}),
+  author: { '@type': 'Person', name: authorName, url: `https://banuacoder.com${prefix}/founder/` },
+  publisher: { '@type': 'Organization', name: 'Banua Coder', url: 'https://banuacoder.com' },
+  inLanguage: locale,
+  keywords: data.tags.join(', '),
+}
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.home, item: `https://banuacoder.com${en ? '/en/' : '/'}` },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `https://banuacoder.com${prefix}/blog/` },
+    { '@type': 'ListItem', position: 3, name: data.title, item: `https://banuacoder.com${prefix}/blog/${currentSlug}/` },
+  ],
+}
+const hreflang = en
+  ? { lang: 'id', href: `https://banuacoder.com/blog/${currentSlug}/` }
+  : { lang: 'en', href: `https://banuacoder.com/en/blog/${currentSlug}/` }
+---
+
+<BaseLayout
+  title={`${data.title} — Blog · Banua Coder`}
+  description={data.description}
+  ogImage={blogOgUrl(data.slug, locale)}
+  type="article"
+  publishedTime={data.publishedAt.toISOString()}
+  modifiedTime={data.updatedAt?.toISOString()}
+  tags={data.tags}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(articleSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <link rel="alternate" hreflang={hreflang.lang} href={hreflang.href} slot="head" />
+
+  <Skip />
+  <Nav />
+
+  <main id="main-content">
+    <PlateHead
+      folio="№ 04 / Blog"
+      folioRight={fmt(data.publishedAt)}
+      title={data.title}
+      titleId="post-title"
+      size="lg"
+      numeral="04"
+    >
+      <nav aria-label="Breadcrumb" class="mt-10">
+        <ol class="folio flex flex-wrap items-center gap-2 mute m-0 p-0 list-none">
+          <li><a href={en ? '/en/' : '/'} class="hover:text-white focus-visible:text-white">{t.home}</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={`${prefix}/blog/`} class="hover:text-white focus-visible:text-white">Blog</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-white truncate max-w-[28ch]" aria-current="page">{data.title}</li>
+        </ol>
+      </nav>
+      <p class="folio mt-6 border-t border-current/25 pt-3 flex flex-wrap gap-x-6 gap-y-1 mute">
+        <span>{authorName}</span>
+        <span>{minutes} {t.min}</span>
+      </p>
+    </PlateHead>
+
+    <section aria-label={t.body} class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        {data.cover && (
+          <Image
+            src={data.cover as ImageMetadata}
+            alt={data.title}
+            width={1280}
+            height={640}
+            class="w-full h-auto max-h-[520px] object-cover mb-16 md:mb-24 border border-current/25"
+            loading="eager"
+          />
+        )}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
+          {data.tags.length > 0 && (
+            <aside aria-label={t.tags} class="lg:col-span-3 lg:sticky lg:top-28 self-start">
+              <p class="folio border-t border-current/25 pt-3 text-bnc-accent-ink dark:text-bnc-accent">{t.tags}</p>
+              <ul class="m-0 mt-3 p-0 list-none folio text-bnc-stone-600 dark:text-bnc-stone-300 flex flex-wrap lg:flex-col gap-x-4 gap-y-2">
+                {data.tags.map((tag: string) => <li>{tag}</li>)}
+              </ul>
+            </aside>
+          )}
+          <div class="lg:col-span-8 lg:col-start-4">
+            <Prose><Content /></Prose>
+          </div>
+        </div>
+      </Container>
+    </section>
+
+    {author && (
+      <section aria-label={t.about} class="plate-chalk" style="padding-bottom: var(--spacing-section-y-sm)">
+        <Container>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-4 border-t border-current/25 pt-6">
+            <p class="folio lg:col-span-3 text-bnc-accent-ink dark:text-bnc-accent">{t.by}</p>
+            <div class="lg:col-span-8 lg:col-start-4 max-w-[68ch]">
+              <p class="display" style="font-size: var(--fs-28)">{author.data.name}</p>
+              <p class="folio mt-2 text-bnc-stone-600 dark:text-bnc-stone-300">{author.data.role}</p>
+              <p class="mt-4 leading-relaxed text-bnc-stone-700 dark:text-bnc-stone-300">{author.data.bio}</p>
+              <a href={`${prefix}/founder/`} class="mt-4 inline-block underline underline-offset-4 decoration-1 hover:text-bnc-plate dark:hover:text-bnc-accent">{t.more}</a>
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    {(prevEntry || nextEntry) && (
+      <nav aria-label={t.nav} class="plate-chalk" style="padding-bottom: var(--spacing-section-y)">
+        <Container>
+          <div class="grid grid-cols-1 md:grid-cols-2 border-t border-current/25">
+            {prevEntry ? (
+              <a href={`${prefix}/blog/${slugOf(prevEntry)}/`} class="group flex flex-col gap-3 py-8 md:pr-8 border-b border-current/25 hover:bg-bnc-plate hover:text-white focus-visible:bg-bnc-plate focus-visible:text-white transition-colors md:hover:px-4">
+                <span class="folio text-bnc-accent-ink dark:text-bnc-accent group-hover:text-bnc-accent">{t.prev}</span>
+                <span class="display text-balance" style="font-size: var(--fs-28)">{prevEntry.data.title}</span>
+              </a>
+            ) : <span class="hidden md:block border-b border-current/25"></span>}
+            {nextEntry && (
+              <a href={`${prefix}/blog/${slugOf(nextEntry)}/`} class="group flex flex-col gap-3 py-8 md:pl-8 md:text-right md:items-end border-b border-current/25 md:border-l hover:bg-bnc-plate hover:text-white focus-visible:bg-bnc-plate focus-visible:text-white transition-colors md:hover:px-4">
+                <span class="folio text-bnc-accent-ink dark:text-bnc-accent group-hover:text-bnc-accent">{t.next}</span>
+                <span class="display text-balance" style="font-size: var(--fs-28)">{nextEntry.data.title}</span>
+              </a>
+            )}
+          </div>
+        </Container>
+      </nav>
+    )}
+
+    <CTA headline={t.cta} sub={t.sub} inverted={true} />
+  </main>
+
+  <Footer />
+</BaseLayout>

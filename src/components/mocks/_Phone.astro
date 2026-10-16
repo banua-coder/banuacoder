@@ -1,0 +1,10 @@
+---
+/** Shared phone chrome for mocks: status bar, body slot, optional bottom tabs. */
+interface Props { tabs?: string[]; active?: number }
+const { tabs = [], active = 0 } = Astro.props
+---
+<div class="mk-st"><span>09:41</span><span class="mk-bat"></span></div>
+<div class="mk-body"><slot /></div>
+{tabs.length > 0 && (
+  <div class="mk-tabs">{tabs.map((t, i) => <span class:list={[i === active && 'on']}><i></i>{t}</span>)}</div>
+)}

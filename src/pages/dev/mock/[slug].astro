@@ -1,0 +1,22 @@
+---
+/** Dev-only: bare stage for capturing cover/thumbnail art (scripts/capture-mocks.mjs). Not built in production. */
+import '../../../styles/global.css'
+import Mock from '../../../components/mocks/Mock.astro'
+import { mocks } from '../../../components/mocks'
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? Object.keys(mocks).map((slug) => ({ params: { slug } })) : []
+}
+const { slug } = Astro.params
+---
+<!doctype html>
+<html lang="id">
+  <head><meta charset="utf-8" /><meta name="robots" content="noindex" /><title>mock {slug}</title></head>
+  <body style="margin:0;height:100vh;display:grid;place-items:center;background:#0B1FD0;overflow:hidden">
+    <Mock slug={slug!} title={slug} class="cap" />
+  </body>
+</html>
+<style is:global>
+  .cap[data-frame='phone'] { max-width: calc(90vh * 9 / 19.5) !important; }
+  .cap:not([data-frame='phone']) { max-width: 80vw; }
+</style>

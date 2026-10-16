@@ -1,0 +1,54 @@
+---
+title: "One Login for Many Internal Agency Apps"
+slug: "sso-internal-instansi-satu-login-banyak-aplikasi"
+description: "SSO for many internal apps: why login should be written once, and why Chrome Custom Tabs are safer than an in-app WebView."
+publishedAt: 2026-10-13
+author: fajrian
+tags: ["flutter", "engineering", "open-source"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: en
+---
+
+Picture an agency with five applications. If each writes its own login, you get five login screens, five ways of storing tokens, and five places for the same bug. This post argues that login is better treated as shared infrastructure, using the SSO SDK we built for the internal Flutter app ecosystem at Badan Pusat Statistik (BPS, Statistics Indonesia).
+
+## Five apps, five ways to fail
+
+Duplicated login is not only a code problem. There is an operational cost people rarely count: when an employee changes roles or leaves, access has to be revoked in every application. The more applications run their own login, the more likely one gets missed. Each implementation also has its own chance of mishandling tokens, sessions, or refresh.
+
+## Login is infrastructure, not a feature
+
+A feature is built for one app. Infrastructure is built once and used by all of them. This shifts the question from "how does this app log people in" to "how do all our apps recognize the same person the same way".
+
+That is why what we built for BPS is an SDK, not a guidance document. A document can be read differently by each team. An SDK gives everyone the same implementation.
+
+## The most common mistake: an in-app WebView
+
+The quickest way to show a login page is to open it in a custom WebView inside the app. The problem is that users have no way to confirm that the page they are typing a password into is the real one. The wrapping app can also, technically, see what is typed. That opens a phishing surface.
+
+## Why we chose Chrome Custom Tabs
+
+The BPS SSO Flutter SDK implements OAuth2/OIDC and uses Chrome Custom Tabs for the login flow. The login page runs in the device's own browser rather than a custom WebView, which avoids the phishing risk of WebViews. Users get a login experience that is secure and feels native.
+
+## Tokens and refresh: the part no team should redo
+
+The SDK also manages access tokens and refresh tokens automatically. App teams do not need to write their own handling for token expiry or renewal. It is the part most often gotten wrong when rewritten, and the part easiest to get right when it is one library call.
+
+## From days to hours
+
+With this SDK, a new app in the BPS ecosystem can implement SSO in hours, not days, with minimal configuration. The SDK is used across BPS's internal Flutter apps and published on pub.dev as [`bps_sso_sdk`](https://pub.dev/packages/bps_sso_sdk), with source on [GitHub](https://github.com/IPDS-59/bps_sso_flutter_sdk).
+
+## What to ask every vendor
+
+If your agency runs more than one application, put these questions to each vendor:
+
+- Will the app use the existing shared identity, or build its own login?
+- Does the login flow use the system browser or an in-app WebView?
+- Who manages token refresh, and where is that code?
+- How is access revoked when an employee changes roles?
+
+Identity is only one of several technical points that belong in a requirements document. The rest are in our post on the [technical realities of local government apps](/en/blog/realitas-teknis-aplikasi-pemerintah-daerah/).
+
+---
+
+If your agency runs several applications and wants to tidy up identity, [get in touch](/en/contact/). The case study is [BPS SSO Flutter SDK](/en/portfolio/bps-sso-sdk/).

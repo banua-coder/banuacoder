@@ -1,9 +1,10 @@
 ---
 /**
- * MobileDrawer — slide-in panel from right.
+ * MobileDrawer — slide-in ultramarine plate from right.
  * Triggered by hamburger in Nav. Closes on Esc, backdrop click, or link click.
  * Traps focus while open. ARIA dialog role.
  */
+import { contact, bookingLabel, bookingShortLabel } from '../../data/contact'
 const locale = Astro.currentLocale ?? 'id'
 const isEn = locale === 'en'
 const prefix = isEn ? '/en' : ''
@@ -30,57 +31,59 @@ const navLinks = isEn
 <!-- Backdrop -->
 <div
   id="drawer-backdrop"
-  class="fixed inset-0 z-[60] bg-bnc-ink/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-[var(--duration-base)]"
+  class="fixed inset-0 z-[60] bg-bnc-ink/60 opacity-0 pointer-events-none transition-opacity duration-[var(--duration-base)]"
   aria-hidden="true"
 ></div>
 
-<!-- Drawer panel -->
+<!-- Drawer panel: a full ultramarine plate -->
 <div
   id="mobile-drawer"
   role="dialog"
   aria-modal="true"
   aria-label="Navigation menu"
-  class="fixed top-0 right-0 bottom-0 z-[70] w-72 flex flex-col bg-bnc-paper dark:bg-bnc-ink shadow-[var(--shadow-elevated)] translate-x-full transition-transform duration-[var(--duration-base)] ease-in-out"
+  class="plate fixed top-0 right-0 bottom-0 z-[70] w-full sm:w-[26rem] flex flex-col translate-x-full transition-transform duration-[var(--duration-base)] ease-in-out"
   tabindex="-1"
 >
-  <!-- Drawer header -->
-  <div class="flex items-center justify-between px-6 py-4 border-b border-bnc-stone-200 dark:border-bnc-stone-800">
-    <span class="font-mono text-xs text-bnc-stone-500 tracking-widest uppercase">
-      // menu
-    </span>
+  <div class="flex items-center justify-between px-6 h-16 border-b border-[var(--color-bnc-plate-line)]">
+    <span class="folio mute">{isEn ? 'Contents' : 'Daftar isi'}</span>
     <button
       id="drawer-close"
       type="button"
-      class="flex items-center justify-center w-8 h-8 rounded-md text-bnc-ink dark:text-bnc-paper hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800 transition-colors"
+      class="flex items-center justify-center w-10 h-10 text-white hover:bg-white/10"
       aria-label="Close navigation menu"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="1.5"/>
       </svg>
     </button>
   </div>
 
-  <!-- Nav links -->
-  <nav aria-label="Mobile navigation" class="flex-1 overflow-y-auto px-6 py-6">
-    <ul class="list-none m-0 p-0 flex flex-col gap-1" role="list">
-      {navLinks.map((link) => (
+  <nav aria-label="Mobile navigation" class="flex-1 overflow-y-auto px-6 py-4">
+    <ul class="list-none m-0 p-0" role="list">
+      {navLinks.map((link, i) => (
         <li>
           <a
             href={link.href}
-            class="drawer-link flex items-center py-3 text-lg font-medium text-bnc-ink dark:text-bnc-paper border-b border-bnc-stone-200 dark:border-bnc-stone-800 transition-colors hover:text-bnc-primary dark:hover:text-bnc-accent"
+            class="drawer-link flex items-baseline gap-4 py-4 border-b border-[var(--color-bnc-plate-line)] text-white hover:text-bnc-accent transition-colors"
           >
-            {link.label}
+            <span class="folio mute w-7 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+            <span class="display" style="font-size: var(--fs-36)">{link.label}</span>
           </a>
         </li>
       ))}
     </ul>
   </nav>
 
-  <!-- Drawer footer -->
-  <div class="px-6 py-4 border-t border-bnc-stone-200 dark:border-bnc-stone-800">
-    <p class="font-mono text-xs text-bnc-stone-400 tracking-wider">
-      // banua coder
-    </p>
+  <div class="px-6 py-5 border-t border-[var(--color-bnc-plate-line)] flex flex-col gap-3">
+    <a
+      href={contact.bookingUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="drawer-link flex items-center justify-between bg-white px-5 py-4 text-base font-semibold text-bnc-plate hover:bg-bnc-accent hover:text-bnc-ink transition-colors"
+    >
+      {bookingLabel[locale as 'id' | 'en']} <span aria-hidden="true">→</span>
+    </a>
+    <p class="folio mute">Banua Coder / Palu</p>
   </div>
 </div>
 

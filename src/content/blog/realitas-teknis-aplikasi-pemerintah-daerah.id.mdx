@@ -1,0 +1,64 @@
+---
+title: "Realitas Teknis Aplikasi Pemerintah Daerah"
+slug: "realitas-teknis-aplikasi-pemerintah-daerah"
+description: "Membangun aplikasi untuk instansi pemerintah daerah: identitas, audit trail, disposisi, hak akses, dan notifikasi yang perlu masuk KAK."
+publishedAt: 2026-10-09
+author: fajrian
+tags: ["public-sector", "engineering", "government"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: id
+---
+
+Kalau Anda sedang menulis atau menelaah KAK untuk sebuah aplikasi instansi, pertanyaan sebenarnya biasanya bukan "vendor mana yang murah". Pertanyaannya: apa yang harus tertulis sekarang supaya sistem ini tidak bermasalah di tengah jalan? Berikut hal-hal teknis yang kami temui di proyek sektor publik dan layak masuk dokumen sebelum vendor mana pun menawar.
+
+## Aplikasi instansi bukan aplikasi bisnis dengan logo berbeda
+
+Cara gagalnya berbeda. Aplikasi toko online gagal kalau penjualan turun. Aplikasi instansi gagal kalau sebuah keputusan tidak bisa dipertanggungjawabkan, kalau pegawai yang baru dimutasi masih bisa membuka data lamanya, atau kalau masyarakat tidak percaya pada angka tagihannya. "Selesai" di sini berarti dapat diaudit, dipakai orang dengan literasi digital yang beragam, dan tetap benar saat struktur organisasi berubah.
+
+## Identitas: siapa pengguna, dan siapa yang menjamin dia benar
+
+Untuk sistem yang menghadap masyarakat, identitas sering berbasis NIK atau NPWP. Lontara, aplikasi pembayaran pajak dan retribusi daerah untuk Provinsi Sulawesi Selatan, memakai login berbasis NIK atau NPWP sehingga pengguna tidak perlu membuat akun baru.
+
+Untuk lingkungan internal yang punya beberapa aplikasi, masalahnya lain: kalau setiap aplikasi menulis login sendiri, ada banyak tempat yang harus dicabut aksesnya saat seorang pegawai pindah. Pendekatan yang lebih sehat adalah satu identitas bersama. Kami membahasnya di [tulisan tentang SSO](/blog/sso-internal-instansi-satu-login-banyak-aplikasi/).
+
+## Audit trail bukan fitur tambahan
+
+Ini kebutuhan yang paling sering dicoret dan paling sering dicari. Surat BMPR dirancang dengan audit trail yang lengkap dan dapat dicari sejak awal. Alasannya dan cara menuliskannya di dokumen kebutuhan kami tulis terpisah di [tulisan tentang audit trail](/blog/audit-trail-sistem-pemerintah/).
+
+## Disposisi berjenjang mengikuti struktur organisasi
+
+Surat BMPR dipakai di Dinas Bina Marga dan Penataan Ruang Provinsi Sulawesi Tengah. Alur disposisinya berjenjang: pimpinan meneruskan surat ke staf atau bagian terkait dengan catatan dan instruksi tindak lanjut. Alur seperti ini tidak bisa dimodelkan sebagai "pengguna A kirim ke pengguna B". Ia harus mengikuti struktur jabatan, dan setiap langkahnya perlu terlihat statusnya.
+
+Sebelum meminta fitur, petakan dulu struktur organisasi dan siapa boleh meneruskan ke siapa. Dari sanalah bentuk alurnya ditentukan.
+
+## Peran dan hak akses yang berubah setiap ada mutasi
+
+Siap Donggala, sistem kepegawaian Pemerintah Kabupaten Donggala, memakai kontrol akses berbasis peran supaya setiap level organisasi hanya melihat data yang relevan. Data induk pegawai, absensi digital, cuti dan izin, serta dashboard pelaporan semuanya bergantung pada pembagian peran ini.
+
+Hak akses bukan konfigurasi sekali jadi. Jabatan berubah, orang dimutasi, unit kerja bergabung. Minta agar pengelolaan peran bisa dilakukan oleh admin instansi tanpa harus memanggil vendor setiap kali.
+
+## Notifikasi yang mengubah perilaku
+
+Di Patonro, aplikasi layanan pajak dan retribusi untuk Kabupaten Gowa (bersama PT Brantas Inti Utama), notifikasi push dikirim H-7 dan H-1 sebelum jatuh tempo untuk mengurangi tunggakan. Di Surat BMPR, notifikasi dikirim setiap ada disposisi baru atau perubahan status supaya tindak lanjut tidak tertunda.
+
+Pola yang sama berlaku di mana pun: sistem yang hanya menyimpan data, tanpa mengingatkan orang yang harus bertindak, cuma memindahkan antrean dari kertas ke layar.
+
+## Siklus anggaran memengaruhi bentuk teknis
+
+Tahun anggaran dan jadwal pengadaan menentukan seberapa banyak yang bisa dikerjakan dalam satu periode. Konsekuensinya praktis: tentukan sejak awal mana yang wajib ada di rilis pertama dan mana yang bisa menyusul, lalu pastikan fondasi seperti identitas, hak akses, dan audit trail ada di rilis pertama karena menambahkannya belakangan jauh lebih mahal. Pembaruan dan pemeliharaan setelah rilis juga perlu punya tempat di rencana, bukan dianggap selesai saat serah terima.
+
+## Yang sebaiknya ada di KAK sebelum vendor menawar
+
+- Siapa saja pengguna sistem (masyarakat, pegawai, pimpinan), dan bagaimana masing-masing diidentifikasi.
+- Apakah sudah ada sistem identitas bersama yang harus dipakai.
+- Persyaratan audit trail: apa yang dicatat, siapa yang boleh melihat, bagaimana dicari.
+- Struktur peran dan siapa yang mengelola perubahannya.
+- Alur persetujuan atau disposisi, dipetakan dari struktur organisasi.
+- Kebutuhan notifikasi dan kapan dikirim.
+- Integrasi dengan sistem data yang sudah ada. Patonro, misalnya, terhubung ke sistem data pajak daerah, sehingga bentuk integrasi ini menentukan banyak hal teknis lain.
+- Rencana pemeliharaan setelah rilis.
+
+---
+
+Kalau Anda sedang menyiapkan KAK dan ingin memeriksanya dari sisi teknis sebelum dikunci, [hubungi kami](/contact/). Pengalaman kami di sektor publik bisa dilihat di [portofolio](/portfolio/).

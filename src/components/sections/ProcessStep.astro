@@ -1,59 +1,32 @@
 ---
 /**
- * ProcessStep — vertical timeline step.
- * Numbered marker [01], title, body, and hairline connector to next step.
+ * ProcessStep: a ruled row with a tonal numeral. Colour comes from the surrounding plate.
  */
 interface Props {
-  /** Step number, e.g. 1 */
   step: number
   title: string
   body?: string
-  /** Is this the last step? (no connector line) */
+  /** kept for backward compatibility; rows are ruled, so there is no connector */
   last?: boolean
   class?: string
 }
 
-const { step, title, body, last = false, class: cls = '' } = Astro.props
-
-const marker = `[ ${String(step).padStart(2, '0')} ]`
+const { step, title, body, class: cls = '' } = Astro.props
+const n = String(step).padStart(2, '0')
 ---
 
-<div class:list={['relative flex gap-6', !last && 'pb-10', cls]} data-process-step>
-  <!-- Connector line -->
-  {!last && (
-    <div
-      class="absolute left-[1.6rem] top-8 bottom-0 w-px bg-bnc-stone-200 dark:bg-bnc-stone-800"
-      aria-hidden="true"
-      data-process-line
-    ></div>
-  )}
-
-  <!-- Step dot -->
-  <div
-    class="relative z-10 flex items-center justify-center w-[3.2rem] h-[3.2rem] shrink-0 rounded-full border-2 border-bnc-accent bg-bnc-paper dark:bg-bnc-ink"
-    aria-hidden="true"
-    data-process-dot
-  >
-    <span class="font-mono text-xs text-bnc-accent tabular-nums">{String(step).padStart(2, '0')}</span>
-  </div>
-
-  <!-- Content -->
-  <div class="pt-2.5 pb-2">
-    <p class="font-mono text-xs text-bnc-accent mb-2 tracking-wider" aria-hidden="true">
-      {marker}
-    </p>
-    <h3
-      class="font-display font-semibold text-bnc-ink dark:text-bnc-paper mb-2"
-      style="font-size: var(--fs-20)"
-    >
-      {title}
-    </h3>
+<div class:list={['ps grid grid-cols-[4.5rem_1fr] sm:grid-cols-[6.5rem_1fr] gap-x-4 border-t border-current/25 py-7', cls]}>
+  <span class="ps-num display tabular-nums" style="font-size: var(--fs-48); line-height: 0.9" aria-hidden="true">{n}</span>
+  <div>
+    <h3 data-split class="display" style="font-size: var(--fs-28); line-height: 1.05">{title}</h3>
     {body && (
-      <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed" style="font-size: var(--fs-17)">
-        {body}
-      </p>
+      <p class="ps-body mt-3 leading-relaxed" style="font-size: var(--fs-17); max-width: 46ch">{body}</p>
     )}
-    <!-- Optional slot for extra content -->
     <slot />
   </div>
 </div>
+
+<style>
+  .ps-num { color: color-mix(in srgb, currentColor 38%, transparent); }
+  .ps-body { color: color-mix(in srgb, currentColor 76%, transparent); }
+</style>

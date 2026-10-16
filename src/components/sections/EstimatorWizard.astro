@@ -47,17 +47,17 @@ const steps = isEn
       </span>
       <span class="font-mono text-xs text-bnc-accent" id="step-name">{steps[0]}</span>
     </div>
-    <div class="w-full h-1 bg-bnc-stone-200 dark:bg-bnc-stone-800 rounded-full overflow-hidden">
+    <div class="w-full h-1 bg-bnc-stone-200 dark:bg-bnc-stone-800 overflow-hidden">
       <div
         id="progress-fill"
-        class="h-full bg-bnc-accent rounded-full transition-all duration-[var(--duration-base)]"
+        class="h-full bg-bnc-accent transition-all duration-[var(--duration-base)]"
         style="width: 14.28%"
       ></div>
     </div>
     <div class="flex justify-between mt-2" aria-hidden="true">
       {Array.from({ length: 7 }, (_, i) => (
         <div
-          class="w-2 h-2 rounded-full transition-colors duration-[var(--duration-base)] bg-bnc-stone-300 dark:bg-bnc-stone-700"
+          class="w-2 h-2 transition-colors duration-[var(--duration-base)] bg-bnc-stone-300 dark:bg-bnc-stone-700"
           data-dot={i + 1}
         ></div>
       ))}
@@ -796,7 +796,7 @@ function buildOutputEl(s: WizardState, out: ReturnType<typeof calculate>): HTMLE
       const prefix = isEn ? '/en' : ''
       const card = document.createElement('a')
       card.href = `${prefix}/portfolio/${slug}/`
-      card.className = 'group block rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900 p-5 hover:border-bnc-accent transition-colors shadow-[var(--shadow-subtle)]'
+      card.className = 'group block rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-stone-900 p-5 hover:border-bnc-plate dark:hover:border-bnc-accent transition-colors'
 
       const bucketLabels: Record<string, string> = {
         consumer: 'Consumer', 'public-sector': 'Public Sector', operational: 'Operational',

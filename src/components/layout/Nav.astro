@@ -1,14 +1,13 @@
 ---
 /**
- * Nav — sticky top navigation.
- * Left: horizontal logo (switches to icon-only on mobile).
- * Right: nav links, language switcher, theme toggle, mobile drawer trigger.
- * Translucent paper bg with blur on scroll.
+ * Nav: hairline running header. Wordmark left, links centre, 'Jadwalkan panggilan →' right.
+ * Solid chalk (navy ink in dark mode) so it reads over plates and chalk alike.
  */
 import Logo from '../brand/Logo.astro'
 import LangSwitcher from '../interactive/LangSwitcher.astro'
 import ThemeToggle from '../interactive/ThemeToggle.astro'
 import MobileDrawer from './MobileDrawer.astro'
+import { contact, bookingLabel, bookingShortLabel } from '../../data/contact'
 
 const locale = Astro.currentLocale ?? 'id'
 const isEn = locale === 'en'
@@ -35,87 +34,66 @@ const navLinks = isEn
 
 <header
   id="site-nav"
-  class="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color,transform] duration-300 bg-bnc-paper/80 dark:bg-bnc-ink/80 backdrop-blur-md border-b border-transparent will-change-transform"
+  class="fixed top-0 left-0 right-0 z-50 transition-transform duration-300 bg-bnc-paper dark:bg-bnc-ink border-b border-bnc-ink/25 dark:border-bnc-paper/25 will-change-transform"
   data-nav-scroll
 >
   <nav
     aria-label="Site navigation"
-    class="mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16"
+    class="mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16"
     style="max-width: var(--container-max)"
   >
-    <!-- Logo -->
-    <a href={isEn ? '/en/' : '/'} class="flex items-center gap-2 shrink-0" aria-label="Banua Coder home">
-      <span class="hidden sm:block">
-        <Logo variant="horizontal" width={160} />
-      </span>
-      <span class="sm:hidden">
-        <Logo variant="icon" width={36} />
-      </span>
+    <a href={isEn ? '/en/' : '/'} class="flex items-center shrink-0" aria-label="Banua Coder home">
+      <Logo variant="lockup" width={26} />
     </a>
 
-    <!-- Desktop nav links -->
-    <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0" role="list">
+    <ul class="hidden md:flex items-center gap-5 lg:gap-7 list-none m-0 p-0" role="list">
       {navLinks.map((link) => (
         <li>
           <a
             href={link.href}
-            class="relative text-sm font-medium text-bnc-ink dark:text-bnc-paper transition-colors hover:text-bnc-primary dark:hover:text-bnc-accent group"
+            class="nav-link text-sm font-medium text-bnc-ink dark:text-bnc-paper"
           >
             {link.label}
-            <span
-              class="absolute -bottom-0.5 left-0 h-px w-0 bg-bnc-accent transition-all duration-[var(--duration-base)] group-hover:w-full"
-              aria-hidden="true"
-            ></span>
           </a>
         </li>
       ))}
     </ul>
 
-    <!-- Right cluster: lang switcher + theme toggle + mobile hamburger -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 sm:gap-3">
+      <a
+        href={contact.bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden lg:inline-flex items-center gap-1.5 text-sm font-semibold text-bnc-plate dark:text-bnc-accent underline underline-offset-[6px] decoration-1 hover:decoration-2 mr-2"
+      >
+        {bookingShortLabel[locale as 'id' | 'en']} <span aria-hidden="true">→</span>
+      </a>
       <LangSwitcher />
       <ThemeToggle />
 
-      <!-- Mobile hamburger -->
       <button
         id="nav-hamburger"
         type="button"
-        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 rounded-md transition-colors hover:bg-bnc-stone-100 dark:hover:bg-bnc-stone-800"
+        class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5 hover:bg-bnc-ink/5 dark:hover:bg-bnc-paper/10"
         aria-label="Open navigation menu"
         aria-expanded="false"
         aria-controls="mobile-drawer"
       >
-        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
-        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
-        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper transition-all"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper"></span>
+        <span class="block w-5 h-px bg-bnc-ink dark:bg-bnc-paper"></span>
       </button>
     </div>
   </nav>
 </header>
 
-<!-- Mobile drawer renders alongside the nav so the hamburger has something to open -->
 <MobileDrawer />
 
-<!-- Nav scroll-elevated state is wired in src/lib/animations.ts via [data-nav-scroll]
-     so it survives Astro view transitions (re-init on astro:after-swap). -->
 <style>
-  /* When scrolled past the top: stronger opacity + visible hairline border */
-  [data-nav-scroll].is-scrolled {
-    background-color: color-mix(in srgb, var(--color-bnc-paper) 92%, transparent);
-    border-bottom-color: var(--color-bnc-stone-200);
-  }
-  :global(html.dark) [data-nav-scroll].is-scrolled {
-    background-color: color-mix(in srgb, var(--color-bnc-ink) 92%, transparent);
-    border-bottom-color: var(--color-bnc-stone-800);
-  }
-  /* Auto-hide: translate up when not at hero and pointer not near top edge */
-  [data-nav-scroll].is-hidden {
-    transform: translateY(-100%);
-  }
-  /* Reduced-motion: kill the slide so navigate is always instant */
+  .nav-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: 3px; transition: background-size 250ms; }
+  .nav-link:hover, .nav-link:focus-visible { background-size: 100% 1px; }
+  [data-nav-scroll].is-hidden { transform: translateY(-100%); }
   @media (prefers-reduced-motion: reduce) {
-    [data-nav-scroll] {
-      transition: background-color 0.2s, border-color 0.2s;
-    }
+    [data-nav-scroll], .nav-link { transition: none; }
   }
 </style>

@@ -1,0 +1,64 @@
+---
+title: "Technical Realities of Local Government Apps"
+slug: "realitas-teknis-aplikasi-pemerintah-daerah"
+description: "Building apps for local government agencies: identity, audit trail, tiered disposition, access roles and notifications to put in your TOR."
+publishedAt: 2026-10-09
+author: fajrian
+tags: ["public-sector", "engineering", "government"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: en
+---
+
+If you are writing or reviewing a terms of reference (KAK) for an agency application, the real question is usually not "which vendor is cheapest". It is: what must be written down now so this system does not run into trouble halfway through? Below are the technical points we have met on public-sector projects that deserve a place in the document before any vendor bids.
+
+## An agency app is not a business app with a different logo
+
+It fails differently. An online store fails when sales drop. An agency system fails when a decision cannot be accounted for, when an employee who was just reassigned can still open old data, or when citizens stop trusting the amount they are billed. "Done" here means auditable, usable by people with very different digital literacy, and still correct when the organization chart changes.
+
+## Identity: who the user is, and who vouches for it
+
+For citizen-facing systems, identity is often based on NIK (national ID number) or NPWP (tax number). Lontara, the regional tax and levy payment app for South Sulawesi Province, uses NIK- or NPWP-based login so users do not have to create a new account.
+
+Inside an organization with several applications, the problem is different: if every application writes its own login, there are many places to revoke access when someone changes roles. A healthier approach is one shared identity. We cover it in our [post on SSO](/en/blog/sso-internal-instansi-satu-login-banyak-aplikasi/).
+
+## The audit trail is not an add-on
+
+It is the requirement most often cut and most often needed. Surat BMPR was designed with a complete, searchable audit trail from the start. The reasoning and how to write it into a requirements document are in our separate [post on audit trails](/en/blog/audit-trail-sistem-pemerintah/).
+
+## Tiered disposition follows the organization structure
+
+Surat BMPR is used at the Public Works and Spatial Planning Office of Central Sulawesi Province. Its disposition flow is tiered: leaders forward a letter to staff or the relevant unit with notes and follow-up instructions. A flow like this cannot be modeled as "user A sends to user B". It has to follow the chain of positions, and every step needs a visible status.
+
+Before asking for features, map the organization structure and who may forward to whom. The shape of the flow comes from there.
+
+## Roles and access rights that change with every reassignment
+
+Siap Donggala, the staff management system for Donggala Regency, uses role-based access so each level of the organization sees only the data that is relevant to it. Employee master data, digital attendance, leave and permit requests, and the reporting dashboard all depend on this role split.
+
+Access rights are not a one-time setup. Positions change, people are reassigned, units merge. Ask for role management that agency admins can do themselves, without calling the vendor each time.
+
+## Notifications that change behavior
+
+In Patonro, the tax and levy service app for Gowa Regency (with PT Brantas Inti Utama), push notifications go out 7 days and 1 day before the due date to reduce arrears. In Surat BMPR, notifications go out on every new disposition or status change so follow-up is not delayed.
+
+The same pattern applies anywhere: a system that stores data but does not remind the people who must act only moves the queue from paper to screen.
+
+## Budget cycles shape the technical form
+
+The budget year and procurement schedule decide how much can be done in a period. The practical consequence: decide early what must be in the first release and what can follow, and make sure foundations like identity, access roles, and the audit trail are in the first release, because adding them later costs far more. Maintenance after release also needs a place in the plan instead of being treated as finished at handover.
+
+## What to have in your TOR before vendors bid
+
+- Who the users are (citizens, staff, leaders), and how each is identified.
+- Whether a shared identity system already exists that must be used.
+- Audit trail requirements: what is recorded, who may view it, how it is searched.
+- The role structure and who manages changes to it.
+- The approval or disposition flow, mapped from the organization structure.
+- Notification needs and when they are sent.
+- Integration with existing data systems. Patonro, for example, connects to the regional tax data system, so the form of that integration drives many other technical decisions.
+- A maintenance plan after release.
+
+---
+
+If you are preparing a TOR and want a technical check before it is locked, [get in touch](/en/contact/). Our public-sector work is in the [portfolio](/en/portfolio/).

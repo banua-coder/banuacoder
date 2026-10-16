@@ -1,0 +1,62 @@
+---
+/**
+ * Detexi Doctor, "Detail Rujukan" screen. No app source on disk: recreated by measuring the project's own
+ * screenshot (src/content/portfolio/detexi/screenshots/screenshot-4.webp, screen = 1376px wide, taken as 360dp, 3.82px/dp).
+ * Measured: screen bg #F9F8FD, cards #FFF, card1 0-223dp, 7dp gap, card2 230-475dp (header 45dp, rows 67dp, hairline #F1F1F1),
+ * row thumb 33x37 at x16, name x58, GANTI chip 52x26 pill #EDFAFF, delete 26dp circle #FFECEE, primary button #4FC9EF 48dp pill, label grey #959595.
+ * Font in the screenshot is Poppins (fallback stack used). Estimates (not pixel-matched): font sizes, icon strokes.
+ * Synthetic: patient, clinic, services and prices. The service photo is replaced by a neutral gradient.
+ */
+interface Props { locale?: 'id' | 'en' }
+const en = Astro.props.locale === 'en'
+const t = en
+  ? { title: 'Referral Detail', d1: 'Referral Data Detail', p: 'Patient Name', pv: 'Sample Patient, 30y', pl: 'Practice Location', plv: 'Sample Clinic', d2: 'Service Detail', change: 'CHANGE', rows: ['Sample Service A', 'Sample Service B', 'Sample Service C'] }
+  : { title: 'Detail Rujukan', d1: 'Detail Data Rujukan', p: 'Nama Pasien', pv: 'Pasien Contoh, 30thn', pl: 'Tempat Praktik', plv: 'Klinik Contoh', d2: 'Detail Layanan', change: 'GANTI', rows: ['Layanan Contoh A', 'Layanan Contoh B', 'Layanan Contoh C'] }
+const prices = ['Rp. 100.000', 'Rp. 200.000', 'Rp. 150.000']
+---
+<div class="dx">
+  <div class="dx-sb"><span>09:41</span><span class="dx-bat"></span></div>
+  <div class="dx-ab"><svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><b>{t.title}</b></div>
+  <div class="dx-c1">
+    <b class="dx-h">{t.d1}</b>
+    <span class="dx-l" style="margin-top:calc(20*var(--d))">{t.p}</span><span class="dx-v">{t.pv}</span>
+    <span class="dx-l" style="margin-top:calc(14*var(--d))">{t.pl}</span><span class="dx-v">{t.plv}</span>
+  </div>
+  <div class="dx-c2">
+    <b class="dx-h dx-h2">{t.d2}</b>
+    {t.rows.map((r, i) => (
+      <div class="dx-row">
+        <i class="dx-th"></i>
+        <div class="dx-tx"><span>{r}</span><em>{prices[i]}</em></div>
+        <span class="dx-ch">{t.change}</span>
+        <span class="dx-del"><svg viewBox="0 0 24 24" fill="none" stroke="#F04452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></span>
+      </div>
+    ))}
+  </div>
+  <div class="dx-bot"><span class="dx-btn">Submit</span></div>
+</div>
+<style>
+  .dx { --d: calc(100cqw / 360); position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden; background: #F9F8FD; color: #000; font: 400 calc(12 * var(--d))/1.3 Poppins, var(--font-sans, system-ui, sans-serif); }
+  .dx * { box-sizing: border-box; }
+  .dx-sb { height: calc(24 * var(--d)); display: flex; justify-content: space-between; align-items: center; padding: 0 calc(16 * var(--d)); background: #fff; font-size: calc(11 * var(--d)); font-weight: 600; flex: none; }
+  .dx-bat { width: calc(16 * var(--d)); height: calc(8 * var(--d)); border: calc(1.2 * var(--d)) solid #000; border-radius: calc(2 * var(--d)); }
+  .dx-ab { height: calc(56 * var(--d)); background: #fff; display: flex; align-items: center; gap: calc(20 * var(--d)); padding: 0 calc(16 * var(--d)); flex: none; }
+  .dx-ab svg { width: calc(22 * var(--d)); height: calc(22 * var(--d)); }
+  .dx-ab b { font-size: calc(13 * var(--d)); font-weight: 600; }
+  .dx-c1 { background: #fff; padding: calc(11 * var(--d)) calc(16 * var(--d)) calc(18 * var(--d)); display: flex; flex-direction: column; flex: none; height: calc(143 * var(--d)); }
+  .dx-h { font-size: calc(11.5 * var(--d)); font-weight: 600; }
+  .dx-l { font-size: calc(8.5 * var(--d)); color: #959595; }
+  .dx-v { font-size: calc(11.5 * var(--d)); margin-top: calc(3 * var(--d)); }
+  .dx-c2 { background: #fff; margin-top: calc(7 * var(--d)); flex: none; }
+  .dx-h2 { display: flex; align-items: center; height: calc(45 * var(--d)); padding: 0 calc(16 * var(--d)); }
+  .dx-row { height: calc(67 * var(--d)); border-top: 1px solid #F1F1F1; display: flex; align-items: center; gap: calc(9 * var(--d)); padding: 0 calc(16 * var(--d)); }
+  .dx-th { width: calc(33 * var(--d)); height: calc(37 * var(--d)); border-radius: calc(5 * var(--d)); background: linear-gradient(160deg, #8EC9EE, #C9D7E6 55%, #7E94AE); flex: none; margin-right: calc(-9 * var(--d)); }
+  .dx-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: calc(6 * var(--d)); margin-left: calc(9 * var(--d)); }
+  .dx-tx span { font-size: calc(11.5 * var(--d)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dx-tx em { font-style: normal; font-size: calc(9 * var(--d)); }
+  .dx-ch { width: calc(52 * var(--d)); height: calc(26 * var(--d)); border-radius: calc(13 * var(--d)); background: #EDFAFF; color: #4FC9EF; font-size: calc(8.5 * var(--d)); font-weight: 600; display: grid; place-items: center; flex: none; }
+  .dx-del { width: calc(26 * var(--d)); height: calc(26 * var(--d)); border-radius: 50%; background: #FFECEE; display: grid; place-items: center; flex: none; }
+  .dx-del svg { width: calc(13 * var(--d)); height: calc(13 * var(--d)); }
+  .dx-bot { margin-top: auto; background: #fff; padding: calc(16 * var(--d)); box-shadow: 0 calc(-2 * var(--d)) calc(6 * var(--d)) rgba(0,0,0,.05); flex: none; }
+  .dx-btn { display: grid; place-items: center; height: calc(48 * var(--d)); border-radius: calc(24 * var(--d)); background: #4FC9EF; color: #fff; font-size: calc(12 * var(--d)); font-weight: 600; }
+</style>

@@ -1,31 +1,19 @@
 ---
 /**
- * BucketFilter — segmented control: All / Consumer / Public Sector / Operational / Open Source.
- * Filters elements with data-bucket attribute via classList show/hide.
- * Updates URL hash for shareable filtered views.
- * On small screens the button row scrolls horizontally to prevent overflow.
+ * BucketFilter — ruled text tabs: All / Consumer / Public Sector / Operational / Open Source.
+ * Filters elements with data-bucket via inline display. Updates the URL hash for shareable views.
+ * On small screens the row scrolls horizontally to prevent overflow.
  */
 interface Props {
-  /** Label text for locale */
-  labels?: {
-    all: string
-    consumer: string
-    public: string
-    operational: string
-    openSource: string
-  }
-  /** Extra CSS classes */
+  labels?: { all: string; consumer: string; public: string; operational: string; openSource: string }
+  /** Noun used in the live result count, e.g. "proyek" / "projects" */
+  countLabel?: string
   class?: string
 }
 
 const {
-  labels = {
-    all: 'All',
-    consumer: 'Consumer',
-    public: 'Public Sector',
-    operational: 'Operational',
-    openSource: 'Open Source',
-  },
+  labels = { all: 'All', consumer: 'Consumer', public: 'Public Sector', operational: 'Operational', openSource: 'Open Source' },
+  countLabel = 'projects',
   class: cls = '',
 } = Astro.props
 
@@ -38,70 +26,63 @@ const filters = [
 ]
 ---
 
-<div
-  role="group"
-  aria-label="Filter by category"
-  class:list={['flex gap-2 overflow-x-auto pb-1 scrollbar-none', cls]}
-  id="bucket-filter"
->
-  {filters.map((f) => (
-    <button
-      type="button"
-      data-filter={f.id}
-      class:list={[
-        'bucket-filter-btn',
-        'font-mono text-xs px-4 py-2 rounded-[var(--radius-sm)]',
-        'border transition-all duration-[var(--duration-base)]',
-        'border-bnc-stone-300 dark:border-bnc-stone-700',
-        'text-bnc-stone-600 dark:text-bnc-stone-400',
-        'hover:border-bnc-primary hover:text-bnc-primary',
-        'dark:hover:border-bnc-accent dark:hover:text-bnc-accent',
-        f.id === 'all' ? 'is-active !border-bnc-primary !text-bnc-primary dark:!border-bnc-accent dark:!text-bnc-accent' : '',
-      ]}
-      aria-pressed={f.id === 'all' ? 'true' : 'false'}
-    >
-      {f.id === 'all' ? '' : '// '}{f.label}
-    </button>
-  ))}
+<div class:list={['flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b border-bnc-ink dark:border-bnc-paper', cls]}>
+  <div role="group" aria-label="Filter by category" class="flex gap-6 overflow-x-auto scrollbar-none -mb-px" id="bucket-filter">
+    {filters.map((f) => (
+      <button
+        type="button"
+        data-filter={f.id}
+        class="bucket-filter-btn folio shrink-0 py-3 border-b-2 border-transparent text-bnc-stone-600 dark:text-bnc-stone-400 transition-colors duration-[var(--duration-base)] hover:text-bnc-ink dark:hover:text-bnc-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bnc-primary dark:focus-visible:outline-bnc-accent"
+        aria-pressed={f.id === 'all' ? 'true' : 'false'}
+      >
+        {f.label}
+        <span class="bucket-count ml-1 tabular-nums" aria-hidden="true"></span>
+      </button>
+    ))}
+  </div>
+  <p id="bucket-status" role="status" class="folio py-3 text-bnc-stone-600 dark:text-bnc-stone-400 tabular-nums" data-label={countLabel}></p>
 </div>
 
-<script>
-  const filterGroup = document.getElementById('bucket-filter');
-  if (!filterGroup) throw new Error('BucketFilter: #bucket-filter not found');
-
-  const buttons = filterGroup.querySelectorAll<HTMLButtonElement>('.bucket-filter-btn');
-
-  function applyFilter(filterId: string) {
-    // Update buttons
-    buttons.forEach((btn) => {
-      const active = btn.dataset.filter === filterId;
-      btn.classList.toggle('is-active', active);
-      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-      if (active) {
-        btn.classList.add('!border-bnc-primary', '!text-bnc-primary');
-      } else {
-        btn.classList.remove('!border-bnc-primary', '!text-bnc-primary');
-      }
-    });
-
-    // Filter [data-bucket] elements
-    const items = document.querySelectorAll<HTMLElement>('[data-bucket]');
-    items.forEach((item) => {
-      const bucket = item.dataset.bucket ?? '';
-      const visible = filterId === 'all' || bucket === filterId;
-      item.style.display = visible ? '' : 'none';
-    });
-
-    // Update URL hash
-    const hash = filterId === 'all' ? '' : `#${filterId}`;
-    history.replaceState(null, '', window.location.pathname + hash);
+<style>
+  .bucket-filter-btn[aria-pressed='true'] {
+    color: var(--color-bnc-ink);
+    border-bottom-color: var(--color-bnc-primary);
   }
+  :global(html.dark) .bucket-filter-btn[aria-pressed='true'] {
+    color: var(--color-bnc-paper);
+    border-bottom-color: var(--color-bnc-accent);
+  }
+</style>
 
-  // Init from hash
-  const initialHash = window.location.hash.replace('#', '') || 'all';
-  applyFilter(initialHash);
+<script>
+  const group = document.getElementById('bucket-filter')
+  const status = document.getElementById('bucket-status')
+  if (group && status) {
+    const buttons = group.querySelectorAll<HTMLButtonElement>('.bucket-filter-btn')
+    const items = document.querySelectorAll<HTMLElement>('[data-bucket]')
+    const valid = new Set(Array.from(buttons, (b) => b.dataset.filter))
 
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => applyFilter(btn.dataset.filter ?? 'all'));
-  });
+    buttons.forEach((btn) => {
+      const id = btn.dataset.filter
+      const n = id === 'all' ? items.length : Array.from(items).filter((i) => i.dataset.bucket === id).length
+      const el = btn.querySelector('.bucket-count')
+      if (el) el.textContent = String(n)
+    })
+
+    const apply = (id: string, updateHash = true) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === id)))
+      let shown = 0
+      items.forEach((item) => {
+        const visible = id === 'all' || item.dataset.bucket === id
+        item.style.display = visible ? '' : 'none'
+        if (visible) shown++
+      })
+      status.textContent = `${shown} ${status.dataset.label}`
+      if (updateHash) history.replaceState(null, '', location.pathname + (id === 'all' ? '' : `#${id}`))
+    }
+
+    const initial = location.hash.slice(1)
+    apply(valid.has(initial) ? initial : 'all', false)
+    buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.filter ?? 'all')))
+  }
 </script>

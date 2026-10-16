@@ -1,0 +1,243 @@
+---
+/**
+ * PortfolioIndex — shared index page body for /portfolio/ (id) and /en/portfolio/ (en).
+ * Featured hero (first featured project, device-framed screenshot) + filterable card grid.
+ */
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { ogUrl } from '../../lib/og/url'
+import { getScreens, clientLabel } from '../../lib/portfolio-screens'
+import { renderInlineMd } from '../../lib/inline-md'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import CaseStudyCard from '../cards/CaseStudyCard.astro'
+import BucketFilter from '../interactive/BucketFilter.astro'
+import DeviceFrame from '../interactive/DeviceFrame.astro'
+import Mock from '../mocks/Mock.astro'
+import { hasMock } from '../mocks'
+
+interface Props {
+  locale: 'id' | 'en'
+}
+const { locale } = Astro.props
+const en = locale === 'en'
+const base = en ? '/en' : ''
+
+const t = en
+  ? {
+      home: 'Home',
+      title: 'Portfolio — Mobile Apps, Web & Government Systems — Banua Coder',
+      description:
+        "Banua Coder's portfolio: consumer-facing apps, public-sector systems, and digital operational solutions we have built and maintained.",
+      itemList: 'Banua Coder Portfolio',
+      skip: 'Skip to main content',
+      desc: 'Consumer apps, public information platforms and operational systems we build with clients across very different contexts.',
+      filters: { all: 'All', consumer: 'Consumer', public: 'Public Sector', operational: 'Operational', openSource: 'Open Source' },
+      count: 'projects',
+      featured: 'Featured case study',
+      read: 'Read case study →',
+      list: 'Project list',
+      empty: '// No projects in this category.',
+      none: '// No projects available yet.',
+      more: 'All projects',
+      h1: 'Selected Work',
+      folio: 'Index of works',
+    }
+  : {
+      home: 'Beranda',
+      title: 'Portofolio Aplikasi Mobile, Web, & Sistem Pemerintah — Banua Coder',
+      description:
+        'Portofolio Banua Coder: aplikasi consumer-facing, sistem publik, dan solusi operasional digital yang telah kami bangun dan kembangkan.',
+      itemList: 'Portofolio Banua Coder',
+      skip: 'Lewati ke konten utama',
+      desc: 'Aplikasi consumer-facing, platform informasi publik, dan sistem operasional digital yang kami bangun bersama klien dari berbagai konteks.',
+      filters: { all: 'Semua', consumer: 'Consumer', public: 'Sektor Publik', operational: 'Operasional', openSource: 'Open Source' },
+      count: 'proyek',
+      featured: 'Studi kasus unggulan',
+      read: 'Baca studi kasus →',
+      list: 'Daftar proyek',
+      empty: '// Tidak ada proyek di kategori ini.',
+      none: '// Belum ada proyek yang tersedia.',
+      more: 'Semua proyek',
+      h1: 'Karya Terpilih',
+      folio: 'Indeks karya',
+    }
+
+const bucketLabels: Record<string, string> = {
+  consumer: t.filters.consumer,
+  'public-sector': t.filters.public,
+  operational: t.filters.operational,
+  'open-source': t.filters.openSource,
+}
+
+const projects = (await getCollection('portfolio', ({ data }) => !data.draft && data.locale === locale)).sort(
+  (a, b) => a.data.order - b.data.order,
+)
+
+// Hero = first featured project that has real screenshots (fallback: first featured, then none)
+const featured = projects.filter((p) => p.data.featured)
+const hero = featured.find((p) => hasMock(p.data.slug)) ?? featured.find((p) => getScreens(p.data.slug).length) ?? featured[0]
+const heroScreen = hero ? getScreens(hero.data.slug)[0] : undefined
+const href = (slug: string) => `${base}/portfolio/${slug}/`
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.home, item: `https://banuacoder.com${base}/` },
+    { '@type': 'ListItem', position: 2, name: 'Portfolio', item: `https://banuacoder.com${base}/portfolio/` },
+  ],
+}
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: t.itemList,
+  url: `https://banuacoder.com${base}/portfolio/`,
+  numberOfItems: projects.length,
+  itemListElement: projects.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: p.data.title,
+    url: `https://banuacoder.com${href(p.data.slug)}`,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      description: p.data.summary,
+      url: `https://banuacoder.com${href(p.data.slug)}`,
+    },
+  })),
+}
+---
+
+<BaseLayout title={t.title} description={t.description} ogImage={ogUrl(en ? 'en-portfolio' : 'portfolio')}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(itemListSchema)} />
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white"
+  >
+    {t.skip}
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Masthead: chalk plate -->
+    <section aria-labelledby="portfolio-heading" class="plate-chalk relative overflow-hidden" style="padding-top: calc(var(--spacing-section-y-sm) + 4rem); padding-bottom: var(--spacing-section-y-sm)">
+      <p class="numeral absolute -right-4 bottom-0 select-none !text-bnc-stone-200 dark:!text-bnc-stone-800 tabular-nums" aria-hidden="true" data-parallax="0.1">{String(projects.length).padStart(2, '0')}</p>
+      <Container class="relative">
+        <div class="folio flex justify-between gap-4 border-b border-bnc-ink dark:border-bnc-paper pb-3 mb-10 lg:mb-16">
+          <span>{t.folio}</span>
+          <span class="tabular-nums">2019 — 2026</span>
+        </div>
+        <div class="grid lg:grid-cols-12 gap-8">
+          <h1 id="portfolio-heading" class="display lg:col-span-9" style="font-size: var(--fs-84)" data-split>{t.h1}</h1>
+          <p class="lg:col-span-5 lg:col-start-1 text-bnc-stone-700 dark:text-bnc-stone-300 leading-relaxed" style="font-size: var(--fs-20)">{t.desc}</p>
+        </div>
+      </Container>
+    </section>
+
+    {hero && (
+      <!-- Featured case: full ultramarine plate -->
+      <section aria-label={t.featured} class="plate" style="padding-block: var(--spacing-section-y-sm)">
+        <Container>
+          <article data-reveal class="grid gap-10 lg:gap-14 lg:grid-cols-12 items-center">
+            <div class="lg:col-span-6 flex flex-col gap-6">
+              <p class="folio mute border-b rule pb-3" data-rule>{t.featured} / {bucketLabels[hero.data.bucket]}</p>
+              <h2 class="display" style="font-size: var(--fs-64)">{hero.data.title}</h2>
+              <p class="folio mute">{clientLabel(hero.data.client, locale)} / {hero.data.year}</p>
+              <p class="leading-relaxed max-w-[56ch]" style="font-size: var(--fs-20)" set:html={renderInlineMd(hero.data.summary)} />
+              <ul class="border-t rule" data-rule>
+                {hero.data.impact.slice(0, 3).map((i, n) => (
+                  <li class="grid grid-cols-[2.5rem_1fr] gap-3 py-3 border-b rule" data-rule style="font-size: var(--fs-17)">
+                    <span class="folio mute tabular-nums pt-1">{String(n + 1).padStart(2, '0')}</span>
+                    <span set:html={renderInlineMd(i)} />
+                  </li>
+                ))}
+              </ul>
+              <div>
+                <a href={href(hero.data.slug)} class="inline-flex items-center gap-2 bg-white text-bnc-plate font-semibold px-7 py-3.5 hover:bg-bnc-accent hover:text-bnc-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">{t.read}</a>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 flex justify-center" aria-hidden={heroScreen ? undefined : 'true'}>
+              {hero && hasMock(hero.data.slug) ? (
+                <Mock slug={hero.data.slug} title={hero.data.title} locale={locale} class="[&[data-frame=phone]]:!max-w-[300px]" />
+              ) : (<>
+              {heroScreen?.kind === 'phone' && (
+                <div class="flex items-end justify-center gap-4">
+                  <DeviceFrame variant="phone" class="!max-w-[230px] max-sm:hidden">
+                    <Image src={getScreens(hero.data.slug)[1]?.src ?? heroScreen.src} alt="" width={460} loading="lazy" />
+                  </DeviceFrame>
+                  <DeviceFrame variant="phone" class="!max-w-[260px]">
+                    <Image src={heroScreen.src} alt={`${hero.data.title} screenshot`} width={520} loading="eager" />
+                  </DeviceFrame>
+                </div>
+              )}
+              {heroScreen?.kind === 'desktop' && (
+                <DeviceFrame variant="desktop" url={hero.data.links?.web?.replace(/^https?:\/\//, '') ?? ''}>
+                  <Image src={heroScreen.src} alt={`${hero.data.title} screenshot`} width={900} loading="eager" />
+                </DeviceFrame>
+              )}
+              {!heroScreen && (
+                <Image src={hero.data.cover as ImageMetadata} alt="" width={640} class="w-full border border-white/40" />
+              )}
+              </>)}
+            </div>
+          </article>
+        </Container>
+      </section>
+    )}
+
+    <!-- Index of works -->
+    <section aria-label={t.list} class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+      <Container>
+        <BucketFilter labels={t.filters} countLabel={t.count} class="mb-2" />
+        {projects.length === 0 ? (
+          <p class="folio text-bnc-stone-600 dark:text-bnc-stone-400 py-8">{t.none}</p>
+        ) : (
+          <div id="portfolio-grid" class="border-b border-bnc-ink/80 dark:border-bnc-paper/40">
+            {projects.map((project, i) => (
+              <CaseStudyCard
+                variant="row"
+                index={i + 1}
+                title={project.data.title}
+                slug={project.data.slug}
+                client={project.data.client}
+                year={project.data.year}
+                bucket={project.data.bucket}
+                summary={project.data.summary}
+                impactStat={project.data.impact[0]}
+                stack={project.data.stack}
+                coverSrc={project.data.thumbnail as ImageMetadata}
+                coverAlt=""
+                href={href(project.data.slug)}
+              />
+            ))}
+          </div>
+        )}
+        <p id="portfolio-empty" class="folio text-bnc-stone-600 dark:text-bnc-stone-400 hidden mt-8" aria-live="polite">
+          {t.empty.replace('// ', '')}
+        </p>
+      </Container>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Empty-state when BucketFilter hides every [data-bucket] element
+  const grid = document.getElementById('portfolio-grid')
+  const empty = document.getElementById('portfolio-empty')
+  if (grid && empty) {
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-bucket]'))
+    new MutationObserver(() => {
+      empty.classList.toggle('hidden', items.some((el) => el.style.display !== 'none'))
+    }).observe(document.querySelector('main')!, { attributes: true, subtree: true, attributeFilter: ['style'] })
+  }
+</script>

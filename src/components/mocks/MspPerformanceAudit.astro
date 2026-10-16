@@ -1,0 +1,139 @@
+---
+/**
+ * Port of the Masjid Sejuta Pemuda app home screen (Flutter, flutter_bloc) with the Flutter Performance Overlay on top,
+ * as in the audit case study. Source (read, not copied): ~/Documents/Projects/Flutter/hawnan_app/lib/presentation/home/
+ *  - home_view.dart: homeGradient #113044 -> #125C69 (stops .8/1.0), pinned SliverAppBar bg #113044
+ *  - widget/home_top_bar_widget.dart: pad H20, avatar 40x40 r14 white 1.5, gap 12, search field r16 white 1px, hint 12 white
+ *  - widget/home_date_location_widget.dart: pad (20,16,20,8), 12dp white; location pin 14 + w600
+ *  - widget/home_prayer_times_widget.dart + home_prayer_time_widget.dart: pad (20,0,20,20); main name 12/w600, time 24/w600,
+ *    countdown 14/w500 (PrayerCountdownWidget, own RenderObject = audit iteration 3); next prayers 20/w400; 2x45 dividers, margin H20
+ *  - widget/home_menu_widget.dart + home_menu_item.dart: tile = 0.85 * (w-40)/5, border white 20%, radius 28%, label ~11.7 w600
+ *  - widget/home_donation_widget.dart + home_donation_card.dart: header 16 bold + "Lihat Semua" tosca 14/w500, image 193 r16, progress 8, r4
+ *  - core/theme/color_extension.dart (tosca #0097B2), gradient_extension.dart (button gradient #113347 -> #0195B0), font InterTight
+ *  - core/l10n/app_localizations_{id,en}.dart (copy)
+ * Scale: 1em = 16dp. Not copied: svg icons, logo, photos (drawn). Prayer times, date, city, amounts are sample data.
+ * Performance Overlay: bars are ILLUSTRATIVE (not a capture). Only figures stated in the case study appear (62.8 ms, <16 ms).
+ * Not measured against a device render.
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const t = {
+  id: { date: 'Jumat, ', date2: '7 Jumadil Akhir 1447 H', city: 'Kota Contoh', search: 'Cari Disini',
+    p: ['Magrib', 'Isya', 'Subuh'], menu: ['Al Quran', 'Wakaf', 'Shalat', 'Qiblat', 'Lainnya'],
+    head: 'Satu Aksi, Ribuan Manfaat.', all: 'Lihat Semua', from: 'Dari Rp 000.000', ppl: 'Orang telah berdonasi', days: 'Hari lagi',
+    donate: 'Infaq Sekarang', title: 'Judul program (contoh)', before: 'studi kasus', after: '', max: 'max', ill: 'ilustrasi' },
+  en: { date: 'Friday, ', date2: '7 Jumadil Akhir 1447 H', city: 'Sample City', search: 'Search here',
+    p: ['Maghrib', 'Isha', 'Fajr'], menu: ['Quran', 'Waqf', 'Prayer', 'Qibla', 'More'],
+    head: 'One Action, Thousands of Benefits.', all: 'View All', from: 'From Rp 000.000', ppl: 'People have donated', days: 'Days left',
+    donate: 'Donate Now', title: 'Program title (sample)', before: 'case study', after: '', max: 'max', ill: 'illustrative' },
+}[locale]
+const g = [5, 7, 4, 9, 6, 20, 5, 7, 6, 4, 8, 5, 6, 22, 5, 6, 7, 5, 4, 6]
+const ico = {
+  person: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',
+  search: 'M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3',
+  pin: 'M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+  sunset: 'M12 9V3M5 14a7 7 0 0114 0M2 18h20M7 21h10M8 6l4-3 4 3',
+  moon: 'M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z',
+  sunrise: 'M12 3v6M5 14a7 7 0 0114 0M2 18h20M8 6l4 3 4-3',
+  quran: 'M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3V4zM9 8h6M9 12h6',
+  waqf: 'M12 21s-8-5-8-11a4.5 4.5 0 018-2.7A4.5 4.5 0 0120 10c0 6-8 11-8 11z',
+  pray: 'M12 3a5 5 0 015 5v13H7V8a5 5 0 015-5zM12 21v-6M9 12h6',
+  qibla: 'M12 22a10 10 0 100-20 10 10 0 000 20zM15.5 8.5L13.5 13.5 8.5 15.5 10.5 10.5z',
+  more: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
+}
+const prayIc = [ico.sunset, ico.moon, ico.sunrise]
+const menuIc = [ico.quran, ico.waqf, ico.pray, ico.qibla, ico.more]
+---
+<div class="mk-s mk-p ms">
+  <div class="ms-st"><span>09:41</span><span class="mk-bat"></span></div>
+
+  <div class="ms-bar">
+    <span class="ms-av"><svg viewBox="0 0 24 24"><path d={ico.person}/></svg></span>
+    <span class="ms-sf"><svg viewBox="0 0 24 24"><path d={ico.search}/></svg>{t.search}</span>
+  </div>
+
+  <div class="ms-body">
+    <div class="ms-dl"><span>{t.date}{t.date2}</span><span class="ms-loc"><svg viewBox="0 0 24 24"><path d={ico.pin}/></svg>{t.city}</span></div>
+
+    <div class="ms-pt">
+      {t.p.map((n, i) => (
+        <>
+          {i > 0 && <span class="ms-div"></span>}
+          <div class:list={['ms-p', i === 0 && 'main']}>
+            <span class="ms-pn"><svg viewBox="0 0 24 24"><path d={prayIc[i]}/></svg>{n}</span>
+            <span class="ms-ptm">{['18:00', '19:28', '04:08'][i]}</span>
+            {i === 0 && <span class="ms-cd">-00:12:34</span>}
+          </div>
+        </>
+      ))}
+    </div>
+
+    <div class="ms-menu">
+      {t.menu.map((l, i) => (
+        <div class="ms-mi"><span class="ms-mt"><svg viewBox="0 0 24 24" style={i === 1 ? 'color:#F2BF14' : 'color:#0097B2'}><path d={menuIc[i]}/></svg></span><span>{l}</span></div>
+      ))}
+    </div>
+
+    <div class="ms-sec">
+      <p class="ms-h"><b>{t.head}</b><em>{t.all}</em></p>
+      <div class="ms-img"></div>
+      <p class="ms-ct">{t.title}</p>
+      <p class="ms-amt"><b>Rp 000.000</b><span>{t.from}</span></p>
+      <div class="ms-pg"><i></i></div>
+      <p class="ms-meta"><b>000 {t.ppl}</b><span>00 {t.days}</span></p>
+      <div class="ms-btn">{t.donate}</div>
+    </div>
+  </div>
+
+  <!-- Flutter Performance Overlay (illustrative bars; figures from the case study only) -->
+  <div class="ms-ov">
+    <svg viewBox="0 0 100 24" preserveAspectRatio="none"><rect width="100" height="24" fill="#111" opacity=".85"/>{g.map((h, i) => <rect x={i * 5 + 1} y={24 - h} width="3" height={h} fill={h > 16 ? '#F44' : '#4CAF50'}/>)}<line x1="0" y1="12" x2="100" y2="12" stroke="#fff" stroke-dasharray="2 2" opacity=".6"/></svg>
+    <p><span>16 ms</span><span>62.8 ms &rarr; &lt;16 ms ({t.before})</span><span>{t.ill}</span></p>
+  </div>
+</div>
+
+<style>
+  .ms { background: linear-gradient(180deg, #113044 0%, #113044 80%, #125C69 100%); color: #fff; font-family: 'Inter Tight', Inter, var(--font-sans, system-ui, sans-serif); --tosca: #0097B2; }
+  .ms svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .ms-st { display: flex; justify-content: space-between; align-items: center; padding: .55em 1.4em .15em; font-size: .75em; font-weight: 700; flex: none; }
+  .ms-bar { display: flex; align-items: center; gap: .75em; height: 3.5em; padding: 0 1.25em; background: #113044; flex: none; }
+  .ms-av { width: 2.5em; height: 2.5em; border-radius: .875em; border: .094em solid #fff; display: grid; place-items: center; flex: none; }
+  .ms-av svg { width: 1.5em; height: 1.5em; }
+  .ms-sf { flex: 1; min-width: 0; height: 3.5em; border: 1px solid #fff; border-radius: 1em; display: flex; align-items: center; gap: .5em; padding: 0 1em; font-size: .75em; white-space: nowrap; overflow: hidden; }
+  .ms-sf svg { width: 1.67em; height: 1.67em; }
+  .ms-body { flex: 1; min-height: 0; overflow: hidden; }
+  .ms-dl { display: flex; justify-content: space-between; align-items: center; gap: .4em; padding: 1em 1.25em .5em; font-size: .75em; white-space: nowrap; }
+  .ms-dl > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .ms-loc { display: flex; align-items: center; gap: .33em; font-weight: 600; }
+  .ms-loc svg { width: 1.17em; height: 1.17em; }
+  .ms-pt { display: flex; align-items: center; padding: 0 1.25em 1.25em; }
+  .ms-div { width: .125em; height: 2.81em; margin: 0 1.25em; background: #fff; flex: none; }
+  .ms-p { display: flex; flex-direction: column; gap: .25em; min-width: 0; }
+  .ms-pn { display: flex; align-items: center; gap: .19em; font-size: .75em; font-weight: 400; line-height: 1.25; }
+  .ms-pn svg { width: .83em; height: .83em; }
+  .ms-ptm { font-size: 1.25em; line-height: 1; font-weight: 400; }
+  .ms-p.main .ms-pn { font-weight: 600; } .ms-p.main .ms-ptm { font-size: 1.5em; font-weight: 600; }
+  .ms-cd { font-size: .875em; font-weight: 500; line-height: 1.25; font-variant-numeric: tabular-nums; }
+  .ms-menu { display: flex; padding: 1em 1.25em 0; gap: 0; }
+  .ms-mi { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .375em; font-size: .73em; font-weight: 600; line-height: 1.2; text-align: center; min-width: 0; }
+  .ms-mt { width: 5em; height: 5em; border: 1px solid rgba(255,255,255,.2); border-radius: 1.4em; display: grid; place-items: center; }
+  .ms-mt svg { width: 3.5em; height: 3.5em; }
+  .ms-sec { padding: 2.5em 1.25em 0; }
+  .ms-h { display: flex; justify-content: space-between; align-items: center; gap: .5em; margin-bottom: .75em !important; white-space: nowrap; }
+  .ms-h b { font-size: 1em; font-weight: 700; color: #F9FAFB; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .ms-h em { font-size: .875em; font-weight: 500; font-style: normal; color: var(--tosca); padding: 0 .5em; }
+  .ms-img { height: 12.06em; border-radius: 1em; background: linear-gradient(135deg, #125C69, #0097B2); opacity: .55; }
+  .ms-ct { margin-top: 1em !important; font-size: .875em; font-weight: 600; color: #F9FAFB; }
+  .ms-amt { margin-top: 1em !important; display: flex; justify-content: space-between; color: #F9FAFB; font-size: 1em; }
+  .ms-pg { margin-top: .5em; height: .5em; border-radius: .25em; background: #E5E7EB; overflow: hidden; }
+  .ms-pg i { display: block; height: 100%; width: 25%; background: var(--tosca); }
+  .ms-meta { margin-top: .5em !important; display: flex; justify-content: space-between; gap: .5em; font-size: .875em; color: #F9FAFB; white-space: nowrap; }
+  .ms-meta b { font-weight: 900; } .ms-meta span { font-weight: 500; }
+  .ms-btn { margin-top: 1em; height: 3em; border-radius: 1.5em; background: linear-gradient(90deg, #113347, #0195B0); display: grid; place-items: center; font-weight: 700; font-size: .875em; }
+  /* Flutter Performance Overlay, drawn across the top like the engine does */
+  .ms-ov { position: absolute; left: 0; right: 0; top: 0; z-index: 2; background: rgba(0,0,0,.8); padding-top: 0; }
+  .ms-ov svg { display: block; width: 100%; height: 1.1em; stroke: none; }
+  .ms-ov p { margin: 0; display: flex; justify-content: space-between; gap: .4em; padding: .1em .6em .15em; font: 600 .56em/1.2 var(--font-mono, ui-monospace, monospace); color: #fff; white-space: nowrap; }
+  .ms-ov p span:nth-child(2) { color: #FFB300; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .ms-ov p span:last-child { opacity: .6; }
+</style>

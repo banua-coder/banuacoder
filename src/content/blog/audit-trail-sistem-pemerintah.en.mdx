@@ -1,0 +1,66 @@
+---
+title: "Audit Trail: First Feature Cut, Last One Needed"
+slug: "audit-trail-sistem-pemerintah"
+description: "What an audit trail is in an information system, how it differs from a log, and how to write it into a government system requirements document."
+publishedAt: 2026-10-06
+author: fajrian
+tags: ["public-sector", "engineering", "audit-trail"]
+cover: "../../assets/blog/membangun-sistem-cover.svg"
+draft: false
+locale: en
+---
+
+In a system requirements list, the audit trail is often the first line crossed out when budget or time runs short. "Push it to phase two." It is also the feature people look for hardest when a letter goes missing, a decision is disputed, or an examiner asks a question. This post explains what it contains, why deferring it is expensive, and how to write it into a requirements document.
+
+A note: this describes an engineering practice, not legal or regulatory advice. Formal obligations should be confirmed with the relevant authority in your institution.
+
+## The one question an audit trail answers
+
+An audit trail answers: **who did what, when, and on what basis**. Every important action in the system leaves a record that cannot be quietly changed: a letter received, a disposition forwarded, a document signed, an access right modified.
+
+## Why this is not just a log
+
+Many requirements documents treat the two as the same thing. Their purposes differ.
+
+- A **log** is for engineers hunting the cause of an error. It is technical, can be discarded after some time, and nobody outside the tech team reads it.
+- An **audit trail** is evidence for people, used when there is a dispute or an inspection. A non-technical reader must be able to follow it, and it must last as long as the system is in use.
+
+If you only build a log, the question "whose desk did this letter stop at" still has no answer.
+
+## A real example: letter disposition
+
+Surat BMPR is a correspondence and disposition app for the Public Works and Spatial Planning Office (Dinas Bina Marga dan Penataan Ruang) of Central Sulawesi Province, built with Flutter and a Laravel backend. Leaders forward letters to staff or the relevant unit through a tiered disposition flow, with notes and follow-up instructions. Every status change triggers a push notification, and dispositions can be signed digitally in the app.
+
+Because the architecture was designed for a complete audit trail from the start, each letter has a handling history that can be traced and searched. When someone asks "where is this letter now", the answer lives in the system, not in someone's memory.
+
+## What to record, and what not to
+
+Complete does not mean recording everything. Two things should be decided together early:
+
+- **What to record:** who acted, when, the type of action, the object affected, and the state before and after when data changes.
+- **What to leave out:** unnecessary personal data, such as passwords or full copies of sensitive documents. Record that an action happened rather than copying all of its content.
+
+The more sensitive the data, the more important it is to set this boundary deliberately.
+
+## An audit trail you cannot search might as well not exist
+
+A record that can only be read by opening the database is useless to the person who needs an answer. What separates a real audit trail from a compliance checkbox is the ability to **search and filter**: by letter, by actor, by time range, or by type of action.
+
+## Building it early versus patching it later
+
+Adding an audit trail to a system that has been running for a year means that first year can never be audited. Actions that already happened cannot be reconstructed. Building it from the start costs far less than losing records that will never come back.
+
+## How to write it into a requirements document
+
+A few lines you can paste and adapt:
+
+1. The system must record every creation, change, forwarding, and deletion of core data, with the user's identity and the time.
+2. Records cannot be modified or deleted by ordinary users, including application administrators.
+3. Records can be searched and filtered by object, user, time range, and type of action.
+4. Unnecessary personal data is not copied into the records.
+
+The audit trail is one of several things often missed in agency projects. The full list is in our post on the [technical realities of local government apps](/en/blog/realitas-teknis-aplikasi-pemerintah-daerah/).
+
+---
+
+If your system is already running but cannot prove anything, [tell us what you have](/en/contact/).

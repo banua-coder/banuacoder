@@ -1,7 +1,7 @@
 ---
 /**
  * Prose — MDX content wrapper with editorial rhythm.
- * 68ch max-width, JetBrains Mono for code, cyan underline reveals on links.
+ * Monograph measure (68ch), Geist display headings on hairlines, flat sharp code, ruled pull quotes.
  */
 interface Props {
   class?: string
@@ -19,124 +19,130 @@ const { class: cls = '' } = Astro.props
 
 <style>
   .prose-bnc {
-    color: var(--color-bnc-ink);
+    color: var(--color-bnc-stone-800);
     font-size: var(--fs-17);
-    line-height: 1.7;
+    line-height: 1.75;
   }
-
-  html.dark .prose-bnc {
-    color: var(--color-bnc-paper);
-  }
+  html.dark .prose-bnc { color: var(--color-bnc-stone-200); }
 
   .prose-bnc :global(h1),
   .prose-bnc :global(h2),
   .prose-bnc :global(h3),
   .prose-bnc :global(h4) {
     font-family: var(--font-display);
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.035em;
     color: var(--color-bnc-ink);
-    line-height: 1.25;
-    margin-top: 2em;
-    margin-bottom: 0.5em;
+    line-height: 1.1;
+    margin-top: 2.4em;
+    margin-bottom: 0.6em;
+    text-wrap: balance;
   }
-
   html.dark .prose-bnc :global(h1),
   html.dark .prose-bnc :global(h2),
   html.dark .prose-bnc :global(h3),
-  html.dark .prose-bnc :global(h4) {
-    color: var(--color-bnc-paper);
-  }
+  html.dark .prose-bnc :global(h4) { color: var(--color-bnc-paper); }
 
   .prose-bnc :global(h1) { font-size: var(--fs-48); }
-  .prose-bnc :global(h2) { font-size: var(--fs-36); }
+  .prose-bnc :global(h2) {
+    font-size: var(--fs-36);
+    border-top: 1px solid var(--color-bnc-stone-300);
+    padding-top: 0.5em;
+  }
+  html.dark .prose-bnc :global(h2) { border-top-color: rgba(255, 255, 255, 0.25); }
   .prose-bnc :global(h3) { font-size: var(--fs-28); }
   .prose-bnc :global(h4) { font-size: var(--fs-20); }
 
-  .prose-bnc :global(p) {
-    margin-bottom: 1.25em;
-  }
+  .prose-bnc :global(p) { margin-bottom: 1.3em; }
+  .prose-bnc :global(strong) { color: var(--color-bnc-ink); font-weight: 600; }
+  html.dark .prose-bnc :global(strong) { color: #fff; }
 
   .prose-bnc :global(a) {
-    color: var(--color-bnc-primary);
-    text-decoration: none;
-    background-image: linear-gradient(to right, var(--color-bnc-accent), var(--color-bnc-accent));
-    background-size: 0% 1.5px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 250ms ease;
+    color: var(--color-bnc-plate);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-thickness 150ms, color 150ms;
   }
-
+  html.dark .prose-bnc :global(a) { color: var(--color-bnc-accent); }
   .prose-bnc :global(a:hover),
-  .prose-bnc :global(a:focus-visible) {
-    background-size: 100% 1.5px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .prose-bnc :global(a) { transition: none; }
-  }
+  .prose-bnc :global(a:focus-visible) { text-decoration-thickness: 2px; }
+  @media (prefers-reduced-motion: reduce) { .prose-bnc :global(a) { transition: none; } }
 
   .prose-bnc :global(code) {
     font-family: var(--font-mono);
-    font-size: 0.875em;
+    font-size: 0.85em;
     background: var(--color-bnc-stone-100);
     color: var(--color-bnc-ink);
     padding: 0.1em 0.35em;
-    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-bnc-stone-200);
+    border-radius: 0;
   }
-
   html.dark .prose-bnc :global(code) {
     background: var(--color-bnc-stone-800);
+    border-color: rgba(255, 255, 255, 0.15);
     color: var(--color-bnc-paper);
   }
 
+  /* code blocks: flat ink slab, sharp corners, hairline edge */
   .prose-bnc :global(pre) {
     font-family: var(--font-mono);
     font-size: var(--fs-14);
-    background: var(--color-bnc-stone-100);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
+    line-height: 1.65;
+    background: var(--color-bnc-ink) !important;
+    color: var(--color-bnc-paper);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    padding: 1.25rem 1.5rem;
     overflow-x: auto;
-    margin: 1.5em 0;
+    margin: 2em 0;
   }
-
-  html.dark .prose-bnc :global(pre) {
-    background: var(--color-bnc-stone-900);
-  }
-
   .prose-bnc :global(pre code) {
     background: transparent;
+    border: 0;
     padding: 0;
+    color: inherit;
+    font-size: inherit;
   }
 
+  /* pull quote: hairline above and below, display type, no side bar */
   .prose-bnc :global(blockquote) {
-    border-left: 3px solid var(--color-bnc-accent);
-    padding-left: 1.25rem;
-    margin: 1.5em 0;
-    color: var(--color-bnc-stone-600);
-    font-style: italic;
+    border-top: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    padding: 1.5rem 0;
+    margin: 2.5em 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-28);
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    color: var(--color-bnc-plate);
+    text-wrap: balance;
   }
-
-  html.dark .prose-bnc :global(blockquote) {
-    color: var(--color-bnc-stone-400);
-  }
+  html.dark .prose-bnc :global(blockquote) { color: var(--color-bnc-accent); }
+  .prose-bnc :global(blockquote p) { margin: 0; }
+  .prose-bnc :global(blockquote p + p) { margin-top: 0.8em; }
 
   .prose-bnc :global(ul),
-  .prose-bnc :global(ol) {
-    padding-left: 1.5rem;
-    margin-bottom: 1.25em;
-  }
-
-  .prose-bnc :global(li) {
-    margin-bottom: 0.4em;
-  }
+  .prose-bnc :global(ol) { padding-left: 1.5rem; margin-bottom: 1.3em; }
+  .prose-bnc :global(li) { margin-bottom: 0.45em; padding-left: 0.25em; }
+  .prose-bnc :global(li::marker) { color: var(--color-bnc-plate); font-family: var(--font-mono); }
+  html.dark .prose-bnc :global(li::marker) { color: var(--color-bnc-accent); }
 
   .prose-bnc :global(hr) {
     border: none;
-    border-top: 1px solid var(--color-bnc-stone-200);
-    margin: 2em 0;
+    border-top: 1px solid var(--color-bnc-stone-300);
+    margin: 3em 0;
   }
+  html.dark .prose-bnc :global(hr) { border-top-color: rgba(255, 255, 255, 0.25); }
 
-  html.dark .prose-bnc :global(hr) {
-    border-top-color: var(--color-bnc-stone-800);
-  }
+  .prose-bnc :global(img) { max-width: 100%; height: auto; border: 1px solid var(--color-bnc-stone-300); margin: 2em 0; }
+
+  .prose-bnc :global(table) { width: 100%; border-collapse: collapse; margin: 2em 0; font-size: var(--fs-14); display: block; overflow-x: auto; }
+  .prose-bnc :global(th),
+  .prose-bnc :global(td) { text-align: left; padding: 0.6em 0.9em; border-bottom: 1px solid var(--color-bnc-stone-300); }
+  .prose-bnc :global(th) { font-family: var(--font-mono); font-size: var(--fs-12); letter-spacing: 0.1em; text-transform: uppercase; border-bottom-color: currentColor; }
+  html.dark .prose-bnc :global(th),
+  html.dark .prose-bnc :global(td) { border-bottom-color: rgba(255, 255, 255, 0.2); }
+
 </style>

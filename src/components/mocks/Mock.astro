@@ -1,0 +1,119 @@
+---
+/**
+ * Mock: recreated product UI (pure HTML/CSS/inline SVG) inside a flat DeviceFrame.
+ * The figure carries the accessible name; the drawing itself is decorative (aria-hidden).
+ * Scales by container width: every mock sizes in em, em = container width / design columns.
+ */
+import DeviceFrame from '../interactive/DeviceFrame.astro'
+import { mocks } from './index'
+
+interface Props {
+  slug: string
+  /** accessible name, usually the project title */
+  title?: string
+  locale?: 'id' | 'en'
+  class?: string
+}
+const { slug, title, locale = 'id', class: cls = '' } = Astro.props
+const m = mocks[slug]
+const Comp = m?.component
+---
+
+{m && Comp && (
+  <figure role="img" aria-label={title ?? slug} data-frame={m.frame} class:list={['mock-fig', cls]}>
+    <DeviceFrame variant={m.frame} url={m.url} class="mock-df">
+      <div class="mk" aria-hidden="true"><Comp locale={locale} /></div>
+    </DeviceFrame>
+  </figure>
+)}
+
+<style is:global>
+  .mock-fig { margin: 0; width: 100%; }
+  .mock-fig[data-frame='phone'] { max-width: 260px; margin-inline: auto; }
+  .mock-crop { aspect-ratio: 16 / 9; overflow: hidden; display: flex; justify-content: center; align-items: flex-start; background: var(--color-bnc-stone-100); }
+  html.dark .mock-crop { background: var(--color-bnc-stone-800); }
+  .mock-crop .mock-fig[data-frame='phone'] { max-width: 50%; }
+  .mock-crop .mock-fig { flex: none; }
+  .mock-fig .mock-df { max-width: none !important; }
+
+  .mk {
+    position: absolute; inset: 0; container-type: size; overflow: hidden;
+    --mk-bg: #fff; --mk-surf: #F3F5FA; --mk-fg: #0B1020; --mk-mute: #566079; --mk-line: #DADFEA; --mk-brand: #0B1FD0;
+  }
+  html.dark .mk { --mk-bg: #0E1330; --mk-surf: #171D40; --mk-fg: #EEF0FA; --mk-mute: #A3ACCB; --mk-line: #2B3466; }
+  .mk-s {
+    position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--mk-bg); color: var(--mk-fg);
+    font: 500 1em/1.3 var(--font-sans, Inter, system-ui, sans-serif);
+  }
+  .mk-p { font-size: calc(100cqw / 24); }
+  .mk-w { font-size: calc(100cqw / 64); }
+  .mk-s * { box-sizing: border-box; }
+  .mk-s p, .mk-s h4 { margin: 0; }
+
+  .mk-r { display: flex; align-items: center; gap: .6em; min-width: 0; }
+  .mk-c { display: flex; flex-direction: column; gap: .6em; min-width: 0; }
+  .mk-g { flex: 1; min-width: 0; }
+  .mk-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .mk-b { font-weight: 700; }
+  .mk-m { color: var(--mk-mute); }
+  .mk-sm { font-size: .82em; } .mk-xs { font-size: .68em; }
+  .mk-lg { font-size: 1.3em; letter-spacing: -.02em; font-weight: 700; }
+  .mk-xl { font-size: 1.9em; letter-spacing: -.04em; font-weight: 800; line-height: 1; }
+  .mk-card { background: var(--mk-surf); border: 1px solid var(--mk-line); border-radius: .5em; padding: .8em; }
+  .mk-ln0 { border: 1px solid var(--mk-line); border-radius: .5em; }
+  .mk-brand { background: var(--mk-brand); color: #fff; }
+  .mk-bt { color: var(--mk-brand); }
+  html.dark .mk-bt { color: color-mix(in srgb, var(--mk-brand) 50%, #fff); }
+  .mk-tint { background: color-mix(in srgb, var(--mk-brand) 14%, transparent); }
+  .mk-chip { padding: .25em .7em; border: 1px solid var(--mk-line); border-radius: 2em; font-size: .78em; white-space: nowrap; color: var(--mk-mute); }
+  .mk-chip.on { background: var(--mk-brand); border-color: var(--mk-brand); color: #fff; }
+  .mk-btn { padding: .5em 1em; border-radius: .4em; background: var(--mk-brand); color: #fff; font-weight: 700; font-size: .82em; white-space: nowrap; }
+  .mk-btn.ghost { background: transparent; color: var(--mk-fg); border: 1px solid var(--mk-line); }
+  .mk-av { width: 2.6em; height: 2.6em; border-radius: 50%; flex: none; background: color-mix(in srgb, var(--mk-brand) 22%, var(--mk-surf)); display: grid; place-items: center; font-size: .8em; font-weight: 700; color: var(--mk-brand); }
+  html.dark .mk-av { color: color-mix(in srgb, var(--mk-brand) 50%, #fff); }
+  .mk-dot { width: .6em; height: .6em; border-radius: 50%; background: var(--mk-brand); flex: none; }
+  .mk-bar { height: .5em; background: var(--mk-line); border-radius: .3em; overflow: hidden; }
+  .mk-bar > i { display: block; height: 100%; background: var(--mk-brand); }
+  .mk-ico { width: 1em; height: 1em; border: .14em solid currentColor; border-radius: 50%; flex: none; }
+  .mk-sq { width: 2.4em; height: 2.4em; border-radius: .6em; flex: none; background: color-mix(in srgb, var(--mk-brand) 16%, transparent); border: .14em solid var(--mk-brand); }
+  .mk .fb { fill: var(--mk-brand); } .mk .sb { stroke: var(--mk-brand); fill: none; }
+  .mk .fl { fill: var(--mk-line); } .mk .sl { stroke: var(--mk-line); fill: none; } .mk .fm { fill: var(--mk-mute); } .mk .ft { fill: var(--mk-fg); }
+
+  /* phone chrome */
+  .mk-st { display: flex; justify-content: space-between; align-items: center; padding: .7em 1.4em .3em; font-size: .75em; font-weight: 700; flex: none; }
+  .mk-bat { width: 1.8em; height: .85em; border: .13em solid currentColor; border-radius: .25em; position: relative; }
+  .mk-bat::after { content: ''; position: absolute; inset: .12em; right: .5em; background: currentColor; }
+  .mk-body { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: .9em; padding: .4em 1.2em 1em; overflow: hidden; }
+  .mk-hd { background: var(--mk-brand); color: #fff; margin: -.4em -1.2em 0; padding: .9em 1.2em; }
+  .mk-tabs { display: flex; border-top: 1px solid var(--mk-line); padding: .6em 0 1em; flex: none; background: var(--mk-bg); }
+  .mk-tabs span { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .3em; font-size: .68em; color: var(--mk-mute); }
+  .mk-tabs i { width: 1.6em; height: 1.6em; border: .15em solid currentColor; border-radius: .45em; }
+  .mk-tabs .on { color: var(--mk-brand); font-weight: 700; } .mk-tabs .on i { background: currentColor; }
+  html.dark .mk-tabs .on { color: color-mix(in srgb, var(--mk-brand) 50%, #fff); }
+
+  /* browser chrome */
+  .mk-side { width: 11em; flex: none; border-right: 1px solid var(--mk-line); padding: 1em; display: flex; flex-direction: column; gap: .35em; background: var(--mk-surf); font-size: .9em; }
+  .mk-nav { padding: .5em .7em; border-radius: .4em; color: var(--mk-mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mk-nav.on { background: color-mix(in srgb, var(--mk-brand) 16%, transparent); color: var(--mk-brand); font-weight: 700; }
+  html.dark .mk-nav.on { color: color-mix(in srgb, var(--mk-brand) 45%, #fff); }
+  .mk-main { flex: 1; min-width: 0; padding: 1.3em 1.6em; display: flex; flex-direction: column; gap: 1em; overflow: hidden; }
+  .mk-cols { display: flex; align-items: flex-end; gap: .5em; }
+  .mk-cols > i { flex: 1; background: var(--mk-brand); display: block; min-width: 0; }
+
+  /* terminal / editor (always dark) */
+  .mk-term { background: #0A0F2C; color: #D7DCF5; --mk-line: rgba(255,255,255,.18); --mk-mute: #8C96C8; --mk-fg: #D7DCF5; --mk-surf: #121A4A; --mk-bg: #0A0F2C; }
+  .mk-code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 1.22em; line-height: 1.5; padding: 1.1em 1.4em; display: flex; flex-direction: column; overflow: hidden; flex: 1; min-width: 0; }
+  .mk-code p { white-space: pre; overflow: hidden; display: flex; }
+  .mk-code .ln { color: #5A649A; width: 2.4em; flex: none; text-align: right; padding-right: 1.4em; }
+  .mk-code em { font-style: normal; }
+  .mk-code .k { color: #C792EA; } .mk-code .s { color: #C3E88D; } .mk-code .c { color: #7C86B8; } .mk-code .f { color: #82AAFF; }
+  .mk-code .y { color: #FFCB6B; } .mk-code .p { color: #3DE0F2; } .mk-code .g { color: #7EE787; } .mk-code .r { color: #FF8B8B; }
+  .mk-tab { padding: .6em 1.2em; font: 0.85em var(--mk-mono, ui-monospace, monospace); color: #8C96C8; border-right: 1px solid rgba(255,255,255,.18); }
+  .mk-tab.on { color: #fff; box-shadow: inset 0 -.15em #3DE0F2; }
+  .mk-caret { display: inline-block; width: .55em; height: 1.1em; background: #3DE0F2; vertical-align: -.2em; animation: mk-blink 1.1s steps(1) infinite; }
+  .mk-live { animation: mk-pulse 1.6s ease-in-out infinite; }
+  @keyframes mk-blink { 50% { opacity: 0; } }
+  @keyframes mk-pulse { 50% { opacity: .35; transform: scale(.8); } }
+  @media (prefers-reduced-motion: reduce) { .mk-caret, .mk-live { animation: none; } }
+</style>

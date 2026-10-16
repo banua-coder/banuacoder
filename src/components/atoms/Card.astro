@@ -1,36 +1,23 @@
 ---
 /**
- * Card — base card primitive.
- * Subtle shadow, rounded corners, paper bg, hover lift.
- * Used by ServiceCard, CaseStudyCard, etc.
+ * Card: a flat ruled panel. No radius, no shadow; a hairline frame and a quiet hover rule.
  */
 interface Props {
-  /** Extra CSS classes */
   class?: string
-  /** Disable hover lift effect */
   noHover?: boolean
-  /** Padding variant */
   padding?: 'none' | 'sm' | 'md' | 'lg'
 }
 
 const { class: cls = '', noHover = false, padding = 'md' } = Astro.props
 
-const paddingClass = {
-  none: '',
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
-}[padding]
+const paddingClass = { none: '', sm: 'p-4', md: 'p-6', lg: 'p-8' }[padding]
 ---
 
 <div
   class:list={[
-    'bg-bnc-paper dark:bg-bnc-stone-900',
-    'border border-bnc-stone-200 dark:border-bnc-stone-800',
-    'rounded-[var(--radius-md)]',
-    'shadow-[var(--shadow-subtle)]',
+    'border border-bnc-ink/20 dark:border-bnc-paper/20',
     paddingClass,
-    !noHover && 'transition-all duration-[var(--duration-base)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)]',
+    !noHover && 'transition-colors duration-[var(--duration-base)] hover:border-bnc-plate dark:hover:border-bnc-accent',
     cls,
   ]}
 >

@@ -1,0 +1,10 @@
+---
+/** Code / terminal lines. Lines are trusted, hand-written HTML (spans k s c f y p g r). */
+interface Props { lines: string[]; numbered?: boolean; caret?: boolean }
+const { lines, numbered = false, caret = false } = Astro.props
+---
+<div class="mk-code">
+  {lines.map((l, i) => (
+    <p>{numbered && <span class="ln">{i + 1}</span>}<span set:html={l + (caret && i === lines.length - 1 ? ' <span class="mk-caret"></span>' : '')} /></p>
+  ))}
+</div>

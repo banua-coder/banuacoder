@@ -1,102 +1,78 @@
 ---
 /**
- * ServiceCard — displays a service with icon, title, tagline, bullet preview, and CTA.
- * Hover: cyan underline reveal on title.
+ * ServiceCard — one numbered row of the services contents page.
+ * Ruled, flat, no icon tile. Whole row is the link (stretched). Hover/focus flips the row to the opposite plate.
+ * tone="chalk" sits on a chalk plate (flips to ultramarine); tone="plate" sits on ultramarine (flips to white).
+ * `icon` is accepted for backwards compatibility and ignored.
  */
-import Card from '../atoms/Card.astro'
-import {
-  AppWindow,
-  LayoutDashboard,
-  PenTool,
-  Wrench,
-  Rocket,
-  Code2,
-  Megaphone,
-  Palette,
-  ArrowRight,
-} from 'lucide-astro'
-
 interface Props {
   title: string
   tagline: string
   icon?: string
   deliverables?: string[]
   href?: string
+  /** 1-based position in the contents; rendered as 01, 02 ... */
+  index?: number
+  tone?: 'chalk' | 'plate'
   class?: string
 }
 
-const {
-  title,
-  tagline,
-  icon,
-  deliverables = [],
-  href = '#',
-  class: cls = '',
-} = Astro.props
-
-const iconMap: Record<string, typeof AppWindow> = {
-  'app-window': AppWindow,
-  'layout-dashboard': LayoutDashboard,
-  'pen-tool': PenTool,
-  'wrench': Wrench,
-  'rocket': Rocket,
-  'code-2': Code2,
-  'megaphone': Megaphone,
-  'palette': Palette,
-}
-const IconComponent = icon ? iconMap[icon] ?? ArrowRight : ArrowRight
-
-// Show max 3 bullets
+const { title, tagline, deliverables = [], href = '#', index, tone = 'chalk', class: cls = '' } = Astro.props
+const en = (Astro.currentLocale ?? 'id') === 'en'
+const num = index ? String(index).padStart(2, '0') : ''
 const bullets = deliverables.slice(0, 3)
+const onPlate = tone === 'plate'
 ---
 
-<Card class:list={['group flex flex-col gap-4 h-full', cls]}>
-  <!-- Icon -->
-  <div
-    class="w-10 h-10 flex items-center justify-center rounded-[var(--radius-sm)] bg-bnc-stone-100 dark:bg-bnc-stone-800 text-bnc-primary"
-    aria-hidden="true"
-  >
-    <IconComponent size={20} strokeWidth={1.75} />
-  </div>
+<article
+  class:list={[
+    'svc-row group relative border-t transition-colors duration-[var(--duration-base)]',
+    onPlate
+      ? 'border-white/25 hover:bg-white hover:text-bnc-plate focus-within:bg-white focus-within:text-bnc-plate'
+      : 'border-bnc-ink/80 dark:border-bnc-paper/40 hover:bg-bnc-plate hover:text-white focus-within:bg-bnc-plate focus-within:text-white',
+    cls,
+  ]}
+>
+  <div class="grid grid-cols-12 gap-x-4 lg:gap-x-6 lg:px-4 py-6 lg:py-8 items-start">
+    <p
+      class:list={[
+        'display col-span-3 lg:col-span-2 tabular-nums transition-colors',
+        onPlate ? 'text-bnc-plate-lift group-hover:text-bnc-stone-200 group-focus-within:text-bnc-stone-200' : 'text-bnc-stone-300 dark:text-bnc-stone-700 group-hover:text-bnc-plate-lift group-focus-within:text-bnc-plate-lift',
+      ]}
+      style="font-size: var(--fs-64); line-height: 0.85"
+      aria-hidden="true"
+    >{num}</p>
 
-  <!-- Title with hover underline -->
-  <div>
-    <a
-      href={href}
-      class="relative inline-block font-display font-semibold text-bnc-ink dark:text-bnc-paper leading-snug group/link"
-      style="font-size: var(--fs-20)"
+    <div class="col-span-9 lg:col-span-5 flex flex-col gap-3">
+      <h3 class="display" style="font-size: var(--fs-36); line-height: 1.02">
+        <a
+          href={href}
+          class:list={[
+            "after:absolute after:inset-0 after:content-[''] focus-visible:outline-2 focus-visible:outline-offset-4",
+            onPlate ? 'focus-visible:outline-bnc-ink' : 'focus-visible:outline-bnc-accent',
+          ]}
+        >{title}</a>
+      </h3>
+      <p
+        class:list={[
+          'leading-relaxed max-w-[52ch]',
+          onPlate ? 'text-bnc-plate-mute group-hover:text-bnc-plate group-focus-within:text-bnc-plate' : 'text-bnc-stone-600 dark:text-bnc-stone-400 group-hover:text-bnc-plate-mute group-focus-within:text-bnc-plate-mute',
+        ]}
+        style="font-size: var(--fs-17)"
+      >{tagline}</p>
+    </div>
+
+    <ul
+      class:list={[
+        'col-span-9 col-start-4 lg:col-span-4 lg:col-start-9 max-lg:mt-4 flex flex-col',
+        onPlate ? 'text-bnc-plate-mute group-hover:text-bnc-plate group-focus-within:text-bnc-plate' : 'text-bnc-stone-600 dark:text-bnc-stone-400 group-hover:text-bnc-plate-mute group-focus-within:text-bnc-plate-mute',
+      ]}
+      style="font-size: var(--fs-14)"
     >
-      {title}
-      <span
-        class="absolute -bottom-0.5 left-0 h-px w-0 bg-bnc-accent transition-all duration-[var(--duration-base)] group-hover/link:w-full"
-        aria-hidden="true"
-      ></span>
-    </a>
-  </div>
-
-  <!-- Tagline -->
-  <p class="text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed flex-1" style="font-size: var(--fs-17)">
-    {tagline}
-  </p>
-
-  <!-- Bullet preview -->
-  {bullets.length > 0 && (
-    <ul class="list-none m-0 p-0 flex flex-col gap-1.5" role="list">
       {bullets.map((item) => (
-        <li class="flex items-start gap-2 font-mono text-xs text-bnc-stone-500 dark:text-bnc-stone-500">
-          <span class="text-bnc-accent mt-0.5" aria-hidden="true">→</span>
-          {item}
-        </li>
+        <li class="py-1.5 border-b border-current/20 first:border-t">{item}</li>
       ))}
+      <li class="folio pt-3 text-current">{en ? 'Read more' : 'Selengkapnya'} →</li>
     </ul>
-  )}
-
-  <!-- Learn more link -->
-  <a
-    href={href}
-    class="font-mono text-xs text-bnc-stone-500 hover:text-bnc-accent dark:hover:text-bnc-accent transition-colors mt-auto inline-flex items-center gap-1.5"
-    aria-label={`Learn more about ${title}`}
-  >
-    Learn more →
-  </a>
-</Card>
+  </div>
+</article>

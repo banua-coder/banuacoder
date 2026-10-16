@@ -1,0 +1,217 @@
+---
+/**
+ * ServiceDetail — shared body of /services/[slug] (id) and /en/services/[slug] (en).
+ * Spread: ultramarine opener, chalk body (facts column + MDX), FAQ as ruled disclosure rows,
+ * related services, then the booking + WhatsApp-prefilled CTA.
+ */
+import { getCollection, render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import { serviceOgUrl } from '../../lib/og/url'
+import { renderInlineMd } from '../../lib/inline-md'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import Nav from '../layout/Nav.astro'
+import Footer from '../layout/Footer.astro'
+import Container from '../layout/Container.astro'
+import Prose from '../typography/Prose.astro'
+import ServiceCard from '../cards/ServiceCard.astro'
+import CTA from '../sections/CTA.astro'
+
+interface Props {
+  entry: CollectionEntry<'services'>
+  locale: 'id' | 'en'
+}
+const { entry, locale } = Astro.props
+const en = locale === 'en'
+const base = en ? '/en' : ''
+const { Content } = await render(entry)
+const { title, tagline, category, deliverables, idealFor, faq, order } = entry.data
+
+const t = en
+  ? {
+      home: 'Home', services: 'Services', skip: 'Skip to main content',
+      faq: 'Frequently Asked Questions', deliver: 'What We Deliver', ideal: 'Ideal For', related: 'Related Services',
+      ctaH: 'Ready to get started?', ctaSub: 'Schedule a discussion and we will map the best solution for your needs.',
+      ctaLink: 'Schedule a Discussion', category: 'Category',
+    }
+  : {
+      home: 'Beranda', services: 'Layanan', skip: 'Lewati ke konten utama',
+      faq: 'Pertanyaan Umum', deliver: 'Yang Kami Kerjakan', ideal: 'Cocok Untuk', related: 'Layanan Terkait',
+      ctaH: 'Siap memulai?', ctaSub: 'Jadwalkan diskusi dan kami bantu petakan solusi terbaik untuk kebutuhan Anda.',
+      ctaLink: 'Jadwalkan Diskusi', category: 'Kategori',
+    }
+
+const group = category === 'design' || category === 'social-media'
+const supercat = { label: group ? 'Brand & Grow' : 'Build & Engineer', href: `${base}/services/#${group ? 'grow' : 'build'}` }
+const categoryLabel = {
+  'customer-facing': 'Customer-Facing Products',
+  'internal-ops': 'Internal Operational Systems',
+  'product-engineering': 'Product Engineering',
+  design: 'Design',
+  'social-media': 'Social Media',
+}[category]
+
+const related = (await getCollection('services'))
+  .filter((s) => s.data.locale === locale && s.data.category === category && s.data.slug !== entry.data.slug)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3)
+
+const url = `https://banuacoder.com${base}/services/${entry.data.slug}/`
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: title,
+  description: tagline,
+  provider: { '@type': 'Organization', '@id': 'https://banuacoder.com/#organization', name: 'Banua Coder', url: 'https://banuacoder.com' },
+  areaServed: [{ '@type': 'Country', name: 'Indonesia' }],
+  url,
+}
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.home, item: `https://banuacoder.com${base}/` },
+    { '@type': 'ListItem', position: 2, name: t.services, item: `https://banuacoder.com${base}/services/` },
+    { '@type': 'ListItem', position: 3, name: title, item: url },
+  ],
+}
+const faqSchema = faq && faq.length > 0
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    }
+  : null
+
+const orderNo = String(order).padStart(2, '0')
+const listRow = 'py-3 border-b border-bnc-ink/25 dark:border-bnc-paper/25 grid grid-cols-[2rem_1fr] gap-2'
+---
+
+<BaseLayout title={`${title} — Banua Coder`} description={tagline} ogImage={serviceOgUrl(entry.data.slug, locale)}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(serviceSchema)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  {faqSchema && <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />}
+
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-primary focus:text-white"
+  >
+    {t.skip}
+  </a>
+
+  <Nav />
+
+  <main id="main-content">
+    <!-- Opener: ultramarine plate -->
+    <section aria-labelledby="service-title" class="plate relative overflow-hidden" style="padding-top: calc(var(--spacing-section-y-sm) + 4rem); padding-bottom: var(--spacing-section-y)">
+      <p class="numeral absolute -right-6 -bottom-4 tabular-nums" aria-hidden="true" data-parallax="0.12">{orderNo}</p>
+      <Container class="relative">
+        <nav aria-label="Breadcrumb" class="mb-6">
+          <ol class="folio flex flex-wrap items-center gap-2 mute">
+            <li><a href={`${base}/services/`} class="hover:text-white hover:underline underline-offset-4">{t.services}</a></li>
+            <li aria-hidden="true">/</li>
+            <li><a href={supercat.href} class="hover:text-white hover:underline underline-offset-4">{supercat.label}</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" class="text-white">{title}</li>
+          </ol>
+        </nav>
+        <div class="folio flex justify-between gap-4 border-b rule pb-3 mb-10 lg:mb-14" data-rule>
+          <span>№ {orderNo} / {categoryLabel}</span>
+          <span>Banua Coder</span>
+        </div>
+        <h1 id="service-title" class="display mb-8 max-w-[16ch] [text-wrap:balance]" style="font-size: var(--fs-84); overflow-wrap: anywhere" data-split>{title}</h1>
+        <p class="max-w-[52ch] leading-relaxed" style="font-size: var(--fs-20)">{tagline}</p>
+      </Container>
+    </section>
+
+    <!-- Body: facts column + prose -->
+    <section class="plate-chalk" style="padding-block: var(--spacing-section-y)">
+      <Container>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14">
+          <div class="lg:col-span-7 lg:col-start-6 lg:row-start-1">
+            <Prose><Content /></Prose>
+          </div>
+
+          <aside class="lg:col-span-4 lg:col-start-1 lg:row-start-1 flex flex-col gap-10 lg:sticky lg:top-24 lg:self-start">
+            <div>
+              <h2 class="folio border-b border-bnc-ink dark:border-bnc-paper pb-3">{t.deliver}</h2>
+              <ol>
+                {deliverables.map((item, i) => (
+                  <li class={listRow}>
+                    <span class="folio tabular-nums pt-1 text-bnc-primary dark:text-bnc-accent">{String(i + 1).padStart(2, '0')}</span>
+                    <span style="font-size: var(--fs-14)">{item}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div>
+              <h2 class="folio border-b border-bnc-ink dark:border-bnc-paper pb-3">{t.ideal}</h2>
+              <ul>
+                {idealFor.map((item) => (
+                  <li class={listRow}>
+                    <span class="folio pt-1 text-bnc-primary dark:text-bnc-accent" aria-hidden="true">—</span>
+                    <span style="font-size: var(--fs-14)">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </Container>
+    </section>
+
+    {faq && faq.length > 0 && (
+      <!-- FAQ: ruled disclosure rows on ultramarine -->
+      <section aria-labelledby="faq-heading" class="plate" style="padding-block: var(--spacing-section-y)">
+        <Container>
+          <div class="grid lg:grid-cols-12 gap-8 lg:gap-14">
+            <div class="lg:col-span-4">
+              <p class="folio mute mb-4">FAQ</p>
+              <h2 id="faq-heading" class="display" style="font-size: var(--fs-48)">{t.faq}</h2>
+            </div>
+            <div class="lg:col-span-8 border-t rule" data-rule>
+              {faq.map((item, i) => (
+                <details class="faq-row group border-b rule" data-rule>
+                  <summary class="flex items-start gap-4 py-5 cursor-pointer list-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                    <span class="folio mute tabular-nums pt-1.5 w-8 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="font-display font-semibold flex-1" style="font-size: var(--fs-20); letter-spacing: -0.02em">{item.q}</span>
+                    <span class="faq-mark folio pt-1.5" aria-hidden="true"></span>
+                  </summary>
+                  <div class="pb-6 pl-12 max-w-[62ch] leading-relaxed mute" style="font-size: var(--fs-17)" set:html={renderInlineMd(item.a)} />
+                </details>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section aria-labelledby="related-heading" class="plate-chalk" style="padding-block: var(--spacing-section-y-sm)">
+        <Container>
+          <h2 id="related-heading" class="display mb-8" style="font-size: var(--fs-36)">{t.related}</h2>
+          <div class="border-b border-bnc-ink/80 dark:border-bnc-paper/40">
+            {related.map((svc, i) => (
+              <ServiceCard
+                title={svc.data.title}
+                tagline={svc.data.tagline}
+                deliverables={svc.data.deliverables}
+                href={`${base}/services/${svc.data.slug}/`}
+                index={i + 1}
+              />
+            ))}
+          </div>
+        </Container>
+      </section>
+    )}
+
+    <CTA headline={t.ctaH} sub={t.ctaSub} primaryCta={t.ctaLink} primaryHref={`${base}/contact/`} service={title} />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .faq-row > summary::-webkit-details-marker { display: none; }
+  .faq-mark::before { content: '+'; }
+  .faq-row[open] .faq-mark::before { content: '−'; }
+</style>

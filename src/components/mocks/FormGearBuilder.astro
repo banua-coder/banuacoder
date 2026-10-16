@@ -1,0 +1,178 @@
+---
+/**
+ * Port of IPDS-59/form-gear-builder (Vue 3 + Tailwind v4), default light theme, 1280x800 design stage.
+ * Sources: components/layout/Toolbar.vue (h-14 header), ThreePanelLayout.vue (left 250px, right 350px, 4px handles),
+ * palette/ComponentPalette.vue + DraggableComponent.vue, canvas/FormCanvas.vue + CanvasComponent.vue +
+ * ComponentPreview.vue, properties/PropertiesPanel.vue. Tailwind gray/blue/purple tokens are copied as hex.
+ * Stage size: 1em = 1 design px (font-size = 100cqw/1280), so leaf text sets its own size and containers set lengths.
+ * Logo is drawn (not the product PNG). Form content is synthetic sample data, same shape as the builder import format.
+ */
+interface Props { locale?: 'id' | 'en' }
+const { locale = 'id' } = Astro.props
+const id = locale === 'id'
+const t = {
+  title: id ? 'Survei Contoh' : 'Sample Survey',
+  desc: id ? 'Contoh formulir' : 'Example form',
+  a: id ? 'Nama responden' : 'Respondent name',
+  b: id ? 'Jenis usaha' : 'Business type',
+  c: id ? 'Jumlah pekerja' : 'Worker count',
+}
+const cats = [
+  ['📐', 'Layout', 2, [['📦', 'Section'], ['🔁', 'Nested Group']]],
+  ['👁️', 'Display', 2, [['🌐', 'HTML Content'], ['🔢', 'Variable']]],
+  ['✏️', 'Text Input', 5, [['📝', 'Text'], ['📄', 'Textarea']]],
+] as const
+const dots = 'M8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm-8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm-8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z'
+---
+<div class="fgb">
+  <header class="hd">
+    <div class="lg">
+      <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><path d="M9 3.5 29 3.5 29 8 9 13.2z" fill="#22D3EE"/><path d="M9 15 29 9.5V17H15.5v7.5L16 28 9 22.5z" fill="#029EE3"/><path d="M29 17V22.5L16 29 9 22.5V15.6" fill="none" stroke="#029EE3" stroke-width="3.4" stroke-linejoin="round"/></svg>
+      <div><p class="r"><b class="t14">FormGear Builder</b><i class="ver">v1.2.0</i></p><p class="t12 g5">Template Designer</p></div>
+    </div>
+    <div class="act">
+      <span class="ab"><svg viewBox="0 0 24 24" class="ic"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg><i class="t14">Import</i><svg viewBox="0 0 24 24" class="ic s"><path d="M19 9l-7 7-7-7"/></svg></span>
+      <span class="ab"><svg viewBox="0 0 24 24" class="ic"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg><i class="t14">Export</i><svg viewBox="0 0 24 24" class="ic s"><path d="M19 9l-7 7-7-7"/></svg></span>
+      <span class="vr"></span>
+      <svg viewBox="0 0 24 24" class="ic dim"><path d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+      <svg viewBox="0 0 24 24" class="ic dim"><path d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg>
+      <span class="vr"></span>
+      <span class="ab"><svg viewBox="0 0 24 24" class="ic"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg><i class="t14">Preview</i></span>
+      <span class="ab red"><svg viewBox="0 0 24 24" class="ic"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg><i class="t14">Clear</i></span>
+    </div>
+    <svg viewBox="0 0 24 24" class="ic moon"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+  </header>
+
+  <div class="bd">
+    <aside class="pal">
+      <div class="ph"><p class="t14 sb">Components</p>
+        <div class="srch"><svg viewBox="0 0 24 24" class="ic g4"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><i class="t14 g4">Search components...</i></div>
+      </div>
+      {cats.map(([ic, name, n, items]) => (
+        <div class="cat">
+          <div class="ch"><svg viewBox="0 0 24 24" class="ic g5 rot"><path d="M9 5l7 7-7 7"/></svg><i class="t18">{ic}</i><i class="t14 md g7">{name}</i><i class="t12 g4 mla">{n}</i></div>
+          {items.map(([i2, n2]) => (
+            <div class="it"><i class="t16">{i2}</i><i class="t14 g7">{n2}</i><svg viewBox="0 0 24 24" class="dr"><path d={dots} /></svg></div>
+          ))}
+        </div>
+      ))}
+    </aside>
+    <span class="hdl"></span>
+
+    <main class="cv">
+      <div class="fh">
+        <p class="t20 sb">{t.title}</p>
+        <p class="t14 g5 mt4">{t.desc}</p>
+        <p class="meta g5">
+          <span class="t14">DataKey:</span><i class="fld" style="width:170px">survey_demo</i>
+          <span class="t14">Acronym:</span><i class="fld" style="width:64px">SD</i>
+          <span class="t14">Version:</span><i class="fld" style="width:80px">1.0.0</i>
+        </p>
+      </div>
+      <div class="area">
+        <div class="sec">
+          <div class="chd">
+            <svg viewBox="0 0 24 24" class="ic g5"><path d="M19 9l-7 7-7-7" /></svg>
+            <svg viewBox="0 0 24 24" class="dr big"><path d={dots} /></svg>
+            <i class="t18">📦</i>
+            <p class="gr"><b class="t16 md">Section A</b><i class="bdg pur">Section</i><br /><i class="t12 g5">section_a</i></p><svg viewBox="0 0 24 24" class="ic act2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><svg viewBox="0 0 24 24" class="ic act2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </div>
+          <div class="kids">
+            <div class="cc">
+              <div class="chd"><svg viewBox="0 0 24 24" class="dr big"><path d={dots} /></svg><i class="t18">📝</i>
+                <p class="gr"><b class="t16 md">{t.a}</b><i class="bdg">Text</i><br /><i class="t12 g5">text_name</i></p><svg viewBox="0 0 24 24" class="ic act2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><svg viewBox="0 0 24 24" class="ic act2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></div>
+              <div class="inp"><i class="t14 g4">Enter text...</i></div>
+            </div>
+            <div class="cc sel">
+              <div class="chd"><svg viewBox="0 0 24 24" class="dr big"><path d={dots} /></svg><i class="t18">📥</i>
+                <p class="gr"><b class="t16 md">{t.b}</b><i class="bdg">Dropdown</i><br /><i class="t12 g5">select_kind</i></p><svg viewBox="0 0 24 24" class="ic act2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><svg viewBox="0 0 24 24" class="ic act2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></div>
+              <div class="inp sp"><i class="t14 g4">Select an option...</i><svg viewBox="0 0 24 24" class="ic g4"><path d="M19 9l-7 7-7-7" /></svg></div>
+            </div>
+            <div class="cc">
+              <div class="chd"><svg viewBox="0 0 24 24" class="dr big"><path d={dots} /></svg><i class="t18">🔢</i>
+                <p class="gr"><b class="t16 md">{t.c}</b><i class="bdg">Number</i><br /><i class="t12 g5">num_count</i></p><svg viewBox="0 0 24 24" class="ic act2"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><svg viewBox="0 0 24 24" class="ic act2"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></div>
+              <div class="inp"><i class="t14 g4">0</i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <span class="hdl"></span>
+
+    <aside class="prp">
+      <div class="ph"><p class="t14 sb">Properties</p></div>
+      <div class="pi"><i class="t20">📥</i><p><b class="t16 md">Dropdown</b><br /><i class="t12 g5">Type: 27</i></p></div>
+      <div class="pc"><svg viewBox="0 0 24 24" class="ic g5"><path d="M19 9l-7 7-7-7" /></svg><i class="t14 md g7">Common Properties</i></div>
+      <div class="pf"><i class="t12 md g7">DataKey <u>*</u></i><div class="pin"><i class="t14">select_kind</i></div></div>
+      <div class="pf"><i class="t12 md g7">Label <u>*</u></i><div class="pin"><i class="t14">{t.b}</i></div></div>
+      <div class="pf"><i class="t12 md g7">Description</i><div class="pin tall"><i class="t14 g4">Optional description...</i></div></div>
+    </aside>
+  </div>
+</div>
+
+<style>
+  .fgb {
+    --u: calc(100cqw / 1280); font-size: var(--u);
+    position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
+    background: #f9fafb; color: #111827;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif; line-height: 1.5;
+  }
+  .fgb * { box-sizing: border-box; margin: 0; }
+  .fgb i, .fgb b, .fgb u { font-style: normal; text-decoration: none; }
+  .fgb .t12 { font-size: 12em; line-height: 1.333; } .fgb .t14 { font-size: 14em; line-height: 1.4286; }
+  .fgb .t16 { font-size: 16em; line-height: 1.5; } .fgb .t18 { font-size: 18em; line-height: 1.5556; } .fgb .t20 { font-size: 20em; line-height: 1.4; }
+  .fgb .sb { font-weight: 600; } .fgb .md { font-weight: 500; }
+  .fgb .g4 { color: #9ca3af; } .fgb .g5 { color: #6b7280; } .fgb .g7 { color: #374151; }
+  .fgb .mt4 { margin-top: calc(var(--u)*4); } .fgb .mla { margin-left: auto; }
+  .fgb .ic { width: 16em; height: 16em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .fgb .r { display: flex; align-items: center; gap: 8em; }
+  .hd { height: 56em; flex: none; background: #fff; border-bottom: 1em solid #e5e7eb; padding: 0 16em; display: flex; align-items: center; justify-content: space-between; color: #374151; }
+  .hd .lg { display: flex; align-items: center; gap: 12em; width: 300em; color: #111827; }
+  .hd .lg svg { width: 32em; height: 32em; }
+  .ver { font-size: 12em; line-height: 1.333; font-weight: 500; background: #dbeafe; color: #2563eb; border-radius: 999px; padding: calc(var(--u)*2) calc(var(--u)*8); display: inline-block; }
+  .act { display: flex; align-items: center; gap: 8em; }
+  .ab { display: flex; align-items: center; gap: 6em; padding: 6em 12em; border-radius: 6em; }
+  .ab .s { width: 12em; height: 12em; margin-left: 2em; }
+  .ab.red { color: #dc2626; } .vr { width: 1em; height: 24em; background: #e5e7eb; }
+  .dim { opacity: .4; margin: 0 6em; }
+  .moon { width: 20em; height: 20em; margin-right: 6em; }
+  .bd { flex: 1; min-height: 0; display: flex; position: relative; }
+  .pal { width: 250em; flex: none; background: #fff; border-right: 1em solid #e5e7eb; overflow: hidden; }
+  .prp { width: 350em; flex: none; background: #fff; border-left: 1em solid #e5e7eb; overflow: hidden; }
+  .hdl { width: 4em; background: #e5e7eb; flex: none; }
+  .ph { padding: 12em; border-bottom: 1em solid #e5e7eb; }
+  .srch { margin-top: 8em; height: 34em; border: 1em solid #d1d5db; border-radius: 6em; display: flex; align-items: center; gap: 8em; padding: 0 10em; }
+  .cat { border-bottom: 1em solid #e5e7eb; padding-bottom: 8em; }
+  .ch { height: 40em; padding: 0 12em; display: flex; align-items: center; gap: 8em; }
+  .rot { transform: rotate(90deg); }
+  .it { margin: 4em 8em; height: 42em; padding: 0 12em; border: 1em solid #e5e7eb; border-radius: 6em; background: #fff; display: flex; align-items: center; gap: 8em; }
+  .dr { width: 16em; height: 16em; fill: #d1d5db; margin-left: auto; flex: none; } .dr.big { margin: 0; fill: #9ca3af; }
+  .cv { flex: 1; min-width: 0; background: #f3f4f6; display: flex; flex-direction: column; }
+  .fh { background: #fff; border-bottom: 1em solid #e5e7eb; padding: 16em; }
+  .meta { display: flex; align-items: center; gap: 4em; margin-top: 16em; }
+  .meta span + i { margin-right: 14px; }
+  .fld { font-size: 14em; line-height: 1.4286; background: #f3f4f6; border-radius: calc(var(--u)*4); padding: calc(var(--u)*2) calc(var(--u)*8); color: #374151; display: inline-block; }
+  .area { flex: 1; padding: 24em; overflow: hidden; }
+  .sec { margin-top: 54em; border: 2em solid #e5e7eb; border-radius: 8em; background: rgba(249,250,251,1); }
+  .act2 { color: #6b7280; margin-left: 12em; width: 16em; height: 16em; }
+  .chd { display: flex; align-items: center; gap: 8em; padding: 12em; }
+  .gr { flex: 1; min-width: 0; } .gr .t12 { display: block; }
+  .bdg { font-size: 12em; line-height: 1.333; background: #f3f4f6; color: #374151; border-radius: calc(var(--u)*4); padding: calc(var(--u)*2) calc(var(--u)*6); margin-left: calc(var(--u)*8); vertical-align: calc(var(--u)*1); display: inline-block; }
+  .bdg.pur { background: #f3e8ff; color: #7e22ce; }
+  .kids { padding: 0 24em 12em 46em; display: grid; gap: 28em; }
+  .cc { background: #fff; border: 2em solid #e5e7eb; border-radius: 8em; padding-bottom: 12em; }
+  .cc.sel { border-color: #3b82f6; box-shadow: 0 0 0 2em #bfdbfe, 0 10em 15em -3em rgba(0,0,0,.1); }
+  .inp { margin: 0 12em; height: 36em; background: #f3f4f6; border: 1em solid #d1d5db; border-radius: 6em; display: flex; align-items: center; padding: 0 12em; }
+  .inp.sp { justify-content: space-between; }
+  .pi { background: #f9fafb; border-bottom: 1em solid #e5e7eb; padding: 12em; display: flex; align-items: center; gap: 8em; }
+  .pc { height: 40em; padding: 0 16em; display: flex; align-items: center; gap: 8em; border-bottom: 1em solid #e5e7eb; }
+  .pf { padding: 8em 12em 0; display: grid; gap: 4em; } .pf u { color: #ef4444; }
+  .pin { height: 34em; border: 1em solid #d1d5db; border-radius: 6em; background: #fff; display: flex; align-items: center; padding: 0 10em; } .pin.tall { height: 64em; align-items: flex-start; padding-top: 8em; }
+  :global(html.dark) .fgb { background: #111827; color: #f3f4f6; }
+  :global(html.dark) .hd, :global(html.dark) .pal, :global(html.dark) .prp, :global(html.dark) .fh, :global(html.dark) .cc, :global(html.dark) .it, :global(html.dark) .pin { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+  :global(html.dark) .cv { background: #111827; } :global(html.dark) .sec { background: rgba(31,41,55,.5); border-color: #374151; }
+  :global(html.dark) .inp, :global(html.dark) .fld, :global(html.dark) .srch { background: #374151; border-color: #4b5563; }
+  :global(html.dark) .g7 { color: #d1d5db; } :global(html.dark) .hd { color: #e5e7eb; } :global(html.dark) .hd .lg { color: #fff; }
+  :global(html.dark) .ph, :global(html.dark) .cat, :global(html.dark) .pc, :global(html.dark) .pi { border-color: #374151; } :global(html.dark) .pi { background: rgba(31,41,55,.5); }
+  :global(html.dark) .hdl, :global(html.dark) .vr { background: #374151; }
+</style>

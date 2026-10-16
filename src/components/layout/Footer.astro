@@ -1,11 +1,9 @@
 ---
 /**
- * Footer — 3-col on desktop, stacked on mobile.
- * Col 1: icon mark + tagline + copyright.
- * Col 2: site map links.
- * Col 3: social links.
+ * Footer: running footer on a chalk plate (navy ink in dark mode). 12-col, hairline rules.
  */
 import Logo from '../brand/Logo.astro'
+import { contact, bookingLabel, bookingShortLabel } from '../../data/contact'
 
 const locale = Astro.currentLocale ?? 'id'
 const isEn = locale === 'en'
@@ -31,75 +29,50 @@ const siteLinks = isEn
     ]
 
 const socials = [
-  { href: 'https://linkedin.com/company/banuacoder', label: 'LinkedIn', icon: 'li' },
-  { href: 'https://github.com/banua-coder', label: 'GitHub', icon: 'gh' },
-  { href: 'https://instagram.com/banuacoder', label: 'Instagram', icon: 'ig' },
-  { href: 'https://medium.com/@banuacoder', label: 'Medium', icon: 'md' },
-  { href: 'https://youtube.com/@banuacoder', label: 'YouTube', icon: 'yt' },
+  { href: contact.socials.linkedin, label: 'LinkedIn' },
+  { href: contact.socials.github, label: 'GitHub' },
+  { href: contact.socials.instagram, label: 'Instagram' },
+  { href: contact.socials.medium, label: 'Medium' },
+  { href: contact.socials.youtube, label: 'YouTube' },
 ]
 ---
 
-<footer
-  class="border-t border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-paper dark:bg-bnc-ink mt-auto"
-  aria-label="Site footer"
->
-  <div
-    class="mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"
-    style="max-width: var(--container-max)"
-  >
-    <!-- Mono micro-label -->
-    <p class="font-mono text-xs text-bnc-stone-400 tracking-widest uppercase mb-10">
-      // banua coder
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-      <!-- Col 1: Brand -->
-      <div class="flex flex-col gap-4">
-        <Logo variant="icon" width={40} />
-        <p class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 leading-relaxed max-w-[22ch]">
-          {isEn
-            ? 'Engineering-led technology partner for businesses and organizations.'
-            : 'Partner teknologi berbasis engineering untuk bisnis dan organisasi.'}
+<footer class="plate-chalk mt-auto border-t border-bnc-ink/25 dark:border-bnc-paper/25" aria-label="Site footer">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8 pt-14 lg:pt-20 pb-8" style="max-width: var(--container-max)">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
+      <div class="md:col-span-5 flex flex-col gap-6">
+        <Logo variant="lockup" width={30} />
+        <p class="display text-balance" style="font-size: var(--fs-28); max-width: 20ch">
+          {isEn ? 'Digital systems built to last.' : 'Sistem digital yang dibangun untuk bertahan.'}
         </p>
-        <p class="text-xs font-mono text-bnc-stone-400">
-          &copy; {year} Banua Coder
-        </p>
+        <a
+          href={contact.bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex w-fit items-center gap-2 bg-bnc-plate px-5 py-3 text-sm font-semibold text-white hover:bg-bnc-ink dark:bg-bnc-accent dark:text-bnc-ink dark:hover:bg-white transition-colors"
+        >
+          {bookingLabel[locale as 'id' | 'en']} <span aria-hidden="true">→</span>
+        </a>
       </div>
 
-      <!-- Col 2: Site map -->
-      <nav aria-label="Footer site map">
-        <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
-          {isEn ? '// Site' : '// Situs'}
-        </p>
-        <ul class="list-none m-0 p-0 flex flex-col gap-2" role="list">
+      <nav aria-label="Footer site map" class="md:col-span-3 md:col-start-7">
+        <p class="folio ft-mute border-b border-current/25 pb-3 mb-4">{isEn ? 'Index' : 'Indeks'}</p>
+        <ul class="list-none m-0 p-0 flex flex-col" role="list">
           {siteLinks.map((link) => (
             <li>
-              <a
-                href={link.href}
-                class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
-              >
-                {link.label}
-              </a>
+              <a href={link.href} class="ft-link block py-1.5 text-base font-medium">{link.label}</a>
             </li>
           ))}
         </ul>
       </nav>
 
-      <!-- Col 3: Socials -->
-      <div>
-        <p class="font-mono text-xs text-bnc-stone-400 uppercase tracking-widest mb-4">
-          // Social
-        </p>
-        <ul class="list-none m-0 p-0 flex flex-col gap-2" role="list">
+      <div class="md:col-span-3">
+        <p class="folio ft-mute border-b border-current/25 pb-3 mb-4">{isEn ? 'Elsewhere' : 'Di tempat lain'}</p>
+        <ul class="list-none m-0 p-0 flex flex-col" role="list">
           {socials.map((s) => (
             <li>
-              <a
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-sm text-bnc-stone-600 dark:text-bnc-stone-400 hover:text-bnc-primary dark:hover:text-bnc-accent transition-colors"
-              >
-                {s.label}
+              <a href={s.href} target="_blank" rel="noopener noreferrer" class="ft-link block py-1.5 text-base font-medium">
+                {s.label} <span aria-hidden="true">↗</span>
               </a>
             </li>
           ))}
@@ -107,33 +80,30 @@ const socials = [
       </div>
     </div>
 
-    <!-- PSE Komdigi registration badge -->
-    <div class="mt-10 pt-6 border-t border-bnc-stone-200 dark:border-bnc-stone-800 flex justify-center">
+    <div class="mt-14 pt-5 border-t border-current/25 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+      <p class="folio ft-mute">
+        &copy; {year} PT Banua Coder Indonesia / {contact.office.city}, {contact.office.region}
+      </p>
       <a
         href="https://pse.komdigi.go.id/pse"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-3 rounded-[var(--radius-md)] border border-bnc-stone-200 dark:border-bnc-stone-800 bg-bnc-stone-50 dark:bg-bnc-stone-900 px-4 py-2.5 transition-colors hover:border-bnc-accent dark:hover:border-bnc-accent"
+        class="inline-flex items-center gap-3 self-start border border-current/25 px-3 py-2 hover:border-bnc-plate dark:hover:border-bnc-accent transition-colors"
         aria-label="Terdaftar di PSE Komdigi"
       >
-        <img
-          src="/badges/komdigi.png"
-          alt="Komdigi"
-          width={32}
-          height={32}
-          loading="lazy"
-          decoding="async"
-          class="h-7 w-auto object-contain"
-        />
+        <img src="/badges/komdigi.png" alt="Komdigi" width={32} height={32} loading="lazy" decoding="async" class="h-7 w-auto object-contain" />
         <span class="flex flex-col leading-tight">
-          <span class="font-mono text-[10px] tracking-widest uppercase text-bnc-stone-400">
-            {isEn ? 'Registered with' : 'Terdaftar di'}
-          </span>
-          <span class="font-mono text-xs text-bnc-stone-700 dark:text-bnc-stone-300">
-            PSE Komdigi · 015494.01/DJAI.PSE/09/2024
-          </span>
+          <span class="folio ft-mute" style="font-size: 10px">{isEn ? 'Registered with' : 'Terdaftar di'}</span>
+          <span class="font-mono text-xs">PSE Komdigi · 015494.01/DJAI.PSE/09/2024</span>
         </span>
       </a>
     </div>
   </div>
 </footer>
+
+<style>
+  .ft-mute { color: var(--color-bnc-stone-600); }
+  :global(html.dark) .ft-mute { color: var(--color-bnc-stone-400); }
+  .ft-link { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 5px; transition: text-decoration-color 180ms; }
+  .ft-link:hover, .ft-link:focus-visible { text-decoration-color: currentColor; }
+</style>

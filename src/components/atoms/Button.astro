@@ -1,24 +1,17 @@
 ---
 /**
- * Button — versatile CTA component.
+ * Button: flat, square, no shadow.
  * Renders <a> if href is provided, otherwise <button>.
- * Variants: primary, secondary, ghost.
- * Sizes: md (default), lg.
+ * Variants: primary (solid), secondary (hairline outline), ghost (underlined text link).
+ * Inside a .plate the colours invert automatically (white on ultramarine).
  */
 interface Props {
-  /** Visual style */
   variant?: 'primary' | 'secondary' | 'ghost'
-  /** Size */
   size?: 'md' | 'lg'
-  /** Link target — renders an <a> when provided */
   href?: string
-  /** Button type when rendered as <button> */
   type?: 'button' | 'submit' | 'reset'
-  /** Open in new tab */
   external?: boolean
-  /** Extra CSS classes */
   class?: string
-  /** Disabled state */
   disabled?: boolean
 }
 
@@ -33,36 +26,12 @@ const {
 } = Astro.props
 
 const Tag = href ? 'a' : 'button'
-
-const sizeClass =
-  size === 'lg'
-    ? 'px-7 py-3.5 text-base'
-    : 'px-5 py-2.5 text-sm'
-
-const variantClass = {
-  primary: [
-    'bg-bnc-primary text-bnc-primary-fg font-semibold',
-    'hover:bg-bnc-accent focus-visible:bg-bnc-accent',
-    'active:scale-[0.98]',
-  ].join(' '),
-  secondary: [
-    'bg-transparent text-bnc-ink dark:text-bnc-paper font-medium',
-    'border border-bnc-ink dark:border-bnc-stone-400',
-    'hover:bg-bnc-ink hover:text-bnc-paper dark:hover:bg-bnc-paper dark:hover:text-bnc-ink',
-    'active:scale-[0.98]',
-  ].join(' '),
-  ghost: [
-    'bg-transparent text-bnc-ink dark:text-bnc-paper font-medium',
-    'underline-offset-4 hover:underline hover:text-bnc-primary dark:hover:text-bnc-accent',
-  ].join(' '),
-}[variant]
-
+const sizeClass = size === 'lg' ? 'px-7 py-4 text-base' : 'px-5 py-2.5 text-sm'
 const baseClass = [
-  'inline-flex items-center gap-2 rounded-[var(--radius-sm)]',
-  'transition-all duration-[var(--duration-base)]',
-  'cursor-pointer select-none',
-  sizeClass,
-  variantClass,
+  'btn',
+  `btn-${variant}`,
+  'inline-flex items-center gap-2 font-semibold tracking-tight cursor-pointer select-none',
+  variant === 'ghost' ? 'py-1' : sizeClass,
   disabled ? 'opacity-50 pointer-events-none' : '',
   cls,
 ]
@@ -90,3 +59,32 @@ const baseClass = [
     <slot />
   </button>
 )}
+
+<style>
+  .btn { border: 1px solid transparent; transition: background-color 180ms, color 180ms, border-color 180ms; border-radius: 0; }
+  .btn:focus-visible { outline: 2px solid var(--color-bnc-plate); outline-offset: 3px; }
+
+  .btn-primary { background: var(--color-bnc-plate); color: #fff; border-color: var(--color-bnc-plate); }
+  .btn-primary:hover { background: var(--color-bnc-ink); border-color: var(--color-bnc-ink); }
+  .btn-secondary { background: transparent; color: var(--color-bnc-ink); border-color: var(--color-bnc-ink); }
+  .btn-secondary:hover { background: var(--color-bnc-ink); color: var(--color-bnc-paper); }
+  .btn-ghost { background: transparent; color: inherit; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+  .btn-ghost:hover { text-decoration-thickness: 2px; }
+
+  :global(html.dark) .btn:focus-visible { outline-color: var(--color-bnc-accent); }
+  :global(html.dark) .btn-primary { background: var(--color-bnc-accent); color: var(--color-bnc-ink); border-color: var(--color-bnc-accent); }
+  :global(html.dark) .btn-primary:hover { background: #fff; border-color: #fff; }
+  :global(html.dark) .btn-secondary { color: var(--color-bnc-paper); border-color: color-mix(in srgb, #fff 55%, transparent); }
+  :global(html.dark) .btn-secondary:hover { background: var(--color-bnc-paper); color: var(--color-bnc-ink); }
+
+  /* On an ultramarine plate: white solid, white outline */
+  :global(.plate) .btn-primary { background: #fff; color: var(--color-bnc-plate); border-color: #fff; }
+  :global(.plate) .btn-primary:hover { background: var(--color-bnc-accent); color: var(--color-bnc-ink); border-color: var(--color-bnc-accent); }
+  :global(.plate) .btn-secondary { color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+  :global(.plate) .btn-secondary:hover { background: #fff; color: var(--color-bnc-plate); border-color: #fff; }
+  :global(.plate) .btn:focus-visible { outline-color: var(--color-bnc-accent); }
+  :global(html.dark .plate) .btn-primary { background: #fff; color: var(--color-bnc-plate); border-color: #fff; }
+  :global(html.dark .plate) .btn-primary:hover { background: var(--color-bnc-accent); color: var(--color-bnc-ink); border-color: var(--color-bnc-accent); }
+  :global(html.dark .plate) .btn-secondary { color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+  :global(html.dark .plate) .btn-secondary:hover { background: #fff; color: var(--color-bnc-plate); }
+</style>

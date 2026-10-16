@@ -1,0 +1,9 @@
+---
+const en = (Astro.currentLocale ?? 'id') === 'en'
+---
+<a
+  href="#main-content"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bnc-plate focus:text-white"
+>
+  {en ? 'Skip to main content' : 'Lewati ke konten utama'}
+</a>
