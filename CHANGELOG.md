@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.3.0 — 2026-10-16
+
+### ✨ Features
+
+- feat(services): motion video showcase; point booking CTA at real Cal.com profile (5a97f2e)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.3.0 (bcb2659)
+
+### 📌 Other
+
+- Merge pull request #10 from banua-coder/chore/back-merge-v1.2.0 (a19e4fe)
+- Merge pull request #9 from banua-coder/chore/bump-dev-version-v1.3.0 (09b80f0)
+
+
+
 ## v1.2.0 — 2026-10-16
 
 ### ✨ Features
