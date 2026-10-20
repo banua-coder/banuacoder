@@ -14,7 +14,7 @@ Banua Coder is a small software company in Palu, Indonesia. We have clients, con
 
 So we built our own operations center. It is one small program that runs on one shared server. It holds our clients, documents, books, and tax forms. This post shows how it works and what we chose. It covers four parts: the secret vault, the operations platform, signed documents that anyone can verify, and the guide that fills our Coretax return.
 
-![How our operations platform runs: people, the build path, the server, and the outside services](../../assets/blog/ops-workflow-diagram.png)
+![From a commit to our server: the build path, the server, and the services around it](../../assets/blog/ops-platform-flow.png)
 
 ## Why we did not buy four more tools
 
@@ -35,6 +35,20 @@ We host Vaultwarden. It speaks the Bitwarden protocol, so staff use the official
 3. One command pulls a note into a local file. For example, `bw-env lumbung staging` writes `.env.staging`. We never commit that file.
 4. The installer is signed. The owner signs the scripts with a key that never goes on the server. The installer installs nothing unless the signature is valid and each file matches its SHA-256 in the signed list.
 5. A server `.env` is deployed from the vault note, never edited by hand. The command `bw-env-deploy` first shows what will change by variable name. It never prints values. It writes nothing until you add `--apply`.
+
+### How an engineer or a freelancer gets the env of a project
+
+A new engineer or freelancer needs the `.env` of one project and nothing else. We built three small commands on top of the Bitwarden CLI for this. The diagram below shows the whole path, step by step.
+
+![How an engineer or a freelancer gets the env of a project](../../assets/blog/ops-vault-diagram.png)
+
+1. The owner invites the person to the vault and adds them to the collection of that project. Our advice for a freelancer is the staging collection only, with low-privilege keys.
+2. The person runs the signed installer from our ops site: `curl -fsSL https://<ops-host>/install.sh | sh`. It installs the Bitwarden CLI and our commands, and it stops if the owner's signature or any file hash does not match.
+3. The person runs `bw login`. The session key stays in the macOS Keychain, so there is no password prompt every time.
+4. The person runs `bw-env lumbung staging`. The command writes `.env.staging` in the project folder, and that file is never committed.
+5. When the job ends, the owner removes the person from the collection and rotates the keys that the person can read.
+
+There are three commands. `bw-env` pulls a note into a file. `bw-env-push` creates a note from an existing `.env` file. `bw-env-deploy` makes a server file match a note. `bw-env-push` creates one hidden field per variable and never overwrites a note. With `--update` it lists the added, changed, and removed variable names before it changes anything.
 
 Our pipelines use a separate vault account with read-only access to one collection named `CI`. That collection holds only what the pipelines need, never production secrets. A small GitHub Action turns each field of a note into a masked environment variable.
 

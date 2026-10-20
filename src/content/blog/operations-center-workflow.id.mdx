@@ -14,7 +14,7 @@ Banua Coder adalah perusahaan perangkat lunak kecil di Palu, Indonesia. Kami pun
 
 Karena itu kami membangun pusat operasional sendiri. Isinya satu program kecil yang berjalan di satu server bersama. Program ini menyimpan klien, dokumen, pembukuan, dan formulir pajak kami. Tulisan ini menjelaskan cara kerjanya dan pilihan yang kami ambil. Ada empat bagian: brankas rahasia, platform operasional, dokumen bertanda tangan yang bisa diverifikasi siapa saja, dan panduan untuk mengisi SPT di Coretax.
 
-![Cara platform operasional kami berjalan: orang, jalur build, server, dan layanan luar](../../assets/blog/ops-workflow-diagram.png)
+![Dari commit ke server kami: jalur build, server, dan layanan di sekitarnya](../../assets/blog/ops-platform-flow.png)
 
 ## Kenapa kami tidak membeli empat aplikasi lagi
 
@@ -35,6 +35,20 @@ Kami menjalankan Vaultwarden sendiri. Ia memakai protokol Bitwarden, jadi staf m
 3. Satu perintah menarik catatan ke berkas lokal. Contohnya, `bw-env lumbung staging` menulis `.env.staging`. Kami tidak pernah meng-commit berkas itu.
 4. Installer bertanda tangan. Pemilik menandatangani skrip dengan kunci yang tidak pernah berada di server. Installer tidak memasang apa pun kecuali tanda tangannya valid dan setiap berkas cocok dengan SHA-256 di daftar bertanda tangan.
 5. `.env` di server dipasang dari catatan brankas, tidak pernah diubah manual. Perintah `bw-env-deploy` lebih dulu menampilkan apa yang akan berubah berdasarkan nama variabel. Ia tidak pernah mencetak nilai. Ia tidak menulis apa pun sampai Anda menambahkan `--apply`.
+
+### Cara engineer atau freelancer mendapatkan env sebuah proyek
+
+Engineer atau freelancer baru hanya butuh `.env` satu proyek dan tidak lebih. Untuk itu kami membuat tiga perintah kecil di atas Bitwarden CLI. Diagram di bawah menunjukkan seluruh jalurnya, langkah demi langkah.
+
+![Cara engineer atau freelancer mendapatkan env sebuah proyek](../../assets/blog/ops-vault-diagram.png)
+
+1. Pemilik mengundang orang itu ke brankas dan menambahkannya ke koleksi proyek tersebut. Saran kami untuk freelancer: hanya koleksi staging, dengan kunci berhak akses rendah.
+2. Orang itu menjalankan installer bertanda tangan dari situs ops kami: `curl -fsSL https://<ops-host>/install.sh | sh`. Installer memasang Bitwarden CLI dan perintah kami, dan berhenti bila tanda tangan pemilik atau hash berkas mana pun tidak cocok.
+3. Orang itu menjalankan `bw login`. Kunci sesi tersimpan di Keychain macOS, jadi tidak ada permintaan kata sandi setiap kali.
+4. Orang itu menjalankan `bw-env lumbung staging`. Perintah menulis `.env.staging` di folder proyek, dan berkas itu tidak pernah di-commit.
+5. Saat pekerjaan selesai, pemilik mengeluarkan orang itu dari koleksi dan merotasi kunci yang bisa ia baca.
+
+Ada tiga perintah. `bw-env` menarik catatan ke berkas. `bw-env-push` membuat catatan dari berkas `.env` yang sudah ada. `bw-env-deploy` menyamakan berkas di server dengan catatan. `bw-env-push` membuat satu kolom tersembunyi per variabel dan tidak pernah menimpa catatan. Dengan `--update`, perintah menampilkan nama variabel yang ditambah, diubah, dan dihapus sebelum mengubah apa pun.
 
 Pipeline kami memakai akun brankas terpisah dengan akses baca saja ke satu koleksi bernama `CI`. Koleksi itu hanya berisi yang dibutuhkan pipeline, tidak pernah rahasia produksi. Sebuah GitHub Action kecil mengubah setiap kolom catatan menjadi variabel lingkungan yang disamarkan.
 
