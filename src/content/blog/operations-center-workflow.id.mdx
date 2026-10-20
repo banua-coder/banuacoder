@@ -1,7 +1,7 @@
 ---
-title: "Cara Tim Kecil Menjalankan Pusat Operasional Sendiri, dari Rahasia sampai SPT"
+title: "Platform Operasional Sendiri: dari Brankas ke SPT Coretax"
 slug: "operations-center-workflow"
-description: "Cara Banua Coder membangun brankas rahasia, platform operasional dengan dokumen bertanda tangan dan jejak publik, serta panduan Coretax yang diisi dari pembukuan sendiri."
+description: "Cara Banua Coder menjalankan brankas rahasia, tanda tangan elektronik dengan verifikasi publik, dan panduan mengisi SPT Coretax dari pembukuan sendiri."
 publishedAt: 2026-10-20
 author: fajrian
 tags: ["engineering", "operations", "security", "tax"]
@@ -10,107 +10,119 @@ draft: false
 locale: id
 ---
 
-Banua Coder adalah perusahaan perangkat lunak kecil di Palu, Indonesia. Kami merilis aplikasi keuangan seluler, starter kit Flutter, layanan telemetri, API publik, pelacak bus, dan situs web kami sendiri. Tim kecil hanya bisa menjaga semua itu tetap berjalan bila punya satu cara kerja.
+Banua Coder, perusahaan perangkat lunak kecil di Palu, menjalankan rilis, rahasia, kontrak, tanda tangan, dan pajak dengan satu cara kerja yang kami bangun sendiri. Kami merilis aplikasi keuangan seluler, starter kit Flutter, layanan telemetri, API publik, pelacak bus, dan situs web kami sendiri. Tim sekecil kami hanya bisa menjaga semua itu tetap berjalan bila caranya seragam.
 
-Tulisan ini menunjukkan cara kerja itu dari ujung ke ujung. Dimulai dari cara setiap produk dirilis. Lalu lima bagian lain: brankas rahasia untuk orang dan agen AI, platform operasional yang menjalankan perusahaan kami, dokumen bertanda tangan yang bisa diverifikasi siapa saja, panduan untuk mengisi SPT di Coretax, dan apa yang dilihat klien saat kami bekerja.
+Kami mulai dari cara setiap produk dirilis, lalu masuk ke lima bagian: brankas rahasia untuk orang dan agen AI, platform operasional yang menjalankan perusahaan, dokumen bertanda tangan yang bisa diverifikasi siapa saja, panduan mengisi SPT Tahunan di Coretax, dan apa yang dilihat klien saat kami bekerja.
 
-![Cara setiap produk Banua Coder dirilis](../../assets/blog/ops-ecosystem-flow.png)
+![Diagram jalur rilis Banua Coder, dari rencana sampai pemantauan](../../assets/blog/ops-ecosystem-flow.png)
 
 ## Satu jalur rilis untuk setiap produk
 
 Setiap repositori mengikuti enam tahap yang sama. Alatnya berbeda menurut stack, tetapi jalurnya tidak.
 
-Rencana. Pekerjaan dimulai sebagai tugas di Beads, pelacak isu kami, atau sebagai isu GitHub. Catatan tim kami ada di vault Obsidian. Agen AI membantu, dan aturannya spesifikasi lebih dulu: spesifikasi tertulis singkat mendahului kode.
+### Rencana
 
-Bangun. Pekerjaan dilakukan di branch fitur dan masuk ke `develop` lewat pull request. Pemeriksaannya berasal dari repositori workflow GitHub Actions kami yang dapat dipakai ulang, dikunci ke satu tag versi. Ada satu workflow untuk setiap stack: Go, Flutter, Laravel, Node, dan Rust.
+Pekerjaan dimulai sebagai tugas di Beads, pelacak isu kami, atau sebagai isu GitHub. Catatan tim tersimpan di Obsidian. Agen AI membantu, dan aturannya spesifikasi lebih dulu: spesifikasi singkat ditulis sebelum kode.
 
-Rilis. Kami memakai Git Flow. Branch `release/x.y.z` menaikkan versi dan menulis changelog. Sebuah pull request membawanya ke `main`. Penggabungan membuat tag versi dan rilis GitHub. Lalu pull request back-merge membawa commit rilis kembali ke `develop`.
+### Bangun
 
-Publikasi. Setiap artefak masuk ke registri-nya sendiri. Image Docker dibangun di GitHub Actions dan didorong ke container registry GitHub. Paket Dart dan Flutter masuk ke pub.dev. Paket JavaScript ke npm, paket PHP ke Packagist, dan brick Mason kami ke Cloudflare R2. Situs statis disalin ke shared hosting.
+Pekerjaan dilakukan di *branch* fitur dan masuk ke `develop` lewat *pull request*. Pemeriksaan otomatis datang dari repositori workflow GitHub Actions milik kami yang dipakai ulang di semua repositori dan dikunci ke satu tag versi. Ada satu workflow untuk setiap stack: Go, Flutter, Laravel, Node, dan Rust.
 
-Deploy. GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengunggah byte image. Docker Compose menjalankannya, dan skrip menunggu sampai container sehat. Lalu smoke test memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago melakukan deploy blue dan green. Traefik memberi HTTPS ke setiap aplikasi. Aplikasi berbagi beberapa layanan di server yang sama: Postgres dan MySQL untuk data, Redis untuk cache, antrean, dan sesi, serta broker MQTT bersama untuk aplikasi realtime.
+### Rilis
 
-Pantau. Layanan telemetri kami sendiri, beacon, mengirim data lewat Grafana Alloy ke Grafana Cloud. Dari sana kami mendapat probe uptime dan dashboard. Cadangan harian masuk ke penyimpanan awan. Rilis Archipelago mengirim pemberitahuan ke Discord.
+Kami memakai Git Flow. *Branch* `release/x.y.z` menaikkan versi dan menulis changelog. Sebuah *pull request* membawanya ke `main`. Penggabungan membuat tag versi dan rilis GitHub. Lalu *pull request* penggabungan balik membawa commit rilis kembali ke `develop`.
 
-Satu aturan menjaga semua ini jujur: tidak ada yang membangun image di laptop lalu menyalinnya ke server. Kami pernah melanggar aturan itu pada platform operasional, yang dijelaskan di bawah. Kami menyadarinya, memperbaikinya, dan memindahkannya ke jalur yang sama. Sekarang ia dirilis seperti yang lain.
+### Publikasi
 
-## Bagian 1: Brankas rahasia
+Setiap artefak masuk ke registri-nya sendiri. Image Docker dibangun di GitHub Actions dan diunggah ke registri kontainer GitHub. Paket Dart dan Flutter masuk ke pub.dev, paket JavaScript ke npm, paket PHP ke Packagist, dan brick Mason kami ke Cloudflare R2. Situs statis disalin ke shared hosting.
 
-Masalah pertama di tim mana pun bukan platformnya. Masalahnya rahasia. Kunci tersimpan di pesan obrolan, di berkas `.env` yang disalin manual, dan di catatan bersama. Saat seseorang keluar, kuncinya tetap ada.
+### Deploy
+
+GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengirim byte image ke server. Docker Compose menjalankannya, dan skrip menunggu sampai kontainer sehat. Lalu *smoke test* memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago memakai deploy blue/green. Traefik memberi HTTPS ke setiap aplikasi. Aplikasi berbagi beberapa layanan di server yang sama: Postgres dan MySQL untuk data, Redis untuk cache, antrean, dan sesi, serta broker MQTT bersama untuk aplikasi realtime.
+
+### Pantau
+
+Layanan telemetri kami sendiri, beacon, mengirim data lewat Grafana Alloy ke Grafana Cloud. Dari sana kami mendapat probe uptime dan dashboard. Cadangan harian masuk ke penyimpanan cloud. Rilis Archipelago mengirim pemberitahuan ke Discord.
+
+Satu aturan menjaga semua ini jujur: tidak ada yang membangun image di laptop lalu menyalinnya ke server. Kami pernah melanggarnya pada platform operasional yang dijelaskan di bawah. Setelah menyadarinya, kami memindahkannya ke jalur yang sama, dan sekarang ia dirilis seperti produk lain.
+
+## Bagian 1: Brankas rahasia untuk tim dan agen AI
+
+Masalah pertama di tim mana pun adalah rahasia. Kunci tersimpan di pesan obrolan, di berkas `.env` yang disalin manual, dan di catatan bersama. Saat seseorang keluar, kuncinya tetap ada.
 
 Kami menjalankan Vaultwarden sendiri. Ia memakai protokol Bitwarden, jadi staf memakai alat baris perintah resmi `bw`. Lima aturan membentuk desainnya:
 
-1. Satu catatan aman untuk setiap proyek dan lingkungan, dengan nama seperti `lumbung/.env.staging`. Kolom catatan adalah nama variabel.
+1. Satu catatan aman untuk setiap proyek dan lingkungan, dengan nama seperti `lumbung/.env.staging`. Setiap kolom di dalam catatan adalah satu variabel, dengan nama variabel sebagai nama kolomnya.
 2. Akses diberikan per koleksi. Setiap orang hanya melihat proyek yang ia kerjakan. Untuk mencabut akses, pemilik menghapus orang itu dari koleksi, lalu merotasi rahasia yang bisa ia baca.
 3. Satu perintah menarik catatan ke berkas lokal. Kami tidak pernah meng-commit berkas itu.
-4. Installer bertanda tangan. Pemilik menandatangani skrip dengan kunci yang tidak pernah berada di server. Installer tidak memasang apa pun kecuali tanda tangannya valid dan setiap berkas cocok dengan SHA-256 di daftar bertanda tangan.
-5. `.env` di server dipasang dari catatan brankas, tidak pernah diubah manual. Perintah `bw-env-deploy` lebih dulu menampilkan apa yang akan berubah berdasarkan nama variabel. Ia tidak pernah mencetak nilai. Ia tidak menulis apa pun sampai Anda menambahkan `--apply`.
+4. Installer-nya bertanda tangan. Pemilik menandatangani skrip dengan kunci yang tidak pernah berada di server. Installer menolak memasang apa pun kecuali tanda tangannya valid dan setiap berkas cocok dengan SHA-256 di daftar bertanda tangan.
+5. `.env` di server dipasang dari catatan brankas dan tidak pernah diubah manual. Perintah `bw-env-deploy` lebih dulu menampilkan apa yang akan berubah, berdasarkan nama variabel, tanpa mencetak nilainya. Perintah ini tidak menulis apa pun sampai Anda menambahkan `--apply`.
 
-### Cara engineer atau freelancer mendapatkan env sebuah proyek
+### Cara engineer atau freelancer mendapatkan berkas .env proyek
 
 Engineer atau freelancer baru hanya butuh `.env` satu proyek dan tidak lebih. Untuk itu kami membuat tiga perintah kecil di atas Bitwarden CLI. Diagram di bawah menunjukkan seluruh jalurnya, langkah demi langkah.
 
-![Cara engineer atau freelancer mendapatkan env sebuah proyek](../../assets/blog/ops-vault-diagram.png)
+![Alur engineer atau freelancer mendapatkan berkas .env sebuah proyek dari brankas](../../assets/blog/ops-vault-diagram.png)
 
 1. Pemilik mengundang orang itu ke brankas dan menambahkannya ke koleksi proyek tersebut. Saran kami untuk freelancer: hanya koleksi staging, dengan kunci berhak akses rendah.
-2. Orang itu menjalankan installer bertanda tangan dari situs ops kami: `curl -fsSL https://<ops-host>/install.sh | sh`. Installer memasang Bitwarden CLI dan perintah kami, dan berhenti bila tanda tangan pemilik atau hash berkas mana pun tidak cocok.
+2. Orang itu menjalankan installer bertanda tangan dari situs platform operasional kami: `curl -fsSL https://<ops-host>/install.sh | sh`. Installer memasang Bitwarden CLI dan perintah kami, dan berhenti bila tanda tangan pemilik atau hash berkas mana pun tidak cocok.
 3. Orang itu menjalankan `bw login`. Kunci sesi tersimpan di Keychain macOS, jadi tidak ada permintaan kata sandi setiap kali.
 4. Orang itu menjalankan `bw-env lumbung staging`. Perintah menulis `.env.staging` di folder proyek, dan berkas itu tidak pernah di-commit.
 5. Saat pekerjaan selesai, pemilik mengeluarkan orang itu dari koleksi dan merotasi kunci yang bisa ia baca.
 
-Ada tiga perintah. `bw-env` menarik catatan ke berkas. `bw-env-push` membuat catatan dari berkas `.env` yang sudah ada. `bw-env-deploy` menyamakan berkas di server dengan catatan. `bw-env-push` membuat satu kolom tersembunyi per variabel dan tidak pernah menimpa catatan. Dengan `--update`, perintah menampilkan nama variabel yang ditambah, diubah, dan dihapus sebelum mengubah apa pun.
+Ketiga perintah itu: `bw-env` menarik catatan ke berkas, `bw-env-push` membuat catatan dari berkas `.env` yang sudah ada, dan `bw-env-deploy` menyamakan berkas di server dengan catatan. `bw-env-push` membuat satu kolom tersembunyi per variabel dan tidak pernah menimpa catatan. Dengan `--update`, perintah menampilkan nama variabel yang ditambah, diubah, dan dihapus sebelum mengubah apa pun.
 
 Pipeline kami memakai akun brankas terpisah dengan akses baca saja ke satu koleksi bernama `CI`. Koleksi itu hanya berisi yang dibutuhkan pipeline, tidak pernah rahasia produksi. Sebuah GitHub Action kecil mengubah setiap kolom catatan menjadi variabel lingkungan yang disamarkan.
 
-Sekarang soal agen AI. Mereka bekerja di shell yang sama dengan developer, jadi mereka menghadapi risiko yang sama. Aturan kami: agen boleh memakai nilai, tetapi tidak pernah membaca atau mencetaknya. Agen menjalankan `bw-env`, berkas jatuh ke disk, dan program yang membacanya. Nilai tidak masuk ke prompt atau obrolan. Dry run hanya menampilkan nama, dan itu cukup bagi agen untuk menalar sebuah perubahan.
+Sekarang soal agen AI. Mereka bekerja di shell yang sama dengan developer, jadi mereka menghadapi risiko yang sama. Aturan kami: agen boleh memakai nilai, tetapi tidak pernah membaca atau mencetaknya. Agen menjalankan `bw-env`, berkas jatuh ke disk, dan hanya program yang membaca berkas itu. Nilainya tidak masuk ke prompt atau obrolan. *Dry run* hanya menampilkan nama, dan itu cukup bagi agen untuk menalar sebuah perubahan.
 
 Ini aturan, bukan tembok. Agen yang bisa menjalankan perintah shell bisa membaca berkas apa pun yang bisa dibaca developer. Karena itu akses dibatasi per proyek, dan kami merotasi rahasia setiap kali ada keraguan.
 
-## Bagian 2: Satu platform untuk seluruh siklus klien
+## Bagian 2: Satu platform operasional untuk seluruh siklus klien
 
-Kami tidak menemukan alat yang menangani praktik Indonesia sekaligus. Praktik itu mencakup pemotongan PPh 23 oleh klien, kurs KMK, bea meterai, dan dokumen serah terima BAST dan SPPT. Karena itu kami membangun platform operasional. Ia satu program Go dengan antarmuka Vue di dalamnya. Ia memakai database Postgres bersama, dan proses masuk lewat penyedia identitas kami sendiri, Rauthy.
+Kami tidak menemukan alat yang menangani praktik Indonesia sekaligus. Praktik itu mencakup pemotongan PPh 23 oleh klien, kurs KMK, bea meterai, dan dokumen serah terima BAST dan SPPT. Karena itu kami membangun platform operasional. Platform ini satu program Go dengan antarmuka Vue di dalamnya. Datanya ada di database Postgres bersama, dan proses masuknya lewat penyedia identitas kami sendiri, Rauthy. Kami pernah menulis tentang [satu login untuk banyak aplikasi internal](/blog/sso-internal-instansi-satu-login-banyak-aplikasi/).
 
 Platform ini mengikuti satu klien dari kontak pertama sampai invoice terakhir:
 
 - Klien, dengan portal tempat klien masuk dan melihat proyeknya.
 - Proposal, NDA, dan kontrak, dibuat dari template dalam Bahasa Indonesia atau Inggris.
 - Invoice dalam beberapa mata uang, dengan PPh 23 dan kurs KMK pada tanggal terbit.
-- Buku besar berpasangan (double-entry). Entri tidak pernah diedit. Koreksi dibuat sebagai pembalikan.
+- Buku besar berpasangan (*double-entry*). Entri tidak pernah diedit. Koreksi dibuat sebagai pembalikan.
 - Proyek dengan tahap sebelum pekerjaan, tahap sesudahnya, dan milestone.
 
 Dokumen saling terhubung: NDA, proposal, kontrak, invoice, BAST, SPPT. Dari dokumen mana pun Anda bisa membuat dokumen berikutnya dengan data yang sudah terisi. Saat kontrak ditandatangani, platform membuat dokumen onboarding dan mengundang klien ke portal. Saat proyek selesai, platform membuat dokumen serah terima.
 
-![Halaman Dokumen, dengan data contoh](../../assets/blog/ops-documents.png)
+![Halaman Dokumen di platform operasional, dengan data contoh](../../assets/blog/ops-documents.png)
 
-Email nyata hanya terkirim bila pengaturan `APP_ENV=production` ada, dan hanya server yang memilikinya. Di tempat lain platform memakai kotak surat sandbox yang menangkap setiap pesan. Laptop atau tes tidak bisa mengirim email ke klien.
+Email sungguhan hanya terkirim bila `APP_ENV=production`, dan hanya server yang menyetelnya. Di tempat lain platform memakai kotak surat sandbox yang menangkap setiap pesan. Laptop atau tes tidak bisa mengirim email ke klien.
 
-## Bagian 3: Tanda tangan dengan jejak publik
+## Bagian 3: Tanda tangan elektronik dengan jejak audit publik
 
-Awalnya kami melihat alat tanda tangan yang di-hosting. Fitur embed-nya berbayar, dan alat itu butuh sekitar 2 GB memori di server kecil kami. Jadi kami membangun fitur tanda tangan di dalam platform.
+Awalnya kami melirik layanan tanda tangan yang di-host pihak lain. Fitur embed-nya berbayar, dan layanan itu butuh sekitar 2 GB memori di server kecil kami. Jadi kami membangun fitur tanda tangan di dalam platform.
 
-Diagram di bawah menunjukkan alurnya. Setiap penanda tangan menerima tautan pribadi. Jika dokumen mencantumkan nilai di atas Rp 5.000.000, dokumen itu butuh bea meterai. Pemilik mengetik nomor seri dari Peruri. Platform tidak memanggil Peruri. Setiap tindakan masuk ke jejak audit yang hanya bisa ditambah: siapa, kapan, dari alamat mana, dan dari perangkat apa.
+Diagram di bawah menunjukkan alurnya. Setiap penanda tangan menerima tautan pribadi. Jika dokumen mencantumkan nilai di atas Rp5.000.000, dokumen itu butuh bea meterai. Pemilik mengetik nomor seri dari Peruri, karena platform tidak memanggil Peruri. Setiap tindakan masuk ke [jejak audit](/blog/audit-trail-sistem-pemerintah/) yang hanya bisa ditambah: siapa, kapan, dari alamat mana, dan dari perangkat apa.
 
-Sebagian dokumen membutuhkan meterai dari pihak ketiga, seperti e-meterai atau tanda tangan tersertifikasi. Meterai itu dipasang pada PDF sebelum langkah terakhir. Langkah terakhir selalu sama: platform menyimpan sidik jari berkas yang sudah jadi dan mengirimnya ke OpenTimestamps, dan tidak ada yang mengubah berkas setelah itu. Saat ini pemilik mencatat nomor seri e-meterai secara manual. Langkah yang membawa berkas bermeterai kembali ke platform akan menyusul.
+Sebagian dokumen perlu segel dari pihak ketiga, misalnya e-meterai atau tanda tangan tersertifikasi. Segel itu dipasang pada PDF sebelum langkah terakhir. Langkah terakhir selalu sama: platform menyimpan sidik jari berkas yang sudah jadi dan mengirimnya ke OpenTimestamps, dan tidak ada yang mengubah berkas setelah itu. Saat ini pemilik mencatat nomor seri e-meterai secara manual. Langkah yang membawa berkas bermeterai kembali ke platform akan menyusul.
 
-![Cara dokumen bertanda tangan tetap bisa dibuktikan](../../assets/blog/ops-signing-diagram.png)
+![Alur dokumen bertanda tangan sampai bisa dibuktikan oleh siapa saja](../../assets/blog/ops-signing-diagram.png)
 
-Saat penanda tangan terakhir selesai, platform membuat PDF final. Platform menambahkan halaman sertifikat dan kode QR, lalu menyimpan sidik jari SHA-256 dari berkas itu. Sidik jari tersebut dikirim ke kalender publik OpenTimestamps. Mereka menjangkarkannya di sebuah blok Bitcoin dalam sekitar sehari. Setelah itu, tidak ada yang bisa mengklaim berkas itu dibuat lebih lambat dari blok tersebut.
+Saat penanda tangan terakhir selesai, platform membuat PDF final. Platform menambahkan halaman sertifikat dan kode QR, lalu menyimpan sidik jari SHA-256 dari berkas itu. Sidik jari tersebut dikirim ke kalender publik OpenTimestamps. Kalender itu menjangkarkannya di sebuah blok Bitcoin dalam sekitar sehari. Setelah itu, tidak ada yang bisa mengklaim berkas itu dibuat lebih lambat dari blok tersebut.
 
 Kode QR membuka halaman verifikasi publik. Halaman itu menampilkan nomor dokumen, penanda tangan, sidik jari, dan status cap waktu. Judul disembunyikan kecuali pemilik mengizinkannya, karena judul sebuah NDA bisa bersifat rahasia.
 
 ![Kontrak bertanda tangan di platform, dengan stempel perusahaan](../../assets/blog/ops-signed-dialog.png)
 
-![Halaman verifikasi publik](../../assets/blog/verify-page.png)
+![Halaman verifikasi publik dokumen bertanda tangan](../../assets/blog/verify-page.png)
 
 Kami pernah membuat satu kesalahan di sini. Awalnya halaman menampilkan tanda "valid" hijau. Padahal halaman itu memeriksa salinan yang disimpan server kami, bukan PDF di tangan pembaca. PDF yang diubah dengan kode QR yang masih berfungsi tetap akan menuju halaman hijau. Sekarang halaman itu menulis "salinan kami masih utuh". Sebuah formulir memungkinkan pembaca mengunggah PDF mereka sendiri. Server menghitung hash-nya dan membandingkannya byte demi byte, lalu membuang berkasnya.
 
-Satu batasan yang jujur. Ini adalah tanda tangan elektronik tidak tersertifikasi menurut hukum Indonesia (UU ITE). Tanda tangan ini sah, tetapi bobot pembuktiannya lebih rendah daripada tanda tangan dari penyedia tersertifikasi. Pengacara harus meninjau setiap template. Kami menyatakan ini di dalam platform.
+Ada satu batasan yang perlu kami akui. Ini tanda tangan elektronik tidak tersertifikasi menurut hukum Indonesia (UU ITE). Tanda tangan ini sah, tetapi bobot pembuktiannya lebih rendah daripada tanda tangan dari penyedia tersertifikasi. Pengacara harus meninjau setiap template. Kami menyatakan ini di dalam platform.
 
-## Bagian 4: Panduan Coretax
+## Bagian 4: Panduan mengisi SPT Tahunan di Coretax
 
-Inilah bagian yang paling kami syukuri sudah kami bangun.
+Bagian ini yang paling kami banggakan.
 
-Setiap tahun, SPT adalah hari paling berat. Formulir lama DJP berupa formulir XFA dari Adobe. Di Mac formulir itu menampilkan layar kosong "Please wait". Kami menulis parser untuknya dan mengisinya dari pembukuan kami. Lalu DJP memindahkan pelaporan ke Coretax, sistem web dengan formulir panjang. Jadi kami mengganti targetnya.
+Setiap tahun, pelaporan SPT adalah pekerjaan paling berat. Formulir lama DJP berupa formulir XFA dari Adobe. Di Mac formulir itu menampilkan layar kosong "Please wait". Kami menulis parser untuknya dan mengisinya dari pembukuan kami. Lalu DJP memindahkan pelaporan ke Coretax, sistem web dengan formulir panjang. Jadi kami mengganti targetnya.
 
 Halaman Tax forms sekarang membuat semuanya dari buku besar untuk tahun yang Anda pilih:
 
@@ -119,43 +131,43 @@ Halaman Tax forms sekarang membuat semuanya dari buku besar untuk tahun yang And
 - Berkas zip berisi CSV untuk konsultan pajak.
 - Angka tahunan, termasuk kerugian fiskal yang dikompensasikan dari tahun sebelumnya.
 
-![Halaman Tax forms, dengan angka contoh](../../assets/blog/ops-taxforms.png)
+![Halaman Tax forms di platform, dengan angka contoh](../../assets/blog/ops-taxforms.png)
 
 ![Satu halaman Panduan Coretax: setiap pertanyaan dengan jawaban yang diketik](../../assets/blog/coretax-guide.png)
 
-Platform tahu rezim pajak mana yang berlaku di setiap tahun dan menampilkan angka untuk rezim itu. Platform tidak pernah melaporkan apa pun. Setiap angka diberi tanda "verifikasi sebelum melapor", dan orang yang memahami pajak harus memeriksa angkanya sebelum Anda mengirim. Kami tidak pernah menampilkan angka pajak hasil hitungan sebagai angka final.
+Platform tahu rezim pajak mana yang berlaku di setiap tahun dan menampilkan angka untuk rezim itu. Platform tidak pernah melaporkan apa pun. Setiap angka diberi tanda "verifikasi sebelum melapor", dan orang yang memahami pajak harus memeriksa angkanya sebelum Anda mengirim.
 
 Kami belajar satu hal dengan cara sulit. Coretax menampilkan kesalahan parsing saat satu kolom tidak berisi angka. Panduan sekarang mencetak nol secara eksplisit di setiap sel. Angka negatif dicetak dengan tanda minus, karena tanda kurung pernah membuat kami mengetik tanda yang salah.
 
 ## Bagian 5: Apa yang dilihat klien kami
 
-Bagi klien, minggu-minggu pertama dengan vendor baru adalah yang tersulit. Mereka tidak tahu apa yang terjadi berikutnya, siapa yang berutang apa, atau apakah pekerjaan bergerak. Kami ingin klien melihat jawaban ketiga pertanyaan itu tanpa harus bertanya kepada kami.
+Bagi klien, minggu-minggu pertama dengan vendor baru adalah yang tersulit. Mereka tidak tahu apa yang terjadi berikutnya, siapa berutang apa, atau apakah pekerjaan bergerak. Kami ingin klien melihat jawaban ketiga pertanyaan itu tanpa harus bertanya kepada kami.
 
-![Apa yang dilihat klien kami, dari hari pertama sampai serah terima](../../assets/blog/ops-client-journey.png)
+![Perjalanan klien Banua Coder, dari hari pertama sampai serah terima](../../assets/blog/ops-client-journey.png)
 
 Semuanya dimulai saat kontrak ditandatangani. Platform membuat portal klien dan mengirim undangan lewat email.
 
-![Email undangan](../../assets/blog/invitation-email.png)
+![Email undangan ke portal klien](../../assets/blog/invitation-email.png)
 
 Klien memasukkan alamat email dan menerima kode enam digit. Tidak ada kata sandi yang harus diingat. Halaman pertama yang mereka lihat adalah daftar onboarding. Beberapa langkah tercentang sendiri dari kejadian nyata: kontrak ditandatangani, NDA ditandatangani, invoice pertama dibayar. Langkah lain dicentang klien: memeriksa kontak, bergabung ke grup obrolan. Langkah dari pihak kami, seperti menerima bahan dari klien, juga tampil.
 
 ![Beranda portal klien dengan daftar onboarding](../../assets/blog/portal-home.png)
 
-Lalu klien bisa memantau pekerjaan. Tab Papan adalah daftar tugas proyek yang sebenarnya. Kami menyimpannya di Beads, dan sebuah skrip kecil menyinkronkan cuplikannya ke portal. Tab itu menampilkan progres, empat kolom, prioritas, siapa mengerjakan apa, dan umpan pembaruan terbaru. Sinkronisasi memiliki aturan privasi bawaan. Tugas berlabel `internal` tidak pernah keluar dari sisi kami. Komentar yang diawali `internal:` dibuang. Email pemilik tidak pernah dikirim. Sebuah tugas hanya tampil bila kami memberinya label `client-visible`.
+Setelah itu klien bisa memantau pekerjaan. Tab Papan adalah daftar tugas proyek yang sebenarnya. Kami menyimpannya di Beads, dan sebuah skrip kecil menyinkronkan cuplikannya ke portal. Tab itu menampilkan progres, empat kolom, prioritas, siapa mengerjakan apa, dan umpan pembaruan terbaru. Sinkronisasi punya aturan privasi bawaan. Tugas berlabel `internal` tidak pernah keluar dari sisi kami. Komentar yang diawali `internal:` dibuang. Email pemilik tidak pernah dikirim. Sebuah tugas hanya tampil bila kami memberinya label `client-visible`.
 
 ![Papan tugas di dalam portal klien](../../assets/blog/portal-board.png)
 
 Tab Proyek menunjukkan gambaran besarnya: apa yang terjadi sebelum pekerjaan, selama, dan sesudahnya. Tab itu memuat milestone dan tanggal target. Dokumen dan invoice ada di tab masing-masing, dan apa pun yang menunggu klien punya tombol Tanda tangani sekarang. Saat proyek selesai, platform membuat draf dokumen serah terima BAST dan SPPT. Kami meninjau dan mengirimnya, klien menandatangani, dan PDF bertanda tangan membawa kode QR dari Bagian 3.
 
-![Tab Proyek: langkah sebelum pekerjaan, lalu tahap berikutnya](../../assets/blog/portal-project.png)
+![Tab Proyek di portal klien: langkah sebelum pekerjaan, lalu tahap berikutnya](../../assets/blog/portal-project.png)
 
-## Sebelum Anda menirunya
+## Enam hal sebelum Anda menirunya
 
 1. Mulai dari buku besar. Invoice, laporan, dan formulir pajak semuanya membaca darinya.
-2. Buat setiap pemeriksaan melihat benda di tangan pembaca, bukan hanya salinan Anda sendiri.
+2. Periksa benda yang dipegang pembaca, bukan hanya salinan Anda sendiri.
 3. Jangan pernah menampilkan angka pajak hasil hitungan sebagai angka final.
 4. Buat rilis tetap membosankan dan sama di mana-mana. Satu jalur untuk setiap produk lebih baik daripada satu skrip pintar untuk setiap aplikasi.
 5. Rancang apa yang dilihat klien pada hari pertama. Daftar yang tercentang sendiri murah dibuat dan menghapus banyak pertanyaan.
-6. Miliki sebuah sistem hanya bila Anda sanggup merawatnya. Biayanya adalah waktu kami, bukan langganan.
+6. Punya sistem sendiri hanya masuk akal bila Anda sanggup merawatnya. Biayanya adalah waktu kami, bukan langganan.
 
 Banua Coder membangun sistem operasional internal seperti ini untuk perusahaan dan instansi pemerintah. Jika Anda menginginkannya, jadwalkan panggilan di banuacoder.com.
