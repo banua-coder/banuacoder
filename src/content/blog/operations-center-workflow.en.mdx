@@ -10,29 +10,39 @@ draft: false
 locale: en
 ---
 
-Banua Coder is a small software company in Palu, Indonesia. We have clients, contracts, invoices, a yearly tax return, and a team that is starting to grow. For a long time this work lived in many tools and in the memory of one person. That breaks the day that person is on leave.
+Banua Coder is a small software company in Palu, Indonesia. We ship a mobile finance app, a Flutter starter kit, a telemetry service, public APIs, a bus tracker, and our own website. A small team can keep that going only with one way of working.
 
-So we built our own operations center. It is one small program that runs on one shared server. It holds our clients, documents, books, and tax forms. This post shows how it works and what we chose. It covers four parts: the secret vault, the operations platform, signed documents that anyone can verify, and the guide that fills our Coretax return.
+This post shows that way of working from end to end. It starts with how every product ships. Then it covers five more parts: the secret vault for people and AI agents, the operations platform that runs our company, signed documents that anyone can verify, the guide that fills our Coretax tax return, and what our clients see while we work.
 
-![From a commit to our server: the build path, the server, and the services around it](../../assets/blog/ops-platform-flow.png)
+![How every Banua Coder product ships](../../assets/blog/ops-ecosystem-flow.png)
 
-## Why we did not buy four more tools
+## One delivery path for every product
 
-Most tools we looked at solve one slice. Invoices live in one place, contracts in another, books in a third. Each has a monthly fee. We did not find one that handled our Indonesian practice together. That practice includes PPh 23 withholding by clients, the Kurs KMK exchange rate, bea meterai stamp duty, and the BAST and SPPT handover documents.
+Every repository follows the same six stages. The tools differ by stack, but the path does not.
 
-Our server is small and shared with other services. So we wanted one light program, not a stack. The platform is one Go program with the Vue interface inside it. It uses the shared Postgres database. Sign-in goes through our own identity provider, Rauthy.
+Plan. Work starts as a task in Beads, our issue tracker, or as a GitHub issue. Our team notes live in an Obsidian vault. AI agents help, and the rule is spec first: a short written spec comes before code.
 
-![The dashboard of our operations center, with sample data](../../assets/blog/ops-dashboard.png)
+Build. Work happens on a feature branch and goes into `develop` through a pull request. The checks come from our own repository of reusable GitHub Actions workflows, pinned to a version tag. There is one workflow per stack: Go, Flutter, Laravel, Node, and Rust.
+
+Release. We use Git Flow. A `release/x.y.z` branch bumps the version and writes the changelog. A pull request takes it to `main`. The merge creates a version tag and a GitHub release. Then a back-merge pull request brings the release commit back to `develop`.
+
+Publish. Each artifact goes to its own registry. Docker images are built in GitHub Actions and pushed to the GitHub container registry. Dart and Flutter packages go to pub.dev. JavaScript packages go to npm, PHP packages to Packagist, and our Mason bricks to Cloudflare R2. Static sites are copied to shared hosting.
+
+Deploy. GitHub Actions connects to the server over SSH. The server pulls the image from the registry, so the runner never uploads image bytes. Docker Compose starts it, and the script waits until the container is healthy. A smoke test then checks the live site. If anything fails, the script rolls back to the previous version. Lumbung and Archipelago deploy blue and green. Traefik gives every app HTTPS.
+
+Watch. Our own telemetry service, beacon, sends data through Grafana Alloy to Grafana Cloud. That gives us uptime probes and dashboards. Nightly backups go to cloud storage. Releases of Archipelago post a notice to Discord.
+
+One rule keeps this honest: nobody builds an image on a laptop and copies it to the server. We broke that rule once with the operations platform, which we describe below. We noticed, fixed it, and moved it onto the same path. It now ships like everything else.
 
 ## Part 1: The secret vault
 
-Our first problem was not the platform. It was secrets. Keys sat in chat messages, in `.env` files copied by hand, and in shared notes. When someone leaves, the keys stay.
+The first problem in any team is not the platform. It is secrets. Keys sit in chat messages, in `.env` files copied by hand, and in shared notes. When someone leaves, the keys stay.
 
 We host Vaultwarden. It speaks the Bitwarden protocol, so staff use the official `bw` command line tool. Five rules shape the design:
 
 1. One secure note per project and environment, named like `lumbung/.env.staging`. The fields of the note are the variable names.
 2. Access is per collection. A person sees only the projects they work on. To remove access, the owner deletes the person from the collection and then rotates the secrets that person can read.
-3. One command pulls a note into a local file. For example, `bw-env lumbung staging` writes `.env.staging`. We never commit that file.
+3. One command pulls a note into a local file. We never commit that file.
 4. The installer is signed. The owner signs the scripts with a key that never goes on the server. The installer installs nothing unless the signature is valid and each file matches its SHA-256 in the signed list.
 5. A server `.env` is deployed from the vault note, never edited by hand. The command `bw-env-deploy` first shows what will change by variable name. It never prints values. It writes nothing until you add `--apply`.
 
@@ -56,7 +66,9 @@ Now the AI agents. They work in the same shell as the developer, so they face th
 
 This is a rule, not a wall. An agent that can run shell commands can read any file the developer can read. That is why access is per project, and why we rotate secrets whenever we have a doubt.
 
-## Part 2: One platform for the whole cycle
+## Part 2: One platform for the whole client cycle
+
+We did not find a tool that handled our Indonesian practice together. That practice includes PPh 23 withholding by clients, the Kurs KMK exchange rate, bea meterai stamp duty, and the BAST and SPPT handover documents. So we built the operations platform. It is one Go program with the Vue interface inside it. It uses a shared Postgres database, and sign-in goes through our own identity provider, Rauthy.
 
 The platform follows one client from first contact to the final invoice:
 
@@ -70,9 +82,7 @@ Documents link to each other: NDA, proposal, contract, invoice, BAST, SPPT. From
 
 ![The Documents page, with sample data](../../assets/blog/ops-documents.png)
 
-The client portal replaced a secret link. A client enters an email address and receives a six-digit code. After that they see an onboarding checklist, their documents, their invoices, and the task board. The checklist completes itself from real data, so a signed NDA ticks its own step.
-
-![The client portal home page, with sample data](../../assets/blog/portal-home.png)
+Real email goes out only when the setting `APP_ENV=production` exists, and only the server has it. Everywhere else the platform uses a sandbox inbox that catches every message. A laptop or a test cannot email a client.
 
 ## Part 3: Signing with a public trail
 
@@ -115,24 +125,35 @@ The platform knows which tax regime applies in each year and shows the figures f
 
 We learned one thing the hard way. Coretax showed a parsing error when one field held no number. The guide now prints an explicit zero in every cell. It prints a negative number with a minus sign, because brackets once led us to type the wrong sign.
 
-All screenshots in this post use invented sample data.
+## Part 5: What our client sees
 
-## How we build and ship it
+For a client, the first weeks with a new vendor are the hardest. They do not know what happens next, who owes what, or whether the work moves. We wanted a client to see the answer to those three questions without asking us.
 
-Every change starts as a short spec. Then it becomes a pull request on GitHub. GitHub Actions runs the Go checks and tests against a Postgres service, the web tests and build, and a Docker build. Our other projects share reusable workflows from one repository, so the checks stay the same everywhere.
+![What our client sees, from day one to handover](../../assets/blog/ops-client-journey.png)
 
-We deploy with a script. It builds the Docker image on a laptop, copies the image to the server, and starts it with Docker Compose. We do not build on the server because the server is small. Traefik gives it HTTPS. Each night, an encrypted Postgres backup goes to cloud storage, and the monthly dumps stay for the ten years that financial records need.
+It starts the moment a contract is signed. The platform creates the client portal and sends an invitation by email.
 
-Real email goes out only when the setting `APP_ENV=production` exists, and only the server has it. Everywhere else the platform uses a sandbox inbox that catches every message. A laptop or a test cannot email a client.
+![The invitation email](../../assets/blog/invitation-email.png)
 
-We build with a team of AI agents. There is a backend agent, a frontend agent, and a tax reviewer. The tax reviewer reads figures and reasoning but does not edit code. Every change still passes the same checks and a browser test before it ships.
+The client enters their email address and receives a six-digit code. There is no password to remember. The first page they see is an onboarding checklist. Some steps tick themselves from real events: the contract is signed, the NDA is signed, the first invoice is paid. Others the client ticks: check the contacts, join the group chat. Our own steps, such as receiving the client materials, show too.
+
+![The client portal home with the onboarding checklist](../../assets/blog/portal-home.png)
+
+Then the client can watch the work. The Board tab is the real task list of the project. We keep it in Beads, and a small script syncs a snapshot to the portal. It shows progress, four columns, priorities, who works on what, and a feed of recent updates. The sync has privacy rules built in. A task with the label `internal` never leaves our side. A comment that starts with `internal:` is dropped. The owner email never goes out. A task shows only when we label it `client-visible`.
+
+![The task board inside the client portal](../../assets/blog/portal-board.png)
+
+The Project tab shows the bigger picture: what happens before the work, during it, and after it. It lists the milestones and the target date. Documents and invoices sit in their own tabs, and anything that waits for the client has a Sign now button. When the project completes, the platform drafts the BAST and SPPT handover documents. We review them and send them, the client signs, and the signed PDF carries the QR code from Part 3.
+
+![The Project tab: the steps before the work, then the stages that follow](../../assets/blog/portal-project.png)
 
 ## Before you copy this
 
 1. Start with the ledger. Invoices, reports, and tax forms all read from it.
 2. Make every check look at the thing in the reader's hand, not only at your own copy.
 3. Never show a computed tax figure as final.
-4. Keep deploys boring. A script you can read beats a pipeline nobody understands.
-5. Own a system only if you can maintain it. The cost is our time, not a subscription.
+4. Keep deploys boring and the same everywhere. One path for every product beats one clever script per app.
+5. Design what the client sees on day one. A checklist that ticks itself costs little and removes many questions.
+6. Own a system only if you can maintain it. The cost is our time, not a subscription.
 
 Banua Coder builds internal operations systems like this for companies and public agencies. If you want one, book a call at banuacoder.com.
