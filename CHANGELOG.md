@@ -2,6 +2,20 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.11.0 — 2026-10-20
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.11.0 (1edae71)
+
+### 📌 Other
+
+- Merge pull request #35 from banua-coder/chore/back-merge-v1.10.0 (3a476f3)
+- Merge pull request #34 from banua-coder/chore/bump-dev-version-v1.11.0 (caa2723)
+- content(blog): revise Indonesian ops workflow article for language, SEO and readability (#36) (8a74935)
+
+
+
 ## v1.10.0 — 2026-10-20
 
 ### 🧹 Chore
