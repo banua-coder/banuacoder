@@ -2,6 +2,28 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.10.0 — 2026-10-20
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.10.0 (0b3ed5d)
+
+### 📌 Other
+
+- Merge pull request #31 from banua-coder/chore/back-merge-v1.9.0 (8d472e3)
+- Merge pull request #30 from banua-coder/chore/bump-dev-version-v1.10.0 (66cd342)
+- blog: how we run our own operations center (en, id) (4ba89cc)
+- blog: add the engineer and freelancer env workflow, redraw diagrams with platform logos (b46d179)
+- blog: ecosystem-wide delivery path, client view, new diagrams with platform logos (b0a481c)
+- blog: use the real Banua Coder mark in the diagrams (720bc4f)
+- blog: clip the diagram card bands to the rounded corners (43cbfe7)
+- blog: redraw the four diagrams as editorial plates (09c36e0)
+- blog: add Redis, MySQL and Mosquitto to the shared services (86a5686)
+- blog: finalize with OpenTimestamps last, optional third-party seal before it; shared MQTT wording (fef8295)
+- Merge pull request #32 from banua-coder/feat/blog-operations-workflow (c324141)
+
+
+
 ## v1.9.0 — 2026-10-16
 
 ### 🐛 Bug Fixes
