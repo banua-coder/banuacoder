@@ -28,7 +28,7 @@ Release. We use Git Flow. A `release/x.y.z` branch bumps the version and writes 
 
 Publish. Each artifact goes to its own registry. Docker images are built in GitHub Actions and pushed to the GitHub container registry. Dart and Flutter packages go to pub.dev. JavaScript packages go to npm, PHP packages to Packagist, and our Mason bricks to Cloudflare R2. Static sites are copied to shared hosting.
 
-Deploy. GitHub Actions connects to the server over SSH. The server pulls the image from the registry, so the runner never uploads image bytes. Docker Compose starts it, and the script waits until the container is healthy. A smoke test then checks the live site. If anything fails, the script rolls back to the previous version. Lumbung and Archipelago deploy blue and green. Traefik gives every app HTTPS.
+Deploy. GitHub Actions connects to the server over SSH. The server pulls the image from the registry, so the runner never uploads image bytes. Docker Compose starts it, and the script waits until the container is healthy. A smoke test then checks the live site. If anything fails, the script rolls back to the previous version. Lumbung and Archipelago deploy blue and green. Traefik gives every app HTTPS. The apps share a few services on the same server: Postgres and MySQL for data, Redis for cache, queues, and sessions, and an MQTT broker for Lumbung.
 
 Watch. Our own telemetry service, beacon, sends data through Grafana Alloy to Grafana Cloud. That gives us uptime probes and dashboards. Nightly backups go to cloud storage. Releases of Archipelago post a notice to Discord.
 

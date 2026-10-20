@@ -28,7 +28,7 @@ Rilis. Kami memakai Git Flow. Branch `release/x.y.z` menaikkan versi dan menulis
 
 Publikasi. Setiap artefak masuk ke registri-nya sendiri. Image Docker dibangun di GitHub Actions dan didorong ke container registry GitHub. Paket Dart dan Flutter masuk ke pub.dev. Paket JavaScript ke npm, paket PHP ke Packagist, dan brick Mason kami ke Cloudflare R2. Situs statis disalin ke shared hosting.
 
-Deploy. GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengunggah byte image. Docker Compose menjalankannya, dan skrip menunggu sampai container sehat. Lalu smoke test memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago melakukan deploy blue dan green. Traefik memberi HTTPS ke setiap aplikasi.
+Deploy. GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengunggah byte image. Docker Compose menjalankannya, dan skrip menunggu sampai container sehat. Lalu smoke test memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago melakukan deploy blue dan green. Traefik memberi HTTPS ke setiap aplikasi. Aplikasi berbagi beberapa layanan di server yang sama: Postgres dan MySQL untuk data, Redis untuk cache, antrean, dan sesi, serta broker MQTT untuk Lumbung.
 
 Pantau. Layanan telemetri kami sendiri, beacon, mengirim data lewat Grafana Alloy ke Grafana Cloud. Dari sana kami mendapat probe uptime dan dashboard. Cadangan harian masuk ke penyimpanan awan. Rilis Archipelago mengirim pemberitahuan ke Discord.
 
