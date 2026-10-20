@@ -28,7 +28,7 @@ Release. We use Git Flow. A `release/x.y.z` branch bumps the version and writes 
 
 Publish. Each artifact goes to its own registry. Docker images are built in GitHub Actions and pushed to the GitHub container registry. Dart and Flutter packages go to pub.dev. JavaScript packages go to npm, PHP packages to Packagist, and our Mason bricks to Cloudflare R2. Static sites are copied to shared hosting.
 
-Deploy. GitHub Actions connects to the server over SSH. The server pulls the image from the registry, so the runner never uploads image bytes. Docker Compose starts it, and the script waits until the container is healthy. A smoke test then checks the live site. If anything fails, the script rolls back to the previous version. Lumbung and Archipelago deploy blue and green. Traefik gives every app HTTPS. The apps share a few services on the same server: Postgres and MySQL for data, Redis for cache, queues, and sessions, and an MQTT broker for Lumbung.
+Deploy. GitHub Actions connects to the server over SSH. The server pulls the image from the registry, so the runner never uploads image bytes. Docker Compose starts it, and the script waits until the container is healthy. A smoke test then checks the live site. If anything fails, the script rolls back to the previous version. Lumbung and Archipelago deploy blue and green. Traefik gives every app HTTPS. The apps share a few services on the same server: Postgres and MySQL for data, Redis for cache, queues, and sessions, and a shared MQTT broker for realtime apps.
 
 Watch. Our own telemetry service, beacon, sends data through Grafana Alloy to Grafana Cloud. That gives us uptime probes and dashboards. Nightly backups go to cloud storage. Releases of Archipelago post a notice to Discord.
 
@@ -89,6 +89,8 @@ Real email goes out only when the setting `APP_ENV=production` exists, and only 
 We first looked at a hosted signing tool. Embedding it was a paid feature, and it needed about 2 GB of memory on our small server. So we built signing into the platform.
 
 The diagram below shows the flow. Each signer receives a private link. If a document states an amount over Rp 5,000,000, it needs a bea meterai. The owner types the serial from Peruri. The platform does not call Peruri. Every action goes into an append-only audit trail: who, when, from which address, on which device.
+
+Some documents need a seal from a third party, such as an e-meterai or a certified signature. That seal goes on the PDF before the last step. The last step is always the same: the platform stores the fingerprint of the finished file and sends it to OpenTimestamps, and nothing changes the file after that. Today the owner records the e-meterai serial by hand. A step that takes the stamped file back into the platform comes next.
 
 ![How a signed document stays provable](../../assets/blog/ops-signing-diagram.png)
 

@@ -28,7 +28,7 @@ Rilis. Kami memakai Git Flow. Branch `release/x.y.z` menaikkan versi dan menulis
 
 Publikasi. Setiap artefak masuk ke registri-nya sendiri. Image Docker dibangun di GitHub Actions dan didorong ke container registry GitHub. Paket Dart dan Flutter masuk ke pub.dev. Paket JavaScript ke npm, paket PHP ke Packagist, dan brick Mason kami ke Cloudflare R2. Situs statis disalin ke shared hosting.
 
-Deploy. GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengunggah byte image. Docker Compose menjalankannya, dan skrip menunggu sampai container sehat. Lalu smoke test memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago melakukan deploy blue dan green. Traefik memberi HTTPS ke setiap aplikasi. Aplikasi berbagi beberapa layanan di server yang sama: Postgres dan MySQL untuk data, Redis untuk cache, antrean, dan sesi, serta broker MQTT untuk Lumbung.
+Deploy. GitHub Actions terhubung ke server lewat SSH. Server menarik image dari registri, jadi runner tidak pernah mengunggah byte image. Docker Compose menjalankannya, dan skrip menunggu sampai container sehat. Lalu smoke test memeriksa situs yang hidup. Bila ada yang gagal, skrip kembali ke versi sebelumnya. Lumbung dan Archipelago melakukan deploy blue dan green. Traefik memberi HTTPS ke setiap aplikasi. Aplikasi berbagi beberapa layanan di server yang sama: Postgres dan MySQL untuk data, Redis untuk cache, antrean, dan sesi, serta broker MQTT bersama untuk aplikasi realtime.
 
 Pantau. Layanan telemetri kami sendiri, beacon, mengirim data lewat Grafana Alloy ke Grafana Cloud. Dari sana kami mendapat probe uptime dan dashboard. Cadangan harian masuk ke penyimpanan awan. Rilis Archipelago mengirim pemberitahuan ke Discord.
 
@@ -89,6 +89,8 @@ Email nyata hanya terkirim bila pengaturan `APP_ENV=production` ada, dan hanya s
 Awalnya kami melihat alat tanda tangan yang di-hosting. Fitur embed-nya berbayar, dan alat itu butuh sekitar 2 GB memori di server kecil kami. Jadi kami membangun fitur tanda tangan di dalam platform.
 
 Diagram di bawah menunjukkan alurnya. Setiap penanda tangan menerima tautan pribadi. Jika dokumen mencantumkan nilai di atas Rp 5.000.000, dokumen itu butuh bea meterai. Pemilik mengetik nomor seri dari Peruri. Platform tidak memanggil Peruri. Setiap tindakan masuk ke jejak audit yang hanya bisa ditambah: siapa, kapan, dari alamat mana, dan dari perangkat apa.
+
+Sebagian dokumen membutuhkan meterai dari pihak ketiga, seperti e-meterai atau tanda tangan tersertifikasi. Meterai itu dipasang pada PDF sebelum langkah terakhir. Langkah terakhir selalu sama: platform menyimpan sidik jari berkas yang sudah jadi dan mengirimnya ke OpenTimestamps, dan tidak ada yang mengubah berkas setelah itu. Saat ini pemilik mencatat nomor seri e-meterai secara manual. Langkah yang membawa berkas bermeterai kembali ke platform akan menyusul.
 
 ![Cara dokumen bertanda tangan tetap bisa dibuktikan](../../assets/blog/ops-signing-diagram.png)
 
