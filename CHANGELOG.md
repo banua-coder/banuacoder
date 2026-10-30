@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.13.0 — 2026-10-30
+
+### ✨ Features
+
+- feat(motion): client logos as a slow looping marquee (26 px/s, zero-one-group style) (cf01446)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.13.0 (cf25701)
+
+### 📌 Other
+
+- Merge pull request #42 from banua-coder/chore/back-merge-v1.12.0 (bcc2f22)
+- Merge pull request #41 from banua-coder/chore/bump-dev-version-v1.13.0 (52ca7b0)
+
+
+
 ## v1.12.0 — 2026-10-30
 
 ### ✨ Features
