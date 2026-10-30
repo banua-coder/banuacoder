@@ -2,6 +2,23 @@
 
 All notable releases of banuacoder.com are recorded here. Generated automatically by `release-finalize.yml`.
 
+## v1.12.0 — 2026-10-30
+
+### ✨ Features
+
+- feat(motion,nav): zero-one-group hero/header motion; nav takes the colour of the plate beneath (588893f)
+
+### 🧹 Chore
+
+- chore: bump dev version to 1.12.0 (3e03a14)
+
+### 📌 Other
+
+- Merge pull request #39 from banua-coder/chore/back-merge-v1.11.0 (6b64628)
+- Merge pull request #38 from banua-coder/chore/bump-dev-version-v1.12.0 (2087f7d)
+
+
+
 ## v1.11.0 — 2026-10-20
 
 ### 🧹 Chore
