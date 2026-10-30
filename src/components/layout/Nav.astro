@@ -34,24 +34,26 @@ const navLinks = isEn
 
 <header
   id="site-nav"
-  class="fixed top-0 left-0 right-0 z-50 transition-transform duration-300 bg-bnc-paper dark:bg-bnc-ink border-b border-bnc-ink/25 dark:border-bnc-paper/25 will-change-transform"
+  class="nav-shell fixed top-0 left-0 right-0 z-50 border-b will-change-transform"
   data-nav-scroll
+  data-tone="chalk"
 >
   <nav
     aria-label="Site navigation"
     class="mx-auto flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-16"
     style="max-width: var(--container-max)"
   >
-    <a href={isEn ? '/en/' : '/'} class="flex items-center shrink-0" aria-label="Banua Coder home">
-      <Logo variant="lockup" width={26} />
+    <a href={isEn ? '/en/' : '/'} class="nav-intro-item flex items-center shrink-0" style="--nd:40ms" aria-label="Banua Coder home">
+      <span class="logo-chalk"><Logo variant="lockup" width={26} /></span>
+      <span class="logo-plate"><Logo variant="lockup" width={26} tone="plate" /></span>
     </a>
 
     <ul class="hidden md:flex items-center gap-5 lg:gap-7 list-none m-0 p-0" role="list">
-      {navLinks.map((link) => (
-        <li>
+      {navLinks.map((link, i) => (
+        <li class="nav-intro-mask" style={`--ni:${i}`}>
           <a
             href={link.href}
-            class="nav-link text-sm font-medium text-bnc-ink dark:text-bnc-paper"
+            class="nav-link interactive-hover text-sm font-medium text-bnc-ink dark:text-bnc-paper"
           >
             {link.label}
           </a>
@@ -59,12 +61,12 @@ const navLinks = isEn
       ))}
     </ul>
 
-    <div class="flex items-center gap-1.5 sm:gap-3">
+    <div class="nav-intro-item flex items-center gap-1.5 sm:gap-3" style="--nd:160ms">
       <a
         href={contact.bookingUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="hidden lg:inline-flex items-center gap-1.5 text-sm font-semibold text-bnc-plate dark:text-bnc-accent underline underline-offset-[6px] decoration-1 hover:decoration-2 mr-2"
+        class="nav-book hidden lg:inline-flex items-center gap-1.5 text-sm font-semibold text-bnc-plate dark:text-bnc-accent underline underline-offset-[6px] decoration-1 hover:decoration-2 mr-2"
       >
         {bookingShortLabel[locale as 'id' | 'en']} <span aria-hidden="true">→</span>
       </a>
@@ -90,10 +92,44 @@ const navLinks = isEn
 <MobileDrawer />
 
 <style>
-  .nav-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; padding-bottom: 3px; transition: background-size 250ms; }
-  .nav-link:hover, .nav-link:focus-visible { background-size: 100% 1px; }
+  /* The bar takes the colour of the plate underneath it, so it never floats as a white strip over a blue hero. */
+  .nav-shell { transition: transform 300ms, background-color 300ms var(--motion-ease-out), border-color 300ms var(--motion-ease-out), color 300ms var(--motion-ease-out); }
+  .nav-shell[data-tone='chalk'] { background: var(--color-bnc-paper); border-color: rgb(6 11 46 / 0.25); }
+  :global(html.dark) .nav-shell[data-tone='chalk'] { background: var(--color-bnc-ink); border-color: rgb(241 243 249 / 0.25); }
+  .nav-shell[data-tone='plate'] { background: var(--color-bnc-plate); border-color: var(--color-bnc-plate-line); color: #fff; }
+  .nav-shell[data-tone='plate'] :global(a), .nav-shell[data-tone='plate'] :global(button), .nav-shell[data-tone='plate'] :global(span), .nav-shell[data-tone='plate'] :global(svg) { color: #fff; }
+  .nav-shell[data-tone='plate'] :global(.nav-book) { text-decoration-color: var(--color-bnc-accent); }
+  .nav-shell[data-tone='plate'] :global(a[hreflang]) { border-color: rgb(255 255 255 / 0.4); }
+  .nav-shell[data-tone='plate'] :global(#nav-hamburger span) { background: #fff; }
+  .nav-shell[data-tone='plate'] :global(#theme-toggle:hover), .nav-shell[data-tone='plate'] :global(#nav-hamburger:hover) { background: rgb(255 255 255 / 0.12); }
+  .logo-plate { display: none; }
+  .nav-shell[data-tone='plate'] :global(.logo-plate) { display: inline-flex; }
+  .nav-shell[data-tone='plate'] :global(.logo-chalk) { display: none; }
   [data-nav-scroll].is-hidden { transform: translateY(-100%); }
-  @media (prefers-reduced-motion: reduce) {
-    [data-nav-scroll], .nav-link { transition: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .nav-shell { transition: none; } }
 </style>
+
+<script>
+  // Tone follows the plate under the bar (ultramarine plate -> blue bar, chalk plate -> paper/ink bar).
+  function bindNavTone() {
+    const nav = document.getElementById('site-nav')
+    if (!nav) return
+    let raf = 0
+    const sample = () => {
+      raf = 0
+      const y = nav.getBoundingClientRect().bottom - 2
+      const x = Math.min(window.innerWidth - 2, Math.max(2, window.innerWidth / 2))
+      const els = document.elementsFromPoint(x, Math.max(1, y))
+      const plate = els.find((e) => !nav.contains(e) && e.closest('.plate, .plate-chalk'))
+      const tone = plate?.closest('.plate') ? 'plate' : 'chalk'
+      if (nav.dataset.tone !== tone) nav.dataset.tone = tone
+    }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(sample) }
+    sample()
+    window.addEventListener('scroll', queue, { passive: true })
+    window.addEventListener('resize', queue, { passive: true })
+    document.addEventListener('astro:before-swap', () => { window.removeEventListener('scroll', queue); window.removeEventListener('resize', queue) }, { once: true })
+  }
+  bindNavTone()
+  document.addEventListener('astro:after-swap', bindNavTone)
+</script>

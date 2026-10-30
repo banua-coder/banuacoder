@@ -100,28 +100,33 @@ export function initAnimations(): () => void {
       })
       el.appendChild(frag)
       el.classList.add('is-split')
+      // zero-one-group: word starts opacity 0, blur 2px, translate(0.5%, 70%); 1.3 s quart-out; 20 ms stagger
       gsap.fromTo(
         el.querySelectorAll('.split-word'),
-        { yPercent: 110, rotation: 4 },
+        { opacity: 0, filter: 'blur(2px)', xPercent: 0.5, yPercent: 70 },
         {
+          opacity: 1,
+          filter: 'blur(0px)',
+          xPercent: 0,
           yPercent: 0,
-          rotation: 0,
-          duration: 0.9,
-          ease: 'expo.out',
-          stagger: 0.06,
+          duration: 1.3,
+          ease: 'power4.out',
+          stagger: 0.02,
           delay: parseFloat(el.dataset.splitDelay ?? '0'),
+          clearProps: 'filter',
           scrollTrigger: { trigger: el, start: 'top 95%', once: true },
         },
       )
     })
 
     // ── Hero intro: eyebrow / subtitle / CTAs rise in after the headline ─────
+    // zero-one-group hero lines: translateY(100%) + fade, 1 s quart-out, base 0.84 s, 0.1 s stagger
     const heroIn = gsap.utils.toArray<HTMLElement>('[data-hero-in]')
     if (heroIn.length) {
       gsap.fromTo(
         heroIn,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.12, delay: 0.35 },
+        { opacity: 0, yPercent: 100 },
+        { opacity: 1, yPercent: 0, duration: 1, ease: 'power4.out', stagger: 0.1, delay: 0.84 },
       )
     }
 

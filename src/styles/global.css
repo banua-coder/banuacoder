@@ -56,6 +56,8 @@
   --shadow-subtle: none;
   --shadow-elevated: 0 0 0 1px var(--color-bnc-stone-200);
 
+  --motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* zero-one-group hover/UI easing */
+  --motion-ease-ui: cubic-bezier(0.22, 1, 0.36, 1);  /* zero-one-group header intro easing */
   --duration-quick: 150ms;
   --duration-base: 250ms;
 
@@ -197,3 +199,29 @@
     }
   }
 }
+
+
+/* ── zero-one-group micro-interactions (measured from the reference) ── */
+/* Header intro: logo/right group fade down 8px (350 ms), nav links rise out of a mask (1.4 s, 80 ms stagger). */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-intro-skip]) .nav-intro-item { opacity: 0; transform: translateY(-8px); animation: nav-item-in 350ms var(--motion-ease-ui) forwards; animation-delay: var(--nd, 40ms); }
+  html:not([data-intro-skip]) .nav-intro-mask > * { transform: translateY(110%); animation: nav-mask-in 1400ms var(--motion-ease-ui) forwards; animation-delay: calc(60ms + var(--ni, 0) * 80ms); }
+  @keyframes nav-item-in { to { opacity: 1; transform: translateY(0); } }
+  @keyframes nav-mask-in { to { transform: translateY(0); } }
+}
+.nav-intro-mask { overflow: hidden; display: inline-flex; }
+
+/* Hover: fade to 50 % in 200 ms, pointer devices only. */
+.interactive-hover { transition: opacity 200ms var(--motion-ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .interactive-hover:hover, .interactive-hover:focus-visible { opacity: 0.5; }
+}
+
+/* Fill-wipe link: a 1 px underline grows into a filled block (300 ms) and the label inverts. */
+.link-fill { position: relative; isolation: isolate; display: inline-flex; align-items: center; transition: color 300ms var(--motion-ease-out); }
+.link-fill::before { content: ''; position: absolute; inset: -0.2em -0.35em; z-index: -1; background: currentColor; clip-path: inset(calc(100% - 1px) 0 0); transition: clip-path 300ms var(--motion-ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .link-fill:hover::before, .link-fill:focus-visible::before { clip-path: inset(0); }
+  .link-fill:hover, .link-fill:focus-visible { color: var(--link-fill-fg, var(--color-bnc-paper)); }
+}
+@media (prefers-reduced-motion: reduce) { .link-fill, .link-fill::before, .interactive-hover { transition: none; } }

@@ -46,3 +46,4 @@ marketing/
 .impeccable/mocks/
 .impeccable/live/
 .impeccable/hook.cache.json
+.reanimate/

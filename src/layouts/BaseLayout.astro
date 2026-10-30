@@ -152,6 +152,11 @@ const jsonLd = {
     <!-- Page-specific head content (meta, structured data, etc.) -->
     <slot name="head" />
 
+    <!-- Header intro plays on a full load only; ClientRouter swaps skip it -->
+    <script is:inline>
+      document.addEventListener('astro:before-swap', function (e) { e.newDocument.documentElement.setAttribute('data-intro-skip', ''); });
+    </script>
+
     <!-- FOUC prevention + view-transition persistence -->
     <script is:inline>
       (function () {
