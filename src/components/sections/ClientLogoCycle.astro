@@ -40,17 +40,34 @@ const list = clients.filter((c) => logoUrls[c.logo])
     <p class="cc-sub lg:col-span-5 leading-relaxed" style="font-size: var(--fs-20); max-width: 40ch">{subhead}</p>
   </div>
 
+  <!-- Marquee (default): one linear loop at 26 px/s like zero-one-group, paused on hover/focus -->
+  <div class="cc-marquee" data-cc-marquee>
+    <div class="cc-track" data-cc-track>
+      {[0, 1].map((copy) => (
+        <ul class="cc-row list-none m-0 p-0 flex shrink-0" role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {list.map((client) => (
+            <li class="cc-cell flex w-48 sm:w-56 shrink-0 flex-col items-center justify-center gap-4 px-4 py-8">
+              <img
+                src={logoUrls[client.logo]}
+                alt={copy === 1 ? '' : client.name}
+                loading="lazy"
+                decoding="async"
+                class="cc-logo h-14 sm:h-16 w-auto max-w-[9rem] object-contain"
+                data-pemda={client.logo.startsWith('pemprov-') || client.logo.startsWith('pemkab-') ? '' : undefined}
+              />
+              <span class="cc-name folio text-center" style="letter-spacing: 0.08em">{client.name}</span>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+
+  <!-- Reduced motion: the same logos as a static ruled grid -->
   <ul class="cc-grid list-none m-0 p-0 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5" role="list">
     {list.map((client) => (
       <li class="cc-cell flex flex-col items-center justify-center gap-4 px-4 py-8">
-        <img
-          src={logoUrls[client.logo]}
-          alt={client.name}
-          loading="lazy"
-          decoding="async"
-          class="cc-logo h-14 sm:h-16 w-auto max-w-[9rem] object-contain"
-          data-pemda={client.logo.startsWith('pemprov-') || client.logo.startsWith('pemkab-') ? '' : undefined}
-        />
+        <img src={logoUrls[client.logo]} alt={client.name} loading="lazy" decoding="async" class="cc-logo h-14 sm:h-16 w-auto max-w-[9rem] object-contain" data-pemda={client.logo.startsWith('pemprov-') || client.logo.startsWith('pemkab-') ? '' : undefined} />
         <span class="cc-name folio text-center" style="letter-spacing: 0.08em">{client.name}</span>
       </li>
     ))}
@@ -58,6 +75,13 @@ const list = clients.filter((c) => logoUrls[c.logo])
 </Plate>
 
 <style>
+  .cc-marquee { overflow: hidden; border-block: 1px solid color-mix(in srgb, currentColor 28%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+  .cc-track { display: flex; width: max-content; flex-wrap: nowrap; will-change: transform; animation: cc-loop var(--cc-dur, 60s) linear infinite; }
+  .cc-marquee:hover .cc-track, .cc-marquee:focus-within .cc-track { animation-play-state: paused; }
+  @keyframes cc-loop { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+  .cc-row .cc-cell { border-bottom: 0; }
+  .cc-grid { display: none; }
+  @media (prefers-reduced-motion: reduce) { .cc-marquee { display: none; } .cc-grid { display: grid; } }
   .cc-sub { color: color-mix(in srgb, currentColor 74%, transparent); }
   .cc-grid { border-top: 1px solid color-mix(in srgb, currentColor 28%, transparent); border-left: 1px solid color-mix(in srgb, currentColor 28%, transparent); }
   .cc-cell { border-right: 1px solid color-mix(in srgb, currentColor 28%, transparent); border-bottom: 1px solid color-mix(in srgb, currentColor 28%, transparent); }
@@ -70,3 +94,16 @@ const list = clients.filter((c) => logoUrls[c.logo])
   :global(html.dark) .cc-logo[data-pemda] { filter: grayscale(1) brightness(1.15); }
   :global(html.dark) .cc-cell:hover .cc-logo[data-pemda] { filter: none; }
 </style>
+
+<script>
+  // One copy's width / 26 px/s = loop duration (reference speed: 2092 px in 80.46 s)
+  function sizeMarquee() {
+    document.querySelectorAll<HTMLElement>('[data-cc-track]').forEach((track) => {
+      const w = track.scrollWidth / 2
+      if (w > 0) track.style.setProperty('--cc-dur', `${(w / 26).toFixed(1)}s`)
+    })
+  }
+  sizeMarquee()
+  document.addEventListener('astro:page-load', sizeMarquee)
+  window.addEventListener('resize', sizeMarquee, { passive: true })
+</script>
